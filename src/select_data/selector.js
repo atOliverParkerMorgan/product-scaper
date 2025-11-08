@@ -3,54 +3,61 @@
     let currentHighlight = null;
     let isSelectorActive = false;
     let currentCategory = null;
+    let currentSelectedSelectors = new Set(); 
 
     // --- Modal HTML and CSS ---
-    // We inject this into the page to show non-blocking messages.
     const modalStyle = `
         #selector-modal {
             position: fixed;
-            top: 20px;
+            bottom: 20px; /* Changed from top */
             left: 50%;
             transform: translateX(-50%);
             background: white;
             border: 1px solid #ccc;
             border-radius: 8px;
             box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-            padding: 24px;
+            padding: 16px 24px;
             z-index: 999999;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             font-size: 16px;
             line-height: 1.5;
             color: #333;
-            display: none; /* Hidden by default */
+            display: block; /* Always visible */
             max-width: 90%;
             text-align: center;
         }
         #selector-modal p {
-            margin: 0 0 16px 0;
+            margin: 0 0 12px 0;
         }
         #selector-modal button {
-            padding: 10px 16px;
+            padding: 8px 14px;
             border: none;
             border-radius: 6px;
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
             margin: 0 8px;
-        }
-        #modal-ok-btn {
             background-color: #007aff;
             color: white;
         }
-        #modal-cancel-btn {
-            background-color: #f0f0f0;
-            color: #333;
+        #selector-modal button#prev-cat-btn {
+             background-color: #f0f0f0;
+             color: #333;
+        }
+    `;
+
+    const highlightStyle = `
+        /* Single style for all selected items */
+        [data-selector-highlight="selected"] {
+            outline: 3px solid #34c759 !important; /* Green */
+            box-shadow: 0 0 10px #34c759;
+            background-color: rgba(52, 199, 89, 0.1);
         }
     `;
 
     const modalHTML = `
         <div id="selector-modal">
-            <p id="modal-message"></p>
+            <p id="modal-message">Loading...</p>
             <div id="modal-buttons"></div>
         </div>
     `;
@@ -59,121 +66,93 @@
      * Injects the modal and its styles into the page.
      */
     function injectModal() {
-        if (document.getElementById('selector-modal')) return; // Already injected
+        if (document.getElementById('selector-modal')) return;
 
         const styleSheet = document.createElement("style");
         styleSheet.type = "text/css";
-        styleSheet.innerText = modalStyle;
+        styleSheet.innerText = modalStyle + '\n' + highlightStyle;
         document.head.appendChild(styleSheet);
 
         document.body.insertAdjacentHTML('beforeend', modalHTML);
     }
 
     /**
-     * Shows the modal with a message and optional buttons.
-     * @param {string} message - The HTML content for the modal message.
-     * @param {boolean} showConfirmButtons - Show OK/Redo buttons.
+     * Updates the (now-persistent) modal with a message and buttons.
      */
-    function showModal(message, showConfirmButtons = false) {
+    function updateModal(message, buttonsHtml) {
         const modal = document.getElementById('selector-modal');
+        if (!modal) {
+            console.error("Selector modal not found in DOM!");
+            return;
+        }
         document.getElementById('modal-message').innerHTML = message;
-        const buttonContainer = document.getElementById('modal-buttons');
-
-        if (showConfirmButtons) {
-            buttonContainer.innerHTML = `
-                <button id="modal-ok-btn">Looks Good (OK)</button>
-                <button id="modal-cancel-btn">Redo</button>
-            `;
-        } else {
-            buttonContainer.innerHTML = '';
-        }
-        modal.style.display = 'block';
-        return modal;
-    }
-
-    function hideModal() {
-        const modal = document.getElementById('selector-modal');
-        if (modal) {
-            modal.style.display = 'none';
-        }
+        document.getElementById('modal-buttons').innerHTML = buttonsHtml;
     }
 
     /**
-     * Removes all highlights (both red and blue) from the page.
+     * Removes all highlights
      */
     function removeAllHighlights() {
-        // Remove red hover highlight
         if (currentHighlight) {
-            currentHighlight.style.outline = '';
+            currentHighlight.style.outline = ''; 
             currentHighlight = null;
         }
-        // Remove blue prediction highlights
-        document.querySelectorAll('[data-selector-highlight="true"]').forEach(el => {
-            el.style.outline = '';
+        document.querySelectorAll('[data-selector-highlight="selected"]').forEach(el => {
             el.removeAttribute('data-selector-highlight');
         });
     }
 
     // --- Communication with Python ---
 
-    /**
-     * Called by Python to initialize the app.
-     */
     window.initApp = function() {
         console.log("Selector.js initialized.");
         injectModal();
-        // Tell Python we are ready to start the workflow
+        // Start the workflow
         window.pywebview.api.start_workflow();
     }
 
     /**
      * Called by Python to ask the user to select an element for a category.
-     * @param {string} category
      */
-    window.promptForSelection = function(category) {
-        console.log(`Prompting for ${category}...`);
-        removeAllHighlights();
+    window.promptForSelection = function(category, existingSelectorsArray) {
+        console.log(`Prompting for ${category}. Found ${existingSelectorsArray.length} existing.`);
+        
         currentCategory = category;
+        currentSelectedSelectors = new Set(existingSelectorsArray);
         isSelectorActive = true;
-        showModal(`Please select the <strong>${category}</strong>.<br><small>(Mouse over to highlight, click to select)</small>`);
-    }
-
-    /**
-     * Called by Python to highlight "predicted" elements and ask for confirmation.
-     * @param {string} selector - The simplified selector to highlight.
-     * @param {string} category - The category being confirmed.
-     */
-    window.highlightAndConfirm = function(selector, category) {
-        const elements = document.querySelectorAll(selector);
-        console.log(`Found ${elements.length} similar elements for ${category}.`);
-
-        if (elements.length === 0) {
-            // No matches, something is wrong with the selector.
-            window.pywebview.api.prediction_confirmed(category, false); // Auto-fail
-            return;
-        }
-
-        elements.forEach(el => {
-            el.style.outline = '3px dashed blue';
-            el.setAttribute('data-selector-highlight', 'true');
+        
+        removeAllHighlights();
+        // Highlight all selectors provided by Python
+        existingSelectorsArray.forEach(selector => {
+            try {
+                document.querySelectorAll(selector).forEach(el => {
+                    el.setAttribute('data-selector-highlight', 'selected');
+                });
+            } catch (e) {
+                console.warn("Could not highlight invalid selector:", selector, e);
+            }
         });
 
-        const modal = showModal(
-            `Found <strong>${elements.length}</strong> similar elements for <strong>${category}</strong>.
-             <br><small>Do they look correct?</small>`,
-            true
-        );
+        // Update the persistent modal
+        let predictSelectors = '<button >'
+        let message = `Selecting: <strong>${category}</strong> <small>(${existingSelectorsArray.length} selected)</small>`;
+        let buttonsHtml = `
+            <button id="prev-cat-btn">&larr; Previous</button>
+            <button id="next-cat-btn">Next &rarr;</button>
+        `;
+        updateModal(message, buttonsHtml);
 
-        document.getElementById('modal-ok-btn').onclick = () => {
-            window.pywebview.api.prediction_confirmed(category, true);
-            removeAllHighlights();
-            hideModal();
+        // Add event listeners for new buttons
+        document.getElementById('prev-cat-btn').onclick = () => {
+            isSelectorActive = false; // Disable clicks during transition
+            updateModal('Loading...', '');
+            window.pywebview.api.user_clicked_previous_category();
         };
-
-        document.getElementById('modal-cancel-btn').onclick = () => {
-            window.pywebview.api.prediction_confirmed(category, false);
-            removeAllHighlights();
-            hideModal();
+        
+        document.getElementById('next-cat-btn').onclick = () => {
+            isSelectorActive = false; // Disable clicks during transition
+            updateModal('Loading...', '');
+            window.pywebview.api.user_clicked_next_category();
         };
     }
 
@@ -181,82 +160,120 @@
 
     document.addEventListener('mouseover', function(e) {
         if (!isSelectorActive) return;
-
+        // Don't highlight the modal itself
+        if (e.target.closest && e.target.closest('#selector-modal')) {
+            if (currentHighlight) {
+                currentHighlight.style.outline = '';
+                currentHighlight = null;
+            }
+            return;
+        }
         // Remove old highlight
         if (currentHighlight) {
             currentHighlight.style.outline = '';
         }
-        
         // Add new highlight
         currentHighlight = e.target;
-        // Don't highlight our own modal
-        if (currentHighlight && currentHighlight.closest && currentHighlight.closest('#selector-modal')) {
-            currentHighlight = null;
-            return;
-        }
         currentHighlight.style.outline = '2px dashed red';
     });
 
     document.addEventListener('click', function(e) {
-        // ALWAYS stop the click from doing anything (like following a link)
-        // This disables all redirects.
+        // Ignore clicks on the modal
+        if (e.target.closest && e.target.closest('#selector-modal')) {
+            console.log("Click on modal, ignoring.");
+            return;
+        }
+
+        // disable links
         e.preventDefault();
         e.stopPropagation();
-
-        // Only run selector logic if we are in selection mode
-        if (!isSelectorActive) return;
+        
+        // Only run if selection is active
+        if (!isSelectorActive) {
+            return;
+        }
+            
         
         const selector = getCssSelector(e.target);
+        if (!selector) return; // Not a valid element
         
-        // Deactivate selector
-        isSelectorActive = false;
-        hideModal();
+        console.log("Element selected:", e.target, "Selector:", selector);
+        
+        // Disable clicking until Python calls promptForSelection again
+        isSelectorActive = false; 
+        
         if (currentHighlight) {
             currentHighlight.style.outline = '';
         }
 
-        // Send the selector to Python
-        window.pywebview.api.save_selector(currentCategory, selector);
+        // Show loading state
+        updateModal(`Working on <strong>${currentCategory}</strong>...`, '');
 
-    }, true); // Use 'true' to capture the event before it bubbles up
+        // Check if we are selecting or unselecting
+        if (currentSelectedSelectors.has(selector)) {
+            // UNSELECT
+            console.log("-> Unselecting element.");
+            window.pywebview.api.unselect_selector(currentCategory, selector);
+        } else {
+            // NEW SELECT
+            console.log("-> Selecting new element.");
+            window.pywebview.api.accept_selection(currentCategory, selector);
+        }
+
+    }, true); // Use capture phase to catch clicks first
 
 
     /**
      * Helper function to calculate a unique CSS selector for an element.
+     * (Unchanged from your original)
      */
     function getCssSelector(el) {
         if (!(el instanceof Element)) return;
         const path = [];
         while (el.nodeType === Node.ELEMENT_NODE) {
+            if (el.nodeName.toLowerCase() === 'body') {
+                path.unshift('body');
+                break;
+            }
+
             let selector = el.nodeName.toLowerCase();
             if (el.id) {
-                // Use attribute selector [id="..."]
-                // This is the most robust way to handle IDs that
-                // start with numbers or contain special characters.
+                // Use a more robust ID selector
                 selector = `[id="${el.id.trim()}"]`;
                 path.unshift(selector);
-                break; // ID is unique, no need to go further
+                break; // ID is unique, stop here
             } else {
-                // Add classes
-                if (el.className) {
-                    const classes = el.className.trim().split(/\s+/).join('.');
+                if (el.className && typeof el.className === 'string') {
+                    const classes = el.className.trim().split(/\s+/).filter(Boolean).join('.');
                     if(classes) {
                         selector += '.' + classes;
                     }
                 }
 
-                let sib = el, nth = 1;
+                let tagNth = 1;
+                let sib = el;
                 while (sib = sib.previousElementSibling) {
-                    if (sib.nodeName.toLowerCase() == selector)
-                        nth++;
+                    if (sib.nodeName.toLowerCase() === el.nodeName.toLowerCase()) {
+                        tagNth++;
+                    }
                 }
-                if (nth != 1)
-                    selector += ":nth-of-type(" + nth + ")";
+                
+                if (tagNth > 1) {
+                    selector += `:nth-of-type(${tagNth})`;
+                } else {
+                    // Check if it's the *only* one. If not, add :nth-of-type(1)
+                    sib = el;
+                    while (sib = sib.nextElementSibling) {
+                         if (sib.nodeName.toLowerCase() === el.nodeName.toLowerCase()) {
+                            selector += `:nth-of-type(1)`;
+                            break;
+                         }
+                    }
+                }
             }
             path.unshift(selector);
             el = el.parentNode;
         }
-        // Join and clean up extra spaces
         return path.join(" > ").replace(/\s+/g, ' ');
     }
 })();

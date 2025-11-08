@@ -1,6 +1,8 @@
 import webview
+import yaml  # Make sure pyyaml is installed: pip install pyyaml
 from pathlib import Path
 import re
+import json
 from typing import Dict, Optional, List
 from webview import Window
 
@@ -15,7 +17,7 @@ CATEGORIES: List[str] = [
 class Api:
     def __init__(self):
         self.window: Optional[Window] = None
-        self.selections: Dict[str, str] = {}
+        self.selections: Dict[str, List[str]] = {}
         self.current_category_index: int = 0
         
     def _ensure_window(self) -> Window:
@@ -29,6 +31,7 @@ class Api:
         Called by JavaScript once the page and all scripts are loaded.
         Starts the selection process.
         """
+        print("Starting workflow...")
         self.prompt_next_category()
 
     def prompt_next_category(self) -> None:
@@ -41,126 +44,127 @@ class Api:
             return
 
         category = CATEGORIES[self.current_category_index]
-        print(f"--> Prompting for category: {category}")
+        existing_selectors = self.selections.get(category, [])
+        existing_selectors_json = json.dumps(existing_selectors)
+        
+        print(f"--> Prompting for category: {category} (Has {len(existing_selectors)} existing)")
         window = self._ensure_window()
-        # This JS function is defined in selector.js
-        window.evaluate_js(f'promptForSelection("{category}")') 
+        
+        # JS function handles updating the UI
+        window.evaluate_js(f'promptForSelection("{category}", {existing_selectors_json})') 
 
-
-    def save_selector(self, category: str, selector: str) -> None:
+    def accept_selection(self, category: str, selector_to_save: str) -> None:
         """
-        Called by JavaScript when an element is clicked.
-        Saves the selector and triggers the "predict similar" step.
+        Called by JS to add a new selector.
         """
-        self.selections[category] = selector
-        print(f"✅ Saved '{category}': {selector}")
+        if category not in self.selections:
+            self.selections[category] = []
         
-        # Now, predict similar elements
-        simple_selector = self.generate_simple_selector(selector)
-        print(f"    -> Predicting similar with: {simple_selector}")
-        
-        # This JS function will highlight all matches and ask for confirmation
-        # Escape the selector properly for JavaScript
-        escaped_selector = simple_selector.replace('"', '\\"')
-        window = self._ensure_window()
-        window.evaluate_js(f'highlightAndConfirm("{escaped_selector}", "{category}")')
-
-    def generate_simple_selector(self, selector: str) -> str:
-        """
-        Generates a simpler, more general selector for "predicting"
-        similar elements. It prioritizes IDs and classes.
-        
-        Example: 'div > div.content > h1:nth-of-type(1)'
-        Becomes: 'div.content > h1'
-        
-        Args:
-            selector: The original CSS selector string
-        
-        Returns:
-            A simplified CSS selector string
-        """
-        parts = selector.split(' > ')
-        
-        # Try to find the most specific part with an ID or class
-        for i in range(len(parts) - 1, -1, -1):
-            if '#' in parts[i] or '.' in parts[i]:
-                # Found a good anchor. Use it and all parts after it.
-                simple_selector = ' > '.join(parts[i:])
-                # Remove :nth-of-type, etc.
-                simple_selector = re.sub(r':nth-of-type\(\d+\)', '', simple_selector)
-                simple_selector = re.sub(r':nth-child\(\d+\)', '', simple_selector)
-                return simple_selector
-        
-        # If no class/ID, just use the last two tags
-        return ' > '.join(parts[-2:])
-
-
-    def prediction_confirmed(self, category: str, was_good: bool) -> None:
-        """
-        Called by JavaScript with the result of the confirmation modal
-        (True = OK, False = Redo).
-        """
-        if was_good:
-            print(f"    -> Prediction approved for {category}.")
-            self.current_category_index += 1
-            self.prompt_next_category() # Move to the next category
+        if selector_to_save not in self.selections[category]:
+            self.selections[category].append(selector_to_save)
+            print(f"    -> Added to '{category}': {selector_to_save}")
         else:
-            print(f"    -> Prediction rejected. Redoing {category}.")
-            # Ask to select the same category again
-            window = self._ensure_window()
-            window.evaluate_js(f'promptForSelection("{category}")')
+            print(f"    -> Selector already exists for '{category}'.")
+
+        # ALWAYS re-prompt to refresh UI highlights
+        self.prompt_next_category()
+
+    def unselect_selector(self, category: str, selector_to_remove: str) -> None:
+        """
+        Called by JS when a user clicks an already-selected element.
+        """
+        print(f"❌ User unselected item from '{category}': {selector_to_remove}")
+        if category in self.selections and selector_to_remove in self.selections[category]:
+            self.selections[category].remove(selector_to_remove)
+            if not self.selections[category]:
+                del self.selections[category]
+        else:
+            print(f"    -> Warning: Tried to unselect, but selector not found.")
+
+        # ALWAYS re-prompt to refresh UI highlights
+        self.prompt_next_category()
+
+    def user_clicked_previous_category(self) -> None:
+        """
+        Called by JavaScript when user clicks 'Previous'.
+        """
+        print("User moving to PREVIOUS category.")
+        self.current_category_index = max(0, self.current_category_index - 1)
+        self.prompt_next_category() # Re-prompt with the new (or same) index
+
+    def user_clicked_next_category(self) -> None:
+        """
+        Called by JavaScript when the user clicks the "Next Category" button.
+        """
+        print("User moving to NEXT category.")
+        self.current_category_index += 1
+        self.prompt_next_category() # Move to the next category (or save)
 
     def save_file(self) -> None:
         """
-        Triggers a "Save File" dialog in the pywebview window.
+        Triggers a "Save File" dialog.
         """
+        if not self.selections:
+            print("No selectors chosen. Aborting save.")
+            window = self._ensure_window()
+            # Show a simple alert
+            window.evaluate_js('alert("No selectors chosen. Add some, then save.")')
+            self.current_category_index = 0 # Restart from first category
+            self.prompt_next_category()
+            return
+
         print("\nAll categories selected. Triggering save dialog...")
         window = self._ensure_window()
-        window.create_file_dialog(
-            dialog_type=1,  # SAVE_DIALOG = 1
+        
+        file_path = window.create_file_dialog(
+            dialog_type=webview.FileDialog.OPEN.SAVE,
             directory=str(Path.cwd()),
+            allow_multiple=False,
             save_filename='selectors.yaml',
-            file_types=('YAML Files (*.yaml;*.yml)',)
+            file_types=('YAML Files (*.yaml;*.yml)',),
         )
 
-    def _on_save_dialog_result(self, file_path: Optional[str]) -> None:
+        self._on_save_dialog_result(file_path[0])
+
+
+    def _on_save_dialog_result(self, file_path: str) -> None:
         """
         Callback for when the save dialog is closed.
-        If a path is chosen, it saves the YAML file.
         """
         window = self._ensure_window()
-        if not file_path:
-            print("Save cancelled.")
-            # Ask to save again
-            window.evaluate_js('showModal("Save cancelled. <button onclick=\'window.pywebview.api.save_file()\'>Save Again</button>", false)')
-            return
 
         try:
             with open(file_path, 'w', encoding='utf-8') as f:
                 yaml.dump(self.selections, f, default_flow_style=False, sort_keys=False)
-            print(f"\n🎉 Successfully saved selectors to: {file_path}")
-            window.evaluate_js('showModal("Selectors saved successfully!", false)')
+            window.evaluate_js(f'alert("Selectors saved successfully to {file_path}!")')
         except Exception as e:
             print(f"Error saving file: {e}")
-            window.evaluate_js(f'showModal("Error saving file: {e}. <button onclick=\'window.pywebview.api.save_file()\'>Try Again</button>", false)')
+            window.evaluate_js(f'alert("Error saving file: {e}")')
+        
 
+        # exiting after save to avoid confusion
+        if self.window:
+            self.window.destroy()            
 
 def load_custom_js(window: Window) -> None:
     """
-    Injects our custom JavaScript logic into the loaded webpage.
+    Injects our custom JavaScript logic.
     """
+    # Assuming 'selector.js' is in the same directory as this Python script
     selector_path = Path(__file__).resolve().parent / 'selector.js'
-    with selector_path.open('r', encoding='utf-8') as f:
-        selector_logic = f.read()
+    try:
+        with selector_path.open('r', encoding='utf-8') as f:
+            selector_logic = f.read()
+
+    except FileNotFoundError:
+        raise FileNotFoundError("Please create a 'selector.js' file in the same directory.")
     
     window.evaluate_js(selector_logic)
-    # After JS is loaded, tell it to initialize and contact Python
     window.evaluate_js('initApp()')
 
 
 # --- Main Application ---
 if __name__ == '__main__':
-    # We need pyyaml to run
     try:
         import yaml
     except ImportError:
@@ -170,15 +174,22 @@ if __name__ == '__main__':
     api = Api()
     
     window = webview.create_window(
-        'HTML Element Selector Workflow',
-        'https://www.artonpaper.ch/new',  # Start with a default URL
-        js_api=api
+        'HTML Element Selector',
+        'https://www.artonpaper.ch/new', # Target URL
+        js_api=api,
+        width=1200,
+        height=800
     )
     
-    if window is not None:  # Type guard for window
-        api.window = window  # Give the API a reference to the window
-        # Capture window in a local variable for type safety
-        win = window  # This variable is now known to be non-None
-        window.events.loaded += lambda: load_custom_js(win)
+    if window is None:
+        print("Error: Could not create webview window.")
+        exit(1)
+        
+    api.window = window
+    window.toggle_fullscreen()
+
     
-    webview.start(debug=True)  # debug=True is helpful for development
+    # We inject JS after the page is loaded
+    window.events.loaded += lambda: load_custom_js(window)
+    
+    

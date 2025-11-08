@@ -1,0 +1,31 @@
+product_name:
+- '[id="3292"]'
+- '[id="1924"]'
+price:
+- '[id="3292_id"] > div > h1'
+- '[id="1924_id"] > div:nth-of-type(2) > h1'
+image_url:
+- body > div.w3-main:nth-of-type(4) > div.w3-row-padding.w3-animate-opacity:nth-of-type(1)
+  > div.spacing.w3-container.w3-margin-bottom:nth-of-type(1) > div.w3-container.grid-container.w3-center.w3-padding-16
+  > a > div.img-hover-zoom.img-hover-zoom--slowmo.image-container:nth-of-type(1) >
+  img
+- body > div.w3-main:nth-of-type(4) > div.w3-row-padding.w3-animate-opacity:nth-of-type(1)
+  > div.spacing.w3-container.w3-margin-bottom:nth-of-type(2) > div.w3-container.grid-container.w3-center.w3-padding-16
+  > a > div.img-hover-zoom.img-hover-zoom--slowmo.image-container:nth-of-type(1) >
+  img
+- body > div.w3-main:nth-of-type(4) > div.w3-row-padding.w3-animate-opacity:nth-of-type(1)
+  > div.spacing.w3-container.w3-margin-bottom:nth-of-type(3) > div.w3-container.grid-container.w3-center.w3-padding-16
+  > a > div.img-hover-zoom.img-hover-zoom--slowmo.image-container:nth-of-type(1) >
+  img
+- body > div.w3-main:nth-of-type(4) > div.w3-row-padding.w3-animate-opacity:nth-of-type(1)
+  > div.spacing.w3-container.w3-margin-bottom:nth-of-type(6) > div.w3-container.grid-container.w3-center.w3-padding-16
+  > a > div.img-hover-zoom.img-hover-zoom--slowmo.image-container:nth-of-type(1) >
+  img
+- body > div.w3-main:nth-of-type(4) > div.w3-row-padding.w3-animate-opacity:nth-of-type(1)
+  > div.spacing.w3-container.w3-margin-bottom:nth-of-type(5) > div.w3-container.grid-container.w3-center.w3-padding-16
+  > a > div.img-hover-zoom.img-hover-zoom--slowmo.image-container:nth-of-type(1) >
+  img
+- body > div.w3-main:nth-of-type(4) > div.w3-row-padding.w3-animate-opacity:nth-of-type(1)
+  > div.spacing.w3-container.w3-margin-bottom:nth-of-type(4) > div.w3-container.grid-container.w3-center.w3-padding-16
+  > a > div.img-hover-zoom.img-hover-zoom--slowmo.image-container:nth-of-type(1) >
+  img
