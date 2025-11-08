@@ -56,7 +56,7 @@ def __get_raw_html(url: str, session: requests.Session) -> str:
     """
     try:
         # Use the passed-in session instead of creating a new one
-        response = requests.get(url, timeout=15) # Reduced timeout for faster fails
+        response = requests.get(url) # Reduced timeout for faster fails
         response.raise_for_status() # Raises HTTPError for bad responses (4xx or 5xx)
         
         # response.text handles decoding (e.g., from UTF-8) for us
