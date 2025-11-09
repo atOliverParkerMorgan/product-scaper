@@ -36,13 +36,22 @@
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
-            margin: 0 8px;
-            background-color: #007aff;
+            margin: 0 5px; /* Added spacing */
+            background-color: #34c759;
             color: white;
         }
         #selector-modal button#prev-cat-btn {
              background-color: #f0f0f0;
              color: #333;
+        }
+        /* Style for the prediction button */
+        #selector-modal button#predict-selectors-btn {
+            background-color: #007aff; /* Blue */
+            color: white;
+        }
+        #selector-modal button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
         }
     `;
 
@@ -52,6 +61,12 @@
             outline: 3px solid #34c759 !important; /* Green */
             box-shadow: 0 0 10px #34c759;
             background-color: rgba(52, 199, 89, 0.1);
+        }
+
+        [data-selector-highlight="predicted"] {
+            outline: 3px solid #007aff !important; /* Blue */
+            box-shadow: 0 0 10px #007aff;
+            background-color: rgba(0, 122, 255, 0.1);
         }
     `;
 
@@ -97,8 +112,14 @@
             currentHighlight.style.outline = ''; 
             currentHighlight = null;
         }
-        document.querySelectorAll('[data-selector-highlight="selected"]').forEach(el => {
+        // --- FIX ---
+        // Query for all highlighted elements and remove the attribute
+        document.querySelectorAll('[data-selector-highlight]').forEach(el => {
             el.removeAttribute('data-selector-highlight');
+            // Remove inline styles too, just in case
+            el.style.outline = ''; 
+            el.style.boxShadow = '';
+            el.style.backgroundColor = '';
         });
     }
 
@@ -122,6 +143,7 @@
         isSelectorActive = true;
         
         removeAllHighlights();
+        
         // Highlight all selectors provided by Python
         existingSelectorsArray.forEach(selector => {
             try {
@@ -133,11 +155,70 @@
             }
         });
 
-        // Update the persistent modal
-        let predictSelectors = '<button >'
+
+        let predictSelectorsBtn = '';
+        // Check if there are any existing selectors to base a prediction on
+        if (existingSelectorsArray.length > 0) {
+            // Get the *last* selector added as the basis for prediction
+            const lastSpecificSelector = existingSelectorsArray[existingSelectorsArray.length - 1];
+            let lastElement = null;
+
+            try {
+                lastElement = document.querySelector(lastSpecificSelector);
+            } catch (e) {
+                console.warn("Last selector was invalid, cannot predict:", lastSpecificSelector, e);
+            }
+
+            // Only proceed if we found the last element
+            if (lastElement) {
+                // Generate a *generalized* selector based on tag + class (per user request)
+                // This is better for prediction than a unique ID or a hyper-specific path
+                let generalizedSelector = lastElement.tagName.toLowerCase();
+                if (lastElement.className && typeof lastElement.className === 'string') {
+                    const classes = lastElement.className.trim().split(/\s+/).filter(Boolean).join('.');
+                    if (classes) {
+                        generalizedSelector += '.' + classes;
+                    }
+                }
+                
+                let predictedElements = [];
+                let numPredicted = 0;
+
+                try {
+                    // We check for the tag + class to find similar elements
+                    console.log("Checking prediction selector:", generalizedSelector);
+                    predictedElements = Array.from(document.querySelectorAll(generalizedSelector));
+                    numPredicted = predictedElements.length;
+                } catch (e) {
+                    console.warn("Invalid prediction selector:", generalizedSelector, e);
+                }
+
+                if (numPredicted > 0) {
+                    console.log(`  ... prediction '${generalizedSelector}' matched ${numPredicted} elements.`);
+                    let newElementsFound = 0;
+                    predictedElements.forEach(el => {
+                        // Highlight predicted elements, but only if not already selected
+                        if (el.getAttribute('data-selector-highlight') !== 'selected') {
+                            el.setAttribute('data-selector-highlight', 'predicted');
+                            newElementsFound++;
+                        }
+                    });
+
+                    // Only show the button if it adds new elements
+                    if (newElementsFound > 0) {
+                         predictSelectorsBtn = `<button id="predict-selectors-btn" data-selector='${generalizedSelector}'>Add ${newElementsFound} Similar</button>`;
+                    } else {
+                        console.log("Prediction found no new elements.");
+                    }
+                }
+            }
+        }
+        // --- END OF FIX ---
+
         let message = `Selecting: <strong>${category}</strong> <small>(${existingSelectorsArray.length} selected)</small>`;
         let buttonsHtml = `
             <button id="prev-cat-btn">&larr; Previous</button>
+            ${predictSelectorsBtn}
             <button id="next-cat-btn">Next &rarr;</button>
         `;
         updateModal(message, buttonsHtml);
@@ -154,27 +235,77 @@
             updateModal('Loading...', '');
             window.pywebview.api.user_clicked_next_category();
         };
+
+        // --- PREDICTION BUTTON HANDLER ---
+        const predictBtn = document.getElementById('predict-selectors-btn');
+        if (predictBtn) {
+            predictBtn.onclick = (e) => {
+                // Disable button to prevent double click
+                e.target.disabled = true; 
+                e.target.innerText = 'Adding...';
+
+                const generalizedSelector = predictBtn.getAttribute('data-selector');
+                console.log(`User clicked 'Add All Similar' for: ${generalizedSelector}`);
+                isSelectorActive = false;
+
+                const selectorsToAdd = new Set();
+                try {
+                    const elements = document.querySelectorAll(generalizedSelector);
+                    console.log(`  -> Found ${elements.length} elements for '${generalizedSelector}'`);
+                    elements.forEach(el => {
+                        const specificSelector = getCssSelector(el);
+                        // Add if it's valid and NOT already selected
+                        if (specificSelector && !currentSelectedSelectors.has(specificSelector)) {
+                            selectorsToAdd.add(specificSelector);
+                        }
+                    });
+                } catch (e) {
+                    console.warn("Prediction selector was invalid:", generalizedSelector, e);
+                }
+
+                if (selectorsToAdd.size === 0) {
+                    console.log("No new selectors to add from prediction.");
+                    window.pywebview.api.refresh_prompt();
+                } else {
+                    console.log(`Adding ${selectorsToAdd.size} predicted selectors...`);
+                    // Send all selectors to Python.
+                    // Pass `false` to prevent re-running prediction on these.
+                    const selectorsArray = Array.from(selectorsToAdd);
+                    selectorsArray.forEach(selector => {
+                        window.pywebview.api.accept_selection(currentCategory, selector, false);
+                    });
+                }
+            };
+        }
     }
 
     // --- Event Listeners ---
 
     document.addEventListener('mouseover', function(e) {
         if (!isSelectorActive) return;
+        
+        const target = e.target;
         // Don't highlight the modal itself
-        if (e.target.closest && e.target.closest('#selector-modal')) {
+        if (target.closest && target.closest('#selector-modal')) {
             if (currentHighlight) {
                 currentHighlight.style.outline = '';
                 currentHighlight = null;
             }
             return;
         }
+        
         // Remove old highlight
         if (currentHighlight) {
             currentHighlight.style.outline = '';
         }
-        // Add new highlight
-        currentHighlight = e.target;
-        currentHighlight.style.outline = '2px dashed red';
+
+        // Add new highlight (if not already selected or predicted)
+        if (target.getAttribute('data-selector-highlight')) {
+             currentHighlight = null; // Don't highlight already-selected/predicted items
+        } else {
+            currentHighlight = target;
+            currentHighlight.style.outline = '2px dashed red';
+        }
     });
 
     document.addEventListener('click', function(e) {
@@ -188,36 +319,32 @@
         e.preventDefault();
         e.stopPropagation();
         
-        // Only run if selection is active
         if (!isSelectorActive) {
+            console.log("Click ignored, selector not active.");
             return;
         }
             
-        
         const selector = getCssSelector(e.target);
         if (!selector) return; // Not a valid element
         
         console.log("Element selected:", e.target, "Selector:", selector);
         
-        // Disable clicking until Python calls promptForSelection again
         isSelectorActive = false; 
         
         if (currentHighlight) {
             currentHighlight.style.outline = '';
         }
 
-        // Show loading state
         updateModal(`Working on <strong>${currentCategory}</strong>...`, '');
 
-        // Check if we are selecting or unselecting
         if (currentSelectedSelectors.has(selector)) {
             // UNSELECT
             console.log("-> Unselecting element.");
             window.pywebview.api.unselect_selector(currentCategory, selector);
         } else {
-            // NEW SELECT
+            // NEW SELECT - pass `true` to run prediction
             console.log("-> Selecting new element.");
-            window.pywebview.api.accept_selection(currentCategory, selector);
+            window.pywebview.api.accept_selection(currentCategory, selector, true);
         }
 
     }, true); // Use capture phase to catch clicks first
@@ -225,7 +352,6 @@
 
     /**
      * Helper function to calculate a unique CSS selector for an element.
-     * (Unchanged from your original)
      */
     function getCssSelector(el) {
         if (!(el instanceof Element)) return;
@@ -263,11 +389,15 @@
                 } else {
                     // Check if it's the *only* one. If not, add :nth-of-type(1)
                     sib = el;
+                    let needsNth1 = false;
                     while (sib = sib.nextElementSibling) {
                          if (sib.nodeName.toLowerCase() === el.nodeName.toLowerCase()) {
-                            selector += `:nth-of-type(1)`;
+                            needsNth1 = true;
                             break;
                          }
+                    }
+                    if (needsNth1) {
+                         selector += `:nth-of-type(1)`;
                     }
                 }
             }
