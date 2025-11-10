@@ -1,0 +1,779 @@
+<html lang="cs" style=""><head>
+    <title>NEW ARRIVALS</title>
+
+    
+    <link rel="stylesheet" type="text/css" href="/static/css/grid.css">
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="John &amp; Daniela Dupuy">
+    <link rel="shortcut icon" href="/media/images/logo-1.png" type="image/x-icon">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link rel="stylesheet" type="text/css" href="/static/css/w3.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/cartModal.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/checkout.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css">
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+<style type="text/css">body {-webkit-user-select: none; -khtml-user-select: none; -ms-user-select: none; user-select: none; cursor: default;}</style><style type="text/css"><br>        #selector-modal {<br>            position: fixed;<br>            bottom: 20px; /* Changed from top */<br>            left: 50%;<br>            transform: translateX(-50%);<br>            background: white;<br>            border: 1px solid #ccc;<br>            border-radius: 8px;<br>            box-shadow: 0 6px 20px rgba(0,0,0,0.2);<br>            padding: 16px 24px;<br>            z-index: 999999;<br>            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;<br>            font-size: 16px;<br>            line-height: 1.5;<br>            color: #333;<br>            display: block; /* Always visible */<br>            max-width: 90%;<br>            text-align: center;<br>        }<br>        #selector-modal p {<br>            margin: 0 0 12px 0;<br>        }<br>        #selector-modal button {<br>            padding: 8px 14px;<br>            border: none;<br>            border-radius: 6px;<br>            font-size: 14px;<br>            font-weight: 500;<br>            cursor: pointer;<br>            margin: 0 5px; /* Added spacing */<br>            background-color: #34c759;<br>            color: white;<br>        }<br>        #selector-modal button#prev-cat-btn {<br>             background-color: #f0f0f0;<br>             color: #333;<br>        }<br>        /* Style for the prediction button */<br>        #selector-modal button#predict-selectors-btn {<br>            background-color: #007aff; /* Blue */<br>            color: white;<br>        }<br>        #selector-modal button:disabled {<br>            background-color: #ccc;<br>            cursor: not-allowed;<br>        }<br>    <br><br>        /* Single style for all selected items */<br>        [data-selector-highlight="selected"] {<br>            outline: 3px solid #34c759 !important; /* Green */<br>            box-shadow: 0 0 10px #34c759;<br>            background-color: rgba(52, 199, 89, 0.1);<br>        }<br><br>        [data-selector-highlight="predicted"] {<br>            outline: 3px solid #007aff !important; /* Blue */<br>            box-shadow: 0 0 10px #007aff;<br>            background-color: rgba(0, 122, 255, 0.1);<br>        }<br>    </style></head>
+
+<body class="w3-content body-background" style="max-width:1600px">
+<!-- Cookie consent banner -->
+<div id="cookieBanner" class="cookie-banner">
+    <h5 class="w3-container w3-padding-16">This website uses cookies to ensure you get the best experience on our website.</h5>
+    <button id="acceptCookiesBtn" class="w3-large w3-button w3-green w3-round">Accept Cookies</button>
+</div>
+<!-- Sidebar/menu -->
+<nav class="w3-sidebar w3-collapse nav-bar-container w3-animate-left" style="z-index: 3; width: 300px;" id="mySidebar">
+  <div class="category-menu" style="">
+        <div class="w3-hide-small" style="">
+            <br>
+            <br>
+            <br>
+            <br>
+        </div>
+          <a href="#" onclick="w3_close()" class="w3-hide-large w3-right w3-jumbo w3-padding w3-hover-grey" title="close menu">
+          <i class="fa fa-remove"></i>
+        </a>
+
+        <img src="/media/images/logo-1.png" class="logo-img" alt="Logo" data-selector-highlight="predicted"><br><br>
+        <p class="w3-text-grey"></p>
+        <br>
+      <div class="w3-bar-block" style="">
+              
+                <h4 id="Newest"><a href="/new" onclick="w3_close()" class="w3-bar-item w3-button w3-padding selected_menu" style=""><i class="fa fa-th-large w3-margin-right " id="th"></i><b>NEW ARRIVALS</b></a></h4>
+              
+
+              
+                <h3><a href="/category/Architecture/mostExpensive?page=1" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-text-black" style=""><i class=" fa fa-minus w3-margin-right"></i>Architecture</a></h3>
+              
+
+              
+                <h3><a href="/category/Art/mostExpensive?page=1" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-text-black" style=""><i class=" fa fa-minus w3-margin-right"></i>Art</a></h3>
+              
+
+              
+                <h3><a href="/category/Arts and crafts/mostExpensive?page=1" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-text-black"><i class=" fa fa-minus w3-margin-right"></i>Arts and crafts</a></h3>
+              
+
+              
+                <h3><a href="/category/Children's books/mostExpensive?page=1" onclick="w3_close()" class="w3-bar-item w3-button w3-padding w3-hover-text-black"><i class=" fa fa-minus w3-margin-right"></i>Children's books</a></h3>
+              
+
+              
+                <h3><a href="/category/Design/mostExpensive?page=1" onclick="w3_close()" class="w3-bar-item w3-button w3-padding w3-hover-text-black"><i class=" fa fa-minus w3-margin-right"></i>Design</a></h3>
+              
+
+              
+                <h3><a href="/category/Illustrated books/mostExpensive?page=1" onclick="w3_close()" class="w3-bar-item w3-button w3-padding w3-hover-text-black"><i class=" fa fa-minus w3-margin-right"></i>Illustrated books</a></h3>
+              
+
+              
+                <h3><a href="/category/Posters, Prints and Paintings/mostExpensive?page=1" onclick="w3_close()" class="w3-bar-item w3-button w3-padding w3-hover-text-black"><i class=" fa fa-minus w3-margin-right"></i>Posters, Prints and <span style="margin-left: 32px;">Paintings</span></a></h3>
+              
+
+              
+                <h3><a href="/category/Photography/mostExpensive?page=1" onclick="w3_close()" class="w3-bar-item w3-button w3-padding w3-hover-text-black"><i class=" fa fa-minus w3-margin-right"></i>Photography</a></h3>
+              
+
+              
+                <h3><a href="/category/Literature/mostExpensive?page=1" onclick="w3_close()" class="w3-bar-item w3-button w3-padding w3-hover-text-black"><i class=" fa fa-minus w3-margin-right"></i>Literature</a></h3>
+              
+      <br>
+      </div>
+  </div>
+  <div class="w3-text-white w3-bar-block">
+      
+        <h4><a href="/checkout" onclick="w3_close()" class="w3-bar-item w3-button w3-padding w3-hover-text-black"><i class="fa fa-shopping-cart w3-margin-right"></i>CHECKOUT</a></h4>
+      
+
+       
+        <h4><a href="/contact" onclick="w3_close()" class="w3-bar-item w3-button w3-padding w3-hover-text-black"><i class="fa fa-envelope  w3-margin-right"></i>CONTACT</a></h4>
+      
+
+      
+        <h4><a href="/" onclick="w3_close()" class="w3-bar-item w3-button w3-padding w3-hover-text-black"><i class="fa fa-user w3-margin-right"></i>ABOUT</a></h4>
+      
+
+
+
+
+
+
+
+  </div>
+  
+</nav>
+
+<!-- Overlay effect when opening sidebar on small screens -->
+<div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+<div class="w3-main" style="margin-left:300px">
+
+  <!-- Header -->
+  <header>
+    <span class="w3-button w3-hide-large w3-hover-text-grey w3-xxlarge" onclick="w3_open()"><i class="fa fa-bars"></i></span>
+    
+    
+    
+    
+    
+        <div class="w3-container">
+        
+           <h1 class="w3-hide-large new-arrivals">New Arrivals</h1>
+           <br>
+           <br>
+           <br>
+           <form method="POST" action="/search//keyword?page=1">
+                <input type="hidden" name="csrfmiddlewaretoken" value="eVkBNAPbyohgEnTATA9cuqcTYsZPY7vCpawIERkmUEBMVCdMElr7wl9cgZwZ6UIq">
+                <p></p>
+           </form>
+        
+        <div class="w3-padding w3-display-topright" onclick="showCart()" style=""><img src="/static/img/cart.png" style="width:45px" class="w3-hover-opacity" alt="cart" data-selector-highlight="predicted"></div>
+
+            
+    
+    
+    
+    
+    
+
+   <script>
+          // Script to open and close sidebar
+        function w3_open() {
+            document.getElementById("mySidebar").style.display = "block";
+            document.getElementById("myOverlay").style.display = "block";
+        }
+
+        function w3_close() {
+            document.getElementById("mySidebar").style.display = "none";
+            document.getElementById("myOverlay").style.display = "none";
+        }
+
+        function showCart() {
+            let modal = document.getElementById('id01');
+            modal.style.display = "block"
+        }
+        // When the user clicks anywhere outside of the modal, close it
+
+    </script>
+  </div></header>
+
+    <div id="id01" class="modal w3-animate-right" style="display: none">
+      <form class="modal-content">
+        
+            <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Cart"><img class="w3-animate-opacity w3-hover-border" src="/static/img/delete.png" alt="cross" data-selector-highlight="selected"></span>
+            <br>
+            <h1 class="w3-center w3-text-red"><b>CART IS EMPTY</b></h1>
+            <br>
+      
+      </form>
+    </div>
+    
+</div>
+
+
+<div class="w3-main" style="margin-left:300px">
+    <!-- !PAGE CONTENT! -->
+    <div class="w3-row-padding w3-animate-opacity" style="">
+    
+          <script>
+            let text_string;
+          </script>
+          
+          <!-- First Photo Grid-->
+            <div class="spacing w3-container w3-margin-bottom" style="">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px;">
+                   <a style="text-decoration: none;" href="/product?bookId=3292&amp;bookName=ART International Volume III/5-6 1959">
+                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
+                        <img src="/media/images/ART_International_Vo6650.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected" style="">
+                    </div>
+                    <hr style="">
+                    <div class="w3-center" id="3292_id" style="font-family: throndale, sans-serif;">
+                        <h2 id="3292" style="font-family: throndale, sans-serif;">art international volume iii/5-6 1959</h2>
+                        
+                        <script>
+                            text_string = "ART International Volume III/5-6 1959".toLowerCase().replaceAll("&#x27;","'").replaceAll("&quot;", "\"").replaceAll("&amp;", "&");
+                            if(text_string.length > 40){
+                                text_string = text_string.substring(0, 40)+ " ...";
+                            }
+                            if(text_string.length > 25){
+                                document.getElementById("3292_id").removeChild(document.getElementById("3292_br"));
+                            }
+                            document.getElementById("3292").textContent = text_string;
+                            document.getElementById("3292").style.fontFamily = "throndale, sans-serif"
+                        </script>
+                    <div class="">
+                        
+                            <h1 style="">SOLD</h1>
+                        
+                    </div>
+                    </div>
+                   </a>
+                 </div>
+              </div>
+
+
+        
+          <!-- First Photo Grid-->
+            <div class="spacing w3-container w3-margin-bottom" style="">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px;">
+                   <a style="text-decoration: none;" href="/product?bookId=1924&amp;bookName=Portugal">
+                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container" style="">
+                        <img src="/media/images/Portugal6560.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected">
+                    </div>
+                    <hr>
+                    <div class="w3-center" id="1924_id" style="font-family: throndale, sans-serif;">
+                        <h2 id="1924" style="font-family: throndale, sans-serif;">portugal</h2>
+                        <div id="1924_br" style="height: 35px"></div>
+                        <script>
+                            text_string = "Portugal".toLowerCase().replaceAll("&#x27;","'").replaceAll("&quot;", "\"").replaceAll("&amp;", "&");
+                            if(text_string.length > 40){
+                                text_string = text_string.substring(0, 40)+ " ...";
+                            }
+                            if(text_string.length > 25){
+                                document.getElementById("1924_id").removeChild(document.getElementById("1924_br"));
+                            }
+                            document.getElementById("1924").textContent = text_string;
+                            document.getElementById("1924").style.fontFamily = "throndale, sans-serif"
+                        </script>
+                    <div class="">
+                        
+                            <h1>SOLD</h1>
+                        
+                    </div>
+                    </div>
+                   </a>
+                 </div>
+              </div>
+
+
+        
+          <!-- First Photo Grid-->
+            <div class="spacing w3-container w3-margin-bottom" style="">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px;">
+                   <a style="text-decoration: none;" href="/product?bookId=2432&amp;bookName=PHÄDRA - Tragödie von Gabriele D'Annunzio">
+                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container" style="">
+                        <img src="/media/images/PHÄDRA_-_Tragödie_vo1690.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected">
+                    </div>
+                    <hr>
+                    <div class="w3-center" id="2432_id" style="font-family: throndale, sans-serif;">
+                        <h2 id="2432" style="font-family: throndale, sans-serif;">phädra - tragödie von gabriele d'annunzi ...</h2>
+                        
+                        <script>
+                            text_string = "PHÄDRA - Tragödie von Gabriele D&#x27;Annunzio".toLowerCase().replaceAll("&#x27;","'").replaceAll("&quot;", "\"").replaceAll("&amp;", "&");
+                            if(text_string.length > 40){
+                                text_string = text_string.substring(0, 40)+ " ...";
+                            }
+                            if(text_string.length > 25){
+                                document.getElementById("2432_id").removeChild(document.getElementById("2432_br"));
+                            }
+                            document.getElementById("2432").textContent = text_string;
+                            document.getElementById("2432").style.fontFamily = "throndale, sans-serif"
+                        </script>
+                    <div class="">
+                        
+                            <h1 style="">SOLD</h1>
+                        
+                    </div>
+                    </div>
+                   </a>
+                 </div>
+              </div>
+
+
+        
+          <!-- First Photo Grid-->
+            <div class="spacing w3-container w3-margin-bottom" style="">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px;">
+                   <a style="text-decoration: none;" href="/product?bookId=6253&amp;bookName=Henri Matisse - Musée des Beaux-Arts Lucerne - 9 Juillet - 2 Octobre 1949">
+                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container" style="">
+                        <img src="/media/images/Henri_Matisse_-_Musé8100.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected" style="">
+                    </div>
+                    <hr style="">
+                    <div class="w3-center" id="6253_id" style="font-family: throndale, sans-serif;">
+                        <h2 id="6253" style="font-family: throndale, sans-serif;">henri matisse - musée des beaux-arts luc ...</h2>
+                        
+                        <script>
+                            text_string = "Henri Matisse - Musée des Beaux-Arts Lucerne - 9 Juillet - 2 Octobre 1949".toLowerCase().replaceAll("&#x27;","'").replaceAll("&quot;", "\"").replaceAll("&amp;", "&");
+                            if(text_string.length > 40){
+                                text_string = text_string.substring(0, 40)+ " ...";
+                            }
+                            if(text_string.length > 25){
+                                document.getElementById("6253_id").removeChild(document.getElementById("6253_br"));
+                            }
+                            document.getElementById("6253").textContent = text_string;
+                            document.getElementById("6253").style.fontFamily = "throndale, sans-serif"
+                        </script>
+                    <div class="">
+                        
+                            <h1 style="">SOLD</h1>
+                        
+                    </div>
+                    </div>
+                   </a>
+                 </div>
+              </div>
+
+
+        
+          <!-- First Photo Grid-->
+            <div class="spacing w3-container w3-margin-bottom" style="">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px;">
+                   <a style="text-decoration: none;" href="/product?bookId=3641&amp;bookName=TREVI Scultura e grafica 1950-1986 Castel Mareccio, Bolzano 3-23 settembre 1986">
+                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
+                        <img src="/media/images/TREVI_Scultura_e_gra9520.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected" style="">
+                    </div>
+                    <hr style="">
+                    <div class="w3-center" id="3641_id" style="font-family: throndale, sans-serif;">
+                        <h2 id="3641" style="font-family: throndale, sans-serif;">trevi scultura e grafica 1950-1986 caste ...</h2>
+                        
+                        <script>
+                            text_string = "TREVI Scultura e grafica 1950-1986 Castel Mareccio, Bolzano 3-23 settembre 1986".toLowerCase().replaceAll("&#x27;","'").replaceAll("&quot;", "\"").replaceAll("&amp;", "&");
+                            if(text_string.length > 40){
+                                text_string = text_string.substring(0, 40)+ " ...";
+                            }
+                            if(text_string.length > 25){
+                                document.getElementById("3641_id").removeChild(document.getElementById("3641_br"));
+                            }
+                            document.getElementById("3641").textContent = text_string;
+                            document.getElementById("3641").style.fontFamily = "throndale, sans-serif"
+                        </script>
+                    <div class="">
+                        
+                            <h1 style="">SOLD</h1>
+                        
+                    </div>
+                    </div>
+                   </a>
+                 </div>
+              </div>
+
+
+        
+          <!-- First Photo Grid-->
+            <div class="spacing w3-container w3-margin-bottom">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px">
+                   <a style="text-decoration:none" href="/product?bookId=6885&amp;bookName=Vincent van Gogh Zeichnungen">
+                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
+                        <img src="/media/images/Vincent_van_Gogh_Zei5150.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected">
+                    </div>
+                    <hr>
+                    <div class="w3-center" id="6885_id" style="font-family: throndale, sans-serif">
+                        <h2 id="6885" style="font-family: throndale, sans-serif;">vincent van gogh zeichnungen</h2>
+                        
+                        <script>
+                            text_string = "Vincent van Gogh Zeichnungen".toLowerCase().replaceAll("&#x27;","'").replaceAll("&quot;", "\"").replaceAll("&amp;", "&");
+                            if(text_string.length > 40){
+                                text_string = text_string.substring(0, 40)+ " ...";
+                            }
+                            if(text_string.length > 25){
+                                document.getElementById("6885_id").removeChild(document.getElementById("6885_br"));
+                            }
+                            document.getElementById("6885").textContent = text_string;
+                            document.getElementById("6885").style.fontFamily = "throndale, sans-serif"
+                        </script>
+                    <div class="">
+                        
+                            <h1>SOLD</h1>
+                        
+                    </div>
+                    </div>
+                   </a>
+                 </div>
+              </div>
+
+
+        
+          <!-- First Photo Grid-->
+            <div class="spacing w3-container w3-margin-bottom" style="">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px;">
+                   <a style="text-decoration:none" href="/product?bookId=3420&amp;bookName=Die frühmittelalterliche und romanische Baukunst">
+                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container" style="">
+                        <img src="/media/images/16806531133.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected" style="">
+                    </div>
+                    <hr>
+                    <div class="w3-center" id="3420_id" style="font-family: throndale, sans-serif;">
+                        <h2 id="3420" style="font-family: throndale, sans-serif;">die frühmittelalterliche und romanische  ...</h2>
+                        
+                        <script>
+                            text_string = "Die frühmittelalterliche und romanische Baukunst".toLowerCase().replaceAll("&#x27;","'").replaceAll("&quot;", "\"").replaceAll("&amp;", "&");
+                            if(text_string.length > 40){
+                                text_string = text_string.substring(0, 40)+ " ...";
+                            }
+                            if(text_string.length > 25){
+                                document.getElementById("3420_id").removeChild(document.getElementById("3420_br"));
+                            }
+                            document.getElementById("3420").textContent = text_string;
+                            document.getElementById("3420").style.fontFamily = "throndale, sans-serif"
+                        </script>
+                    <div class="">
+                        
+                            <h1 style="">SOLD</h1>
+                        
+                    </div>
+                    </div>
+                   </a>
+                 </div>
+              </div>
+
+
+        
+          <!-- First Photo Grid-->
+            <div class="spacing w3-container w3-margin-bottom" style="">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px;">
+                   <a style="text-decoration:none" href="/product?bookId=11498&amp;bookName=CONTROSPAZIO - Mensile di architettura e urbanistica Anno II n. 1-2 genn./febb. 1970">
+                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container" style="">
+                        <img src="/media/images/31480341537.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected" style="">
+                    </div>
+                    <hr>
+                    <div class="w3-center" id="11498_id" style="font-family: throndale, sans-serif">
+                        <h2 id="11498" style="font-family: throndale, sans-serif;">controspazio - mensile di architettura e ...</h2>
+                        
+                        <script>
+                            text_string = "CONTROSPAZIO - Mensile di architettura e urbanistica Anno II n. 1-2 genn./febb. 1970".toLowerCase().replaceAll("&#x27;","'").replaceAll("&quot;", "\"").replaceAll("&amp;", "&");
+                            if(text_string.length > 40){
+                                text_string = text_string.substring(0, 40)+ " ...";
+                            }
+                            if(text_string.length > 25){
+                                document.getElementById("11498_id").removeChild(document.getElementById("11498_br"));
+                            }
+                            document.getElementById("11498").textContent = text_string;
+                            document.getElementById("11498").style.fontFamily = "throndale, sans-serif"
+                        </script>
+                    <div class="">
+                        
+                            
+                                <h1 style="font-family: throndale, sans-serif">45 Chf</h1>
+                            
+                        
+                    </div>
+                    </div>
+                   </a>
+                 </div>
+              </div>
+
+
+        
+          <!-- First Photo Grid-->
+            <div class="spacing w3-container w3-margin-bottom">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px">
+                   <a style="text-decoration:none" href="/product?bookId=11497&amp;bookName=Controspazio: n° 4-5 aprile maggio 1970 &quot;Bauhaus&quot; - n° 4-5 aprile maggio 1971 &quot;Futurismo-Architettura&quot;">
+                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
+                        <img src="/media/images/32314981125.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected">
+                    </div>
+                    <hr>
+                    <div class="w3-center" id="11497_id" style="font-family: throndale, sans-serif">
+                        <h2 id="11497" style="font-family: throndale, sans-serif;">controspazio: n° 4-5 aprile maggio 1970  ...</h2>
+                        
+                        <script>
+                            text_string = "Controspazio: n° 4-5 aprile maggio 1970 &quot;Bauhaus&quot; - n° 4-5 aprile maggio 1971 &quot;Futurismo-Architettura&quot;".toLowerCase().replaceAll("&#x27;","'").replaceAll("&quot;", "\"").replaceAll("&amp;", "&");
+                            if(text_string.length > 40){
+                                text_string = text_string.substring(0, 40)+ " ...";
+                            }
+                            if(text_string.length > 25){
+                                document.getElementById("11497_id").removeChild(document.getElementById("11497_br"));
+                            }
+                            document.getElementById("11497").textContent = text_string;
+                            document.getElementById("11497").style.fontFamily = "throndale, sans-serif"
+                        </script>
+                    <div class="">
+                        
+                            
+                                <h1 style="font-family: throndale, sans-serif">60 Chf</h1>
+                            
+                        
+                    </div>
+                    </div>
+                   </a>
+                 </div>
+              </div>
+
+
+        
+          <!-- First Photo Grid-->
+            <div class="spacing w3-container w3-margin-bottom">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px">
+                   <a style="text-decoration:none" href="/product?bookId=11496&amp;bookName=Controspazio: n° 4 ottobre 1973 &quot;Piero Bottoni Quarant'anni di battaglie per l'architettura&quot;">
+                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
+                        <img src="/media/images/32314993507.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected">
+                    </div>
+                    <hr>
+                    <div class="w3-center" id="11496_id" style="font-family: throndale, sans-serif">
+                        <h2 id="11496" style="font-family: throndale, sans-serif;">controspazio: n° 4 ottobre 1973 "piero b ...</h2>
+                        
+                        <script>
+                            text_string = "Controspazio: n° 4 ottobre 1973 &quot;Piero Bottoni Quarant&#x27;anni di battaglie per l&#x27;architettura&quot;".toLowerCase().replaceAll("&#x27;","'").replaceAll("&quot;", "\"").replaceAll("&amp;", "&");
+                            if(text_string.length > 40){
+                                text_string = text_string.substring(0, 40)+ " ...";
+                            }
+                            if(text_string.length > 25){
+                                document.getElementById("11496_id").removeChild(document.getElementById("11496_br"));
+                            }
+                            document.getElementById("11496").textContent = text_string;
+                            document.getElementById("11496").style.fontFamily = "throndale, sans-serif"
+                        </script>
+                    <div class="">
+                        
+                            
+                                <h1 style="font-family: throndale, sans-serif">45 Chf</h1>
+                            
+                        
+                    </div>
+                    </div>
+                   </a>
+                 </div>
+              </div>
+
+
+        
+          <!-- First Photo Grid-->
+            <div class="spacing w3-container w3-margin-bottom">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px;">
+                   <a style="text-decoration: none;" href="/product?bookId=11495&amp;bookName=Controspazio: N°1-6 gennaio - dicembre 1980 &quot;La presenza del Passato&quot; Numero speciale dedicato alla I. Mostra Internazionale di Architettura della Biennale di Venezia">
+                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container" style="">
+                        <img src="/media/images/32314985795.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected" style="">
+                    </div>
+                    <hr>
+                    <div class="w3-center" id="11495_id" style="font-family: throndale, sans-serif">
+                        <h2 id="11495" style="font-family: throndale, sans-serif;">controspazio: n°1-6 gennaio - dicembre 1 ...</h2>
+                        
+                        <script>
+                            text_string = "Controspazio: N°1-6 gennaio - dicembre 1980 &quot;La presenza del Passato&quot; Numero speciale dedicato alla I. Mostra Internazionale di Architettura della Biennale di Venezia".toLowerCase().replaceAll("&#x27;","'").replaceAll("&quot;", "\"").replaceAll("&amp;", "&");
+                            if(text_string.length > 40){
+                                text_string = text_string.substring(0, 40)+ " ...";
+                            }
+                            if(text_string.length > 25){
+                                document.getElementById("11495_id").removeChild(document.getElementById("11495_br"));
+                            }
+                            document.getElementById("11495").textContent = text_string;
+                            document.getElementById("11495").style.fontFamily = "throndale, sans-serif"
+                        </script>
+                    <div class="">
+                        
+                            
+                                <h1 style="font-family: throndale, sans-serif;">75 Chf</h1>
+                            
+                        
+                    </div>
+                    </div>
+                   </a>
+                 </div>
+              </div>
+
+
+        
+          <!-- First Photo Grid-->
+            <div class="spacing w3-container w3-margin-bottom">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px">
+                   <a style="text-decoration:none" href="/product?bookId=11494&amp;bookName=Controspazio: N°5-6 settembre-dicembre 1979 - Bimestrale di Architettura e Urbanistica">
+                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
+                        <img src="/media/images/32314983994.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected">
+                    </div>
+                    <hr>
+                    <div class="w3-center" id="11494_id" style="font-family: throndale, sans-serif">
+                        <h2 id="11494" style="font-family: throndale, sans-serif;">controspazio: n°5-6 settembre-dicembre 1 ...</h2>
+                        
+                        <script>
+                            text_string = "Controspazio: N°5-6 settembre-dicembre 1979 - Bimestrale di Architettura e Urbanistica".toLowerCase().replaceAll("&#x27;","'").replaceAll("&quot;", "\"").replaceAll("&amp;", "&");
+                            if(text_string.length > 40){
+                                text_string = text_string.substring(0, 40)+ " ...";
+                            }
+                            if(text_string.length > 25){
+                                document.getElementById("11494_id").removeChild(document.getElementById("11494_br"));
+                            }
+                            document.getElementById("11494").textContent = text_string;
+                            document.getElementById("11494").style.fontFamily = "throndale, sans-serif"
+                        </script>
+                    <div class="">
+                        
+                            
+                                <h1 style="font-family: throndale, sans-serif">35 Chf</h1>
+                            
+                        
+                    </div>
+                    </div>
+                   </a>
+                 </div>
+              </div>
+
+
+        
+          <!-- First Photo Grid-->
+            <div class="spacing w3-container w3-margin-bottom">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px">
+                   <a style="text-decoration:none" href="/product?bookId=11493&amp;bookName=Giacometti Derrière le miroir N° 39-40 Juin 1951 - 3 lithographies originales en noir dont 1 en double page - avec dédicace d'Alberto Giacometti signée et datée">
+                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
+                        <img src="/media/images/32313180419_3.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected">
+                    </div>
+                    <hr>
+                    <div class="w3-center" id="11493_id" style="font-family: throndale, sans-serif">
+                        <h2 id="11493" style="font-family: throndale, sans-serif;">giacometti derrière le miroir n° 39-40 j ...</h2>
+                        
+                        <script>
+                            text_string = "Giacometti Derrière le miroir N° 39-40 Juin 1951 - 3 lithographies originales en noir dont 1 en double page - avec dédicace d&#x27;Alberto Giacometti signée et datée".toLowerCase().replaceAll("&#x27;","'").replaceAll("&quot;", "\"").replaceAll("&amp;", "&");
+                            if(text_string.length > 40){
+                                text_string = text_string.substring(0, 40)+ " ...";
+                            }
+                            if(text_string.length > 25){
+                                document.getElementById("11493_id").removeChild(document.getElementById("11493_br"));
+                            }
+                            document.getElementById("11493").textContent = text_string;
+                            document.getElementById("11493").style.fontFamily = "throndale, sans-serif"
+                        </script>
+                    <div class="">
+                        
+                            
+                                <h1 style="font-family: throndale, sans-serif">7250 Chf</h1>
+                            
+                        
+                    </div>
+                    </div>
+                   </a>
+                 </div>
+              </div>
+
+
+        
+          <!-- First Photo Grid-->
+            <div class="spacing w3-container w3-margin-bottom">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px">
+                   <a style="text-decoration: none;" href="/product?bookId=11492&amp;bookName=Giacometti Mai 1961 - Derrière le miroir N° 127 - 14 lithographies originales dont 3 en double page - Edition de luxe - Tirage 150 exemplaires sur vélin de Rives numérotés et signés par Alberto Giacometti">
+                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
+                        <img src="/media/images/32317058993.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected" style="">
+                    </div>
+                    <hr>
+                    <div class="w3-center" id="11492_id" style="font-family: throndale, sans-serif">
+                        <h2 id="11492" style="font-family: throndale, sans-serif;">giacometti mai 1961 - derrière le miroir ...</h2>
+                        
+                        <script>
+                            text_string = "Giacometti Mai 1961 - Derrière le miroir N° 127 - 14 lithographies originales dont 3 en double page - Edition de luxe - Tirage 150 exemplaires sur vélin de Rives numérotés et signés par Alberto Giacometti".toLowerCase().replaceAll("&#x27;","'").replaceAll("&quot;", "\"").replaceAll("&amp;", "&");
+                            if(text_string.length > 40){
+                                text_string = text_string.substring(0, 40)+ " ...";
+                            }
+                            if(text_string.length > 25){
+                                document.getElementById("11492_id").removeChild(document.getElementById("11492_br"));
+                            }
+                            document.getElementById("11492").textContent = text_string;
+                            document.getElementById("11492").style.fontFamily = "throndale, sans-serif"
+                        </script>
+                    <div class="">
+                        
+                            
+                                <h1 style="font-family: throndale, sans-serif">4750 Chf</h1>
+                            
+                        
+                    </div>
+                    </div>
+                   </a>
+                 </div>
+              </div>
+
+
+        
+          <!-- First Photo Grid-->
+            <div class="spacing w3-container w3-margin-bottom">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px">
+                   <a style="text-decoration:none" href="/product?bookId=11491&amp;bookName=MELANCHOLIE STRAHOVA / 5 Original Lithographs by Vojtech Kubasta (1914-1992)">
+                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
+                        <img src="/media/images/30896436021_2.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected">
+                    </div>
+                    <hr>
+                    <div class="w3-center" id="11491_id" style="font-family: throndale, sans-serif">
+                        <h2 id="11491" style="font-family: throndale, sans-serif;">melancholie strahova / 5 original lithog ...</h2>
+                        
+                        <script>
+                            text_string = "MELANCHOLIE STRAHOVA / 5 Original Lithographs by Vojtech Kubasta (1914-1992)".toLowerCase().replaceAll("&#x27;","'").replaceAll("&quot;", "\"").replaceAll("&amp;", "&");
+                            if(text_string.length > 40){
+                                text_string = text_string.substring(0, 40)+ " ...";
+                            }
+                            if(text_string.length > 25){
+                                document.getElementById("11491_id").removeChild(document.getElementById("11491_br"));
+                            }
+                            document.getElementById("11491").textContent = text_string;
+                            document.getElementById("11491").style.fontFamily = "throndale, sans-serif"
+                        </script>
+                    <div class="">
+                        
+                            
+                                <h1 style="font-family: throndale, sans-serif">750 Chf</h1>
+                            
+                        
+                    </div>
+                    </div>
+                   </a>
+                 </div>
+              </div>
+
+
+        
+
+    
+    </div>
+    <div>
+      <div>
+      
+
+      </div>
+    </div>
+
+
+<!-- End page content -->
+</div>
+
+
+
+
+
+<script>
+    // Get the modal
+    const modal = document.getElementById('id01');
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+  const cookieBanner = document.getElementById("cookieBanner");
+  const acceptCookiesBtn = document.getElementById("acceptCookiesBtn");
+
+  // Check if user has accepted cookies before
+  const hasAcceptedCookies = localStorage.getItem("cookiesAccepted");
+
+  // If cookies have not been accepted, show the banner
+  if (!hasAcceptedCookies) {
+    cookieBanner.style.display = "block";
+  }
+
+  // When the "Accept Cookies" button is clicked, hide the banner and store the acceptance in local storage
+  acceptCookiesBtn.addEventListener("click", function() {
+    cookieBanner.style.display = "none";
+    localStorage.setItem("cookiesAccepted", "true");
+  });
+});
+
+</script>
+
+
+
+        <div id="selector-modal">
+            <p id="modal-message">Loading...</p>
+            <div id="modal-buttons"></div>
+        </div>
+    </body></html>
