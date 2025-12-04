@@ -5,6 +5,10 @@ import json
 from typing import Dict, Optional, List
 from webview import Window
 from urllib.parse import urlparse
+import logging
+
+# Suppress pywebview debug messages
+logging.getLogger('webview').setLevel(logging.WARNING)
 
 CATEGORIES = ['product_name', 'price', 'image_url']
 
@@ -90,7 +94,7 @@ class Api:
             domain = parsed_url.netloc.replace('www.', '')
             base_name = domain.split('.')[0] or 'default_site'
 
-            save_dir = project_root / 'data' / base_name
+            save_dir = project_root / 'src' / 'data' / base_name
             save_dir.mkdir(parents=True, exist_ok=True)
 
             yaml_path = save_dir / 'selectors.yaml'
@@ -154,4 +158,14 @@ def select_data(url: str, categories: List[str]) -> None:
 
     api.window = window
     window.events.loaded += lambda: load_custom_js(window)
-    webview.start()
+    
+    # Temporarily suppress stderr to hide pywebview debug messages
+    import sys, os
+    old_stderr = sys.stderr
+    sys.stderr = open(os.devnull, 'w')
+    
+    try:
+        webview.start()
+    finally:
+        sys.stderr.close()
+        sys.stderr = old_stderr

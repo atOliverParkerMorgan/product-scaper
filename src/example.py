@@ -16,6 +16,6 @@ CATEGORIES = [
 if __name__ == "__main__":
 
     for url in WEBSITES:
-        # select_data(url, CATEGORIES)
+        select_data(url, CATEGORIES)
         data_to_csv()
         # model = train_model()

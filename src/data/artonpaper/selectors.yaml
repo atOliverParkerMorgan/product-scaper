@@ -1,0 +1,6 @@
+price:
+- body > div.w3-main:nth-of-type(4) > div.w3-row-padding.w3-animate-opacity:nth-of-type(1)
+  > div.spacing.w3-container.w3-margin-bottom:nth-of-type(1) > div.w3-container.grid-container.w3-center.w3-padding-16
+  > a > div.img-hover-zoom.img-hover-zoom--slowmo.image-container:nth-of-type(1) >
+  img
+- '[id="11542"]'

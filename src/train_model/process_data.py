@@ -7,6 +7,8 @@ from enum import Enum
 import regex as re
 from typing import List, Dict, Any
 import textstat
+from urllib.parse import urlparse
+import hashlib
 
 # --- Feature Definitions ---
 
@@ -57,11 +59,38 @@ NUMBER = r'\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?' # https://stackoverflow.com/ques
 
 PRICE_REGEX = re.compile(rf"""
     (
-        (?:{SYMBOL}{SPACE}{NUMBER})
-                
+        (?:{SYMBOL}{SPACE}{NUMBER})|
         (?:{NUMBER}{SPACE}{SYMBOL})
     )
 """, re.VERBOSE | re.UNICODE)
+
+# Tag encoding - convert tag names to numbers
+# not using one-hot encoding to keep the dataset consistent in size
+COMMON_TAGS = {
+    'div': 1, 'span': 2, 'p': 3, 'a': 4, 'img': 5, 'h1': 6, 'h2': 7, 'h3': 8, 'h4': 9, 'h5': 10, 'h6': 11,
+    'ul': 12, 'ol': 13, 'li': 14, 'table': 15, 'tr': 16, 'td': 17, 'th': 18, 'form': 19, 'input': 20,
+    'button': 21, 'select': 22, 'option': 23, 'textarea': 24, 'label': 25, 'nav': 26, 'header': 27,
+    'footer': 28, 'section': 29, 'article': 30, 'aside': 31, 'main': 32, 'body': 33, 'html': 34
+}
+
+def _encode_tag(tag_name) -> int:
+    """Convert tag name to numerical encoding."""
+    if not tag_name or not hasattr(tag_name, 'lower'):
+        return 0
+    try:
+        return COMMON_TAGS.get(str(tag_name).lower(), 99)  # 99 for unknown tags
+    except:
+        return 0
+
+def _encode_string(text: str) -> int:
+    """Convert string to numerical hash (for IDs, classes, etc)."""
+    if not text:
+        return 0
+    return abs(hash(text)) % 10000  # Keep it reasonable size
+
+def _count_unique_tags(tag_list: List[str]) -> int:
+    """Count unique tags in a list."""
+    return len(set(tag_list)) if tag_list else 0
 
 
 def _extract_element_features(element: lxml.html.HtmlElement, requested_features: List[Features] = ALL_FEATURES, features: Dict[str, Any]= {}) -> Dict[str, Any]:
@@ -81,19 +110,21 @@ def _extract_element_features(element: lxml.html.HtmlElement, requested_features
     for feat in requested_features:
         try:
             if feat == Features.TAG:
-                features[feat.value] = element.tag
+                features[feat.value] = _encode_tag(element.tag)
             
             elif feat == Features.ID_NAME:
-                features[feat.value] = element.get('id')
+                features[feat.value] = _encode_string(element.get('id'))
             
             elif feat == Features.CLASS_NAME:
-                features[feat.value] = element.get('class')
+                features[feat.value] = _encode_string(element.get('class'))
             
             elif feat == Features.ALL_ATTRIBUTES:
-                features[feat.value] = dict(element.attrib)
+                # Count number of attributes
+                features[feat.value] = len(element.attrib)
             
             elif feat == Features.TEXT_CONTENT:
-                features[feat.value] = text
+                # Convert text to hash for numerical representation
+                features[feat.value] = _encode_string(text)
             
             elif feat == Features.TEXT_CONTENT_LENGTH:
                 features[feat.value] = len(text)
@@ -106,9 +137,16 @@ def _extract_element_features(element: lxml.html.HtmlElement, requested_features
             
             elif feat == Features.TEXT_CONTENT_PRICE_FORMAT_PROBABILITY:
                 features[feat.value] = 1 if PRICE_REGEX.search(text) else 0
+            
+            elif feat == Features.TEXT_CONTENT_DIFFICULTY:
+                # Use textstat to calculate reading difficulty (numerical)
+                try:
+                    features[feat.value] = textstat.flesch_reading_ease(text) if text else 0
+                except:
+                    features[feat.value] = 0
 
             elif feat == Features.PARENT_TAG:
-                features[feat.value] = parent.tag if parent is not None else None
+                features[feat.value] = _encode_tag(parent.tag) if parent is not None else 0
 
             elif feat == Features.NUM_CHILDREN:
                 features[feat.value] = len(element)
@@ -124,27 +162,50 @@ def _extract_element_features(element: lxml.html.HtmlElement, requested_features
                 features[feat.value] = element.getparent().index(element) if parent is not None else 0
 
             elif feat == Features.CHILD_TAGS:
-                features[feat.value] = [child.tag for child in element.iterchildren(tag='*')]
+                # Count unique child tags
+                child_tags = [child.tag for child in element.iterchildren(tag='*')]
+                features[feat.value] = _count_unique_tags(child_tags)
+            
+            elif feat == Features.SIBLING_TAGS:
+                # Count unique sibling tags
+                if parent is not None:
+                    sibling_tags = [child.tag for child in parent.iterchildren(tag='*') if child != element]
+                    features[feat.value] = _count_unique_tags(sibling_tags)
+                else:
+                    features[feat.value] = 0
 
             elif feat == Features.DOM_DISTANCE_FROM_ROOT:
                 features[feat.value] = len(element.xpath('ancestor::*'))
             
             elif feat == Features.HAS_HREF:
-                features[feat.value] = element.get('href') is not None
+                features[feat.value] = 1 if element.get('href') is not None else 0
+            
+            elif feat == Features.HREF_DOMAIN:
+                href = element.get('href')
+                if href:
+                    try:
+                        parsed = urlparse(href)
+                        features[feat.value] = _encode_string(parsed.netloc)
+                    except:
+                        features[feat.value] = 0
+                else:
+                    features[feat.value] = 0
             
             elif feat == Features.IS_IMAGE:
-                features[feat.value] = element.tag == 'img'
+                features[feat.value] = 1 if element.tag == 'img' else 0
             
             elif feat == Features.IMAGE_SRC:
+                # Encode image source as hash if present
                 if element.tag == 'img':
-                    features[feat.value] = element.get('src')
+                    src = element.get('src')
+                    features[feat.value] = _encode_string(src) if src else 0
                 else:
-                    features[feat.value] = None # Ensure key exists if requested
+                    features[feat.value] = 0
 
         except Exception as e:
             # Safely handle errors (e.g., no parent)
             print(f"Warning: Could not extract feature '{feat.value}': {e}")
-            features[feat.value] = None # Add key as None so CSV columns match
+            features[feat.value] = 0  # Default to 0 for numerical consistency
             
     return features
 
@@ -182,9 +243,9 @@ def extract_features_from_html(html_content: str, selectors: dict, features_to_e
                 for element in elements:
                     # Get all features for this one element
                     feature_row = {}
-                    feature_row['Category'] = category
+                    feature_row['Category'] = _encode_string(category)
                     feature_row = _extract_element_features(element, features_to_extract, feature_row)
-                    feature_row['Selector'] = selector
+                    feature_row['Selector'] = _encode_string(selector)
                     
                     all_features_data.append(feature_row)
                     
@@ -200,9 +261,9 @@ def extract_features_from_html(html_content: str, selectors: dict, features_to_e
             continue
 
         feature_row = {}
-        feature_row['Category'] = OTHER_CATEGORY
+        feature_row['Category'] = _encode_string(OTHER_CATEGORY)
         feature_row = _extract_element_features(element, features_to_extract, feature_row)
-        feature_row['Selector'] = None
+        feature_row['Selector'] = 0  # No selector for 'other' elements
         
         all_features_data.append(feature_row)
 
