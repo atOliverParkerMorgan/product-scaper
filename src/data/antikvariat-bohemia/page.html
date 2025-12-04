@@ -1,0 +1,1247 @@
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="robots" content="index,follow">
+<meta name="description" content="Antikvariát Bohemia" lang="cs">
+<meta name="keywords" content="Antikvariát, on-line, antik, staré použité knihy" lang="cs">
+<meta name="description" content="Czech on-line antiquarian bookshop, used books" lang="en">
+<meta name="keywords" content="antiquarian bookshop, used books on-line" lang="en">
+<meta name="Content-language" content="cs">
+
+<link rel="stylesheet" href="/assets/style-bohem.css" type="text/css">
+
+<title>Antikvariát Bohemia</title>
+<style type="text/css">
+<!--
+body {
+	margin: 0px;
+	padding: 0px;
+	background-color: #fff;
+}
+a:link {
+	color: #000;
+}
+a:visited {
+	color: #000;
+}
+#list-view {margin-left: 246px;}
+#list-view {margin-right: 216px;}
+#rightbar {width: 200px;}
+#list-view {margin-top: 0px;}
+
+-->
+</style>
+<script type="text/javascript" src="/assets/enlargeitp.js"></script>
+<script type="text/javascript" src="/assets/ajax.js"></script>
+<script type="text/javascript">
+function onAjaxCart(resp) {
+var pars=resp.split(',');
+if(e=document.getElementById('c'+pars[0]))
+{e.className='crt'+pars[1];e.title=pars[2]};
+if(e=document.getElementById('cart-box'))e.style.display=pars[5];
+if(e=document.getElementById('cart-num'))e.innerHTML=pars[3];
+if(e=document.getElementById('cart-price'))e.innerHTML=pars[4];
+}
+
+function onAjaxCookies() {
+if(e=document.getElementById('cookies-consent'))
+{e.style.display = 'none'};}
+</script>
+
+
+<style type="text/css">body {-webkit-user-select: none; -khtml-user-select: none; -ms-user-select: none; user-select: none; cursor: default;}</style><style type="text/css"><br>        #selector-modal {<br>            position: fixed;<br>            bottom: 20px;<br>            left: 50%;<br>            transform: translateX(-50%);<br>            background: white;<br>            border: 1px solid #ccc;<br>            border-radius: 8px;<br>            box-shadow: 0 6px 20px rgba(0,0,0,0.2);<br>            padding: 16px 24px;<br>            z-index: 999999;<br>            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;<br>            font-size: 16px;<br>            line-height: 1.5;<br>            color: #333;<br>            display: block;<br>            max-width: 90%;<br>            text-align: center;<br>            cursor: move;<br>            user-select: none;<br>        }<br>        #selector-modal.dragging {<br>            cursor: grabbing;<br>        }<br>        #selector-modal p {<br>            margin: 0 0 12px 0;<br>            font-size: 18px;<br>            font-weight: 600;<br>        }<br>        #selector-modal p strong {<br>            color: #007aff;<br>            font-size: 20px;<br>            text-transform: uppercase;<br>            text-shadow: 0 0 10px rgba(0, 122, 255, 0.3);<br>        }<br>        #selector-modal button {<br>            padding: 8px 14px;<br>            border: none;<br>            border-radius: 6px;<br>            font-size: 14px;<br>            font-weight: 500;<br>            cursor: pointer;<br>            margin: 0 5px;<br>            background-color: #34c759;<br>            color: white;<br>            transition: opacity 0.2s ease;<br>        }<br>        #selector-modal button:hover:not(:disabled) {<br>            opacity: 0.85;<br>        }<br>        #selector-modal button#prev-cat-btn {<br>             background-color: #f0f0f0;<br>             color: #333;<br>        }<br>        /* Style for the prediction button */<br>        #selector-modal button#predict-selectors-btn {<br>            background-color: #007aff; /* Blue */<br>            color: white;<br>        }<br>        #selector-modal button:disabled {<br>            background-color: #ccc;<br>            color: #666;<br>            cursor: not-allowed;<br>            opacity: 0.6;<br>        }<br>    <br><br>        /* Single style for all selected items */<br>        [data-selector-highlight="selected"] {<br>            outline: 4px solid #34c759 !important; /* Green */<br>            box-shadow: 0 0 15px #34c759;<br>            background-color: rgba(52, 199, 89, 0.15);<br>        }<br><br>        [data-selector-highlight="predicted"] {<br>            outline: 3px dashed #007aff !important; /* Blue dashed */<br>            box-shadow: 0 0 10px #007aff;<br>            background-color: rgba(0, 122, 255, 0.1);<br>        }<br>        <br>        [data-selector-highlight="model-predicted"] {<br>            outline: 3px dashed #ff9500 !important; /* Orange dashed */<br>            box-shadow: 0 0 10px #ff9500;<br>            background-color: rgba(255, 149, 0, 0.1);<br>        }<br>    </style></head>
+<body>
+<!--[consent]<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = 'https://connect.facebook.net/cs_CZ/sdk.js#xfbml=1&version=v3.0&appId=121769807906649';
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>[consent]-->
+
+<div id="wrap">
+ <div id="header-top"></div>
+ <div id="header-main">
+<a id="logo" title="Antikvariát Bohemia" href="/">
+<h1 id="logo-text">Antikvariát Bohemia</h1></a>
+  <div id="account"><a href="/ucet?ac_func=login" onclick="this.href='/ucet?ac_func=login&amp;ac_url='+encodeURIComponent(location.href)"><img src="/assets/key.png" alt="klic" title="přihlášení"></a>
+</div>
+ </div>	<!-- end header-main -->
+ <div id="nav">
+ <div id="nav-bar">
+ <ul>
+<li id="selected"><span>Nabídka</span></li>
+<li><a href="/hledani">Hledání</a></li>
+<li><a href="/kategorie">Kategorie</a></li>
+<li><a href="/kosik">Košík</a></li>
+<li><a href="/objednavka">Objednat</a></li>
+<li><a href="/podminky">Obchodní podmínky</a></li>
+<li><a href="/osobni-udaje">Osobní údaje</a></li>
+<li><a href="/kontakty">Kontakty</a></li>
+
+ </ul>
+ </div> <!-- end nav-bar -->
+ </div> <!-- end nav -->
+ <div id="content-wrap">
+
+  <div id="leftbar" class="sidebar">
+   <h1>Vyhledávání</h1>
+   <div id="sear" class="left-box">
+    <form method="post" action="/hledani">
+    <p>
+     <input class="textbox" type="text" name="q" value="">
+     <input class="ibtn button" type="submit" name="Submit" value="&gt;">
+     <a href="/hledani?fn=info"><img src="/assets/info16.png" alt="hledání-info"></a>
+    </p>
+    </form>
+   </div>
+
+   <h1>Kategorie</h1>
+<div id="cat_container">
+<ul id="cat_list">
+<li class="alt-odd"><a href="/kategorie/1-svetova-valka">1. světová válka</a>
+</li>
+<li class="alt-even"><a href="/kategorie/2-svetova-valka">2. světová válka</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/afrika">Afrika</a>
+</li>
+<li class="alt-even"><a href="/kategorie/amerika">Amerika</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/antika">Antika</a>
+</li>
+<li class="alt-even"><a href="/kategorie/archeologie">archeologie</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/asie">Asie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/avantgarda-obalky">Avantgarda / Obálky</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/balkan">Balkán</a>
+</li>
+<li class="alt-even"><a href="/kategorie/barvotisky-litografie">Barvotisky / Litografie</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/beletrie">beletrie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/bibliofilie-krasne-tisky">Bibliofilie / Krásné tisky</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/biografie-memoary">Biografie / Memoáry</a>
+</li>
+<li class="alt-even"><a href="/kategorie/bizarie-ruzne">Bizarie, Různé</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/bohemistika">Bohemistika</a>
+</li>
+<li class="alt-even"><a href="/kategorie/brusel">Brusel</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/casopisy">Časopisy</a>
+</li>
+<li class="alt-even"><a href="/kategorie/cerny-roman-krvaky-brak">Černý román / Krváky / Brak</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/cestopisy">Cestopisy</a>
+</li>
+<li class="alt-even"><a href="/kategorie/design">Design</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/detektivni-pribehy">Detektivní příběhy</a>
+</li>
+<li class="alt-even"><a href="/kategorie/deutsch">Deutsch</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/divadlo-tanec-hudba">Divadlo / Tanec / Hudba</a>
+</li>
+<li class="alt-even"><a href="/kategorie/dobrodruzne-ilustrace-zdenek-burian">Dobrodružné / ilustrace Zdeněk Burian</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/doprava">Doprava</a>
+</li>
+<li class="alt-even"><a href="/kategorie/ekonomie">Ekonomie</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/english">English</a>
+</li>
+<li class="alt-even"><a href="/kategorie/erotika">Erotika</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/espanol-portugues">Español / Português</a>
+</li>
+<li class="alt-even"><a href="/kategorie/etiketa">Etiketa</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/etnologie">Etnologie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/exil">Exil</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/filatelie">filatelie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/filosofie">Filosofie</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/fotografie-film">Fotografie / Film</a>
+</li>
+<li class="alt-even"><a href="/kategorie/fotomontaze">Fotomontáže</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/francais">Français</a>
+</li>
+<li class="alt-even"><a href="/kategorie/francie-france">Francie / France</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/gastronomie">Gastronomie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/genealogie">Genealogie</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/habsburkove-habsburska-monarchie">Habsburkové / Habsburská monarchie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/harlequin">Harlequin</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/heraldika">Heraldika</a>
+</li>
+<li class="alt-even"><a href="/kategorie/historie">Historie</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/hobby-volny-cas">Hobby - Volný čas</a>
+</li>
+<li class="alt-even"><a href="/kategorie/hornictvi">Hornictví</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/horor">Horor</a>
+</li>
+<li class="alt-even"><a href="/kategorie/hory-horolezectvi">Hory / Horolezectví</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/humor">Humor</a>
+</li>
+<li class="alt-even"><a href="/kategorie/indiani">Indiáni</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/indie">Indie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/islam">Islám</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/japonsko">Japonsko</a>
+</li>
+<li class="alt-even"><a href="/kategorie/jazyky">Jazyky</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/kalendare">Kalendáře</a>
+</li>
+<li class="alt-even"><a href="/kategorie/katalogy">Katalogy</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/kolibriky">Kolibříky</a>
+</li>
+<li class="alt-even"><a href="/kategorie/komiks">Komiks</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/kone">Koně</a>
+</li>
+<li class="alt-even"><a href="/kategorie/krasne-vazby">Krásné vazby</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/krvaky-brak">Krváky / Brak</a>
+</li>
+<li class="alt-even"><a href="/kategorie/kucharky">Kuchařky</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/kynologie">Kynologie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/latinska-amerika">Latinská amerika</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/lenin-stalin-hitler-mao">Lenin / Stalin / Hitler / Mao</a>
+</li>
+<li class="alt-even"><a href="/kategorie/letectvi">Letectví</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/literarni-veda">Literární věda</a>
+</li>
+<li class="alt-even"><a href="/kategorie/literarni-veda-zurnalistika">Literární věda / Žurnalistika</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/litografie">Litografie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/loutky">Loutky</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/madarsko-magyarorszag">Maďarsko / Magyarország</a>
+</li>
+<li class="alt-even"><a href="/kategorie/magnet-saturn">Magnet / Saturn</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/mapy">Mapy</a>
+</li>
+<li class="alt-even"><a href="/kategorie/medicina">Medicína</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/mistopis">Místopis</a>
+</li>
+<li class="alt-even"><a href="/kategorie/moda">Móda</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/modelarstvi">Modelářství</a>
+</li>
+<li class="alt-even"><a href="/kategorie/modely-vystrihovanky">Modely / Vystřihovánky</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/motivace-business-mlm">Motivace / Business / MLM</a>
+</li>
+<li class="alt-even"><a href="/kategorie/myslivost-lov">Myslivost / Lov</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/myslivost-lov-lesnictvi">Myslivost / Lov / Lesnictví</a>
+</li>
+<li class="alt-even"><a href="/kategorie/mystika-esoterika-okultismus-astrologie">Mystika / Esoterika / Okultismus / Astrologie</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/nabozenstvi">Náboženství</a>
+</li>
+<li class="alt-even"><a href="/kategorie/nemecko-deutschland">Německo / Deutschland</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/noty">Noty</a>
+</li>
+<li class="alt-even"><a href="/kategorie/pedagogika">Pedagogika</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/plakaty">Plakáty</a>
+</li>
+<li class="alt-even"><a href="/kategorie/podpisy-autogramy-dedikace">Podpisy / Autogramy / Dedikace</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/poezie">Poezie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/pohadky-detske">Pohádky / Dětské</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/policie">Policie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/politika">Politika</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/polsko-polska">Polsko / Polska</a>
+</li>
+<li class="alt-even"><a href="/kategorie/pragensie">Pragensie</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/pravo">Právo</a>
+</li>
+<li class="alt-even"><a href="/kategorie/priroda">Příroda</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/prirodni-vedy">Přírodní vědy</a>
+</li>
+<li class="alt-even"><a href="/kategorie/propaganda">Propaganda</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/protektorat">Protektorát</a>
+</li>
+<li class="alt-even"><a href="/kategorie/prumysl-hospodarstvi">Průmysl / Hospodářství</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/pruvodce-nove">Průvodce nové</a>
+</li>
+<li class="alt-even"><a href="/kategorie/pruvodce-stare">Průvodce staré</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/psychologie">Psychologie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/rakousko-osterreich">Rakousko / Österreich</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/reklama">Reklama</a>
+</li>
+<li class="alt-even"><a href="/kategorie/remesla">Řemesla</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/renesance">Renesance</a>
+</li>
+<li class="alt-even"><a href="/kategorie/rusko">Rusko</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/rytiny">Rytiny</a>
+</li>
+<li class="alt-even"><a href="/kategorie/sci-fi-fantasy">Sci-fi / Fantasy</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/sinologie">Sinologie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/sinologie-tibet">Sinologie / Tibet</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/skandinavie">Skandinavie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/skauting">Skauting</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/slovensko">Slovensko</a>
+</li>
+<li class="alt-even"><a href="/kategorie/slovniky-encyklopedie-ucebnice">Slovníky / Encyklopedie / Učebnice</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/sociologie">Sociologie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/spolecenske-vedy">Společenské vědy</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/sport-hry">Sport / Hry</a>
+</li>
+<li class="alt-even"><a href="/kategorie/starovek">Starověk</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/stredovek">Středověk</a>
+</li>
+<li class="alt-even"><a href="/kategorie/sudety-sudetenland">Sudety / Sudetenland</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/technika">Technika</a>
+</li>
+<li class="alt-even"><a href="/kategorie/umeni-architektura">Umění / Architektura</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/vintage-retro">Vintage / Retro</a>
+</li>
+<li class="alt-even"><a href="/kategorie/vojenstvi-militaria">Vojenství / Militaria</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/vyprodej">VÝPRODEJ</a>
+</li>
+<li class="alt-even"><a href="/kategorie/zdravi">Zdraví</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/zednari">Zednáři</a>
+</li>
+<li class="alt-even"><a href="/kategorie/zeleznice">Železnice</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/zemedelstvi-zahrada">Zemědělství / Zahrada</a>
+</li>
+<li class="alt-even"><a href="/kategorie/zenska-literatura">Ženská literatura</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/zide">Židé</a>
+</li>
+<li class="alt-even"><a href="/kategorie/zide-judaismus">Židé / Judaismus</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/russkie">Русские</a>
+</li>
+
+</ul>
+</div>
+  </div> <!-- end left-bar -->
+  <div id="rightbar" class="sidebar">
+
+   <div id="cart-box" style="display: none;">
+   <h1>Košík</h1>
+   <div class="left-box">
+    <p><span id="cart-num">0</span> za <span id="cart-price">0</span> Kč <a href="/kosik" class="ibtn">Zobrazit</a></p>
+   </div>
+   </div>
+<h1>Informace</h1>
+   <div class="left-box">
+Antikvariát Bohemia
+
+provozovatel: Milena Sýkorová
+
+IČ: 11974567
+
+číslo účtu: 2202063332/2010
+
+fakturační adresa: Italská 25/36, 12000 Praha 2
+
+POUZE E-SHOP, KAMENNÝ OBCHOD ANI VÝDEJNU NEPROVOZUJEME!
+   </div>
+   <h1>Kontaktní údaje</h1>
+   <div id="contacts" class="left-box">
+<p>
+Mgr. Milan Sýkora<br>
+IČ: 86666291<br>
+Italská 25/36<br>
+120 00, Praha 2 - Vinohrady<br>
+<br>
+abohemia@centrum.cz<br>
+č.ú.: 2101241590/2010<br>
+</p>
+   </div>
+
+<!--   <h1>Osobní vyzvednutí</h1>
+   <div class="left-box">
+<div class="fb-page" data-href="https://www.facebook.com/kavarnakashafe/" data-width="180" data-small-header="true" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="false"><blockquote cite="https://www.facebook.com/kavarnakashafe/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/kavarnakashafe/">Ka Sha fe</a></blockquote></div>
+<p>
+<a href="https://mapy.cz/s/2RcFZ" target="_blanc">Mapa</a>
+</p>
+   </div>
+-->
+
+   <h1>Reference</h1>
+   <div class="left-box">
+    <ul class="sidemenu">
+     <li><a href="http://muj-antikvariat.cz">Můj-antikvariát.cz</a></li>
+    </ul>
+   </div>
+  </div> <!-- end right-bar -->
+
+<div id="list-view">
+<ul class="menu">
+  <li><a href="?mn_lst=para" class="active"><span>Odstavce</span></a></li>
+  <li><a href="?mn_lst=table"><span>Tabulka</span></a></li>
+  <li class="menu-ord"><a href="?mn_lst=title"><span>Abeceda</span></a></li>
+  <li class="menu-ord"><a href="?mn_lst=recent" class="active"><span>Nejnovější</span></a></li>
+<li><span class="lbl">Řazení:</span></li>
+</ul>
+  <div id="content" style="">
+<h1>Nejnovější nabídka</h1><ul class="pager" style="">
+<b>1</b>
+<li><a href="/?mn_offs=21">2</a></li>
+<li><a href="/?mn_offs=41">3</a></li>
+<li><a href="/?mn_offs=61">4</a></li>
+<li><a href="/?mn_offs=81">5</a></li>
+<li><a href="/?mn_offs=101">6</a></li>
+<li><a href="/?mn_offs=121">7</a></li>
+<li><a href="/?mn_offs=141">8</a></li>
+ ... 
+<li><a href="/?mn_offs=11781">590</a></li>
+<li><a href="/?mn_offs=21">[další]</a></li>
+</ul>
+
+<div id="p1089855" class="para grow alt-odd" style="">
+<div class="crt"><a href="/kosik?fn=add&amp;id=1089855" onclick="javascript:ajax('?fn=cart&amp;id=1089855',onAjaxCart);return false;">
+<img id="c1089855" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 style=""><a href="/kniha/buna-slavek-vesteni-z-rukou-1991-1089855" title="Věštění z rukou." style="">Věštění z rukou.</a></h3>
+<img src="/files/thumb_1024008.png" alt="Věštění z rukou." width="100" style="">
+<div class="para-flds">
+<div class="para-title" style="">
+<strong style="">Název:</strong>
+<span style="">Věštění z rukou.</span>
+</div>
+<div class="para-au" style="">
+<strong style="">Autor:</strong>
+<span><a href="/hledani?q=au:'Buna,%20Sl%C3%A1vek'" style="">Slávek Buna</a></span>
+</div>
+<div class="para-ill" style="">
+<strong style="">Ilustrátor:</strong>
+<span><a href="/hledani?q=ill:'Obrazov%C3%A9%20p%C5%99%C3%ADlohy'" style="">Obrazové přílohy</a></span>
+</div>
+<div class="para-issued">
+<strong style="">Rok vydání:</strong>
+<span>1991</span>
+</div>
+<div class="para-pg" style="">
+<strong style="">Počet stran:</strong>
+<span>21 s.</span>
+</div>
+<div class="para-cat" style="">
+<strong style="">Kategorie:</strong>
+<span><a href="/kategorie/mystika-esoterika-okultismus-astrologie">Mystika / Esoterika / Okultismus / Astrologie</a>, <a href="/kategorie/hobby-volny-cas" style="">Hobby - Volný čas</a></span>
+</div>
+<div class="para-state" style="">
+<strong style="">Stav:</strong>
+<span>výborný sešit</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>49 Kč</span>
+</div>
+</div>
+</div>
+<div id="p1089854" class="para grow alt-even" style="">
+<div class="crt"><a href="/kosik?fn=add&amp;id=1089854" onclick="javascript:ajax('?fn=cart&amp;id=1089854',onAjaxCart);return false;">
+<img id="c1089854" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3><a href="/kniha/pisnicky-prvniho-maje-1949" title="Písničky Prvního máje.">Písničky Prvního máje.</a></h3>
+<a href="/files/1025345.jpg" onclick="return false;"><img src="/files/thumb_1025345.png" id="pic1025345" class="picgrp" alt="Písničky Prvního máje." onclick="enlarge(this);" longdesc="/files/1025345.jpg" name="/kniha/pisnicky-prvniho-maje-1949" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;" data-selector-highlight="selected"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Písničky Prvního máje.</span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1949</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>16 s.</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/divadlo-tanec-hudba">Divadlo / Tanec / Hudba</a>, <a href="/kategorie/propaganda">Propaganda</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>Pěkný sešit</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>35 Kč</span>
+</div>
+</div>
+</div>
+<div id="p1089853" class="para grow alt-odd" style="">
+<div class="crt"><a href="/kosik?fn=add&amp;id=1089853" onclick="javascript:ajax('?fn=cart&amp;id=1089853',onAjaxCart);return false;">
+<img id="c1089853" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3><a href="/kniha/jezek-bohuslav-houby-po-cely-rok-1988" title="Houby po celý rok.">Houby po celý rok.</a></h3>
+<a href="/files/1025344.jpg" onclick="return false;"><img src="/files/thumb_1025344.png" id="pic1025344" class="picgrp" alt="Houby po celý rok." onclick="enlarge(this);" longdesc="/files/1025344.jpg" name="/kniha/jezek-bohuslav-houby-po-cely-rok-1988" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;" data-selector-highlight="selected"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Houby po celý rok.</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Je%C5%BEek,%20Bohuslav'">Bohuslav Ježek</a>; <a href="/hledani?q=au:'Smotlacha,%20Miroslav'">Miroslav Smotlacha</a>; <a href="/hledani?q=au:'Vrbka,%20Jan'">Jan Vrbka</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1988</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>32 s.</span>
+</div>
+<div class="para-series">
+<strong>Edice, série:</strong>
+<span>Sešity domácího hospodaření / Sv. 152</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/kucharky">Kuchařky</a>, <a href="/kategorie/myslivost-lov-lesnictvi">Myslivost / Lov / Lesnictví</a></span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>25 Kč</span>
+</div>
+</div>
+</div>
+<div id="p1089852" class="para grow alt-even" style="">
+<div class="crt"><a href="/kosik?fn=add&amp;id=1089852" onclick="javascript:ajax('?fn=cart&amp;id=1089852',onAjaxCart);return false;">
+<img id="c1089852" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3><a href="/kniha/rejl-frantisek-miletin-za-mladi-k-j-erbena-kolem-roku-1830-1974" title="Miletín za mládí K. J. Erbena kolem roku 1830">Miletín za mládí K. J. Erbena kolem roku 1830</a></h3>
+<a href="/files/1025343.jpg" onclick="return false;"><img src="/files/thumb_1025343.png" id="pic1025343" class="picgrp" alt="Miletín za mládí K. J. Erbena kolem roku 1830" onclick="enlarge(this);" longdesc="/files/1025343.jpg" name="/kniha/rejl-frantisek-miletin-za-mladi-k-j-erbena-kolem-roku-1830-1974" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;" data-selector-highlight="selected"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Miletín za mládí K. J. Erbena kolem roku 1830</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span>František Rejl; <a href="/hledani?q=au:'Erben,%20Karel%20Jarom%C3%ADr'">Karel Jaromír Erben</a></span>
+</div>
+<div class="para-ill">
+<strong>Ilustrátor:</strong>
+<span><a href="/hledani?q=ill:'%C5%A0ulc,%20Jaroslav'">Jaroslav Šulc</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1974</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>30</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/mistopis">Místopis</a>, <a href="/kategorie/bibliofilie-krasne-tisky">Bibliofilie / Krásné tisky</a>, <a href="/kategorie/poezie">Poezie</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>Pěkný sešit</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>120 Kč</span>
+</div>
+</div>
+</div>
+<div id="p1089851" class="para grow alt-odd" style="">
+<div class="crt"><a href="/kosik?fn=add&amp;id=1089851" onclick="javascript:ajax('?fn=cart&amp;id=1089851',onAjaxCart);return false;">
+<img id="c1089851" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3><a href="/kniha/teimer-marianne-schiehengster-schnitz-1939" title="Schiehengster Schnitz">Schiehengster Schnitz</a></h3>
+<a href="/files/1025342.jpg" onclick="return false;"><img src="/files/thumb_1025342.png" id="pic1025342" class="picgrp" alt="Schiehengster Schnitz" onclick="enlarge(this);" longdesc="/files/1025342.jpg" name="/kniha/teimer-marianne-schiehengster-schnitz-1939" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;" data-selector-highlight="selected"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Schiehengster Schnitz</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span>Marianne Teimer</span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1939</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>14</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/poezie">Poezie</a>, <a href="/kategorie/etnologie">Etnologie</a>, <a href="/kategorie/sudety-sudetenland">Sudety / Sudetenland</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>výborný sešit</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>99 Kč</span>
+</div>
+</div>
+</div>
+<div id="p1089850" class="para grow alt-even" style="">
+<div class="crt"><a href="/kosik?fn=add&amp;id=1089850" onclick="javascript:ajax('?fn=cart&amp;id=1089850',onAjaxCart);return false;">
+<img id="c1089850" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3><a href="/kniha/tolstoj-lev-nikolajevic-kruh-cetby-sv-3-vybrane-sebrane-a-na-kazdy-den-roztridene-myslenky-mnoha-spisovatelu-1926" title="Kruh četby sv. 3 (vybrané, sebrané a na každý den roztříděné myšlenky mnoha spisovatelů ...">Kruh četby sv. 3 (vybrané, sebrané a na každý den roztříděné myšlenky mnoha spisovatelů ...</a></h3>
+<img src="/files/thumb_1025341.png" alt="Kruh četby sv. 3 (vybrané, sebrané a na každý den roztříděné myšlenky mnoha spisovatelů ..." width="100" style="">
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Kruh četby sv. 3 (vybrané, sebrané a na každý den roztříděné myšlenky mnoha spisovatelů o víře, životě a jednání)</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Tolstoj,%20Lev%20Nikolajevi%C4%8D'">Lev Nikolajevič Tolstoj</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1926</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>352 s.</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/filosofie">Filosofie</a>, <a href="/kategorie/rusko">Rusko</a>, <a href="/kategorie/beletrie">beletrie</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>Pěkná dobová vazba</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>49 Kč</span>
+</div>
+</div>
+</div>
+<div id="p1089849" class="para grow alt-odd" style="">
+<div class="crt"><a href="/kosik?fn=add&amp;id=1089849" onclick="javascript:ajax('?fn=cart&amp;id=1089849',onAjaxCart);return false;">
+<img id="c1089849" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3><a href="/kniha/tolstoj-lev-nikolajevic-kruh-cetby-sv-4-vybrane-sebrane-a-na-kazdy-den-roztridene-myslenky-mnoha-spisovatelu-1926" title="Kruh četby sv. 4 (vybrané, sebrané a na každý den roztříděné myšlenky mnoha spisovatelů ...">Kruh četby sv. 4 (vybrané, sebrané a na každý den roztříděné myšlenky mnoha spisovatelů ...</a></h3>
+<a href="/files/1025341.jpg" onclick="return false;"><img src="/files/thumb_1025341.png" id="pic1025341" class="picgrp" alt="Kruh četby sv. 4 (vybrané, sebrané a na každý den roztříděné myšlenky mnoha spisovatelů ..." onclick="enlarge(this);" longdesc="/files/1025341.jpg" name="/kniha/tolstoj-lev-nikolajevic-kruh-cetby-sv-4-vybrane-sebrane-a-na-kazdy-den-roztridene-myslenky-mnoha-spisovatelu-1926" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;" data-selector-highlight="selected"></a>
+<div class="para-flds" style="">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Kruh četby sv. 4 (vybrané, sebrané a na každý den roztříděné myšlenky mnoha spisovatelů o víře, životě a jednání)</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Tolstoj,%20Lev%20Nikolajevi%C4%8D'">Lev Nikolajevič Tolstoj</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1926</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>441</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/filosofie">Filosofie</a>, <a href="/kategorie/rusko">Rusko</a>, <a href="/kategorie/beletrie">beletrie</a></span>
+</div>
+<div class="para-state" style="">
+<strong style="">Stav:</strong>
+<span>Pěkná dobová vazba</span>
+</div>
+<div class="para-price">
+<strong style="">Cena:</strong>
+<span>49 Kč</span>
+</div>
+</div>
+</div>
+<div id="p1089848" class="para grow alt-even" style="">
+<div class="crt"><a href="/kosik?fn=add&amp;id=1089848" onclick="javascript:ajax('?fn=cart&amp;id=1089848',onAjaxCart);return false;">
+<img id="c1089848" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3><a href="/kniha/tolstoj-lev-nikolajevic-kruh-cetby-sv-1-vybrane-sebrane-a-na-kazdy-den-roztridene-myslenky-mnoha-spisovatelu-1926-1089848" title="Kruh četby sv. 1 (vybrané, sebrané a na každý den roztříděné myšlenky mnoha spisovatelů ...">Kruh četby sv. 1 (vybrané, sebrané a na každý den roztříděné myšlenky mnoha spisovatelů ...</a></h3>
+<a href="/files/1025340.jpg" onclick="return false;"><img src="/files/thumb_1025340.png" id="pic1025340" class="picgrp" alt="Kruh četby sv. 1 (vybrané, sebrané a na každý den roztříděné myšlenky mnoha spisovatelů ..." onclick="enlarge(this);" longdesc="/files/1025340.jpg" name="/kniha/tolstoj-lev-nikolajevic-kruh-cetby-sv-1-vybrane-sebrane-a-na-kazdy-den-roztridene-myslenky-mnoha-spisovatelu-1926-1089848" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;" data-selector-highlight="selected"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Kruh četby sv. 1 (vybrané, sebrané a na každý den roztříděné myšlenky mnoha spisovatelů o víře, životě a jednání)</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Tolstoj,%20Lev%20Nikolajevi%C4%8D'">Lev Nikolajevič Tolstoj</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1926</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>384</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/filosofie">Filosofie</a>, <a href="/kategorie/rusko">Rusko</a>, <a href="/kategorie/beletrie">beletrie</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>Pěkná dobová vazba</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>49 Kč</span>
+</div>
+</div>
+</div>
+<div id="p1089847" class="para grow alt-odd" style="">
+<div class="crt"><a href="/kosik?fn=add&amp;id=1089847" onclick="javascript:ajax('?fn=cart&amp;id=1089847',onAjaxCart);return false;">
+<img id="c1089847" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3><a href="/kniha/posingerova-marie-italska-kuchyne-1987-1089847" title="Italská kuchyně">Italská kuchyně</a></h3>
+<img src="https://antikvariat11.cz/files/thumb_82485.png" alt="Italská kuchyně" width="100" style="">
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Italská kuchyně</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'P%C3%B6singerov%C3%A1,%20Marie'">Marie Pösingerová</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1987</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>194 s.</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/kucharky">Kuchařky</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>Pěkná brož</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>19 Kč</span>
+</div>
+</div>
+</div>
+<div id="p1089846" class="para grow alt-even" style="">
+<div class="crt"><a href="/kosik?fn=add&amp;id=1089846" onclick="javascript:ajax('?fn=cart&amp;id=1089846',onAjaxCart);return false;">
+<img id="c1089846" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3><a href="/kniha/dedkova-jarmila-jahodnicek-1981-1089846" title="Jahodníček">Jahodníček</a></h3>
+<img src="https://antikvariat11.cz/files/thumb_265883.png" alt="Jahodníček" width="100" style="">
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Jahodníček</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'D%C4%9Bdkov%C3%A1,%20Jarmila'">Jarmila Dědková</a></span>
+</div>
+<div class="para-ill">
+<strong>Ilustrátor:</strong>
+<span><a href="/hledani?q=ill:'Milan%20Zezula'">Milan Zezula</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1981</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>124 s.</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/pohadky-detske">Pohádky / Dětské</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>Výborná originální vazba</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>19 Kč</span>
+</div>
+</div>
+</div>
+<div id="p1089845" class="para grow alt-odd" style="">
+<div class="crt"><a href="/kosik?fn=add&amp;id=1089845" onclick="javascript:ajax('?fn=cart&amp;id=1089845',onAjaxCart);return false;">
+<img id="c1089845" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3><a href="/kniha/pritulenko-p-v-postroenie-ploskich-figur-i-secenij-po-specialnym-1979" title="Построение плоских фигур и сечений по специальным ...">Построение плоских фигур и сечений по специальным ...</a></h3>
+<a href="/files/1025339.jpg" onclick="return false;"><img src="/files/thumb_1025339.png" id="pic1025339" class="picgrp" alt="Построение плоских фигур и сечений по специальным ..." onclick="enlarge(this);" longdesc="/files/1025339.jpg" name="/kniha/pritulenko-p-v-postroenie-ploskich-figur-i-secenij-po-specialnym-1979" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;" data-selector-highlight="selected"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Построение плоских фигур и сечений по специальным заданиям</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span>П. В. Притуленко</span>
+</div>
+<div class="para-ill">
+<strong>Ilustrátor:</strong>
+<span><a href="/hledani?q=ill:'Obrazov%C3%A9%20p%C5%99%C3%ADlohy'">Obrazové přílohy</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1979</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>130</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/russkie">Русские</a>, <a href="/kategorie/prirodni-vedy">Přírodní vědy</a>, <a href="/kategorie/technika">Technika</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>Pěkná brož</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>75 Kč</span>
+</div>
+</div>
+</div>
+<div id="p1089844" class="para grow alt-even" style="">
+<div class="crt"><a href="/kosik?fn=add&amp;id=1089844" onclick="javascript:ajax('?fn=cart&amp;id=1089844',onAjaxCart);return false;">
+<img id="c1089844" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3><a href="/kniha/mardasov-n-d-architekturnye-makety-posobie-po-izgotovleniju-1965" title="Архитектурные макеты. Пособие по изготовлению">Архитектурные макеты. Пособие по изготовлению</a></h3>
+<a href="/files/1025338.jpg" onclick="return false;"><img src="/files/thumb_1025338.png" id="pic1025338" class="picgrp" alt="Архитектурные макеты. Пособие по изготовлению" onclick="enlarge(this);" longdesc="/files/1025338.jpg" name="/kniha/mardasov-n-d-architekturnye-makety-posobie-po-izgotovleniju-1965" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;" data-selector-highlight="selected"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Архитектурные макеты. Пособие по изготовлению</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span>Н. Д. Мардасов</span>
+</div>
+<div class="para-ill">
+<strong>Ilustrátor:</strong>
+<span><a href="/hledani?q=ill:'Obrazov%C3%A9%20p%C5%99%C3%ADlohy'">Obrazové přílohy</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1965</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>175</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/russkie">Русские</a>, <a href="/kategorie/modelarstvi">Modelářství</a>, <a href="/kategorie/technika">Technika</a>, <a href="/kategorie/umeni-architektura">Umění / Architektura</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>Výborná originální vazba</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>75 Kč</span>
+</div>
+</div>
+</div>
+<div id="p1089843" class="para grow alt-odd" style="">
+<div class="crt"><a href="/kosik?fn=add&amp;id=1089843" onclick="javascript:ajax('?fn=cart&amp;id=1089843',onAjaxCart);return false;">
+<img id="c1089843" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3><a href="/kniha/nemcinov-ju-i-rascet-prostransvennych-konstrukcij-metod-konecnych-1980" title="Расчет пространсвенных конструкций (Метод конечных ...">Расчет пространсвенных конструкций (Метод конечных ...</a></h3>
+<a href="/files/1025337.jpg" onclick="return false;"><img src="/files/thumb_1025337.png" id="pic1025337" class="picgrp" alt="Расчет пространсвенных конструкций (Метод конечных ..." onclick="enlarge(this);" longdesc="/files/1025337.jpg" name="/kniha/nemcinov-ju-i-rascet-prostransvennych-konstrukcij-metod-konecnych-1980" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;" data-selector-highlight="selected"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Расчет пространсвенных конструкций (Метод конечных элементов)</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span>Ю. И. Немчинов</span>
+</div>
+<div class="para-ill">
+<strong>Ilustrátor:</strong>
+<span><a href="/hledani?q=ill:'Obrazov%C3%A9%20p%C5%99%C3%ADlohy'">Obrazové přílohy</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1980</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>514 s.</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/russkie">Русские</a>, <a href="/kategorie/prirodni-vedy">Přírodní vědy</a>, <a href="/kategorie/technika">Technika</a>, <a href="/kategorie/umeni-architektura">Umění / Architektura</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>Výborná originální vazba</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>75 Kč</span>
+</div>
+</div>
+</div>
+<div id="p1089842" class="para grow alt-even" style="">
+<div class="crt"><a href="/kosik?fn=add&amp;id=1089842" onclick="javascript:ajax('?fn=cart&amp;id=1089842',onAjaxCart);return false;">
+<img id="c1089842" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3><a href="/kniha/lesli-dz-f-vypuklye-struktury-i-matematiceskaja-ekonomika-1972" title="Выпуклые структуры и математическая экономика">Выпуклые структуры и математическая экономика</a></h3>
+<a href="/files/1025336.jpg" onclick="return false;"><img src="/files/thumb_1025336.png" id="pic1025336" class="picgrp" alt="Выпуклые структуры и математическая экономика" onclick="enlarge(this);" longdesc="/files/1025336.jpg" name="/kniha/lesli-dz-f-vypuklye-struktury-i-matematiceskaja-ekonomika-1972" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;" data-selector-highlight="selected"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Выпуклые структуры и математическая экономика</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span>Дж. Ф. Лэсли</span>
+</div>
+<div class="para-ill">
+<strong>Ilustrátor:</strong>
+<span><a href="/hledani?q=ill:'Obrazov%C3%A9%20p%C5%99%C3%ADlohy'">Obrazové přílohy</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1972</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>514 s.</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/russkie">Русские</a>, <a href="/kategorie/prirodni-vedy">Přírodní vědy</a>, <a href="/kategorie/zemedelstvi-zahrada">Zemědělství / Zahrada</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>Výborná originální vazba</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>75 Kč</span>
+</div>
+</div>
+</div>
+<div id="p1089841" class="para grow alt-odd" style="">
+<div class="crt"><a href="/kosik?fn=add&amp;id=1089841" onclick="javascript:ajax('?fn=cart&amp;id=1089841',onAjaxCart);return false;">
+<img id="c1089841" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3><a href="/kniha/nikajdo-ch-vypuklye-struktury-i-matematiceskaja-ekonomika-1972" title="Выпуклые структуры и математическая экономика">Выпуклые структуры и математическая экономика</a></h3>
+<a href="/files/1025335.jpg" onclick="return false;"><img src="/files/thumb_1025335.png" id="pic1025335" class="picgrp" alt="Выпуклые структуры и математическая экономика" onclick="enlarge(this);" longdesc="/files/1025335.jpg" name="/kniha/nikajdo-ch-vypuklye-struktury-i-matematiceskaja-ekonomika-1972" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;" data-selector-highlight="selected"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Выпуклые структуры и математическая экономика</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span>Х. Никайдо</span>
+</div>
+<div class="para-ill">
+<strong>Ilustrátor:</strong>
+<span><a href="/hledani?q=ill:'Obrazov%C3%A9%20p%C5%99%C3%ADlohy'">Obrazové přílohy</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1972</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>514</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/russkie">Русские</a>, <a href="/kategorie/ekonomie">Ekonomie</a>, <a href="/kategorie/technika">Technika</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>Výborná originální vazba</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>75 Kč</span>
+</div>
+</div>
+</div>
+<div id="p1089840" class="para grow alt-even" style="">
+<div class="crt"><a href="/kosik?fn=add&amp;id=1089840" onclick="javascript:ajax('?fn=cart&amp;id=1089840',onAjaxCart);return false;">
+<img id="c1089840" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3><a href="/kniha/devis-a-alternativnye-prirodnye-istocniki-energii-v-1983" title="Альтернативные природные источники энергии в ...">Альтернативные природные источники энергии в ...</a></h3>
+<a href="/files/1025334.jpg" onclick="return false;"><img src="/files/thumb_1025334.png" id="pic1025334" class="picgrp" alt="Альтернативные природные источники энергии в ..." onclick="enlarge(this);" longdesc="/files/1025334.jpg" name="/kniha/devis-a-alternativnye-prirodnye-istocniki-energii-v-1983" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;" data-selector-highlight="selected"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Альтернативные природные источники энергии в строительном проектировании</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span>А. Дэвис; Р. Шуберт</span>
+</div>
+<div class="para-ill">
+<strong>Ilustrátor:</strong>
+<span><a href="/hledani?q=ill:'Obrazov%C3%A9%20p%C5%99%C3%ADlohy'">Obrazové přílohy</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1983</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>187</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/russkie">Русские</a>, <a href="/kategorie/prirodni-vedy">Přírodní vědy</a>, <a href="/kategorie/technika">Technika</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>Výborná brož</span>
+</div>
+<div class="para-price">
+<strong style="">Cena:</strong>
+<span>55 Kč</span>
+</div>
+</div>
+</div>
+<div id="p1089839" class="para grow alt-odd" style="">
+<div class="crt"><a href="/kosik?fn=add&amp;id=1089839" onclick="javascript:ajax('?fn=cart&amp;id=1089839',onAjaxCart);return false;">
+<img id="c1089839" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3><a href="/kniha/kozevnikov-s-n-mechanizmy-spravrcnoe-posobie-1976" title="Механизмы. Справрчное пособие">Механизмы. Справрчное пособие</a></h3>
+<a href="/files/1025333.jpg" onclick="return false;"><img src="/files/thumb_1025333.png" id="pic1025333" class="picgrp" alt="Механизмы. Справрчное пособие" onclick="enlarge(this);" longdesc="/files/1025333.jpg" name="/kniha/kozevnikov-s-n-mechanizmy-spravrcnoe-posobie-1976" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;" data-selector-highlight="selected"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Механизмы. Справрчное пособие</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span>С. Н. Кожевников</span>
+</div>
+<div class="para-ill">
+<strong>Ilustrátor:</strong>
+<span><a href="/hledani?q=ill:'Obrazov%C3%A9%20p%C5%99%C3%ADlohy'">Obrazové přílohy</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1976</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>790</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/russkie">Русские</a>, <a href="/kategorie/prirodni-vedy">Přírodní vědy</a>, <a href="/kategorie/technika">Technika</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>Výborná originální vazba</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>199 Kč</span>
+</div>
+</div>
+</div>
+<div id="p1089838" class="para grow alt-even" style="">
+<div class="crt"><a href="/kosik?fn=add&amp;id=1089838" onclick="javascript:ajax('?fn=cart&amp;id=1089838',onAjaxCart);return false;">
+<img id="c1089838" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3><a href="/kniha/kupka-jiri-svetozar-operace-fikovy-list-1985" title="Operace Fíkový list.">Operace Fíkový list.</a></h3>
+<a href="/files/1025332.jpg" onclick="return false;"><img src="/files/thumb_1025332.png" id="pic1025332" class="picgrp" alt="Operace Fíkový list." onclick="enlarge(this);" longdesc="/files/1025332.jpg" name="/kniha/kupka-jiri-svetozar-operace-fikovy-list-1985" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;" data-selector-highlight="selected"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Operace Fíkový list.</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Kupka,%20Ji%C5%99%C3%AD%20Svetozar'">Jiří Svetozar Kupka</a></span>
+</div>
+<div class="para-ill">
+<strong>Ilustrátor:</strong>
+<span><a href="/hledani?q=ill:'Havl%C3%AD%C4%8Dek,%20Miloslav'">Miloslav Havlíček</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1985</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>126 s.</span>
+</div>
+<div class="para-series">
+<strong>Edice, série:</strong>
+<span>Magnet / 11/85</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/detektivni-pribehy">Detektivní příběhy</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>Pěkná brož</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>20 Kč</span>
+</div>
+</div>
+</div>
+<div id="p1089836" class="para grow alt-odd" style="">
+<div class="crt"><a href="/kosik?fn=add&amp;id=1089836" onclick="javascript:ajax('?fn=cart&amp;id=1089836',onAjaxCart);return false;">
+<img id="c1089836" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3><a href="/kniha/celakovsky-frantisek-ladislav-ohlas-pisni-ceskych-ohlas-pisni-ruskych-cca-2000" title="Ohlas písní českých - Ohlas písní ruských">Ohlas písní českých - Ohlas písní ruských</a></h3>
+<a href="/files/1025330.jpg" onclick="return false;"><img src="/files/thumb_1025330.png" id="pic1025330" class="picgrp" alt="Ohlas písní českých - Ohlas písní ruských" onclick="enlarge(this);" longdesc="/files/1025330.jpg" name="/kniha/celakovsky-frantisek-ladislav-ohlas-pisni-ceskych-ohlas-pisni-ruskych-cca-2000" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;" data-selector-highlight="selected"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Ohlas písní českých - Ohlas písní ruských</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'%C4%8Celakovsk%C3%BD,%20Franti%C5%A1ek%20Ladislav'">František Ladislav Čelakovský</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>cca 2000</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>300 s.</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/poezie">Poezie</a>, <a href="/kategorie/kolibriky">Kolibříky</a>, <a href="/kategorie/bizarie-ruzne">Bizarie, Různé</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>2x Výborná brož</span>
+</div>
+<div class="para-price" style="">
+<strong style="">Cena:</strong>
+<span style="">99 Kč</span>
+</div>
+</div>
+</div>
+<div id="p1089837" class="para grow alt-even" style="">
+<div class="crt"><a href="/kosik?fn=add&amp;id=1089837" onclick="javascript:ajax('?fn=cart&amp;id=1089837',onAjaxCart);return false;">
+<img id="c1089837" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3><a href="/kniha/langenscheidts-lilliput-dictionary-english-german-1964" title="Langenscheidt´s Lilliput Dictionary English-German" style="">Langenscheidt´s Lilliput Dictionary English-German</a></h3>
+<a href="/files/1025331.jpg" onclick="return false;"><img src="/files/thumb_1025331.png" id="pic1025331" class="picgrp" alt="Langenscheidt´s Lilliput Dictionary English-German" onclick="enlarge(this);" longdesc="/files/1025331.jpg" name="/kniha/langenscheidts-lilliput-dictionary-english-german-1964" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;" data-selector-highlight="selected"></a>
+<div class="para-flds" style="">
+<div class="para-title" style="">
+<strong style="">Název:</strong>
+<span style="">Langenscheidt´s Lilliput Dictionary English-German</span>
+</div>
+<div class="para-issued" style="">
+<strong style="">Rok vydání:</strong>
+<span style="">1964</span>
+</div>
+<div class="para-pg" style="">
+<strong style="">Počet stran:</strong>
+<span style="">650</span>
+</div>
+<div class="para-cat" style="">
+<strong style="">Kategorie:</strong>
+<span style=""><a href="/kategorie/slovniky-encyklopedie-ucebnice" style="">Slovníky / Encyklopedie / Učebnice</a>, <a href="/kategorie/deutsch">Deutsch</a>, <a href="/kategorie/english">English</a>, <a href="/kategorie/kolibriky">Kolibříky</a>, <a href="/kategorie/bizarie-ruzne" style="">Bizarie, Různé</a></span>
+</div>
+<div class="para-state" style="">
+<strong>Stav:</strong>
+<span style="">Pěkná brož</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>55 Kč</span>
+</div>
+</div>
+</div>
+<div class="clearfix"></div>
+<ul class="pager">
+<b>1</b>
+<li><a href="/?mn_offs=21">2</a></li>
+<li><a href="/?mn_offs=41">3</a></li>
+<li><a href="/?mn_offs=61">4</a></li>
+<li><a href="/?mn_offs=81">5</a></li>
+<li><a href="/?mn_offs=101">6</a></li>
+<li><a href="/?mn_offs=121">7</a></li>
+<li><a href="/?mn_offs=141">8</a></li>
+ ... 
+<li><a href="/?mn_offs=11781">590</a></li>
+<li><a href="/?mn_offs=21">[další]</a></li>
+</ul>
+
+
+
+  </div> <!-- end content -->
+</div> <!-- end list-view -->
+
+ <div class="clearfix"></div>
+ </div> <!-- end content-wrap -->
+
+ <div id="footer" style="">
+<!--Removing the links will void the Creative Commons License.-->
+  <div align="center" style="">© 2011 <strong>Textrix</strong> | Template by <a href="http://www.themebin.com/">ThemeBin</a> | Icons by <a href="http://p.yusukekamiyamane.com/" style="">Yusuke</a> &amp; <a href="http://www.starfishwebconsulting.co.uk/articles/free-ecommerce-icons?/ecommerce-icons">Starfish</a></div>
+ </div> <!-- end footer -->
+</div> <!-- end wrap -->
+<script>if(e=document.getElementById('cart-box'))e.style.display='none';</script>
+
+
+<div id="enl_ldr" style="visibility: hidden; position: absolute; left: -5000px; top: 0px; z-index: 9999;"><img src="/assets/enfiles/loader.gif" id="enl_ldrgif" style="border-width: 1px; border-style: solid; border-color: black;"></div><div id="enl_brd" style="visibility: hidden; position: absolute; left: -5000px; top: 0px; background-color: rgb(255, 255, 255);"></div><div id="enl_shd" style="visibility: hidden; position: absolute; left: -5000px; top: 0px; background-color: black; opacity: 0.09;"></div><div id="enl_drk" style="visibility: hidden; position: absolute; left: -5000px; top: 0px; background-color: black; z-index: 9670;"></div>
+        <div id="selector-modal">
+            <p id="modal-message">Loading...</p>
+            <div id="modal-buttons"></div>
+        </div>
+    </body></html>

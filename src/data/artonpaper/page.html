@@ -30,17 +30,17 @@
     
     
 
-<style type="text/css">body {-webkit-user-select: none; -khtml-user-select: none; -ms-user-select: none; user-select: none; cursor: default;}</style><style type="text/css"><br>        #selector-modal {<br>            position: fixed;<br>            bottom: 20px; /* Changed from top */<br>            left: 50%;<br>            transform: translateX(-50%);<br>            background: white;<br>            border: 1px solid #ccc;<br>            border-radius: 8px;<br>            box-shadow: 0 6px 20px rgba(0,0,0,0.2);<br>            padding: 16px 24px;<br>            z-index: 999999;<br>            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;<br>            font-size: 16px;<br>            line-height: 1.5;<br>            color: #333;<br>            display: block; /* Always visible */<br>            max-width: 90%;<br>            text-align: center;<br>        }<br>        #selector-modal p {<br>            margin: 0 0 12px 0;<br>        }<br>        #selector-modal button {<br>            padding: 8px 14px;<br>            border: none;<br>            border-radius: 6px;<br>            font-size: 14px;<br>            font-weight: 500;<br>            cursor: pointer;<br>            margin: 0 5px; /* Added spacing */<br>            background-color: #34c759;<br>            color: white;<br>        }<br>        #selector-modal button#prev-cat-btn {<br>             background-color: #f0f0f0;<br>             color: #333;<br>        }<br>        /* Style for the prediction button */<br>        #selector-modal button#predict-selectors-btn {<br>            background-color: #007aff; /* Blue */<br>            color: white;<br>        }<br>        #selector-modal button:disabled {<br>            background-color: #ccc;<br>            cursor: not-allowed;<br>        }<br>    <br><br>        /* Single style for all selected items */<br>        [data-selector-highlight="selected"] {<br>            outline: 3px solid #34c759 !important; /* Green */<br>            box-shadow: 0 0 10px #34c759;<br>            background-color: rgba(52, 199, 89, 0.1);<br>        }<br><br>        [data-selector-highlight="predicted"] {<br>            outline: 3px solid #007aff !important; /* Blue */<br>            box-shadow: 0 0 10px #007aff;<br>            background-color: rgba(0, 122, 255, 0.1);<br>        }<br>    </style></head>
+<style type="text/css">body {-webkit-user-select: none; -khtml-user-select: none; -ms-user-select: none; user-select: none; cursor: default;}</style><style type="text/css"><br>        #selector-modal {<br>            position: fixed;<br>            bottom: 20px;<br>            left: 50%;<br>            transform: translateX(-50%);<br>            background: white;<br>            border: 1px solid #ccc;<br>            border-radius: 8px;<br>            box-shadow: 0 6px 20px rgba(0,0,0,0.2);<br>            padding: 16px 24px;<br>            z-index: 999999;<br>            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;<br>            font-size: 16px;<br>            line-height: 1.5;<br>            color: #333;<br>            display: block;<br>            max-width: 90%;<br>            text-align: center;<br>            cursor: move;<br>            user-select: none;<br>        }<br>        #selector-modal.dragging {<br>            cursor: grabbing;<br>        }<br>        #selector-modal p {<br>            margin: 0 0 12px 0;<br>            font-size: 18px;<br>            font-weight: 600;<br>        }<br>        #selector-modal p strong {<br>            color: #007aff;<br>            font-size: 20px;<br>            text-transform: uppercase;<br>            text-shadow: 0 0 10px rgba(0, 122, 255, 0.3);<br>        }<br>        #selector-modal button {<br>            padding: 8px 14px;<br>            border: none;<br>            border-radius: 6px;<br>            font-size: 14px;<br>            font-weight: 500;<br>            cursor: pointer;<br>            margin: 0 5px;<br>            background-color: #34c759;<br>            color: white;<br>            transition: opacity 0.2s ease;<br>        }<br>        #selector-modal button:hover:not(:disabled) {<br>            opacity: 0.85;<br>        }<br>        #selector-modal button#prev-cat-btn {<br>             background-color: #f0f0f0;<br>             color: #333;<br>        }<br>        /* Style for the prediction button */<br>        #selector-modal button#predict-selectors-btn {<br>            background-color: #007aff; /* Blue */<br>            color: white;<br>        }<br>        #selector-modal button:disabled {<br>            background-color: #ccc;<br>            color: #666;<br>            cursor: not-allowed;<br>            opacity: 0.6;<br>        }<br>    <br><br>        /* Single style for all selected items */<br>        [data-selector-highlight="selected"] {<br>            outline: 4px solid #34c759 !important; /* Green */<br>            box-shadow: 0 0 15px #34c759;<br>            background-color: rgba(52, 199, 89, 0.15);<br>        }<br><br>        [data-selector-highlight="predicted"] {<br>            outline: 3px dashed #007aff !important; /* Blue dashed */<br>            box-shadow: 0 0 10px #007aff;<br>            background-color: rgba(0, 122, 255, 0.1);<br>        }<br>        <br>        [data-selector-highlight="model-predicted"] {<br>            outline: 3px dashed #ff9500 !important; /* Orange dashed */<br>            box-shadow: 0 0 10px #ff9500;<br>            background-color: rgba(255, 149, 0, 0.1);<br>        }<br>    </style></head>
 
 <body class="w3-content body-background" style="max-width:1600px">
 <!-- Cookie consent banner -->
-<div id="cookieBanner" class="cookie-banner" style="display: block;">
+<div id="cookieBanner" class="cookie-banner">
     <h5 class="w3-container w3-padding-16">This website uses cookies to ensure you get the best experience on our website.</h5>
     <button id="acceptCookiesBtn" class="w3-large w3-button w3-green w3-round">Accept Cookies</button>
 </div>
 <!-- Sidebar/menu -->
-<nav class="w3-sidebar w3-collapse nav-bar-container w3-animate-left" style="z-index:3;width:300px;" id="mySidebar">
-  <div class="category-menu">
+<nav class="w3-sidebar w3-collapse nav-bar-container w3-animate-left" style="z-index: 3; width: 300px;" id="mySidebar">
+  <div class="category-menu" style="">
         <div class="w3-hide-small">
             <br>
             <br>
@@ -51,16 +51,16 @@
           <i class="fa fa-remove"></i>
         </a>
 
-        <img src="/media/images/logo-1.png" class="logo-img" alt="Logo"><br><br>
+        <img src="/media/images/logo-1.png" class="logo-img" alt="Logo" data-selector-highlight="predicted"><br><br>
         <p class="w3-text-grey"></p>
         <br>
-      <div class="w3-bar-block">
+      <div class="w3-bar-block" style="">
               
-                <h4 id="Newest"><a href="/new" onclick="w3_close()" class="w3-bar-item w3-button w3-padding selected_menu"><i class="fa fa-th-large w3-margin-right " id="th"></i><b>NEW ARRIVALS</b></a></h4>
+                <h4 id="Newest"><a href="/new" onclick="w3_close()" class="w3-bar-item w3-button w3-padding selected_menu" style=""><i class="fa fa-th-large w3-margin-right " id="th"></i><b>NEW ARRIVALS</b></a></h4>
               
 
               
-                <h3><a href="/category/Architecture/mostExpensive?page=1" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-text-black"><i class=" fa fa-minus w3-margin-right"></i>Architecture</a></h3>
+                <h3><a href="/category/Architecture/mostExpensive?page=1" onclick="w3_close()" class="w3-bar-item w3-button w3-hover-text-black" style=""><i class=" fa fa-minus w3-margin-right"></i>Architecture</a></h3>
               
 
               
@@ -132,18 +132,18 @@
     
     
     
-        <div class="w3-container">
+        <div class="w3-container" style="">
         
            <h1 class="w3-hide-large new-arrivals">New Arrivals</h1>
            <br>
            <br>
            <br>
            <form method="POST" action="/search//keyword?page=1">
-                <input type="hidden" name="csrfmiddlewaretoken" value="E7ToKpGZgHtHzvZDNU1OzKU492a8px0WxYWol9by02DFI5FlOtO8aqHABZNtZ62q">
+                <input type="hidden" name="csrfmiddlewaretoken" value="8AZqgFmQ8eMvYdDKT0DCz48A1AaXJxMJVVRGNWTMtSpH2uFHbQJDsF2thfYZQfQh">
                 <p></p>
            </form>
         
-        <div class="w3-padding w3-display-topright" onclick="showCart()"><img src="/static/img/cart.png" style="width:45px" class="w3-hover-opacity" alt="cart"></div>
+        <div class="w3-padding w3-display-topright" onclick="showCart()" style=""><img src="/static/img/cart.png" style="width:45px" class="w3-hover-opacity" alt="cart" data-selector-highlight="predicted"></div>
 
             
     
@@ -176,7 +176,7 @@
     <div id="id01" class="modal w3-animate-right" style="display: none">
       <form class="modal-content">
         
-            <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Cart"><img class="w3-animate-opacity w3-hover-border" src="/static/img/delete.png" alt="cross"></span>
+            <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Cart"><img class="w3-animate-opacity w3-hover-border" src="/static/img/delete.png" alt="cross" data-selector-highlight="selected"></span>
             <br>
             <h1 class="w3-center w3-text-red"><b>CART IS EMPTY</b></h1>
             <br>
@@ -189,7 +189,7 @@
 
 <div class="w3-main" style="margin-left:300px">
     <!-- !PAGE CONTENT! -->
-    <div class="w3-row-padding w3-animate-opacity">
+    <div class="w3-row-padding w3-animate-opacity" style="">
     
           <script>
             let text_string;
@@ -197,12 +197,12 @@
           
           <!-- First Photo Grid-->
             <div class="spacing w3-container w3-margin-bottom">
-                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px;">
                    <a style="text-decoration: none;" href="/product?bookId=11542&amp;bookName=LIFE: THE FIRST DECADE 1936-1945 with 200 photographs">
-                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
-                        <img src="/media/images/32352007374.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" style="">
+                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container" style="">
+                        <img src="/media/images/32352007374.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected" style="">
                     </div>
-                    <hr>
+                    <hr style="">
                     <div class="w3-center" id="11542_id" style="font-family: throndale, sans-serif;">
                         <h2 id="11542" style="font-family: throndale, sans-serif;">life: the first decade 1936-1945 with 20 ...</h2>
                         
@@ -233,15 +233,15 @@
         
           <!-- First Photo Grid-->
             <div class="spacing w3-container w3-margin-bottom">
-                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px">
-                   <a style="text-decoration:none" href="/product?bookId=11541&amp;bookName=PER UNO SPAZIO AUTONOMO">
-                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
-                        <img src="/media/images/32352010110.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px;">
+                   <a style="text-decoration: none;" href="/product?bookId=11541&amp;bookName=PER UNO SPAZIO AUTONOMO">
+                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container" style="">
+                        <img src="/media/images/32352010110.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected" style="">
                     </div>
                     <hr>
-                    <div class="w3-center" id="11541_id" style="font-family: throndale, sans-serif">
+                    <div class="w3-center" id="11541_id" style="font-family: throndale, sans-serif;">
                         <h2 id="11541" style="font-family: throndale, sans-serif;">per uno spazio autonomo</h2>
-                        <div id="11541_br" style="height: 35px"></div>
+                        <div id="11541_br" style="height: 35px;"></div>
                         <script>
                             text_string = "PER UNO SPAZIO AUTONOMO".toLowerCase().replaceAll("&#x27;","'").replaceAll("&quot;", "\"").replaceAll("&amp;", "&");
                             if(text_string.length > 40){
@@ -269,13 +269,13 @@
         
           <!-- First Photo Grid-->
             <div class="spacing w3-container w3-margin-bottom">
-                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px">
-                   <a style="text-decoration:none" href="/product?bookId=11540&amp;bookName=ALBERTO KORDA: DIARIO DE UNA REVOLUCION">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px;">
+                   <a style="text-decoration: none;" href="/product?bookId=11540&amp;bookName=ALBERTO KORDA: DIARIO DE UNA REVOLUCION">
                     <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
-                        <img src="/media/images/32351997779.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image">
+                        <img src="/media/images/32351997779.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected" style="">
                     </div>
                     <hr>
-                    <div class="w3-center" id="11540_id" style="font-family: throndale, sans-serif">
+                    <div class="w3-center" id="11540_id" style="font-family: throndale, sans-serif;">
                         <h2 id="11540" style="font-family: throndale, sans-serif;">alberto korda: diario de una revolucion</h2>
                         
                         <script>
@@ -308,7 +308,7 @@
                  <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px">
                    <a style="text-decoration:none" href="/product?bookId=11539&amp;bookName=DONNE VISTE DALLE DONNE">
                     <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
-                        <img src="/media/images/32351980930.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image">
+                        <img src="/media/images/32351980930.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected">
                     </div>
                     <hr>
                     <div class="w3-center" id="11539_id" style="font-family: throndale, sans-serif">
@@ -341,10 +341,10 @@
         
           <!-- First Photo Grid-->
             <div class="spacing w3-container w3-margin-bottom">
-                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px">
-                   <a style="text-decoration:none" href="/product?bookId=11538&amp;bookName=LA PHOTOGRAPHIE PUBLICITAIRE, 50 ANS DE CREATION">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px;">
+                   <a style="text-decoration: none;" href="/product?bookId=11538&amp;bookName=LA PHOTOGRAPHIE PUBLICITAIRE, 50 ANS DE CREATION">
                     <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
-                        <img src="/media/images/32351909340_B9ofvt2.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image">
+                        <img src="/media/images/32351909340_B9ofvt2.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected" style="">
                     </div>
                     <hr>
                     <div class="w3-center" id="11538_id" style="font-family: throndale, sans-serif">
@@ -377,10 +377,10 @@
         
           <!-- First Photo Grid-->
             <div class="spacing w3-container w3-margin-bottom">
-                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px;">
                    <a style="text-decoration:none" href="/product?bookId=11537&amp;bookName=BROKEN SPIRITS - Eberhard Grames">
                     <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
-                        <img src="/media/images/32351909340.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image">
+                        <img src="/media/images/32351909340.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected">
                     </div>
                     <hr>
                     <div class="w3-center" id="11537_id" style="font-family: throndale, sans-serif">
@@ -415,11 +415,11 @@
             <div class="spacing w3-container w3-margin-bottom">
                  <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px">
                    <a style="text-decoration:none" href="/product?bookId=11536&amp;bookName=THE EYE OF THE BEHOLDER - SEVEN CONTEMPORARY SWISS PHOTOGRAPHERS - Simone Kappeler, Jacques Berthet, Hans Danuser, Bernard Voita, Thomas Flechtner, Annelies Strba, Micaela Garzoni">
-                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
-                        <img src="/media/images/32351911889.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image">
+                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container" style="">
+                        <img src="/media/images/32351911889.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected">
                     </div>
                     <hr>
-                    <div class="w3-center" id="11536_id" style="font-family: throndale, sans-serif">
+                    <div class="w3-center" id="11536_id" style="font-family: throndale, sans-serif;">
                         <h2 id="11536" style="font-family: throndale, sans-serif;">the eye of the beholder - seven contempo ...</h2>
                         
                         <script>
@@ -436,7 +436,7 @@
                     <div class="">
                         
                             
-                                <h1 style="font-family: throndale, sans-serif">55 Chf</h1>
+                                <h1 style="font-family: throndale, sans-serif;">55 Chf</h1>
                             
                         
                     </div>
@@ -449,10 +449,10 @@
         
           <!-- First Photo Grid-->
             <div class="spacing w3-container w3-margin-bottom">
-                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px;">
                    <a style="text-decoration:none" href="/product?bookId=11535&amp;bookName=DAGMAR HOCHOVA: Photographe tchèque/Ceska fotografka - Inscribed by Dagmar Hochova">
                     <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
-                        <img src="/media/images/32351867031.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image">
+                        <img src="/media/images/32351867031.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected">
                     </div>
                     <hr>
                     <div class="w3-center" id="11535_id" style="font-family: throndale, sans-serif">
@@ -472,7 +472,7 @@
                     <div class="">
                         
                             
-                                <h1 style="font-family: throndale, sans-serif">100 Chf</h1>
+                                <h1 style="font-family: throndale, sans-serif;">100 Chf</h1>
                             
                         
                     </div>
@@ -485,15 +485,15 @@
         
           <!-- First Photo Grid-->
             <div class="spacing w3-container w3-margin-bottom">
-                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px">
-                   <a style="text-decoration:none" href="/product?bookId=11534&amp;bookName=ZAUBER DER ADRIA">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px;">
+                   <a style="text-decoration: none;" href="/product?bookId=11534&amp;bookName=ZAUBER DER ADRIA">
                     <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
-                        <img src="/media/images/32351861795.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image">
+                        <img src="/media/images/32351861795.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected" style="">
                     </div>
                     <hr>
-                    <div class="w3-center" id="11534_id" style="font-family: throndale, sans-serif">
+                    <div class="w3-center" id="11534_id" style="font-family: throndale, sans-serif;">
                         <h2 id="11534" style="font-family: throndale, sans-serif;">zauber der adria</h2>
-                        <div id="11534_br" style="height: 35px"></div>
+                        <div id="11534_br" style="height: 35px;"></div>
                         <script>
                             text_string = "ZAUBER DER ADRIA".toLowerCase().replaceAll("&#x27;","'").replaceAll("&quot;", "\"").replaceAll("&amp;", "&");
                             if(text_string.length > 40){
@@ -508,7 +508,7 @@
                     <div class="">
                         
                             
-                                <h1 style="font-family: throndale, sans-serif">50 Chf</h1>
+                                <h1 style="font-family: throndale, sans-serif;">50 Chf</h1>
                             
                         
                     </div>
@@ -521,10 +521,10 @@
         
           <!-- First Photo Grid-->
             <div class="spacing w3-container w3-margin-bottom">
-                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px;">
                    <a style="text-decoration:none" href="/product?bookId=1073&amp;bookName=ATHENIAN BLACK FIGURE VASES - with 383 illustrations">
-                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
-                        <img src="/media/images/ATHENIAN_BLACK_FIGUR8250.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image">
+                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container" style="">
+                        <img src="/media/images/ATHENIAN_BLACK_FIGUR8250.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected">
                     </div>
                     <hr>
                     <div class="w3-center" id="1073_id" style="font-family: throndale, sans-serif">
@@ -554,11 +554,11 @@
 
         
           <!-- First Photo Grid-->
-            <div class="spacing w3-container w3-margin-bottom">
-                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px">
+            <div class="spacing w3-container w3-margin-bottom" style="">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px;">
                    <a style="text-decoration:none" href="/product?bookId=6303&amp;bookName=WINNETOU Reiseerzählung von Karl May I. BAND II. BAND &amp; III. BAND Komplet">
-                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
-                        <img src="/media/images/WINNETOU_Reiseerzähl230.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image">
+                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container" style="">
+                        <img src="/media/images/WINNETOU_Reiseerzähl230.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected" style="">
                     </div>
                     <hr>
                     <div class="w3-center" id="6303_id" style="font-family: throndale, sans-serif">
@@ -588,11 +588,11 @@
 
         
           <!-- First Photo Grid-->
-            <div class="spacing w3-container w3-margin-bottom">
-                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px">
+            <div class="spacing w3-container w3-margin-bottom" style="">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px;">
                    <a style="text-decoration:none" href="/product?bookId=6195&amp;bookName=LE ARTI Rassegna di attualità artistica : 1965 - 1968 - 1969 - 1970 - 1971 - 1972 - 6 annate complete">
                     <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
-                        <img src="/media/images/LE_ARTI_Rassegna_di_6570.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image">
+                        <img src="/media/images/LE_ARTI_Rassegna_di_6570.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected">
                     </div>
                     <hr>
                     <div class="w3-center" id="6195_id" style="font-family: throndale, sans-serif">
@@ -623,10 +623,10 @@
         
           <!-- First Photo Grid-->
             <div class="spacing w3-container w3-margin-bottom">
-                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px;">
                    <a style="text-decoration:none" href="/product?bookId=11188&amp;bookName=Economical Love - XXIV Bienal de Sao Paulo 1998">
-                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
-                        <img src="/media/images/Photo_2024-11-06_165348.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image">
+                    <div class="img-hover-zoom img-hover-zoom--slowmo image-container" style="">
+                        <img src="/media/images/Photo_2024-11-06_165348.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected">
                     </div>
                     <hr>
                     <div class="w3-center" id="11188_id" style="font-family: throndale, sans-serif">
@@ -660,7 +660,7 @@
                  <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px">
                    <a style="text-decoration:none" href="/product?bookId=11479&amp;bookName=VHUTEMAS: Moscou, 1920-1930">
                     <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
-                        <img src="/media/images/32297686738.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image">
+                        <img src="/media/images/32297686738.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected">
                     </div>
                     <hr>
                     <div class="w3-center" id="11479_id" style="font-family: throndale, sans-serif">
@@ -690,13 +690,13 @@
 
         
           <!-- First Photo Grid-->
-            <div class="spacing w3-container w3-margin-bottom">
-                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px">
-                   <a style="text-decoration:none" href="/product?bookId=8546&amp;bookName=CODEX SERAPHINIANUS 40th Anniversary Edition">
+            <div class="spacing w3-container w3-margin-bottom" style="">
+                 <div class="w3-container grid-container w3-center w3-padding-16" style="height: 650px;">
+                   <a style="text-decoration: none;" href="/product?bookId=8546&amp;bookName=CODEX SERAPHINIANUS 40th Anniversary Edition">
                     <div class="img-hover-zoom img-hover-zoom--slowmo image-container">
-                        <img src="/media/images/CODEX_SERAPHINIANUS_5470.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image">
+                        <img src="/media/images/CODEX_SERAPHINIANUS_5470.jpg" onerror="if (this.src !== '/media/default.png') this.src = '/media/default.png';" alt="Image" data-selector-highlight="selected" style="">
                     </div>
-                    <hr>
+                    <hr style="">
                     <div class="w3-center" id="8546_id" style="font-family: throndale, sans-serif">
                         <h2 id="8546" style="font-family: throndale, sans-serif;">codex seraphinianus 40th anniversary edi ...</h2>
                         

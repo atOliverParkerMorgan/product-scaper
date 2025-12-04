@@ -5,10 +5,11 @@ import lxml.html
 from lxml.etree import XPathEvalError
 from enum import Enum
 import regex as re
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 import textstat
 from urllib.parse import urlparse
-import hashlib
+from sklearn.preprocessing import LabelEncoder
+import pickle
 
 # --- Feature Definitions ---
 
@@ -64,36 +65,49 @@ PRICE_REGEX = re.compile(rf"""
     )
 """, re.VERBOSE | re.UNICODE)
 
-# Tag encoding - convert tag names to numbers
-# not using one-hot encoding to keep the dataset consistent in size
-COMMON_TAGS = {
-    'div': 1, 'span': 2, 'p': 3, 'a': 4, 'img': 5, 'h1': 6, 'h2': 7, 'h3': 8, 'h4': 9, 'h5': 10, 'h6': 11,
-    'ul': 12, 'ol': 13, 'li': 14, 'table': 15, 'tr': 16, 'td': 17, 'th': 18, 'form': 19, 'input': 20,
-    'button': 21, 'select': 22, 'option': 23, 'textarea': 24, 'label': 25, 'nav': 26, 'header': 27,
-    'footer': 28, 'section': 29, 'article': 30, 'aside': 31, 'main': 32, 'body': 33, 'html': 34
-}
+class FeatureEncoders:
+    """Container for all feature encoders used in the pipeline."""
+    def __init__(self):
+        self.tag_encoder = LabelEncoder()
+        self.category_encoder = LabelEncoder()
+        self.selector_encoder = LabelEncoder()
+        # For text-based features, we'll use frequency-based encoding or keep as hash
+        # since text content varies too much for label encoding
+        
+    def save(self, filepath: Path):
+        """Save encoders to disk for reuse during inference."""
+        with open(filepath, 'wb') as f:
+            pickle.dump(self, f)
+    
+    @staticmethod
+    def load(filepath: Path):
+        """Load encoders from disk."""
+        with open(filepath, 'rb') as f:
+            return pickle.load(f)
 
-def _encode_tag(tag_name) -> int:
-    """Convert tag name to numerical encoding."""
+# Common HTML tags (for initialization and unknown tag handling)
+COMMON_TAGS = [
+    'div', 'span', 'p', 'a', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+    'ul', 'ol', 'li', 'table', 'tr', 'td', 'th', 'form', 'input',
+    'button', 'select', 'option', 'textarea', 'label', 'nav', 'header',
+    'footer', 'section', 'article', 'aside', 'main', 'body', 'html', 'unknown'
+]
+
+def _normalize_tag(tag_name) -> str:
+    """Normalize tag name to string, handling special cases."""
     if not tag_name or not hasattr(tag_name, 'lower'):
-        return 0
+        return 'unknown'
     try:
-        return COMMON_TAGS.get(str(tag_name).lower(), 99)  # 99 for unknown tags
+        return str(tag_name).lower()
     except:
-        return 0
-
-def _encode_string(text: str) -> int:
-    """Convert string to numerical hash (for IDs, classes, etc)."""
-    if not text:
-        return 0
-    return abs(hash(text)) % 10000  # Keep it reasonable size
+        return 'unknown'
 
 def _count_unique_tags(tag_list: List[str]) -> int:
     """Count unique tags in a list."""
     return len(set(tag_list)) if tag_list else 0
 
 
-def _extract_element_features(element: lxml.html.HtmlElement, requested_features: List[Features] = ALL_FEATURES, features: Dict[str, Any]= {}) -> Dict[str, Any]:
+def _extract_element_features(element: lxml.html.HtmlElement, requested_features: List[Features] = ALL_FEATURES, features: Dict[str, Any]= {}, raw_values: bool = True) -> Dict[str, Any]:
     """
     Extracts a set of features for a *single* lxml element.
     """
@@ -103,28 +117,32 @@ def _extract_element_features(element: lxml.html.HtmlElement, requested_features
         parent = element.getparent()
     
     except ValueError:
-        # for some elements (<input/>...), text_content() may fail
         text = ''
         parent = None
         
     for feat in requested_features:
         try:
             if feat == Features.TAG:
-                features[feat.value] = _encode_tag(element.tag)
+                # Store normalized tag name - will be encoded by LabelEncoder later
+                features[feat.value] = _normalize_tag(element.tag)
             
             elif feat == Features.ID_NAME:
-                features[feat.value] = _encode_string(element.get('id'))
+                # Binary: has ID or not (IDs are usually unique, not good for encoding)
+                features[feat.value] = 1 if element.get('id') else 0
             
             elif feat == Features.CLASS_NAME:
-                features[feat.value] = _encode_string(element.get('class'))
+                # Count number of classes (better than encoding class names)
+                class_attr = element.get('class')
+                features[feat.value] = len(class_attr.split()) if class_attr else 0
             
             elif feat == Features.ALL_ATTRIBUTES:
                 # Count number of attributes
                 features[feat.value] = len(element.attrib)
             
             elif feat == Features.TEXT_CONTENT:
-                # Convert text to hash for numerical representation
-                features[feat.value] = _encode_string(text)
+                # Use text length as proxy (text content itself not useful for ML)
+                # Already have TEXT_CONTENT_LENGTH, so use character density
+                features[feat.value] = len(text) / max(len(text.split()), 1) if text else 0
             
             elif feat == Features.TEXT_CONTENT_LENGTH:
                 features[feat.value] = len(text)
@@ -146,7 +164,8 @@ def _extract_element_features(element: lxml.html.HtmlElement, requested_features
                     features[feat.value] = 0
 
             elif feat == Features.PARENT_TAG:
-                features[feat.value] = _encode_tag(parent.tag) if parent is not None else 0
+                # Store normalized parent tag - will be encoded later
+                features[feat.value] = _normalize_tag(parent.tag) if parent is not None else 'unknown'
 
             elif feat == Features.NUM_CHILDREN:
                 features[feat.value] = len(element)
@@ -181,11 +200,12 @@ def _extract_element_features(element: lxml.html.HtmlElement, requested_features
                 features[feat.value] = 1 if element.get('href') is not None else 0
             
             elif feat == Features.HREF_DOMAIN:
+                # Binary: is external link (has domain) or internal/no link
                 href = element.get('href')
                 if href:
                     try:
                         parsed = urlparse(href)
-                        features[feat.value] = _encode_string(parsed.netloc)
+                        features[feat.value] = 1 if parsed.netloc else 0
                     except:
                         features[feat.value] = 0
                 else:
@@ -195,10 +215,10 @@ def _extract_element_features(element: lxml.html.HtmlElement, requested_features
                 features[feat.value] = 1 if element.tag == 'img' else 0
             
             elif feat == Features.IMAGE_SRC:
-                # Encode image source as hash if present
+                # Binary: has image source or not
                 if element.tag == 'img':
                     src = element.get('src')
-                    features[feat.value] = _encode_string(src) if src else 0
+                    features[feat.value] = 1 if src else 0
                 else:
                     features[feat.value] = 0
 
@@ -210,7 +230,7 @@ def _extract_element_features(element: lxml.html.HtmlElement, requested_features
     return features
 
 
-def extract_features_from_html(html_content: str, selectors: dict, features_to_extract: List[Features] = ALL_FEATURES, unwanted_tags:List[str]=UNWANTED_TAGS) -> List[Dict[str, Any]]:
+def extract_features_from_html(html_content: str, selectors: dict, features_to_extract: List[Features] = ALL_FEATURES, unwanted_tags:List[str]=UNWANTED_TAGS, encoders: Optional[FeatureEncoders] = None) -> tuple[List[Dict[str, Any]], FeatureEncoders]:
     """Extract features from HTML content for each category using provided CSS selectors.
 
     Args:
@@ -226,11 +246,23 @@ def extract_features_from_html(html_content: str, selectors: dict, features_to_e
         document = lxml.html.fromstring(html_content)
     except Exception as e:
         print(f"Error: lxml failed to parse HTML. {e}")
-        return []
+        return [], FeatureEncoders()
 
     all_features_data = []
+    
+    # Initialize encoders if not provided
+    if encoders is None:
+        encoders = FeatureEncoders()
+    
+    # Collect all categorical values for fitting encoders
+    all_tags = []
+    all_parent_tags = []
+    all_categories = []
+    all_selectors = []
+    
+    # Track all selected elements to exclude them from 'other' category
+    selected_elements = set()
 
-    all_selectors = [sel for sel_list in selectors.values() for sel in sel_list]
     for category, selector_list in selectors.items():
         for selector in selector_list:
             try:
@@ -241,37 +273,84 @@ def extract_features_from_html(html_content: str, selectors: dict, features_to_e
                     continue
                     
                 for element in elements:
+                    # Track this element as selected
+                    selected_elements.add(element)
+                    
                     # Get all features for this one element
                     feature_row = {}
-                    feature_row['Category'] = _encode_string(category)
+                    feature_row['Category'] = category  # Keep raw category name
                     feature_row = _extract_element_features(element, features_to_extract, feature_row)
-                    feature_row['Selector'] = _encode_string(selector)
+                    feature_row['Selector'] = selector  # Keep raw selector
                     
                     all_features_data.append(feature_row)
+                    
+                    # Collect categorical values
+                    all_categories.append(category)
+                    all_selectors.append(selector)
+                    if 'tag' in feature_row:
+                        all_tags.append(feature_row['tag'])
+                    if 'parent_tag' in feature_row:
+                        all_parent_tags.append(feature_row['parent_tag'])
                     
             except XPathEvalError:
                 print(f"Error: Invalid CSS selector '{selector}'. Skipping.")
             except Exception as e:
                 print(f"Error processing selector '{selector}': {e}")
 
-    # all other element have the category 'other'
-    other_elements = set(document.iter()) - {el for sel_list in selectors.values() for sel in sel_list for el in document.cssselect(sel)}
-    for element in other_elements:
+    # Collect all other elements that weren't selected
+    for element in document.iter():
+        # Skip if this element was already selected
+        if element in selected_elements:
+            continue
+            
+        # Skip unwanted tags (script, style, etc.)
         if element.tag in unwanted_tags:
+            continue
+        
+        # Skip if tag is not a string (comments, etc.)
+        if not isinstance(element.tag, str):
             continue
 
         feature_row = {}
-        feature_row['Category'] = _encode_string(OTHER_CATEGORY)
+        feature_row['Category'] = OTHER_CATEGORY  # Keep raw category
         feature_row = _extract_element_features(element, features_to_extract, feature_row)
-        feature_row['Selector'] = 0  # No selector for 'other' elements
+        feature_row['Selector'] = 'none'  # Use string for consistency
         
         all_features_data.append(feature_row)
+        
+        # Collect categorical values
+        all_categories.append(OTHER_CATEGORY)
+        all_selectors.append('none')
+        if 'tag' in feature_row:
+            all_tags.append(feature_row['tag'])
+        if 'parent_tag' in feature_row:
+            all_parent_tags.append(feature_row['parent_tag'])
 
-    return all_features_data
+    # Fit encoders on collected categorical data
+    # Combine all tags (from tag and parent_tag fields) with common tags
+    all_unique_tags = list(set(all_tags + all_parent_tags + COMMON_TAGS))
+    if all_unique_tags:
+        encoders.tag_encoder.fit(all_unique_tags)
+    if all_categories:
+        encoders.category_encoder.fit(list(set(all_categories)))
+    if all_selectors:
+        encoders.selector_encoder.fit(list(set(all_selectors)))
+    
+    # Encode tag and selector features (keep Category as readable string)
+    for row in all_features_data:
+        if 'tag' in row:
+            row['tag'] = encoders.tag_encoder.transform([row['tag']])[0]
+        if 'parent_tag' in row:
+            row['parent_tag'] = encoders.tag_encoder.transform([row['parent_tag']])[0]
+        if 'Selector' in row:
+            row['Selector'] = encoders.selector_encoder.transform([row['Selector']])[0]
+        # Note: Category is kept as string for readability in CSV
+
+    return all_features_data, encoders
 
 def selector_data_to_csv(data_domain_dir: Path) -> None:
     """
-    Converts stored selector data (YAML + HTML) into a rich 'train.csv' file
+    Converts stored selector data (YAML + HTML) into a rich 'data.csv' file
     containing all extracted features for each selected element.
     
     Args:
@@ -281,7 +360,8 @@ def selector_data_to_csv(data_domain_dir: Path) -> None:
 
     yaml_path = data_domain_dir / 'selectors.yaml'
     html_path = data_domain_dir / 'page.html'
-    train_csv_path = data_domain_dir / 'train.csv'
+    data_csv_path = data_domain_dir / 'data.csv'
+    encoders_path = data_domain_dir / 'encoders.pkl'
 
     if not yaml_path.exists() or not html_path.exists():
         raise FileNotFoundError(f"Error: Missing 'selectors.yaml' or 'page.html' in {data_domain_dir}")
@@ -303,16 +383,20 @@ def selector_data_to_csv(data_domain_dir: Path) -> None:
 
 
     print(f"Extracting features from {html_path}...")
-    extracted_data = extract_features_from_html(html_content, selectors)
+    extracted_data, encoders = extract_features_from_html(html_content, selectors)
 
     if not extracted_data:
-        print("No data was extracted. 'train.csv' will not be created.")
+        print("No data was extracted. 'data.csv' will not be created.")
         return
+    
+    # Save encoders for later use during inference
+    encoders.save(encoders_path)
+    print(f"Saved feature encoders to {encoders_path}")
 
     try:
         headers = list(extracted_data[0].keys())
 
-        with open(train_csv_path, 'w', newline='', encoding='utf-8') as csv_file:
+        with open(data_csv_path, 'w', newline='', encoding='utf-8') as csv_file:
             writer = csv.DictWriter(csv_file, fieldnames=headers)
             
             # Write the header row (e.g., 'Category', 'Selector', 'tag', 'text_content'...)
@@ -321,7 +405,7 @@ def selector_data_to_csv(data_domain_dir: Path) -> None:
             # Write all the feature rows
             writer.writerows(extracted_data)
         
-        print(f"Successfully saved {len(extracted_data)} feature rows to {train_csv_path}")
+        print(f"Successfully saved {len(extracted_data)} feature rows to {data_csv_path}")
 
     except Exception as e:
         print(f"Error writing CSV file: {e}")
@@ -329,12 +413,12 @@ def selector_data_to_csv(data_domain_dir: Path) -> None:
 
 def data_to_csv(project_root: Path = Path.cwd()) -> None:
     """
-    Process all domain-specific data directories and generate 'train.csv' files
+    Process all domain-specific data directories and generate 'data.csv' files
     with extracted features for each.
     Args:
         project_root (Path): Root directory containing 'data' folder with domain subfolders.
     """
 
-    for domain_dir in (project_root / 'data').iterdir():
+    for domain_dir in (project_root / 'src' / 'data').iterdir():
         if domain_dir.is_dir():
             selector_data_to_csv(domain_dir)

@@ -3,13 +3,15 @@
     let currentHighlight = null;
     let isSelectorActive = false;
     let currentCategory = null;
-    let currentSelectedSelectors = new Set(); 
+    let currentSelectedSelectors = new Set();
+    let undoStack = [];
+    let redoStack = []; 
 
     // --- Modal HTML and CSS ---
     const modalStyle = `
         #selector-modal {
             position: fixed;
-            bottom: 20px; /* Changed from top */
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             background: white;
@@ -22,12 +24,25 @@
             font-size: 16px;
             line-height: 1.5;
             color: #333;
-            display: block; /* Always visible */
+            display: block;
             max-width: 90%;
             text-align: center;
+            cursor: move;
+            user-select: none;
+        }
+        #selector-modal.dragging {
+            cursor: grabbing;
         }
         #selector-modal p {
             margin: 0 0 12px 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        #selector-modal p strong {
+            color: #007aff;
+            font-size: 20px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(0, 122, 255, 0.3);
         }
         #selector-modal button {
             padding: 8px 14px;
@@ -36,9 +51,13 @@
             font-size: 14px;
             font-weight: 500;
             cursor: pointer;
-            margin: 0 5px; /* Added spacing */
+            margin: 0 5px;
             background-color: #34c759;
             color: white;
+            transition: opacity 0.2s ease;
+        }
+        #selector-modal button:hover:not(:disabled) {
+            opacity: 0.85;
         }
         #selector-modal button#prev-cat-btn {
              background-color: #f0f0f0;
@@ -51,22 +70,30 @@
         }
         #selector-modal button:disabled {
             background-color: #ccc;
+            color: #666;
             cursor: not-allowed;
+            opacity: 0.6;
         }
     `;
 
     const highlightStyle = `
         /* Single style for all selected items */
         [data-selector-highlight="selected"] {
-            outline: 3px solid #34c759 !important; /* Green */
-            box-shadow: 0 0 10px #34c759;
-            background-color: rgba(52, 199, 89, 0.1);
+            outline: 4px solid #34c759 !important; /* Green */
+            box-shadow: 0 0 15px #34c759;
+            background-color: rgba(52, 199, 89, 0.15);
         }
 
         [data-selector-highlight="predicted"] {
-            outline: 3px solid #007aff !important; /* Blue */
+            outline: 3px dashed #007aff !important; /* Blue dashed */
             box-shadow: 0 0 10px #007aff;
             background-color: rgba(0, 122, 255, 0.1);
+        }
+        
+        [data-selector-highlight="model-predicted"] {
+            outline: 3px dashed #ff9500 !important; /* Orange dashed */
+            box-shadow: 0 0 10px #ff9500;
+            background-color: rgba(255, 149, 0, 0.1);
         }
     `;
 
@@ -89,6 +116,53 @@
         document.head.appendChild(styleSheet);
 
         document.body.insertAdjacentHTML('beforeend', modalHTML);
+        
+        // Make modal draggable
+        makeDraggable(document.getElementById('selector-modal'));
+    }
+    
+    /**
+     * Makes an element draggable
+     */
+    function makeDraggable(element) {
+        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        
+        element.onmousedown = dragMouseDown;
+        
+        function dragMouseDown(e) {
+            // Don't drag if clicking on buttons
+            if (e.target.tagName === 'BUTTON') return;
+            
+            e.preventDefault();
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = closeDragElement;
+            document.onmousemove = elementDrag;
+            element.classList.add('dragging');
+        }
+        
+        function elementDrag(e) {
+            e.preventDefault();
+            pos1 = pos3 - e.clientX;
+            pos2 = pos4 - e.clientY;
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            
+            // Update position
+            const newTop = element.offsetTop - pos2;
+            const newLeft = element.offsetLeft - pos1;
+            
+            element.style.top = newTop + "px";
+            element.style.left = newLeft + "px";
+            element.style.bottom = "auto";
+            element.style.transform = "none";
+        }
+        
+        function closeDragElement() {
+            document.onmouseup = null;
+            document.onmousemove = null;
+            element.classList.remove('dragging');
+        }
     }
 
     /**
@@ -105,18 +179,17 @@
     }
 
     /**
-     * Removes all highlights
+     * Removes all highlights from elements
      */
     function removeAllHighlights() {
         if (currentHighlight) {
             currentHighlight.style.outline = ''; 
             currentHighlight = null;
         }
-        // --- FIX ---
         // Query for all highlighted elements and remove the attribute
         document.querySelectorAll('[data-selector-highlight]').forEach(el => {
             el.removeAttribute('data-selector-highlight');
-            // Remove inline styles too, just in case
+            // Remove inline styles as well
             el.style.outline = ''; 
             el.style.boxShadow = '';
             el.style.backgroundColor = '';
@@ -129,6 +202,61 @@
         injectModal();
         // Start the workflow
         window.pywebview.api.start_workflow();
+        
+        // Setup keyboard shortcuts for undo/redo
+        document.addEventListener('keydown', handleKeyboardShortcuts);
+    }
+    
+    /**
+     * Handle keyboard shortcuts for undo/redo
+     */
+    function handleKeyboardShortcuts(e) {
+        // Ctrl+Z for undo
+        if (e.ctrlKey && !e.shiftKey && e.key === 'z') {
+            e.preventDefault();
+            performUndo();
+        }
+        // Ctrl+Shift+Z for redo
+        else if (e.ctrlKey && e.shiftKey && e.key === 'Z') {
+            e.preventDefault();
+            performRedo();
+        }
+    }
+    
+    /**
+     * Undo the last selection action
+     */
+    function performUndo() {
+        if (undoStack.length === 0) return;
+        
+        const lastAction = undoStack.pop();
+        redoStack.push(lastAction);
+        
+        if (lastAction.type === 'add') {
+            // Undo an add by removing
+            window.pywebview.api.unselect_selector(lastAction.category, lastAction.selector);
+        } else if (lastAction.type === 'remove') {
+            // Undo a remove by adding back
+            window.pywebview.api.accept_selection(lastAction.category, lastAction.selector, false);
+        }
+    }
+    
+    /**
+     * Redo the last undone action
+     */
+    function performRedo() {
+        if (redoStack.length === 0) return;
+        
+        const action = redoStack.pop();
+        undoStack.push(action);
+        
+        if (action.type === 'add') {
+            // Redo an add
+            window.pywebview.api.accept_selection(action.category, action.selector, false);
+        } else if (action.type === 'remove') {
+            // Redo a remove
+            window.pywebview.api.unselect_selector(action.category, action.selector);
+        }
     }
 
     /**
@@ -202,14 +330,50 @@
 
                     // Only show the button if it adds new elements
                     if (newElementsFound > 0) {
-                         predictSelectorsBtn = `<button id="predict-selectors-btn" data-selector='${generalizedSelector}'>Add ${newElementsFound} Similar</button>`;
-                    } else {
+                        predictSelectorsBtn = `<button id="predict-selectors-btn" data-selector='${generalizedSelector}'>Add ${newElementsFound} Similar</button>`;
                     }
                 }
             }
         }
         // --- END OF FIX ---
 
+        // Request model predictions
+        let modelPredictBtn = '';
+        window.pywebview.api.get_model_predictions(category).then(predictions => {
+            if (predictions && predictions.length > 0) {
+                // Count new predictions
+                let newPredictions = predictions.filter(sel => !currentSelectedSelectors.has(sel)).length;
+                if (newPredictions > 0) {
+                    // Highlight model predictions
+                    predictions.forEach(selector => {
+                        try {
+                            document.querySelectorAll(selector).forEach(el => {
+                                if (el.getAttribute('data-selector-highlight') !== 'selected') {
+                                    el.setAttribute('data-selector-highlight', 'model-predicted');
+                                }
+                            });
+                        } catch (e) {
+                            console.warn("Could not highlight model prediction:", selector, e);
+                        }
+                    });
+                    
+                    // Add button for accepting model predictions
+                    const modelBtn = document.createElement('button');
+                    modelBtn.id = 'model-predict-btn';
+                    modelBtn.style.backgroundColor = '#ff9500';
+                    modelBtn.textContent = `🤖 Add ${newPredictions} AI Predictions`;
+                    modelBtn.setAttribute('data-predictions', JSON.stringify(predictions));
+                    modelBtn.onclick = acceptModelPredictions;
+                    
+                    const buttonsDiv = document.getElementById('modal-buttons');
+                    const nextBtn = document.getElementById('next-cat-btn');
+                    buttonsDiv.insertBefore(modelBtn, nextBtn);
+                }
+            }
+        }).catch(err => {
+            console.warn("Could not get model predictions:", err);
+        });
+        
         let message = `Selecting: <strong>${category}</strong> <small style="color:#34c759">(${existingSelectorsArray.length} selected)</small>`;
         let buttonsHtml = `
             <button id="prev-cat-btn">&larr; Previous</button>
@@ -231,11 +395,11 @@
             window.pywebview.api.user_clicked_next_category();
         };
 
-        // --- PREDICTION BUTTON HANDLER ---
+        // Prediction button handler
         const predictBtn = document.getElementById('predict-selectors-btn');
         if (predictBtn) {
             predictBtn.onclick = (e) => {
-                // Disable button to prevent double click
+                // Disable button to prevent double-click
                 e.target.disabled = true; 
                 e.target.innerText = 'Adding...';
 
@@ -257,10 +421,11 @@
                 }
 
                 if (selectorsToAdd.size === 0) {
+                    // No new selectors to add, refresh the prompt
                     window.pywebview.api.refresh_prompt();
                 } else {
-                    // Send all selectors to Python.
-                    // Pass `false` to prevent re-running prediction on these.
+                    // Send all selectors to Python
+                    // Pass false to prevent re-running prediction on these
                     const selectorsArray = Array.from(selectorsToAdd);
                     selectorsArray.forEach(selector => {
                         window.pywebview.api.accept_selection(currentCategory, selector, false);
@@ -268,6 +433,27 @@
                 }
             };
         }
+    }
+    
+    /**
+     * Accept all model predictions
+     */
+    function acceptModelPredictions(e) {
+        e.target.disabled = true;
+        e.target.innerText = 'Adding AI predictions...';
+        
+        const predictions = JSON.parse(e.target.getAttribute('data-predictions'));
+        const selectorsToAdd = predictions.filter(sel => !currentSelectedSelectors.has(sel));
+        
+        if (selectorsToAdd.length === 0) {
+            window.pywebview.api.refresh_prompt();
+            return;
+        }
+        
+        // Add all predictions without triggering further predictions
+        selectorsToAdd.forEach(selector => {
+            window.pywebview.api.accept_selection(currentCategory, selector, false);
+        });
     }
 
     // --- Event Listeners ---
@@ -290,9 +476,9 @@
             currentHighlight.style.outline = '';
         }
 
-        // Add new highlight (if not already selected or predicted)
+        // Add new highlight only if element is not already selected or predicted
         if (target.getAttribute('data-selector-highlight')) {
-             currentHighlight = null; // Don't highlight already-selected/predicted items
+            currentHighlight = null;
         } else {
             currentHighlight = target;
             currentHighlight.style.outline = '2px dashed red';
@@ -305,7 +491,7 @@
             return;
         }
 
-        // disable links
+        // Prevent default link behavior and event bubbling
         e.preventDefault();
         e.stopPropagation();
         
@@ -314,8 +500,9 @@
         }
             
         const selector = getCssSelector(e.target);
-        if (!selector) return; // Not a valid element
-        
+        if (!selector) {
+            return; // Could not generate a valid selector for this element
+        }
         
         isSelectorActive = false; 
         
@@ -326,10 +513,14 @@
         updateModal(`Working on <strong>${currentCategory}</strong>...`, '');
 
         if (currentSelectedSelectors.has(selector)) {
-            // UNSELECT
+            // UNSELECT - add to undo stack
+            undoStack.push({type: 'remove', category: currentCategory, selector: selector});
+            redoStack = []; // Clear redo stack on new action
             window.pywebview.api.unselect_selector(currentCategory, selector);
         } else {
-            // NEW SELECT - pass `true` to run prediction
+            // NEW SELECT - add to undo stack, pass `true` to run prediction
+            undoStack.push({type: 'add', category: currentCategory, selector: selector});
+            redoStack = []; // Clear redo stack on new action
             window.pywebview.api.accept_selection(currentCategory, selector, true);
         }
 
@@ -350,14 +541,14 @@
 
             let selector = el.nodeName.toLowerCase();
             if (el.id) {
-                // Use a more robust ID selector
+                // Use attribute selector for IDs to handle special characters
                 selector = `[id="${el.id.trim()}"]`;
                 path.unshift(selector);
                 break; // ID is unique, stop here
             } else {
                 if (el.className && typeof el.className === 'string') {
                     const classes = el.className.trim().split(/\s+/).filter(Boolean).join('.');
-                    if(classes) {
+                    if (classes) {
                         selector += '.' + classes;
                     }
                 }
@@ -373,26 +564,30 @@
                 if (tagNth > 1) {
                     selector += `:nth-of-type(${tagNth})`;
                 } else {
-                    // Check if it's the *only* one. If not, add :nth-of-type(1)
-                    sib = el;
+                    // Check if there are siblings with the same tag name after this element
                     let needsNth1 = false;
+                    sib = el;
                     while (sib = sib.nextElementSibling) {
-                         if (sib.nodeName.toLowerCase() === el.nodeName.toLowerCase()) {
+                        if (sib.nodeName.toLowerCase() === el.nodeName.toLowerCase()) {
                             needsNth1 = true;
                             break;
-                         }
+                        }
                     }
                     if (needsNth1) {
-                         selector += `:nth-of-type(1)`;
+                        selector += `:nth-of-type(1)`;
                     }
                 }
             }
             path.unshift(selector);
             el = el.parentNode;
         }
-        return path.join(" > ").replace(/\s+/g, ' ');
+        return path.join(' > ').replace(/\s+/g, ' ');
     }
-    // TODO: Implement this
+
+    /**
+     * Generates an XPath selector for an element (not currently used)
+     * TODO: Implement proper XPath generation
+     */
     function getXpathSelector(el) {
         if (el.id) {
             return `//*[@id="${el.id.trim()}"]`;

@@ -1,0 +1,503 @@
+title:
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-item-of-tablet-line.first-item-of-mobile-line.hovered:nth-of-type(4)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-item-of-tablet-line.hovered:nth-of-type(2)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="slider-blockbestsellers"] > li.clearfix:nth-of-type(1) > div.product-content
+  > h5 > a.product-name'
+- '[id="slider-blockbestsellers"] > li.clearfix:nth-of-type(2) > div.product-content
+  > h5 > a.product-name'
+- '[id="slider-blockbestsellers"] > li.clearfix:nth-of-type(3) > div.product-content
+  > h5 > a.product-name'
+- '[id="slider-blockbestsellers"] > li.clearfix:nth-of-type(4) > div.product-content
+  > h5 > a.product-name'
+- '[id="slider-blockbestsellers"] > li.clearfix:nth-of-type(5) > div.product-content
+  > h5 > a.product-name'
+- '[id="slider-blockbestsellers"] > li.clearfix:nth-of-type(6) > div.product-content
+  > h5 > a.product-name'
+- '[id="slider-blockbestsellers"] > li.clearfix:nth-of-type(7) > div.product-content
+  > h5 > a.product-name'
+- '[id="slider-blockbestsellers"] > li.clearfix:nth-of-type(8) > div.product-content
+  > h5 > a.product-name'
+- '[id="slider-blockbestsellers"] > li.clearfix:nth-of-type(9) > div.product-content
+  > h5 > a.product-name'
+- '[id="slider-blockbestsellers"] > li.clearfix:nth-of-type(10) > div.product-content
+  > h5 > a.product-name'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.first-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(1)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-item-of-tablet-line:nth-of-type(2)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.first-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(3)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(4)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-item-of-tablet-line:nth-of-type(5)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(6)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-line.first-item-of-tablet-line.first-item-of-mobile-line.last-mobile-line:nth-of-type(7)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-line.last-item-of-tablet-line.last-mobile-line:nth-of-type(8)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-line.first-item-of-tablet-line.last-item-of-mobile-line.last-mobile-line:nth-of-type(9)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="historie"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.first-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(1)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="historie"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-item-of-tablet-line:nth-of-type(2)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="historie"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.first-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(3)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="historie"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(4)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="historie"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-item-of-tablet-line:nth-of-type(5)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="historie"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(6)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="historie"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-line.first-item-of-tablet-line.first-item-of-mobile-line.last-mobile-line:nth-of-type(7)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="historie"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-line.last-item-of-tablet-line.last-mobile-line:nth-of-type(8)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="historie"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-line.first-item-of-tablet-line.last-item-of-mobile-line.last-mobile-line:nth-of-type(9)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="mistopis"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.first-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(1)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="mistopis"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-item-of-tablet-line:nth-of-type(2)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="mistopis"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.first-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(3)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="mistopis"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(4)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="mistopis"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-item-of-tablet-line:nth-of-type(5)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="mistopis"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(6)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="mistopis"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-line.first-item-of-tablet-line.first-item-of-mobile-line.last-mobile-line:nth-of-type(7)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="mistopis"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-line.last-item-of-tablet-line.last-mobile-line:nth-of-type(8)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="mistopis"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-line.first-item-of-tablet-line.last-item-of-mobile-line.last-mobile-line:nth-of-type(9)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="sci-fi"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.first-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(1)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="sci-fi"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-item-of-tablet-line:nth-of-type(2)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="sci-fi"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.first-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(3)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="sci-fi"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(4)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="sci-fi"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-item-of-tablet-line:nth-of-type(5)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="sci-fi"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(6)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="sci-fi"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-line.first-item-of-tablet-line.first-item-of-mobile-line.last-mobile-line:nth-of-type(7)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="sci-fi"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-line.last-item-of-tablet-line.last-mobile-line:nth-of-type(8)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="sci-fi"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-line.first-item-of-tablet-line.last-item-of-mobile-line.last-mobile-line:nth-of-type(9)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="umeni"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.first-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(1)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="umeni"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-item-of-tablet-line:nth-of-type(2)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="umeni"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.first-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(3)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="umeni"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(4)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="umeni"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-item-of-tablet-line:nth-of-type(5)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="umeni"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(6)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="umeni"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-line.first-item-of-tablet-line.first-item-of-mobile-line.last-mobile-line:nth-of-type(7)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="umeni"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-line.last-item-of-tablet-line.last-mobile-line:nth-of-type(8)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="umeni"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-line.first-item-of-tablet-line.last-item-of-mobile-line.last-mobile-line:nth-of-type(9)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="valecne"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.first-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(1)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="valecne"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-item-of-tablet-line:nth-of-type(2)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="valecne"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.first-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(3)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="valecne"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(4)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="valecne"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-item-of-tablet-line:nth-of-type(5)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="valecne"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(6)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="valecne"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-line.first-item-of-tablet-line.first-item-of-mobile-line.last-mobile-line:nth-of-type(7)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="valecne"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-line.last-item-of-tablet-line.last-mobile-line:nth-of-type(8)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="valecne"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-line.first-item-of-tablet-line.last-item-of-mobile-line.last-mobile-line:nth-of-type(9)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="zivotopisy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.first-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(1)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="zivotopisy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-item-of-tablet-line:nth-of-type(2)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="zivotopisy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.first-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(3)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="zivotopisy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(4)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="zivotopisy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-item-of-tablet-line:nth-of-type(5)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="zivotopisy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(6)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="zivotopisy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-line.first-item-of-tablet-line.first-item-of-mobile-line.last-mobile-line:nth-of-type(7)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="zivotopisy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-line.last-item-of-tablet-line.last-mobile-line:nth-of-type(8)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="zivotopisy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-line.first-item-of-tablet-line.last-item-of-mobile-line.last-mobile-line:nth-of-type(9)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="homefeatured"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.first-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(1)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="homefeatured"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-item-of-tablet-line:nth-of-type(2)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="homefeatured"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.first-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(3)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="homefeatured"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(4)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="homefeatured"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-item-of-tablet-line:nth-of-type(5)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="homefeatured"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(6)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="homefeatured"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-line.first-item-of-tablet-line.first-item-of-mobile-line.last-mobile-line:nth-of-type(7)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+- '[id="homefeatured"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-line.last-item-of-tablet-line.last-mobile-line:nth-of-type(8)
+  > div.product-container > div.right-block:nth-of-type(2) > div.product-info-left:nth-of-type(1)
+  > div.product-name:nth-of-type(1) > h5 > a.product-name'
+image:
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-line.first-item-of-tablet-line.first-item-of-mobile-line.last-mobile-line.hovered:nth-of-type(7)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="slider-blockbestsellers"] > li.clearfix:nth-of-type(1) > a.products-block-image.content_img.clearfix
+  > img.replace-2x.img-responsive'
+- '[id="slider-blockbestsellers"] > li.clearfix:nth-of-type(2) > a.products-block-image.content_img.clearfix
+  > img.replace-2x.img-responsive'
+- '[id="slider-blockbestsellers"] > li.clearfix:nth-of-type(3) > a.products-block-image.content_img.clearfix
+  > img.replace-2x.img-responsive'
+- '[id="slider-blockbestsellers"] > li.clearfix:nth-of-type(4) > a.products-block-image.content_img.clearfix
+  > img.replace-2x.img-responsive'
+- '[id="slider-blockbestsellers"] > li.clearfix:nth-of-type(5) > a.products-block-image.content_img.clearfix
+  > img.replace-2x.img-responsive'
+- '[id="slider-blockbestsellers"] > li.clearfix:nth-of-type(6) > a.products-block-image.content_img.clearfix
+  > img.replace-2x.img-responsive'
+- '[id="slider-blockbestsellers"] > li.clearfix:nth-of-type(7) > a.products-block-image.content_img.clearfix
+  > img.replace-2x.img-responsive'
+- '[id="slider-blockbestsellers"] > li.clearfix:nth-of-type(8) > a.products-block-image.content_img.clearfix
+  > img.replace-2x.img-responsive'
+- '[id="slider-blockbestsellers"] > li.clearfix:nth-of-type(9) > a.products-block-image.content_img.clearfix
+  > img.replace-2x.img-responsive'
+- '[id="slider-blockbestsellers"] > li.clearfix:nth-of-type(10) > a.products-block-image.content_img.clearfix
+  > img.replace-2x.img-responsive'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.first-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(1)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-item-of-tablet-line:nth-of-type(2)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.first-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(3)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(4)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-item-of-tablet-line:nth-of-type(5)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(6)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-line.first-item-of-tablet-line.first-item-of-mobile-line.last-mobile-line:nth-of-type(7)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-line.last-item-of-tablet-line.last-mobile-line:nth-of-type(8)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-line.first-item-of-tablet-line.last-item-of-mobile-line.last-mobile-line:nth-of-type(9)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="historie"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.first-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(1)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="historie"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-item-of-tablet-line:nth-of-type(2)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="historie"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.first-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(3)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="historie"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(4)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="historie"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-item-of-tablet-line:nth-of-type(5)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="historie"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(6)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="historie"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-line.first-item-of-tablet-line.first-item-of-mobile-line.last-mobile-line:nth-of-type(7)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="historie"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-line.last-item-of-tablet-line.last-mobile-line:nth-of-type(8)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="historie"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-line.first-item-of-tablet-line.last-item-of-mobile-line.last-mobile-line:nth-of-type(9)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="mistopis"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.first-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(1)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="mistopis"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-item-of-tablet-line:nth-of-type(2)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="mistopis"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.first-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(3)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="mistopis"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(4)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="mistopis"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-item-of-tablet-line:nth-of-type(5)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="mistopis"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(6)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="mistopis"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-line.first-item-of-tablet-line.first-item-of-mobile-line.last-mobile-line:nth-of-type(7)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="mistopis"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-line.last-item-of-tablet-line.last-mobile-line:nth-of-type(8)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="mistopis"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-line.first-item-of-tablet-line.last-item-of-mobile-line.last-mobile-line:nth-of-type(9)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="sci-fi"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.first-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(1)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="sci-fi"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-item-of-tablet-line:nth-of-type(2)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="sci-fi"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.first-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(3)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="sci-fi"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(4)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="sci-fi"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-item-of-tablet-line:nth-of-type(5)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="sci-fi"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(6)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="sci-fi"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-line.first-item-of-tablet-line.first-item-of-mobile-line.last-mobile-line:nth-of-type(7)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="sci-fi"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-line.last-item-of-tablet-line.last-mobile-line:nth-of-type(8)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="sci-fi"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-line.first-item-of-tablet-line.last-item-of-mobile-line.last-mobile-line:nth-of-type(9)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="umeni"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.first-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(1)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="umeni"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-item-of-tablet-line:nth-of-type(2)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="umeni"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.first-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(3)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="umeni"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(4)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="umeni"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-item-of-tablet-line:nth-of-type(5)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="umeni"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(6)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="umeni"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-line.first-item-of-tablet-line.first-item-of-mobile-line.last-mobile-line:nth-of-type(7)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="umeni"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-line.last-item-of-tablet-line.last-mobile-line:nth-of-type(8)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="umeni"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-line.first-item-of-tablet-line.last-item-of-mobile-line.last-mobile-line:nth-of-type(9)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="valecne"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.first-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(1)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="valecne"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-item-of-tablet-line:nth-of-type(2)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="valecne"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.first-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(3)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="valecne"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(4)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="valecne"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-item-of-tablet-line:nth-of-type(5)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="valecne"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(6)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="valecne"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-line.first-item-of-tablet-line.first-item-of-mobile-line.last-mobile-line:nth-of-type(7)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="valecne"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-line.last-item-of-tablet-line.last-mobile-line:nth-of-type(8)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="valecne"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-line.first-item-of-tablet-line.last-item-of-mobile-line.last-mobile-line:nth-of-type(9)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="zivotopisy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.first-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(1)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="zivotopisy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-item-of-tablet-line:nth-of-type(2)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="zivotopisy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.first-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(3)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="zivotopisy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(4)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="zivotopisy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-item-of-tablet-line:nth-of-type(5)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="zivotopisy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(6)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="zivotopisy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-line.first-item-of-tablet-line.first-item-of-mobile-line.last-mobile-line:nth-of-type(7)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="zivotopisy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-line.last-item-of-tablet-line.last-mobile-line:nth-of-type(8)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="zivotopisy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-line.first-item-of-tablet-line.last-item-of-mobile-line.last-mobile-line:nth-of-type(9)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="homefeatured"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.first-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(1)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="homefeatured"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-item-of-tablet-line:nth-of-type(2)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="homefeatured"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.first-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(3)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="homefeatured"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-item-of-tablet-line.first-item-of-mobile-line:nth-of-type(4)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="homefeatured"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-item-of-tablet-line:nth-of-type(5)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="homefeatured"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line.last-item-of-mobile-line:nth-of-type(6)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="homefeatured"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-line.first-item-of-tablet-line.first-item-of-mobile-line.last-mobile-line:nth-of-type(7)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+- '[id="homefeatured"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-line.last-item-of-tablet-line.last-mobile-line:nth-of-type(8)
+  > div.product-container > div.left-block:nth-of-type(1) > div.product-image-container
+  > a.product_img_link:nth-of-type(1) > img.replace-2x.img-responsive'
+price:
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-item-of-tablet-line.first-item-of-mobile-line.hovered:nth-of-type(4)
+  > div.product-container > div.right-block:nth-of-type(2) > div.button-container:nth-of-type(3)'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-item-of-tablet-line.hovered:nth-of-type(5)
+  > div.product-container > div.right-block:nth-of-type(2) > div.button-container:nth-of-type(3)'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line.last-item-of-mobile-line.hovered:nth-of-type(6)
+  > div.product-container > div.right-block:nth-of-type(2) > div.button-container:nth-of-type(3)'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-line.first-item-of-tablet-line.first-item-of-mobile-line.last-mobile-line.hovered:nth-of-type(7)
+  > div.product-container > div.right-block:nth-of-type(2) > div.button-container:nth-of-type(3)'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-line.last-item-of-tablet-line.last-mobile-line.hovered:nth-of-type(8)
+  > div.product-container > div.right-block:nth-of-type(2) > div.button-container:nth-of-type(3)'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-line.first-item-of-tablet-line.last-item-of-mobile-line.last-mobile-line.hovered:nth-of-type(9)
+  > div.product-container > div.right-block:nth-of-type(2) > div.button-container:nth-of-type(3)
+  > a.button.ajax_add_to_cart_button.btn.btn-default:nth-of-type(1) > span'
+- '[id="homefeatured"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.first-item-of-tablet-line.first-item-of-mobile-line.hovered:nth-of-type(1)
+  > div.product-container > div.right-block:nth-of-type(2) > div.button-container:nth-of-type(3)'
+- '[id="homefeatured"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-item-of-tablet-line.hovered:nth-of-type(2)
+  > div.product-container > div.right-block:nth-of-type(2) > div.button-container:nth-of-type(3)'
+- '[id="homefeatured"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.first-item-of-tablet-line.last-item-of-mobile-line.hovered:nth-of-type(3)
+  > div.product-container > div.right-block:nth-of-type(2) > div.button-container:nth-of-type(3)'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.first-item-of-tablet-line.first-item-of-mobile-line.hovered:nth-of-type(1)
+  > div.product-container > div.right-block:nth-of-type(2) > div.button-container:nth-of-type(3)'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-item-of-tablet-line.hovered:nth-of-type(2)
+  > div.product-container > div.right-block:nth-of-type(2) > div.button-container:nth-of-type(3)'
+- '[id="fantasy"] > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.first-item-of-tablet-line.last-item-of-mobile-line.hovered:nth-of-type(3)
+  > div.product-container > div.right-block:nth-of-type(2) > div.button-container:nth-of-type(3)'

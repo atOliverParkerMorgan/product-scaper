@@ -6,6 +6,11 @@ from typing import Dict, Optional, List
 from webview import Window
 from urllib.parse import urlparse
 import logging
+import pickle
+try:
+    from bs4 import BeautifulSoup
+except ImportError:
+    BeautifulSoup = None
 
 # Suppress pywebview debug messages
 logging.getLogger('webview').setLevel(logging.WARNING)
@@ -20,12 +25,28 @@ class Api:
         self.current_category_index: int = 0
         self.categories: List[str] = categories
         self.url = url
+        self.model = None
+        self._load_model()
         
     def _ensure_window(self) -> Window:
         """Return initialized window or raise RuntimeError."""
         if self.window is None:
             raise RuntimeError("Window is not initialized")
         return self.window
+    
+    def _load_model(self) -> None:
+        """Load the trained model if available."""
+        try:
+            model_path = Path.cwd() / 'src' / 'models' / 'category_classifier.pkl'
+            if model_path.exists():
+                with open(model_path, 'rb') as f:
+                    self.model = pickle.load(f)
+                logging.info("Model loaded successfully")
+            else:
+                logging.warning(f"Model not found at {model_path}")
+        except Exception as e:
+            logging.error(f"Failed to load model: {e}")
+            self.model = None
 
     def start_workflow(self) -> None:
         """Begin the element selection workflow."""
@@ -77,10 +98,121 @@ class Api:
     def refresh_prompt(self) -> None:
         """Redisplay the current category prompt."""
         self.prompt_next_category()
+    
+    def get_model_predictions(self, category: str) -> List[str]:
+        """Get model predictions for elements matching the given category."""
+        if self.model is None or BeautifulSoup is None:
+            return []
+        
+        try:
+            window = self._ensure_window()
+            html_content = window.evaluate_js('document.documentElement.outerHTML')
+            
+            if not html_content:
+                return []
+            
+            soup = BeautifulSoup(html_content, 'html.parser')
+            predictions = []
+            
+            # Find all elements and get their features
+            for element in soup.find_all(True):
+                try:
+                    # Extract features similar to training data
+                    features = self._extract_element_features(element)
+                    
+                    # Predict category
+                    predicted_category = self.model.predict([features])[0]
+                    
+                    # If prediction matches current category, generate selector
+                    if predicted_category == category:
+                        selector = self._generate_css_selector(element, soup)
+                        if selector:
+                            predictions.append(selector)
+                except Exception:
+                    continue
+            
+            # Limit predictions to top candidates
+            return predictions[:10]
+            
+        except Exception as e:
+            logging.error(f"Error getting model predictions: {e}")
+            return []
+    
+    def _extract_element_features(self, element) -> List[float]:
+        """Extract features from an element for model prediction."""
+        features = []
+        
+        # Tag name features
+        common_tags = ['div', 'span', 'p', 'a', 'img', 'h1', 'h2', 'h3', 'ul', 'li']
+        tag_features = [1 if element.name == tag else 0 for tag in common_tags]
+        features.extend(tag_features)
+        
+        # Class features
+        classes = element.get('class', [])
+        class_text = ' '.join(classes).lower()
+        price_keywords = ['price', 'cost', 'amount', 'value']
+        name_keywords = ['name', 'title', 'product', 'item']
+        image_keywords = ['image', 'img', 'photo', 'picture']
+        
+        features.append(1 if any(kw in class_text for kw in price_keywords) else 0)
+        features.append(1 if any(kw in class_text for kw in name_keywords) else 0)
+        features.append(1 if any(kw in class_text for kw in image_keywords) else 0)
+        
+        # ID features
+        element_id = element.get('id', '').lower()
+        features.append(1 if any(kw in element_id for kw in price_keywords) else 0)
+        features.append(1 if any(kw in element_id for kw in name_keywords) else 0)
+        features.append(1 if any(kw in element_id for kw in image_keywords) else 0)
+        
+        # Text content features
+        text = element.get_text(strip=True)
+        features.append(1 if text and any(c.isdigit() for c in text) else 0)
+        features.append(len(text) if text else 0)
+        
+        # Attribute features
+        features.append(1 if element.get('href') else 0)
+        features.append(1 if element.get('src') else 0)
+        features.append(1 if element.name == 'img' else 0)
+        
+        return features
+    
+    def _generate_css_selector(self, element, soup) -> Optional[str]:
+        """Generate a CSS selector for an element."""
+        try:
+            # Try to use ID first
+            if element.get('id'):
+                return f"[id='{element.get('id')}']"
+            
+            # Build selector with tag and classes
+            selector = element.name
+            classes = element.get('class', [])
+            if classes:
+                selector += '.' + '.'.join(classes)
+            
+            # Check if selector is unique enough
+            matches = soup.select(selector)
+            if len(matches) <= 5:  # Reasonable number of matches
+                return selector
+            
+            # Add nth-of-type if needed
+            parent = element.parent
+            if parent:
+                siblings = [sib for sib in parent.find_all(element.name, recursive=False)]
+                if len(siblings) > 1:
+                    index = siblings.index(element) + 1
+                    selector += f':nth-of-type({index})'
+            
+            return selector
+        except Exception as e:
+            logging.debug(f"Error generating selector: {e}")
+            return None
 
     def save_file(self) -> None:
         """Save selectors and page source to domain-specific directory."""
-        window = self._ensure_window()
+        try:
+            window = self._ensure_window()
+        except RuntimeError:
+            return
 
         if not self.selections:
             window.evaluate_js('alert("No selectors chosen. Add some, then save.")')
@@ -160,7 +292,8 @@ def select_data(url: str, categories: List[str]) -> None:
     window.events.loaded += lambda: load_custom_js(window)
     
     # Temporarily suppress stderr to hide pywebview debug messages
-    import sys, os
+    import sys
+    import os
     old_stderr = sys.stderr
     sys.stderr = open(os.devnull, 'w')
     

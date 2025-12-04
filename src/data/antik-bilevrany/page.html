@@ -1,0 +1,823 @@
+<html xmlns="http://www.w3.org/1999/xhtml" style=""><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="robots" content="index,follow">
+<meta name="description" content="ANTIK-BILEVRANY.CZ" lang="cs">
+<meta name="keywords" content="ANTIK-BILEVRANY.CZ, on-line, antik, staré použité knihy, Architektura, Bibliofilie, Cestopisy, Design, Detektivní/Thriller, Dětská/Young Adult, Divadlo/Film, Dobrodružná, Doprava, Ekologie/Meteorologie, Ekonomie, Esoterika/Mystika, Filosofie/Eseje, Fotografické publikace/Teorie, Fotografie, Historie, Hobby, Hudba, KOD, Komiks/Obrazové příběhy, Kuchařky, Mapy/Průvodce, Pragensie, Právo, Přírodní medicína/Léčitelství, Sci.fi/Fantasy, Technická literatura, Učebnice, Záhady, Zdraví, Ženské romány" lang="cs">
+<meta name="description" content="Czech on-line antiquarian bookshop, used books" lang="en">
+<meta name="keywords" content="antiquarian bookshop, used books on-line" lang="en">
+<meta name="Content-language" content="cs">
+
+<link rel="stylesheet" href="/assets/style-bvrany.css" type="text/css">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
+<link rel="manifest" href="/assets/favicon/site.webmanifest">
+
+<title>Bílé vrány</title>
+<style type="text/css">
+<!--
+body {
+	margin: 0px;
+	padding: 0px;
+	background-color: #e3e3e4;
+	color: #000;
+}
+a:link {
+	color: #000;
+}
+a:visited {
+	color: #000;
+}
+#list-view {margin-left: 246px;}
+#list-view {margin-right: 216px;}
+#rightbar {width: 200px;}
+#list-view {margin-top: 0px;}
+
+-->
+</style>
+<script type="text/javascript" src="/assets/enlargeitp.js"></script>
+<script type="text/javascript" src="/assets/ajax.js"></script>
+<script type="text/javascript">
+function onAjaxCart(resp) {
+var pars=resp.split(',');
+if(e=document.getElementById('c'+pars[0]))
+{e.className='crt'+pars[1];e.title=pars[2]};
+if(e=document.getElementById('cart-box'))e.style.display=pars[5];
+if(e=document.getElementById('cart-num'))e.innerHTML=pars[3];
+if(e=document.getElementById('cart-price'))e.innerHTML=pars[4];
+}
+
+function onAjaxCookies() {
+if(e=document.getElementById('cookies-consent'))
+{e.style.display = 'none'};}
+</script>
+
+
+<style type="text/css">body {-webkit-user-select: none; -khtml-user-select: none; -ms-user-select: none; user-select: none; cursor: default;}</style><style type="text/css"><br>        #selector-modal {<br>            position: fixed;<br>            bottom: 20px;<br>            left: 50%;<br>            transform: translateX(-50%);<br>            background: white;<br>            border: 1px solid #ccc;<br>            border-radius: 8px;<br>            box-shadow: 0 6px 20px rgba(0,0,0,0.2);<br>            padding: 16px 24px;<br>            z-index: 999999;<br>            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;<br>            font-size: 16px;<br>            line-height: 1.5;<br>            color: #333;<br>            display: block;<br>            max-width: 90%;<br>            text-align: center;<br>            cursor: move;<br>            user-select: none;<br>        }<br>        #selector-modal.dragging {<br>            cursor: grabbing;<br>        }<br>        #selector-modal p {<br>            margin: 0 0 12px 0;<br>            font-size: 18px;<br>            font-weight: 600;<br>        }<br>        #selector-modal p strong {<br>            color: #007aff;<br>            font-size: 20px;<br>            text-transform: uppercase;<br>            text-shadow: 0 0 10px rgba(0, 122, 255, 0.3);<br>        }<br>        #selector-modal button {<br>            padding: 8px 14px;<br>            border: none;<br>            border-radius: 6px;<br>            font-size: 14px;<br>            font-weight: 500;<br>            cursor: pointer;<br>            margin: 0 5px;<br>            background-color: #34c759;<br>            color: white;<br>            transition: opacity 0.2s ease;<br>        }<br>        #selector-modal button:hover:not(:disabled) {<br>            opacity: 0.85;<br>        }<br>        #selector-modal button#prev-cat-btn {<br>             background-color: #f0f0f0;<br>             color: #333;<br>        }<br>        /* Style for the prediction button */<br>        #selector-modal button#predict-selectors-btn {<br>            background-color: #007aff; /* Blue */<br>            color: white;<br>        }<br>        #selector-modal button:disabled {<br>            background-color: #ccc;<br>            color: #666;<br>            cursor: not-allowed;<br>            opacity: 0.6;<br>        }<br>    <br><br>        /* Single style for all selected items */<br>        [data-selector-highlight="selected"] {<br>            outline: 4px solid #34c759 !important; /* Green */<br>            box-shadow: 0 0 15px #34c759;<br>            background-color: rgba(52, 199, 89, 0.15);<br>        }<br><br>        [data-selector-highlight="predicted"] {<br>            outline: 3px dashed #007aff !important; /* Blue dashed */<br>            box-shadow: 0 0 10px #007aff;<br>            background-color: rgba(0, 122, 255, 0.1);<br>        }<br>        <br>        [data-selector-highlight="model-predicted"] {<br>            outline: 3px dashed #ff9500 !important; /* Orange dashed */<br>            box-shadow: 0 0 10px #ff9500;<br>            background-color: rgba(255, 149, 0, 0.1);<br>        }<br>    </style></head>
+<body style="">
+<div id="wrap">
+
+<div id="hlavicka" style="">
+<div id="logo_vrany">
+<a href="/" title="Antikvariát Bílé vrány - Domů">
+<img src="/assets/logo_vrany.jpg" alt="Antikvariát Bílé vrány" height="112" width="147"></a>
+</div>
+<div id="logo_antik">
+<h1 id="main-title">Antikvariát Bílé vrány</h1>
+<div id="subtit" style=""><a href="/" title="Antikvariát Bílé vrány">
+<img src="/assets/logo_antik_white.jpg" alt="Antikvariát Bílé vrány - Domů" height="36" width="454" style=""></a><br>
+Antikvariát online • levné staré knihy • eshop</div>
+</div>
+<div id="aktual" style="">
+
+<!-- Blok 3-->
+
+<div class="blok3obs"><p>
+<strong style="">KAMENNÝ OBCHOD - UHERSKÉ HRADIŠTĚ - Mariánské nám. 61 / 1.patro<br>
+Otevírací doba: Po-Pá 10:00-17:00 / So, Ne - zavřeno</strong></p>
+</div>
+
+</div>
+
+<form class="search" action="/hledani" method="post" title="Vyhledávání">
+<input name="q" value="" size="27" class="textbox" type="text"><input value=" Hledat " class="button" type="submit"><br>
+</form>
+</div>
+
+
+ <div id="nav">
+ <div id="nav-bar">
+  <div id="account"><a href="/ucet?ac_func=login" onclick="this.href='/ucet?ac_func=login&amp;ac_url='+encodeURIComponent(location.href)"><img src="/assets/key.png" alt="klic" title="přihlášení"></a>
+</div>
+ <ul>
+<li id="selected"><span>Knihy</span></li>
+<li><a href="/hledani">Hledání</a></li>
+<li style=""><a href="/podminky">Obchodní podmínky</a></li>
+<li><a href="/osobni-udaje">Osobní údaje</a></li>
+<li style=""><a href="/o-nas">O nás</a></li>
+<li><a href="/kontakt">Kontakt</a></li>
+<li><a href="/kosik">Košík</a></li>
+<li><a href="/objednavka">Objednat</a></li>
+
+ </ul>
+ </div> <!-- end nav-bar -->
+ </div> <!-- end nav -->
+ <div id="content-wrap" style="">
+
+  <div id="leftbar" class="sidebar" style="">
+
+   <h1 style="">Kategorie</h1>
+<div id="cat_container" style="">
+<ul id="cat_list" style="">
+<li class="alt-odd" style=""><a href="/kategorie/doporucujeme">- DOPORUČUJEME -</a>
+</li>
+<li class="alt-even" style=""><a href="/kategorie/avantgarda-knizni-uprava">Avantgarda / Knižní úprava</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/beletrie-cesti-autori">Beletrie - Čeští autoři</a>
+</li>
+<li class="alt-even" style=""><a href="/kategorie/beletrie-svetovi-autori" style="">Beletrie - Světoví autoři</a>
+</li>
+<li class="alt-odd" style=""><a href="/kategorie/bibliofilie-krasne-tisky-edice" style="">Bibliofilie / Krásné tisky / Edice</a>
+</li>
+<li class="alt-even"><a href="/kategorie/botanika-zoologie-zahrada">Botanika / Zoologie / Zahrada</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/casopisy-revue">Časopisy / Revue</a>
+</li>
+<li class="alt-even"><a href="/kategorie/cestopisy">Cestopisy</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/cizojazycna-literatura">Cizojazyčná literatura</a>
+</li>
+<li class="alt-even"><a href="/kategorie/detektivky-thrillery">Detektivky / Thrillery</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/detske-do-r-1950">Dětské do r.1950</a>
+</li>
+<li class="alt-even"><a href="/kategorie/detske-od-r-1950">Dětské od r.1950</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/divadlo-hry-tanec">Divadlo / Hry / Tanec</a>
+</li>
+<li class="alt-even"><a href="/kategorie/dobrodruzne-do-r-1950">Dobrodružné do r.1950</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/dobrodruzne-od-r-1950">Dobrodružné od r.1950</a>
+</li>
+<li class="alt-even"><a href="/kategorie/doprava-auto-moto">Doprava / Auto-moto</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/ekonomie-marketing-management">Ekonomie / Marketing / Management</a>
+</li>
+<li class="alt-even"><a href="/kategorie/encyklopedie">Encyklopedie</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/esoterika-mystika-okultismus">Esoterika / Mystika / Okultismus</a>
+</li>
+<li class="alt-even"><a href="/kategorie/exil-samizdat">Exil / Samizdat</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/film">Film</a>
+</li>
+<li class="alt-even"><a href="/kategorie/filozofie">Filozofie</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/fotograficke-publikace">Fotografické publikace</a>
+</li>
+<li class="alt-even"><a href="/kategorie/geologie-geodesie-hornictvi">Geologie / Geodesie / Hornictví</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/historie-antika">Historie / Antika</a>
+</li>
+<li class="alt-even"><a href="/kategorie/hudba">Hudba</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/humor">Humor</a>
+</li>
+<li class="alt-even"><a href="/kategorie/komunisticka-era">Komunistická éra</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/kucharky-domacnost">Kuchařky / Domácnost</a>
+</li>
+<li class="alt-even"><a href="/kategorie/lhotak-kamil">Lhoták Kamil</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/literarni-veda-jazykoveda">Literární věda / Jazykověda</a>
+</li>
+<li class="alt-even"><a href="/kategorie/literatura-naucna">Literatura naučná</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/lp-cd-dvd">LP / CD / DVD</a>
+</li>
+<li class="alt-even"><a href="/kategorie/mapy-pruvodce-atlasy">Mapy / Průvodce / Atlasy</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/medicina-zdravi-lecitelstvi">Medicína / Zdraví / Léčitelství</a>
+</li>
+<li class="alt-even"><a href="/kategorie/militaria-legie">Militária / Legie</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/mistopis-narodopis">Místopis / Národopis</a>
+</li>
+<li class="alt-even"><a href="/kategorie/myslivost-lesnictvi-rybarstvi">Myslivost / Lesnictví / Rybářství</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/nabozenstvi-vych-nauky">Náboženství / Vých.nauky</a>
+</li>
+<li class="alt-even"><a href="/kategorie/poezie">Poezie</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/prirucky">Příručky</a>
+</li>
+<li class="alt-even"><a href="/kategorie/psychologie-pedagogika">Psychologie / Pedagogika</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/sci-fi-fantasy-komiks">Sci-fi / Fantasy / Komiks</a>
+</li>
+<li class="alt-even"><a href="/kategorie/sociologie-politologie">Sociologie / Politologie</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/sport">Sport</a>
+</li>
+<li class="alt-even"><a href="/kategorie/stare-tisky-19-stoleti">Staré tisky / 19.století</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/technika">Technika</a>
+</li>
+<li class="alt-even"><a href="/kategorie/ucebnice-jazykove-slovniky">Učebnice / Jazykové slovníky</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/umeni-architektura">Umění / Architektura</a>
+</li>
+<li class="alt-even"><a href="/kategorie/varia">Varia</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/veda-vesmir">Věda / Vesmír</a>
+</li>
+<li class="alt-even"><a href="/kategorie/zahady">Záhady</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/zdenek-burian">Zdeněk Burian</a>
+</li>
+<li class="alt-even"><a href="/kategorie/zenske-romany">Ženské romány</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/zivotopisy-memoary-rozhovory">Životopisy / Memoáry / Rozhovory</a>
+</li>
+
+</ul>
+</div>
+  </div> <!-- end left-bar -->
+  <div id="rightbar" class="sidebar">
+
+   <div id="cart-box" style="display: none;">
+   <h1>Košík</h1>
+   <div class="left-box">
+    <p><span id="cart-num">0</span> za <span id="cart-price">0</span> Kč <a href="/kosik" class="ibtn">Zobrazit</a></p>
+   </div>
+   </div>
+<h1>Informace</h1>
+   <div class="left-box">
+<strong>výkup knih:</strong><br>
+
+telefon: <strong>728547783</strong><br>
+
+<br>
+
+<strong>poštovné Česká pošta:</strong><br>
+
+
+
+platba převodem: <strong>80Kč</strong><br>
+
+dobírka: <strong>130Kč</strong><br>
+
+<br>
+
+<strong>poštovné Slovensko:</strong><br> Zásilkovna:  <strong>od 150Kč</strong><br>
+
+
+
+______________________
+
+<strong>číslo účtu:<br> </strong>
+
+670100-2205813397/6210<br>
+
+<br>
+
+<strong>var. symbol - číslo obj.</strong><br> 
+
+
+
+______________________
+
+<br>
+
+<strong>euro účet:<br> </strong>
+
+<strong>IBAN:</strong>CZ66 3030 0000 0018 0018 2038<br>
+
+<strong>BIC:</strong>AIRACZPP<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   </div>
+   <h1>Kontaktní údaje</h1>
+   <div id="contacts" class="left-box">
+<p>
+info@antik-bilevrany.cz<br>
+<br>
+<strong>Prodejna</strong><br>
+Mariánské nám. 61, 1. pat.<br>
+686 01 Uherské Hradiště<br>
+tel. 572 541 139<br>
+<br>
+Jiří Weiss<br>
+Hroznová Lhota 321<br>
+696 63 Hroznová Lhota<br>
+tel: 728 547 783<br>
+</p>
+   </div>
+
+
+   <h1>Reference</h1>
+   <div class="left-box">
+    <ul class="sidemenu">
+     <li><a href="http://muj-antikvariat.cz">Můj-antikvariát.cz</a></li>
+    </ul>
+   </div>
+  </div> <!-- end right-bar -->
+
+<div id="list-view">
+<!--<ul class="menu">
+  <li><a href="?mn_lst=para" class="active"><span>Odstavce</span></a></li>
+  <li><a href="?mn_lst=table"><span>Tabulka</span></a></li>
+  <li class="menu-ord"><a href="?mn_lst=title"><span>Abeceda</span></a></li>
+  <li class="menu-ord"><a href="?mn_lst=recent" class="active"><span>Nejnovější</span></a></li>
+<li><span class="lbl">Řazení:</span></li>
+</ul>-->
+  <div id="content" style="">
+<p style="border:2px solid #ffff00;background: #ffff80;padding: 3px;text-align: center;">
+
+
+Vážení zákazníci<br>
+
+<strong style="">Knihy si prosím objednávejte i v případě osobního převzetí.</strong><br>
+
+Nejsou skladem na prodejně.<br>
+
+Děkujeme a těšíme se na Vaši návštěvu. <br>
+
+
+</p><h1>Nejnovější nabídka</h1><ul class="pager" style="">
+<b>1</b>
+<li><a href="/?mn_offs=11">2</a></li>
+<li><a href="/?mn_offs=21">3</a></li>
+<li><a href="/?mn_offs=31">4</a></li>
+<li><a href="/?mn_offs=41">5</a></li>
+<li><a href="/?mn_offs=51">6</a></li>
+<li><a href="/?mn_offs=61">7</a></li>
+<li><a href="/?mn_offs=71">8</a></li>
+ ... 
+<li><a href="/?mn_offs=15921">1593</a></li>
+<li><a href="/?mn_offs=11">[další]</a></li>
+</ul>
+
+<div id="p82929" class="para grow alt-odd" style="">
+<h3><a href="/kniha/ziegler-mano-messerschmitt-me-163-1993-82929" title="Messerschmitt Me 163" style="">Messerschmitt Me 163</a></h3>
+<img src="/files/thumb_39427.png" alt="Messerschmitt Me 163" width="100" data-selector-highlight="selected">
+<div class="para-flds">
+<div class="para-title" style="">
+<strong style="">Název:</strong>
+<span>Messerschmitt Me 163</span>
+</div>
+<div class="para-au" style="">
+<strong style="">Autor:</strong>
+<span><a href="/hledani?q=au:'Ziegler%20Mano'">Ziegler Mano</a></span>
+</div>
+<div class="para-issued" style="">
+<strong style="">Rok vydání:</strong>
+<span>1993</span>
+</div>
+<div class="para-pg">
+<strong style="">Počet stran:</strong>
+<span>173 s.</span>
+</div>
+<div class="para-cat" style="">
+<strong style="">Kategorie:</strong>
+<span><a href="/kategorie/militaria-legie" style="">Militária / Legie</a></span>
+</div>
+<div class="para-binding" style="">
+<strong style="">Vazba:</strong>
+<span><a href="/hledani?q=binding:'p%C5%AFv.lamino%208%C2%B0'" style="">pův.lamino 8°</a></span>
+</div>
+<div class="para-state" style="">
+<strong style="">Stav:</strong>
+<span style="">dobrý</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>70 Kč</span>
+</div>
+<div class="crt"><a href="/kosik?fn=add&amp;id=82929" onclick="javascript:ajax('?fn=cart&amp;id=82929',onAjaxCart);return false;">
+<img id="c82929" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+</div>
+</div>
+<div id="p82927" class="para grow alt-even" style="">
+<h3><a href="/kniha/hora-horejs-petr-toulky-ceskou-minulosti-6-1997-82927" title="Toulky českou minulostí 6.">Toulky českou minulostí 6.</a></h3>
+<img src="/files/thumb_22732.png" alt="Toulky českou minulostí 6." width="100" data-selector-highlight="selected">
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Toulky českou minulostí 6.</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Hora-Ho%C5%99ej%C5%A1%20Petr'">Hora-Hořejš Petr</a></span>
+</div>
+<div class="para-ill">
+<strong>Ilustrátor:</strong>
+<span><a href="/hledani?q=ill:'Vladim%C3%ADr%20Nov%C3%A1k'">Vladimír Novák</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1997</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>230 s.</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/historie-antika">Historie / Antika</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'p%C5%AFvodn%C3%AD%20s%20p%C5%99ebalem%204%C2%B0'">původní s přebalem 4°</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>velmi dobrý</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>100 Kč</span>
+</div>
+<div class="crt"><a href="/kosik?fn=add&amp;id=82927" onclick="javascript:ajax('?fn=cart&amp;id=82927',onAjaxCart);return false;">
+<img id="c82927" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+</div>
+</div>
+<div id="p82928" class="para grow alt-odd" style="">
+<h3><a href="/kniha/jacobsova-anne-nebe-nad-kilimandzarem-2021" title="Nebe nad Kilimandžárem">Nebe nad Kilimandžárem</a></h3>
+<a href="/files/77304.jpg" onclick="return false;"><img src="/files/thumb_77304.png" id="pic77304" class="picgrp" alt="Nebe nad Kilimandžárem" onclick="enlarge(this);" longdesc="/files/77304.jpg" name="/kniha/jacobsova-anne-nebe-nad-kilimandzarem-2021" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;" data-selector-highlight="selected"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Nebe nad Kilimandžárem</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Jacobsov%C3%A1%20Anne'">Jacobsová Anne</a>; Leah Bach</span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>2021</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>464</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/beletrie-svetovi-autori">Beletrie - Světoví autoři</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'p%C5%AFvodn%C3%AD%20s%20p%C5%99ebalem%208%C2%B0'">původní s přebalem 8°</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>velmi dobrý</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>100 Kč</span>
+</div>
+<div class="crt"><a href="/kosik?fn=add&amp;id=82928" onclick="javascript:ajax('?fn=cart&amp;id=82928',onAjaxCart);return false;">
+<img id="c82928" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+</div>
+</div>
+<div id="p82926" class="para grow alt-even" style="">
+<h3><a href="/kniha/hora-horejs-petr-toulky-ceskou-minulosti-5-1996-82926" title="Toulky českou minulostí 5.">Toulky českou minulostí 5.</a></h3>
+<img src="/files/thumb_22731.png" alt="Toulky českou minulostí 5." width="100" data-selector-highlight="selected" style="">
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Toulky českou minulostí 5.</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Hora-Ho%C5%99ej%C5%A1%20Petr'">Hora-Hořejš Petr</a></span>
+</div>
+<div class="para-ill">
+<strong>Ilustrátor:</strong>
+<span><a href="/hledani?q=ill:'Vladim%C3%ADr%20Nov%C3%A1k'">Vladimír Novák</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1996</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>230 s.</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/historie-antika">Historie / Antika</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'p%C5%AFvodn%C3%AD%20s%20p%C5%99ebalem%204%C2%B0'">původní s přebalem 4°</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>velmi dobrý</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>100 Kč</span>
+</div>
+<div class="crt"><a href="/kosik?fn=add&amp;id=82926" onclick="javascript:ajax('?fn=cart&amp;id=82926',onAjaxCart);return false;">
+<img id="c82926" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+</div>
+</div>
+<div id="p82925" class="para grow alt-odd" style="">
+<h3><a href="/kniha/hora-horejs-petr-toulky-ceskou-minulosti-4-1995-82925" title="Toulky českou minulostí 4.">Toulky českou minulostí 4.</a></h3>
+<img src="/files/thumb_22730.png" alt="Toulky českou minulostí 4." width="100" data-selector-highlight="selected" style="">
+<div class="para-flds" style="">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Toulky českou minulostí 4.</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Hora-Ho%C5%99ej%C5%A1%20Petr'">Hora-Hořejš Petr</a></span>
+</div>
+<div class="para-ill">
+<strong>Ilustrátor:</strong>
+<span><a href="/hledani?q=ill:'Vladim%C3%ADr%20Nov%C3%A1k'">Vladimír Novák</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1995</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>240 s.</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/historie-antika">Historie / Antika</a></span>
+</div>
+<div class="para-binding">
+<strong style="">Vazba:</strong>
+<span><a href="/hledani?q=binding:'p%C5%AFvodn%C3%AD%20s%20p%C5%99ebalem%204%C2%B0'">původní s přebalem 4°</a></span>
+</div>
+<div class="para-state" style="">
+<strong>Stav:</strong>
+<span style="">velmi dobrý</span>
+</div>
+<div class="para-price">
+<strong style="">Cena:</strong>
+<span>100 Kč</span>
+</div>
+<div class="crt"><a href="/kosik?fn=add&amp;id=82925" onclick="javascript:ajax('?fn=cart&amp;id=82925',onAjaxCart);return false;">
+<img id="c82925" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1" style=""></a></div>
+</div>
+</div>
+<div id="p82924" class="para grow alt-even" style="">
+<h3 style=""><a href="/kniha/hora-horejs-petr-toulky-ceskou-minulosti-dil-3-od-nastupu-habsburku-1526-k-pobelohorskemu-stmivani-1994-82924" title="Toulky českou minulostí. Díl 3, Od nástupu Habsburků (1526) k pobělohorskému stmívání ..." style="">Toulky českou minulostí. Díl 3, Od nástupu Habsburků (1526) k pobělohorskému stmívání ...</a></h3>
+<img src="/files/thumb_54253.png" alt="Toulky českou minulostí. Díl 3, Od nástupu Habsburků (1526) k pobělohorskému stmívání ..." width="100" data-selector-highlight="selected">
+<div class="para-flds" style="">
+<div class="para-title" style="">
+<strong>Název:</strong>
+<span style="">Toulky českou minulostí. Díl 3, Od nástupu Habsburků (1526) k pobělohorskému stmívání (1627)</span>
+</div>
+<div class="para-au" style="">
+<strong>Autor:</strong>
+<span>Petr Hora-Hořejš</span>
+</div>
+<div class="para-ill">
+<strong>Ilustrátor:</strong>
+<span><a href="/hledani?q=ill:'Brom,%20Pavel'">Pavel Brom</a>, <a href="/hledani?q=ill:'Bromov%C3%A1,%20Dagmar'">Dagmar Bromová</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1994</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>239 s.</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/historie-antika">Historie / Antika</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'p%C5%AFvodn%C3%AD%20s%20p%C5%99ebalem%204%C2%B0'">původní s přebalem 4°</a></span>
+</div>
+<div class="para-state" style="">
+<strong>Stav:</strong>
+<span>velmi dobrý</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>100 Kč</span>
+</div>
+<div class="crt"><a href="/kosik?fn=add&amp;id=82924" onclick="javascript:ajax('?fn=cart&amp;id=82924',onAjaxCart);return false;">
+<img id="c82924" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+</div>
+</div>
+<div id="p82923" class="para grow alt-odd" style="">
+<h3><a href="/kniha/hora-horejs-petr-toulky-ceskou-minulosti-prvni-dil-od-nejstarsi-doby-kamenne-po-prah-vrcholneho-1995" title="Toulky českou minulostí. První díl, Od nejstarší doby kamenné po práh vrcholného ..." style="">Toulky českou minulostí. První díl, Od nejstarší doby kamenné po práh vrcholného ...</a></h3>
+<a href="/files/77303.jpg" onclick="return false;"><img src="/files/thumb_77303.png" id="pic77303" class="picgrp" alt="Toulky českou minulostí. První díl, Od nejstarší doby kamenné po práh vrcholného ..." onclick="enlarge(this);" longdesc="/files/77303.jpg" name="/kniha/hora-horejs-petr-toulky-ceskou-minulosti-prvni-dil-od-nejstarsi-doby-kamenne-po-prah-vrcholneho-1995" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;" data-selector-highlight="selected"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Toulky českou minulostí. První díl, Od nejstarší doby kamenné po práh vrcholného středověku</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span>Petr Hora-Hořejš</span>
+</div>
+<div class="para-ill">
+<strong>Ilustrátor:</strong>
+<span><a href="/hledani?q=ill:'Brom,%20Pavel'">Pavel Brom</a>, <a href="/hledani?q=ill:'Bromov%C3%A1,%20Dagmar'">Dagmar Bromová</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1995</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>277 s.</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/historie-antika">Historie / Antika</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'p%C5%AFvodn%C3%AD%20s%20p%C5%99ebalem%204%C2%B0'">původní s přebalem 4°</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>velmi dobrý</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>80 Kč</span>
+</div>
+<div class="crt"><a href="/kosik?fn=add&amp;id=82923" onclick="javascript:ajax('?fn=cart&amp;id=82923',onAjaxCart);return false;">
+<img id="c82923" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+</div>
+</div>
+<div id="p82922" class="para grow alt-even" style="">
+<h3><a href="/kniha/payne-c-d-americke-krasky-2006-82922" title="Americké krásky" style="">Americké krásky</a></h3>
+<img src="/files/thumb_11787.png" alt="Americké krásky" width="100" data-selector-highlight="selected" style="">
+<div class="para-flds">
+<div class="para-title" style="">
+<strong>Název:</strong>
+<span>Americké krásky</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Payne%20C.D.'">Payne C.D.</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>2006</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>304 s.</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/beletrie-svetovi-autori">Beletrie - Světoví autoři</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'p%C5%AFvodn%C3%AD%208%C2%B0'">původní 8°</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>velmi dobrý</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>70 Kč</span>
+</div>
+<div class="crt"><a href="/kosik?fn=add&amp;id=82922" onclick="javascript:ajax('?fn=cart&amp;id=82922',onAjaxCart);return false;">
+<img id="c82922" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+</div>
+</div>
+<div id="p82921" class="para grow alt-odd" style="">
+<h3 style=""><a href="/kniha/carell-paul-stalingrad-slava-a-pad-6-armady-1994-82921" title="Stalingrad">Stalingrad</a></h3>
+<img src="/files/thumb_43121.png" alt="Stalingrad" width="100" data-selector-highlight="selected">
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Stalingrad / sláva a pád 6. armády</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Carell%20Paul'">Carell Paul</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1994</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>167 s.</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/militaria-legie">Militária / Legie</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'p%C5%AFvodn%C3%AD%20s%20p%C5%99ebalem%208%C2%B0'">původní s přebalem 8°</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>velmi dobrý</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span>70 Kč</span>
+</div>
+<div class="crt"><a href="/kosik?fn=add&amp;id=82921" onclick="javascript:ajax('?fn=cart&amp;id=82921',onAjaxCart);return false;">
+<img id="c82921" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+</div>
+</div>
+<div id="p82920" class="para grow alt-even" style="">
+<h3 style=""><a href="/kniha/buttlar-johannes-v-novy-raj-terraforming-posledni-sance-lidstva-1999" title="Nový ráj">Nový ráj</a></h3>
+<a href="/files/77302.jpg" onclick="return false;"><img src="/files/thumb_77302.png" id="pic77302" class="picgrp" alt="Nový ráj" onclick="enlarge(this);" longdesc="/files/77302.jpg" name="/kniha/buttlar-johannes-v-novy-raj-terraforming-posledni-sance-lidstva-1999" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;" data-selector-highlight="selected"></a>
+<div class="para-flds" style="">
+<div class="para-title" style="">
+<strong style="">Název:</strong>
+<span>Nový ráj - terraforming - poslední šance lidstva</span>
+</div>
+<div class="para-au" style="">
+<strong>Autor:</strong>
+<span>Johannes v. Buttlar</span>
+</div>
+<div class="para-issued">
+<strong style="">Rok vydání:</strong>
+<span>1999</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span style="">180 s.</span>
+</div>
+<div class="para-series" style="">
+<strong>Edice, série:</strong>
+<span><a href="/hledani?q=series:'Z%C3%A1hady'">Záhady</a></span>
+</div>
+<div class="para-cat" style="">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/zahady">Záhady</a></span>
+</div>
+<div class="para-binding" style="">
+<strong style="">Vazba:</strong>
+<span><a href="/hledani?q=binding:'p%C5%AFvodn%C3%AD%20s%20p%C5%99ebalem%208%C2%B0'" style="">původní s přebalem 8°</a></span>
+</div>
+<div class="para-state" style="">
+<strong style="">Stav:</strong>
+<span style="">dobrý</span>
+</div>
+<div class="para-price" style="">
+<strong style="">Cena:</strong>
+<span style="">50 Kč</span>
+</div>
+<div class="crt"><a href="/kosik?fn=add&amp;id=82920" onclick="javascript:ajax('?fn=cart&amp;id=82920',onAjaxCart);return false;">
+<img id="c82920" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1" style=""></a></div>
+</div>
+</div>
+<div class="clearfix"></div>
+<ul class="pager">
+<b>1</b>
+<li><a href="/?mn_offs=11">2</a></li>
+<li><a href="/?mn_offs=21">3</a></li>
+<li><a href="/?mn_offs=31">4</a></li>
+<li><a href="/?mn_offs=41">5</a></li>
+<li><a href="/?mn_offs=51">6</a></li>
+<li><a href="/?mn_offs=61">7</a></li>
+<li><a href="/?mn_offs=71">8</a></li>
+ ... 
+<li><a href="/?mn_offs=15921">1593</a></li>
+<li><a href="/?mn_offs=11">[další]</a></li>
+</ul>
+
+
+
+  </div> <!-- end content -->
+</div> <!-- end list-view -->
+
+ <div class="clearfix"></div>
+ </div> <!-- end content-wrap -->
+
+ <div id="footer">
+<!--Removing the links will void the Creative Commons License.-->
+  <div align="center">© 2011 <strong>Textrix</strong> | Template by <a href="http://www.themebin.com/">ThemeBin</a> | Icons by <a href="http://p.yusukekamiyamane.com/">Yusuke</a> &amp; <a href="http://www.starfishwebconsulting.co.uk/articles/free-ecommerce-icons?/ecommerce-icons">Starfish</a></div>
+ </div> <!-- end footer -->
+</div> <!-- end wrap -->
+
+<!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-MRGKDDMQD5"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-MRGKDDMQD5');
+</script>
+
+<script>if(e=document.getElementById('cart-box'))e.style.display='none';</script>
+
+
+<div id="enl_ldr" style="visibility: hidden; position: absolute; left: -5000px; top: 0px; z-index: 9999;"><img src="/assets/enfiles/loader.gif" id="enl_ldrgif" style="border-width: 1px; border-style: solid; border-color: black;"></div><div id="enl_brd" style="visibility: hidden; position: absolute; left: -5000px; top: 0px; background-color: rgb(255, 255, 255);"></div><div id="enl_shd" style="visibility: hidden; position: absolute; left: -5000px; top: 0px; background-color: black; opacity: 0.09;"></div><div id="enl_drk" style="visibility: hidden; position: absolute; left: -5000px; top: 0px; background-color: black; z-index: 9670;"></div>
+        <div id="selector-modal">
+            <p id="modal-message">Loading...</p>
+            <div id="modal-buttons"></div>
+        </div>
+    </body></html>
