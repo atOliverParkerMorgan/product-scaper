@@ -3,6 +3,7 @@ from train_model.process_data import data_to_csv
 
 
 WEBSITES = [
+    "https://trigon-knihy.cz/antikvariat/"
     "https://www.artonpaper.ch/new",
     "http://antik-stafl.cz/",
     "http://antikvariat-bohemia.cz/",
@@ -18,7 +19,6 @@ WEBSITES = [
     "https://obchod.kniharium.eu/142-avantgarda-a-bibliofilie",
     "https://samota.cz/kat/nov/antikvariat-samota-novinky.html",
     "https://spalena53.cz/nove-knihy",
-    "https://trigon-knihy.cz/antikvariat/",
     "https://umeleckafotografie.cz/",
     "https://www.adplus.cz/",
     "https://www.antikalfa.cz/bibliofilie/",

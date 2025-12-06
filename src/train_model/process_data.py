@@ -10,7 +10,7 @@ import textstat
 from urllib.parse import urlparse
 from sklearn.preprocessing import LabelEncoder
 import pickle
-
+import os
 # --- Feature Definitions ---
 
 class Features(Enum):
@@ -310,6 +310,9 @@ def selector_data_to_csv(data_domain_dir: Path) -> None:
 
 def data_to_csv(project_root: Path = Path.cwd()) -> None:
     """Process all domain directories and generate 'data.csv' files."""
+    if not (project_root / 'src' / 'data').exists():
+        os.makedirs(project_root / 'src' / 'data')
+
     for domain_dir in (project_root / 'src' / 'data').iterdir():
         if domain_dir.is_dir():
             selector_data_to_csv(domain_dir)

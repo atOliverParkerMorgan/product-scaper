@@ -1,0 +1,1215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="robots" content="index,follow">
+<meta name="description" content="Malý čtenář - internetový antikvaritát" lang="cs">
+<meta name="keywords" content="Antikvariát Malý čtenář, antik, staré použité knihy on-line, dětské knihy, literatura pro děti" lang="cs">
+<meta name="description" content="Czech antiquarian bookshop, used books" lang="en">
+<meta name="keywords" content="antiquarian bookshop, used books on-line" lang="en">
+<meta name="Content-language" content="cs">
+
+<link rel="stylesheet" href="/assets/style-kracme.css" type="text/css">
+
+<title>Antikvariát Malý čtenář</title>
+<style type="text/css">
+<!--
+body {
+	margin: 0px;
+	padding: 0px;
+	background-color: #f6ffe6;
+}
+a:link {
+	color: #333333;
+}
+a:visited {
+	color: #333333;
+}
+#list-view {margin-left: 246px;}
+#list-view {margin-right: 216px;}
+#rightbar {width: 200px;}
+#list-view {margin-top: 0px;}
+
+-->
+</style>
+<script type="text/javascript" src="/assets/enlargeitp.js"></script>
+<script type="text/javascript" src="/assets/ajax.js"></script>
+<script type="text/javascript">
+function onAjaxCart(resp) {
+var pars=resp.split(',');
+if(e=document.getElementById('c'+pars[0]))
+{e.className='crt'+pars[1];e.title=pars[2]};
+if(e=document.getElementById('cart-box'))e.style.display=pars[5];
+if(e=document.getElementById('cart-num'))e.innerHTML=pars[3];
+if(e=document.getElementById('cart-price'))e.innerHTML=pars[4];
+}
+
+function onAjaxCookies() {
+if(e=document.getElementById('cookies-consent'))
+{e.style.display = 'none'};}
+</script>
+
+
+<!--[consent]<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-23491429-17']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>[consent]-->
+<style type="text/css">
+    /* Highlight Styles */
+    .pw-hover {
+        outline: 2px dashed #007aff !important;
+        outline-offset: -2px !important;
+        background-color: rgba(0, 122, 255, 0.1) !important;
+        cursor: crosshair !important;
+    }
+    .pw-selected {
+        outline: 3px solid #34c759 !important;
+        outline-offset: -3px !important;
+        background-color: rgba(52, 199, 89, 0.2) !important;
+        box-shadow: 0 0 15px rgba(52, 199, 89, 0.4) !important;
+    }
+
+    /* UI Container */
+    #pw-ui {
+        position: fixed !important;
+        top: 20px !important;
+        right: 20px !important;
+        background: rgba(255, 255, 255, 0.98) !important;
+        border: 1px solid #ddd !important;
+        border-radius: 12px !important;
+        padding: 0 !important;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2) !important;
+        z-index: 2147483647 !important;
+        font-family: system-ui, -apple-system, sans-serif !important;
+        width: 340px !important;
+        backdrop-filter: blur(10px);
+        color: #333;
+        transition: none !important; /* Disable transition for smooth dragging */
+    }
+
+    /* Draggable Header */
+    #pw-ui-header {
+        background: #f8f9fa;
+        padding: 12px 16px;
+        border-bottom: 1px solid #eee;
+        cursor: move; /* Explicit move cursor */
+        user-select: none; /* Prevent text selection while dragging */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 12px 12px 0 0;
+    }
+    #pw-ui-header:active { cursor: grabbing; }
+    
+    #pw-ui h2 {
+        margin: 0 !important;
+        font-size: 15px !important;
+        font-weight: 600 !important;
+        color: #1a1a1a !important;
+        pointer-events: none; /* Let clicks pass through to header */
+    }
+
+    /* Body */
+    #pw-ui-body { padding: 16px; }
+
+    .status-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        font-size: 13px;
+        color: #666;
+    }
+
+    #pw-selector-box {
+        background: #2d2d2d;
+        color: #e0e0e0;
+        border-radius: 6px;
+        padding: 10px;
+        font-family: 'Menlo', monospace;
+        font-size: 11px;
+        line-height: 1.4;
+        margin-bottom: 16px;
+        word-break: break-all;
+        min-height: 30px;
+        max-height: 80px;
+        overflow-y: auto;
+        border: 1px solid #404040;
+    }
+
+    /* Buttons */
+    .btn-group { display: flex; gap: 8px; }
+    button {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.1s, opacity 0.2s;
+    }
+    button:active { transform: scale(0.98); }
+    
+    .btn-secondary { background: #e9ecef; color: #495057; }
+    .btn-secondary:hover { background: #dee2e6; }
+    
+    .btn-primary { background: #007aff; color: white; }
+    .btn-primary:hover { opacity: 0.9; }
+    
+    .btn-success { background: #34c759; color: white; }
+    .btn-success:hover { opacity: 0.9; }
+    
+    .shortcut-hint {
+        display: block;
+        text-align: center;
+        margin-top: 10px;
+        font-size: 10px;
+        color: #999;
+    }
+</style></head>
+<body class="">
+<div id="wrap">
+ <div id="header-top"></div>
+ <div id="header-main">
+  <div id="logo-img"></div>
+  <h1 id="logo-text"><a href="/">Antikvariát Malý čtenář</a></h1>
+  <div id="account"><a href="/ucet?ac_func=login" onclick="this.href='/ucet?ac_func=login&amp;ac_url='+encodeURIComponent(location.href)"><img src="/assets/key.png" alt="klic" title="přihlášení"></a>
+</div>
+ </div>	<!-- end header-main -->
+ <div id="nav">
+ <div id="nav-bar">
+ <ul>
+<li id="selected"><span>Nabídka</span></li>
+<li><a href="/hledani">Hledání</a></li>
+<li><a href="/kosik">Košík</a></li>
+<li><a href="/objednavka">Objednat</a></li>
+<li><a href="/podminky">Obchodní podmínky</a></li>
+<li><a href="/osobni-udaje">Osobní údaje</a></li>
+<li><a href="/kontakty">Kontakty</a></li>
+
+ </ul>
+ </div> <!-- end nav-bar -->
+ </div> <!-- end nav -->
+ <div id="content-wrap" class="">
+
+  <div id="leftbar" class="sidebar">
+   <h1>Vyhledávání</h1>
+   <div id="sear" class="left-box">
+    <form method="post" action="/hledani">
+    <p>
+     <input class="textbox" type="text" name="q" value="">
+     <input class="ibtn button" type="submit" name="Submit" value="&gt;">
+     <a href="/hledani?fn=info"><img src="/assets/info16.png" alt="hledání-info"></a>
+    </p>
+    </form>
+   </div>
+
+   <h1>Kategorie</h1>
+<div id="cat_container" class="">
+<ul id="cat_list" class="">
+<li class="alt-odd"><a href="/kategorie/akcie-losy-cenne-papiry">Akcie, losy, cenné papíry</a>
+</li>
+<li class="alt-even"><a href="/kategorie/anticka-knihovna">antická knihovna</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/beletrie-ceska">beletrie česká</a>
+</li>
+<li class="alt-even"><a href="/kategorie/beletrie-svetova">beletrie světová</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/bestsellery">bestsellery</a>
+</li>
+<li class="alt-even"><a href="/kategorie/bibliofilie">bibliofilie</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/burian-zdenek">Burian Zdeněk</a>
+</li>
+<li class="alt-even"><a href="/kategorie/casopisy">časopisy</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/cestopisy-zemepis">cestopisy, zeměpis</a>
+</li>
+<li class="alt-even"><a href="/kategorie/chovatelstvi-a-pestitelstvi">chovatelství a pěstitelství</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/cizojazycne-slovenske-a-bilingvni-knihy">cizojazyčné, slovenské a bilingvní knihy</a>
+</li>
+<li class="alt-even"><a href="/kategorie/ctyrlistek-a-jaroslav-nemecek">Čtyřlístek a Jaroslav Němeček</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/detektivka">detektivka</a>
+</li>
+<li class="alt-even"><a href="/kategorie/detektivky">detektivky</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/detska-literatura">dětská literatura</a>
+</li>
+<li class="alt-even"><a href="/kategorie/detska-naucna">dětská, naučná</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/divci-a-zenske-romany">dívčí a ženské romány</a>
+</li>
+<li class="alt-even"><a href="/kategorie/dobrodruzne">dobrodružné</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/domaci-prace">domácí práce</a>
+</li>
+<li class="alt-even"><a href="/kategorie/doprava">doprava</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/drobna-grafika-ex-libris">drobná grafika, ex libris</a>
+</li>
+<li class="alt-even"><a href="/kategorie/druzstevni-prace">Družstevní práce</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/duchovni-literatura">duchovní literatura</a>
+</li>
+<li class="alt-even"><a href="/kategorie/edice-ilustrovanych-novel">edice ilustrovaných novel</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/ekonomie-hospodarstvi-a-podnikani">ekonomie, hospodářství a podnikání</a>
+</li>
+<li class="alt-even"><a href="/kategorie/elektrotechnika">elektrotechnika</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/encyklopedie">encyklopedie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/erotika">erotika</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/eseje">eseje</a>
+</li>
+<li class="alt-even"><a href="/kategorie/estetika-kultura">estetika, kultura</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/exil-samizdat-jazzpetit">exil, samizdat, Jazzpetit</a>
+</li>
+<li class="alt-even"><a href="/kategorie/film-divadlo">film, divadlo</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/filosofie">filosofie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/fotografie">Fotografie</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/fotografie-knihy">Fotografie - knihy</a>
+</li>
+<li class="alt-even"><a href="/kategorie/fotografie-technika">fotografie technika</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/geografie">Geografie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/geologie-hornictvi">geologie, hornictví</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/grafika-skolni-obrazy">Grafika, školní obrazy</a>
+</li>
+<li class="alt-even"><a href="/kategorie/hasicstvi">hasičství</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/historicky-roman">historický román</a>
+</li>
+<li class="alt-even"><a href="/kategorie/historie-ceska">historie česká</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/historie-svetova">historie světová</a>
+</li>
+<li class="alt-even"><a href="/kategorie/hobby">hobby</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/houslarstvi-hudebni-nastroje">Houslařství, hudební nástroje</a>
+</li>
+<li class="alt-even"><a href="/kategorie/hudba-a-zpevniky">hudba a zpěvníky</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/humoristicke">humoristické</a>
+</li>
+<li class="alt-even"><a href="/kategorie/jazykove-ucebnice-slovniky">jazykové učebnice, slovníky</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/jazykoveda-cestina-literarni-vedy">jazykověda, čeština, literární vědy</a>
+</li>
+<li class="alt-even"><a href="/kategorie/judaika">judaika</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/kaja-saudek">Kája Saudek</a>
+</li>
+<li class="alt-even"><a href="/kategorie/kalendare">kalendáře</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/karetni-hry">karetní hry</a>
+</li>
+<li class="alt-even"><a href="/kategorie/knihy-o-knihach">knihy o knihách</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/knihy-s-podpisy-a-dedikace">knihy s podpisy a dedikace</a>
+</li>
+<li class="alt-even"><a href="/kategorie/kod-knihy-odvahy-a-dobroduzstvi">KOD- Knihy odvahy a dobrodužství</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/kolibrici">Kolibříci</a>
+</li>
+<li class="alt-even"><a href="/kategorie/komiks-rychle-sipy">komiks/Rychlé šípy</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/kozene-vazby">kožené vazby</a>
+</li>
+<li class="alt-even"><a href="/kategorie/krasna-vazba">krásná vazba</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/kucharky">kuchařky</a>
+</li>
+<li class="alt-even"><a href="/kategorie/kuriozity">kuriozity</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/legendy-baje-a-povesti">legendy, báje a pověsti</a>
+</li>
+<li class="alt-even"><a href="/kategorie/legionarska-literatura">Legionářská literatura</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/letectvi">letectví</a>
+</li>
+<li class="alt-even"><a href="/kategorie/literarni-casopisy-a-noviny">Literární časopisy a noviny</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/literarni-veda">literární věda</a>
+</li>
+<li class="alt-even"><a href="/kategorie/literatura-faktu">literatura faktu</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/loutkarstvi">Loutkářství</a>
+</li>
+<li class="alt-even"><a href="/kategorie/loutkove-hry">loutkové hry</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/magnet">Magnet</a>
+</li>
+<li class="alt-even"><a href="/kategorie/mapy-pruvodce">mapy, průvodce</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/marie-fischerova-kvechova">Marie Fischerová - Kvěchová</a>
+</li>
+<li class="alt-even"><a href="/kategorie/mistopis">místopis</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/moda">móda</a>
+</li>
+<li class="alt-even"><a href="/kategorie/motorismus">motorismus</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/myslivecke-pribehy">myslivecké příběhy</a>
+</li>
+<li class="alt-even"><a href="/kategorie/myslivost">myslivost</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/myslivost-lesnictvi-a-rybarstvi">myslivost, lesnictví a rybářství</a>
+</li>
+<li class="alt-even"><a href="/kategorie/mytologie">Mytologie</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/nabozenstvi">náboženství</a>
+</li>
+<li class="alt-even"><a href="/kategorie/narodopis">národopis</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/naucna-literatura">naučná literatura</a>
+</li>
+<li class="alt-even"><a href="/kategorie/obalky">obálky</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/obrazove-publikace">Obrazové publikace</a>
+</li>
+<li class="alt-even"><a href="/kategorie/oko">Oko</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/orientalistika">orientalistika</a>
+</li>
+<li class="alt-even"><a href="/kategorie/osobnostni-rozvoj-motivace-obchod">osobnostní rozvoj, motivace, obchod</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/ostatni">ostatní</a>
+</li>
+<li class="alt-even"><a href="/kategorie/plakaty">Plakáty</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/pocitace-a-programovani">Počítače a programování</a>
+</li>
+<li class="alt-even"><a href="/kategorie/poezie">poezie</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/politika">politika</a>
+</li>
+<li class="alt-even"><a href="/kategorie/pomocne-vedy-historicke">pomocné vědy historické</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/pragensie" class="">Pragensie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/pravnicka">právnická</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/pravo">právo</a>
+</li>
+<li class="alt-even"><a href="/kategorie/priroda">příroda</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/priroda-fauna">příroda - fauna</a>
+</li>
+<li class="alt-even"><a href="/kategorie/priroda-flora">Příroda- flora</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/prirodni-vedy">přírodní vědy</a>
+</li>
+<li class="alt-even"><a href="/kategorie/propaganda-a-antijudaika">propaganda a antijudaika</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/psychologie-sociologie-a-pedagogika" class="">psychologie , sociologie a pedagogika</a>
+</li>
+<li class="alt-even"><a href="/kategorie/remesla">řemesla</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/retro">Retro</a>
+</li>
+<li class="alt-even"><a href="/kategorie/rok-1968-normalizace">rok 1968, normalizace</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/sachy">šachy</a>
+</li>
+<li class="alt-even"><a href="/kategorie/sberatelstvi-modelarstvi">sběratelství, modelářství</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/sci-fi-fantazy-a-horrory">sci-fi, fantazy a horrory</a>
+</li>
+<li class="alt-even"><a href="/kategorie/skauting">skauting</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/spolecnost">Společnost</a>
+</li>
+<li class="alt-even"><a href="/kategorie/spolecnost-a-veda">společnost a věda</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/sport">sport</a>
+</li>
+<li class="alt-even"><a href="/kategorie/sport-a-horolezectvi">sport a horolezectví</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/stara-technika-zeleznice">stará technika, železnice</a>
+</li>
+<li class="alt-even"><a href="/kategorie/stare-civilizace">staré civilizace</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/stare-mapy">staré mapy</a>
+</li>
+<li class="alt-even"><a href="/kategorie/stare-noviny-a-casopisy">staré noviny a časopisy</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/stare-reklamni-materialy">staré reklamní materiály</a>
+</li>
+<li class="alt-even"><a href="/kategorie/stare-tisky">staré tisky</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/stare-ucebnice">staré učebnice</a>
+</li>
+<li class="alt-even"><a href="/kategorie/starozitnosti-retro-predmety-design">STAROŽITNOSTI, retro předměty, design</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/stavebnictvi">stavebnictví</a>
+</li>
+<li class="alt-even"><a href="/kategorie/svetova-knihovnicka-sndk">Světová knihovnička SNDK</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/t-g-masaryk">T.G.Masaryk</a>
+</li>
+<li class="alt-even"><a href="/kategorie/tajemno-mystika-okultismus-astrologie">tajemno, mystika, okultismus, astrologie</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/tanec">tanec</a>
+</li>
+<li class="alt-even"><a href="/kategorie/technicka-literatura">technická literatura</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/thriller">thriller</a>
+</li>
+<li class="alt-even"><a href="/kategorie/ucebnice">učebnice</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/umeni-architektura">umění/architektura</a>
+</li>
+<li class="alt-even"><a href="/kategorie/varia">Varia</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/vojenska-historie">vojenská historie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/vojenstvi">vojenství</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/volna-myslenka">Volná myšlenka</a>
+</li>
+<li class="alt-even"><a href="/kategorie/zabava">zábava</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/zahrada">zahrada</a>
+</li>
+<li class="alt-even"><a href="/kategorie/zdravi-a-alternativni-leceni">zdraví a alternativní léčení</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/ziva-dila-minulosti">živá díla minulosti</a>
+</li>
+<li class="alt-even"><a href="/kategorie/zivotopisy-vzpominky-a-korespondence">životopisy, vzpomínky a korespondence</a>
+</li>
+
+</ul>
+</div>
+  </div> <!-- end left-bar -->
+  <div id="rightbar" class="sidebar">
+
+   <div id="cart-box" style="display: none;">
+   <h1>Košík</h1>
+   <div class="left-box">
+    <p><span id="cart-num">0</span> za <span id="cart-price">0</span> Kč <a href="/kosik" class="ibtn">Zobrazit</a></p>
+   </div>
+   </div>
+<h1>Informace</h1>
+   <div class="left-box">
+<span style="font-size:11px">antikvariatmalyctenar@seznam.cz</span><br>
+tel.: +420 777 680 008<br>
+Účet: 670100-2229084352/6210 
+   </div>
+<!--   <h1>Kontaktní údaje</h1>
+   <div id="contacts" class="left-box">
+<p>
+<span style="font-size:80%;margin-left:-10px">&#97;&#110;&#116;&#105;&#107;&#118;&#97;&#114;&#105;&#97;&#116;&#109;&#97;&#108;&#121;&#99;&#116;&#101;&#110;&#97;&#114;&#64;&#115;&#101;&#122;&#110;&#97;&#109;&#46;&#99;&#122;</span><br />
+tel.: +420 777 680 008<br />
+Účet: 670100-2209332128/6210
+</p>
+   </div>-->
+
+   <h1>Odkazy</h1>
+   <div class="left-box">
+    <ul class="sidemenu">
+     <li><a href="http://muj-antikvariat.cz">Můj-antikvariát.cz</a></li>
+    </ul>
+   </div>
+  </div> <!-- end right-bar -->
+
+<div id="list-view">
+<ul class="menu">
+  <li><a href="?mn_lst=para" class="active"><span>Odstavce</span></a></li>
+  <li><a href="?mn_lst=table"><span>Tabulka</span></a></li>
+  <li class="menu-ord"><a href="?mn_lst=title"><span>Abeceda</span></a></li>
+  <li class="menu-ord"><a href="?mn_lst=recent" class="active"><span>Nejnovější</span></a></li>
+<li><span class="lbl">Řazení:</span></li>
+</ul>
+  <div id="content" class="">
+<h1>Nejnovější nabídka</h1><ul class="pager">
+<b>1</b>
+<li><a href="/?mn_offs=16">2</a></li>
+<li><a href="/?mn_offs=31">3</a></li>
+<li><a href="/?mn_offs=46">4</a></li>
+<li><a href="/?mn_offs=61">5</a></li>
+<li><a href="/?mn_offs=76">6</a></li>
+<li><a href="/?mn_offs=91">7</a></li>
+<li><a href="/?mn_offs=106">8</a></li>
+ ... 
+<li><a href="/?mn_offs=10201">681</a></li>
+<li><a href="/?mn_offs=16">[další]</a></li>
+</ul>
+
+<div id="p31324" class="para grow alt-odd">
+<div class="crt"><a href="/kosik?fn=add&amp;id=31324" onclick="javascript:ajax('?fn=cart&amp;id=31324',onAjaxCart);return false;">
+<img id="c31324" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/bernatsky-ladislav-vecna-kvetenstvi-pospis-ladislav-bernatsky-1941" title="Věčná květenství POSPIS LADISLAV BERNATSKÝ" class="">Věčná květenství POSPIS LADISLAV BERNATSKÝ</a></h3>
+<a href="/files/50826.jpg" onclick="return false;"><img src="/files/thumb_50826.png" id="pic50826" class="picgrp" alt="Věčná květenství POSPIS LADISLAV BERNATSKÝ" onclick="enlarge(this);" longdesc="/files/50826.jpg" name="/kniha/bernatsky-ladislav-vecna-kvetenstvi-pospis-ladislav-bernatsky-1941" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong class="">Název:</strong>
+<span>Věčná květenství POSPIS LADISLAV BERNATSKÝ</span>
+</div>
+<div class="para-au">
+<strong class="">Autor:</strong>
+<span><a href="/hledani?q=au:'Bernatsk%C3%BD,%20Ladislav'">Ladislav Bernatský</a></span>
+</div>
+<div class="para-issued">
+<strong class="">Rok vydání:</strong>
+<span>1941</span>
+</div>
+<div class="para-pg">
+<strong class="">Počet stran:</strong>
+<span>60 s.</span>
+</div>
+<div class="para-series">
+<strong class="">Edice, série:</strong>
+<span><a href="/hledani?q=series:'Edice%20Zp%C4%9Bvy%20domova%20;%20Sv.%207'" class="">Edice Zpěvy domova / Sv. 7</a></span>
+</div>
+<div class="para-cat">
+<strong class="">Kategorie:</strong>
+<span><a href="/kategorie/knihy-s-podpisy-a-dedikace" class="">knihy s podpisy a dedikace</a>, <a href="/kategorie/obalky">obálky</a>, <a href="/kategorie/poezie">poezie</a></span>
+</div>
+<div class="para-binding">
+<strong class="">Vazba:</strong>
+<span><a href="/hledani?q=binding:'m%C4%9Bkk%C3%A1'">měkká</a></span>
+</div>
+<div class="para-state">
+<strong class="">Stav:</strong>
+<span>dobrý</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span class="">300 Kč</span>
+</div>
+</div>
+</div>
+<div id="p31323" class="para grow alt-even">
+<div class="crt"><a href="/kosik?fn=add&amp;id=31323" onclick="javascript:ajax('?fn=cart&amp;id=31323',onAjaxCart);return false;">
+<img id="c31323" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/zegadlowicz-emil-ballada-o-babce-horalcicke-o-detech-a-o-zarivem-chlevu-za-vsemi-stojicim-podpis-otto-f-1928" title="Ballada o babce Horalčické, o dětech a o zářivém chlévu za všemi stojícím PODPIS OTTO F ..." class="">Ballada o babce Horalčické, o dětech a o zářivém chlévu za všemi stojícím PODPIS OTTO F ...</a></h3>
+<a href="/files/50823.jpg" onclick="return false;"><img src="/files/thumb_50823.png" id="pic50823" class="picgrp" alt="Ballada o babce Horalčické, o dětech a o zářivém chlévu za všemi stojícím PODPIS OTTO F ..." onclick="enlarge(this);" longdesc="/files/50823.jpg" name="/kniha/zegadlowicz-emil-ballada-o-babce-horalcicke-o-detech-a-o-zarivem-chlevu-za-vsemi-stojicim-podpis-otto-f-1928" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Ballada o babce Horalčické, o dětech a o zářivém chlévu za všemi stojícím PODPIS OTTO F.BABLERA</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Zegad%C5%82owicz,%20Emil'">Emil Zegadłowicz</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1928</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>26 s.</span>
+</div>
+<div class="para-series">
+<strong>Edice, série:</strong>
+<span><a href="/hledani?q=series:'Knihovna%20slovansk%C3%BDch%20b%C3%A1sn%C3%ADk%C5%AF%20;%201'" class="">Knihovna slovanských básníků / 1</a></span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/knihy-s-podpisy-a-dedikace" class="">knihy s podpisy a dedikace</a>, <a href="/kategorie/poezie">poezie</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'m%C4%9Bkk%C3%A1'" class="">měkká</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>dobrý</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span class="">180 Kč</span>
+</div>
+</div>
+</div>
+<div id="p31358" class="para grow alt-odd">
+<div class="crt"><a href="/kosik?fn=add&amp;id=31358" onclick="javascript:ajax('?fn=cart&amp;id=31358',onAjaxCart);return false;">
+<img id="c31358" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/machan-petr-lazensti-lide-podpis-autora-2019" title="Lázeňští lidé PODPIS AUTORA!!!" class="">Lázeňští lidé PODPIS AUTORA!!!</a></h3>
+<a href="/files/50945.jpg" onclick="return false;"><img src="/files/thumb_50945.png" id="pic50945" class="picgrp" alt="Lázeňští lidé PODPIS AUTORA!!!" onclick="enlarge(this);" longdesc="/files/50945.jpg" name="/kniha/machan-petr-lazensti-lide-podpis-autora-2019" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Lázeňští lidé PODPIS AUTORA!!!</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Machan,%20Petr'">Petr Machan</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>2019</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/fotografie-knihy">Fotografie - knihy</a>, <a href="/kategorie/knihy-s-podpisy-a-dedikace">knihy s podpisy a dedikace</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'se%C5%A1%C3%ADt'">sešít</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span class="">velmi dobrý</span>
+</div>
+<div class="para-price">
+<strong class="">Cena:</strong>
+<span class="">150 Kč</span>
+</div>
+</div>
+</div>
+<div id="p31345" class="para grow alt-even">
+<div class="crt"><a href="/kosik?fn=add&amp;id=31345" onclick="javascript:ajax('?fn=cart&amp;id=31345',onAjaxCart);return false;">
+<img id="c31345" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/dytrtova-jirina-krejcovska-abeceda-1948" title="Krejčovská abeceda" class="">Krejčovská abeceda</a></h3>
+<a href="/files/50908.jpg" onclick="return false;"><img src="/files/thumb_50908.png" id="pic50908" class="picgrp" alt="Krejčovská abeceda" onclick="enlarge(this);" longdesc="/files/50908.jpg" name="/kniha/dytrtova-jirina-krejcovska-abeceda-1948" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span class="">Krejčovská abeceda - všechny základní úkony krejčovské práce, poučení o všech pomůckách krejčovského řemesla, podrobný návod, jak zhotoviti všechny části ženských a dětských oděvů všech druhů, jak zacházeti se střihy, jak zkoušeti a jak žehliti - dokonalá krejčovská příručka pro hospodyně, odborné školy, jakož i pro krejčí a švadleny z povolání</span>
+</div>
+<div class="para-au">
+<strong class="">Autor:</strong>
+<span><a href="/hledani?q=au:'Dytrtov%C3%A1,%20Ji%C5%99ina'" class="">Jiřina Dytrtová</a>; <a href="/hledani?q=au:'Pokorn%C3%A1,%20Ji%C5%99ina'">Jiřina Pokorná</a>; <a href="/hledani?q=au:'Plockov%C3%A1,%20Milada'">Milada Plocková</a></span>
+</div>
+<div class="para-issued">
+<strong class="">Rok vydání:</strong>
+<span>1948</span>
+</div>
+<div class="para-pg">
+<strong class="">Počet stran:</strong>
+<span>83 s.</span>
+</div>
+<div class="para-series">
+<strong class="">Edice, série:</strong>
+<span><a href="/hledani?q=series:'Praktick%C3%A1%20edice%20%C4%8Dasopisu%20Na%C5%A1e%20%C5%BEena%20;%20sv.%203'" class="">Praktická edice časopisu Naše žena / sv. 3</a></span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span class=""><a href="/kategorie/domaci-prace" class="">domácí práce</a>, <a href="/kategorie/remesla">řemesla</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'m%C4%9Bkk%C3%A1'" class="">měkká</a></span>
+</div>
+<div class="para-state">
+<strong class="">Stav:</strong>
+<span>dobrý</span>
+</div>
+<div class="para-price">
+<strong class="">Cena:</strong>
+<span class="">150 Kč</span>
+</div>
+</div>
+</div>
+<div id="p31349" class="para grow alt-odd">
+<div class="crt"><a href="/kosik?fn=add&amp;id=31349" onclick="javascript:ajax('?fn=cart&amp;id=31349',onAjaxCart);return false;">
+<img id="c31349" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/waller-robert-james-madisonske-mosty-2008" title="Madisonské mosty" class="">Madisonské mosty</a></h3>
+<a href="/files/50926.jpg" onclick="return false;"><img src="/files/thumb_50926.png" id="pic50926" class="picgrp" alt="Madisonské mosty" onclick="enlarge(this);" longdesc="/files/50926.jpg" name="/kniha/waller-robert-james-madisonske-mosty-2008" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong class="">Název:</strong>
+<span class="">Madisonské mosty</span>
+</div>
+<div class="para-au">
+<strong class="">Autor:</strong>
+<span><a href="/hledani?q=au:'Waller,%20Robert%20James'" class="">Robert James Waller</a></span>
+</div>
+<div class="para-issued">
+<strong class="">Rok vydání:</strong>
+<span>2008</span>
+</div>
+<div class="para-pg">
+<strong class="">Počet stran:</strong>
+<span>140 s.</span>
+</div>
+<div class="para-cat">
+<strong class="">Kategorie:</strong>
+<span><a href="/kategorie/beletrie-svetova" class="">beletrie světová</a></span>
+</div>
+<div class="para-binding">
+<strong class="">Vazba:</strong>
+<span><a href="/hledani?q=binding:'pevn%C3%A1%20s%20%20ob%C3%A1lkou'" class="">pevná s  obálkou</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>velmi dobrý</span>
+</div>
+<div class="para-price">
+<strong class="">Cena:</strong>
+<span class="">100 Kč</span>
+</div>
+</div>
+</div>
+<div id="p31348" class="para grow alt-even">
+<div class="crt"><a href="/kosik?fn=add&amp;id=31348" onclick="javascript:ajax('?fn=cart&amp;id=31348',onAjaxCart);return false;">
+<img id="c31348" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/edda-bohatyrske-pisne-1942-31348" title="Edda" class="">Edda</a></h3>
+<a href="/files/50922.jpg" onclick="return false;"><img src="/files/thumb_50922.png" id="pic50922" class="picgrp" alt="Edda" onclick="enlarge(this);" longdesc="/files/50922.jpg" name="/kniha/edda-bohatyrske-pisne-1942-31348" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span class="">Edda - bohatýrské písně</span>
+</div>
+<div class="para-ill">
+<strong class="">Ilustrátor:</strong>
+<span><a href="/hledani?q=ill:'Strnadel,%20Anton%C3%ADn'" class="">Antonín Strnadel</a></span>
+</div>
+<div class="para-issued">
+<strong class="">Rok vydání:</strong>
+<span>1942</span>
+</div>
+<div class="para-pg">
+<strong class="">Počet stran:</strong>
+<span class="">194 s.</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/legendy-baje-a-povesti" class="">legendy, báje a pověsti</a>, <a href="/kategorie/poezie">poezie</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'pevn%C3%A1'" class="">pevná</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span class="">dobrý</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span class="">110 Kč</span>
+</div>
+</div>
+</div>
+<div id="p31347" class="para grow alt-odd">
+<div class="crt"><a href="/kosik?fn=add&amp;id=31347" onclick="javascript:ajax('?fn=cart&amp;id=31347',onAjaxCart);return false;">
+<img id="c31347" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/krcma-miroslav-zpevnik-pro-5-rocnik-zakladni-devitilete-skoly-1975" title="Zpěvník pro 5. ročník základní devítileté školy" class="">Zpěvník pro 5. ročník základní devítileté školy</a></h3>
+<a href="/files/50919.jpg" onclick="return false;"><img src="/files/thumb_50919.png" id="pic50919" class="picgrp" alt="Zpěvník pro 5. ročník základní devítileté školy" onclick="enlarge(this);" longdesc="/files/50919.jpg" name="/kniha/krcma-miroslav-zpevnik-pro-5-rocnik-zakladni-devitilete-skoly-1975" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong class="">Název:</strong>
+<span class="">Zpěvník pro 5. ročník základní devítileté školy</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Kr%C4%8Dma,%20Miroslav'" class="">Miroslav Krčma</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span class="">1975</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span class="">124 s.</span>
+</div>
+<div class="para-series">
+<strong>Edice, série:</strong>
+<span><a href="/hledani?q=series:'U%C4%8Debnice%20pro%20z%C3%A1kl.%20dev%C3%ADtiletou%20%C5%A1kolu'" class="">Učebnice pro zákl. devítiletou školu</a></span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/stare-ucebnice" class="">staré učebnice</a>, <a href="/kategorie/ucebnice">učebnice</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span class=""><a href="/hledani?q=binding:'pevn%C3%A1,%20omyvateln%C3%A1'" class="">pevná, omyvatelná</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>dobrý</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span class="">100 Kč</span>
+</div>
+</div>
+</div>
+<div id="p31350" class="para grow alt-even">
+<div class="crt"><a href="/kosik?fn=add&amp;id=31350" onclick="javascript:ajax('?fn=cart&amp;id=31350',onAjaxCart);return false;">
+<img id="c31350" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/mornstajnova-alena-hotylek-2018" title="Hotýlek" class="">Hotýlek</a></h3>
+<a href="/files/50928.jpg" onclick="return false;"><img src="/files/thumb_50928.png" id="pic50928" class="picgrp" alt="Hotýlek" onclick="enlarge(this);" longdesc="/files/50928.jpg" name="/kniha/mornstajnova-alena-hotylek-2018" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span class="">Hotýlek</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span class=""><a href="/hledani?q=au:'Morn%C5%A1tajnov%C3%A1,%20Alena'" class="">Alena Mornštajnová</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span class="">2018</span>
+</div>
+<div class="para-pg">
+<strong class="">Počet stran:</strong>
+<span class="">315 s.</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span class=""><a href="/kategorie/beletrie-ceska" class="">beletrie česká</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'pevn%C3%A1'">pevná</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>dobrý</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span class="">100 Kč</span>
+</div>
+</div>
+</div>
+<div id="p31351" class="para grow alt-odd">
+<div class="crt"><a href="/kosik?fn=add&amp;id=31351" onclick="javascript:ajax('?fn=cart&amp;id=31351',onAjaxCart);return false;">
+<img id="c31351" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/frybova-zdena-otcem-i-matkou-proti-sve-vuli-2002" title="Otcem i matkou proti své vůli" class="">Otcem i matkou proti své vůli</a></h3>
+<a href="/files/50930.jpg" onclick="return false;"><img src="/files/thumb_50930.png" id="pic50930" class="picgrp" alt="Otcem i matkou proti své vůli" onclick="enlarge(this);" longdesc="/files/50930.jpg" name="/kniha/frybova-zdena-otcem-i-matkou-proti-sve-vuli-2002" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span class="">Otcem i matkou proti své vůli</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Fr%C3%BDbov%C3%A1,%20Zdena'" class="">Zdena Frýbová</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span class="">2002</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span class="">459 s.</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/beletrie-ceska" class="">beletrie česká</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'pevn%C3%A1,%20omyvateln%C3%A1'" class="">pevná, omyvatelná</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span class="">velmi dobrý</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span class="">75 Kč</span>
+</div>
+</div>
+</div>
+<div id="p31352" class="para grow alt-even">
+<div class="crt"><a href="/kosik?fn=add&amp;id=31352" onclick="javascript:ajax('?fn=cart&amp;id=31352',onAjaxCart);return false;">
+<img id="c31352" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/king-stephen-dance-macabre-svet-hororu-2017" title="Dance macabre" class="">Dance macabre</a></h3>
+<a href="/files/50932.jpg" onclick="return false;"><img src="/files/thumb_50932.png" id="pic50932" class="picgrp" alt="Dance macabre" onclick="enlarge(this);" longdesc="/files/50932.jpg" name="/kniha/king-stephen-dance-macabre-svet-hororu-2017" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Dance macabre: Svět hororu</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'King,%20Stephen'">Stephen King</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>2017</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>462 s.</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/sci-fi-fantazy-a-horrory">sci-fi, fantazy a horrory</a>, <a href="/kategorie/jazykoveda-cestina-literarni-vedy">jazykověda, čeština, literární vědy</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'pevn%C3%A1%20s%20%20ob%C3%A1lkou'" class="">pevná s  obálkou</a></span>
+</div>
+<div class="para-state">
+<strong class="">Stav:</strong>
+<span class="">velmi dobrý</span>
+</div>
+<div class="para-price">
+<strong class="">Cena:</strong>
+<span class="">230 Kč</span>
+</div>
+</div>
+</div>
+<div id="p31353" class="para grow alt-odd">
+<div class="crt"><a href="/kosik?fn=add&amp;id=31353" onclick="javascript:ajax('?fn=cart&amp;id=31353',onAjaxCart);return false;">
+<img id="c31353" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/ruzickova-martina-ota-pavel-osobnost-dvou-tvari-2008" title="Ota Pavel" class="">Ota Pavel</a></h3>
+<a href="/files/50934.jpg" onclick="return false;"><img src="/files/thumb_50934.png" id="pic50934" class="picgrp" alt="Ota Pavel" onclick="enlarge(this);" longdesc="/files/50934.jpg" name="/kniha/ruzickova-martina-ota-pavel-osobnost-dvou-tvari-2008" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong class="">Název:</strong>
+<span class="">Ota Pavel - osobnost dvou tváří</span>
+</div>
+<div class="para-au">
+<strong class="">Autor:</strong>
+<span><a href="/hledani?q=au:'R%C5%AF%C5%BEi%C4%8Dkov%C3%A1,%20Martina'" class="">Martina Růžičková</a></span>
+</div>
+<div class="para-issued">
+<strong class="">Rok vydání:</strong>
+<span>2008</span>
+</div>
+<div class="para-pg">
+<strong class="">Počet stran:</strong>
+<span>158 s.</span>
+</div>
+<div class="para-cat">
+<strong class="">Kategorie:</strong>
+<span><a href="/kategorie/zivotopisy-vzpominky-a-korespondence" class="">životopisy, vzpomínky a korespondence</a></span>
+</div>
+<div class="para-binding">
+<strong class="">Vazba:</strong>
+<span><a href="/hledani?q=binding:'pevn%C3%A1,%20omyvateln%C3%A1'" class="">pevná, omyvatelná</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>velmi dobrý</span>
+</div>
+<div class="para-price">
+<strong class="">Cena:</strong>
+<span>65 Kč</span>
+</div>
+</div>
+</div>
+<div id="p31354" class="para grow alt-even">
+<div class="crt"><a href="/kosik?fn=add&amp;id=31354" onclick="javascript:ajax('?fn=cart&amp;id=31354',onAjaxCart);return false;">
+<img id="c31354" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/remarque-erich-maria-stanice-na-obzoru-2009" title="Stanice na obzoru" class="">Stanice na obzoru</a></h3>
+<a href="/files/50936.jpg" onclick="return false;"><img src="/files/thumb_50936.png" id="pic50936" class="picgrp" alt="Stanice na obzoru" onclick="enlarge(this);" longdesc="/files/50936.jpg" name="/kniha/remarque-erich-maria-stanice-na-obzoru-2009" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span class="">Stanice na obzoru</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span class=""><a href="/hledani?q=au:'Remarque,%20Erich%20Maria'" class="">Erich Maria Remarque</a></span>
+</div>
+<div class="para-issued">
+<strong class="">Rok vydání:</strong>
+<span class="">2009</span>
+</div>
+<div class="para-pg">
+<strong class="">Počet stran:</strong>
+<span class="">189 s.</span>
+</div>
+<div class="para-cat">
+<strong class="">Kategorie:</strong>
+<span class=""><a href="/kategorie/beletrie-svetova" class="">beletrie světová</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'pevn%C3%A1%20s%20%20ob%C3%A1lkou'" class="">pevná s  obálkou</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>velmi dobrý</span>
+</div>
+<div class="para-price">
+<strong class="">Cena:</strong>
+<span class="">80 Kč</span>
+</div>
+</div>
+</div>
+<div id="p31355" class="para grow alt-odd">
+<div class="crt"><a href="/kosik?fn=add&amp;id=31355" onclick="javascript:ajax('?fn=cart&amp;id=31355',onAjaxCart);return false;">
+<img id="c31355" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/townsend-sue-horke-zrani-adriana-molea-1994-31355" title="Hořké zrání Adriana Molea" class="">Hořké zrání Adriana Molea</a></h3>
+<a href="/files/50938.jpg" onclick="return false;"><img src="/files/thumb_50938.png" id="pic50938" class="picgrp" alt="Hořké zrání Adriana Molea" onclick="enlarge(this);" longdesc="/files/50938.jpg" name="/kniha/townsend-sue-horke-zrani-adriana-molea-1994-31355" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span class="">Hořké zrání Adriana Molea</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Townsend,%20Sue'">Sue Townsend</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1994</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>180 s.</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/beletrie-svetova" class="">beletrie světová</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'pevn%C3%A1%20s%20%20ob%C3%A1lkou'" class="">pevná s  obálkou</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span class="">dobrý</span>
+</div>
+<div class="para-price">
+<strong class="">Cena:</strong>
+<span class="">60 Kč</span>
+</div>
+</div>
+</div>
+<div id="p31356" class="para grow alt-even">
+<div class="crt"><a href="/kosik?fn=add&amp;id=31356" onclick="javascript:ajax('?fn=cart&amp;id=31356',onAjaxCart);return false;">
+<img id="c31356" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/remarque-erich-maria-rise-snu-gam-2000-31356" title="Říše snů">Říše snů</a></h3>
+<a href="/files/50940.jpg" onclick="return false;"><img src="/files/thumb_50940.png" id="pic50940" class="picgrp" alt="Říše snů" onclick="enlarge(this);" longdesc="/files/50940.jpg" name="/kniha/remarque-erich-maria-rise-snu-gam-2000-31356" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong class="">Název:</strong>
+<span class="">Říše snů - Gam</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Remarque,%20Erich%20Maria'" class="">Erich Maria Remarque</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span class="">2000</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span class="">318 s.</span>
+</div>
+<div class="para-cat">
+<strong class="">Kategorie:</strong>
+<span class=""><a href="/kategorie/beletrie-svetova" class="">beletrie světová</a></span>
+</div>
+<div class="para-binding">
+<strong class="">Vazba:</strong>
+<span class=""><a href="/hledani?q=binding:'pevn%C3%A1%20s%20%20ob%C3%A1lkou'" class="">pevná s  obálkou</a></span>
+</div>
+<div class="para-state">
+<strong class="">Stav:</strong>
+<span>velmi dobrý</span>
+</div>
+<div class="para-price">
+<strong class="">Cena:</strong>
+<span class="">70 Kč</span>
+</div>
+</div>
+</div>
+<div id="p31357" class="para grow alt-odd">
+<div class="crt"><a href="/kosik?fn=add&amp;id=31357" onclick="javascript:ajax('?fn=cart&amp;id=31357',onAjaxCart);return false;">
+<img id="c31357" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/hudakova-maria-slovenske-kralovske-mesta-bardejov-kezmarok-levoca-stara-lubovna-2005" title="Slovenské královské mestá">Slovenské královské mestá</a></h3>
+<a href="/files/50942.jpg" onclick="return false;"><img src="/files/thumb_50942.png" id="pic50942" class="picgrp" alt="Slovenské královské mestá" onclick="enlarge(this);" longdesc="/files/50942.jpg" name="/kniha/hudakova-maria-slovenske-kralovske-mesta-bardejov-kezmarok-levoca-stara-lubovna-2005" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span class="">Slovenské královské mestá: Bardejov, Kežmarok, Levoča, Stará Lubovňa</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Hud%C3%A1kov%C3%A1,%20M%C3%A1ria'" class="">Mária Hudáková</a>; <a href="/hledani?q=au:'Bar%C3%A1thov%C3%A1,%20Eleon%C3%B3ra'">Eleonóra Baráthová</a>; <a href="/hledani?q=au:'Petra,%20Vladim%C3%ADr'">Vladimír Petra</a>; <a href="/hledani?q=au:'Gallik,%20Martin'">Martin Gallik</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>2005</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/mapy-pruvodce" class="">mapy, průvodce</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'pevn%C3%A1,%20omyvateln%C3%A1'">pevná, omyvatelná</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span class="">velmi dobrý</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span class="">190 Kč</span>
+</div>
+</div>
+</div>
+<div class="clearfix"></div>
+<ul class="pager">
+<b>1</b>
+<li><a href="/?mn_offs=16">2</a></li>
+<li><a href="/?mn_offs=31">3</a></li>
+<li><a href="/?mn_offs=46">4</a></li>
+<li><a href="/?mn_offs=61">5</a></li>
+<li><a href="/?mn_offs=76">6</a></li>
+<li><a href="/?mn_offs=91" class="">7</a></li>
+<li><a href="/?mn_offs=106">8</a></li>
+ ... 
+<li><a href="/?mn_offs=10201">681</a></li>
+<li><a href="/?mn_offs=16">[další]</a></li>
+</ul>
+
+
+
+  </div> <!-- end content -->
+</div> <!-- end list-view -->
+
+ <div class="clearfix"></div>
+ </div> <!-- end content-wrap -->
+
+ <div id="footer" class="">
+<!--Removing the links will void the Creative Commons License.-->
+  <div align="center" class="">© 2011 <strong>Textrix</strong> | Template by <a href="http://www.themebin.com/">ThemeBin</a> | Icons by <a href="http://p.yusukekamiyamane.com/">Yusuke</a> &amp; <a href="http://www.starfishwebconsulting.co.uk/articles/free-ecommerce-icons?/ecommerce-icons">Starfish</a></div>
+ </div> <!-- end footer -->
+</div> <!-- end wrap -->
+<script>if(e=document.getElementById('cart-box'))e.style.display='none';</script>
+
+
+<div id="pw-ui">
+        <div id="pw-ui-header">
+            <h2>Select: <span style="color:#007aff">image</span></h2>
+            <span style="font-size:16px; color:#999">✥</span>
+        </div>
+        <div id="pw-ui-body">
+            <div class="status-row">
+                <span>Step 3/3</span>
+                <span><strong>0</strong> selected</span>
+            </div>
+            
+            <div id="pw-selector-box">body</div>
+            
+            <div class="btn-group">
+                <button class="btn-secondary" onclick="window._action='prev'" style="">Back</button>
+                    
+                <button class="btn-primary" onclick="window._action='next'" style="display:none">Next Category</button>
+                    
+                <button class="btn-success" onclick="window._action='done'" style="">Finish &amp; Save</button>
+            </div>
+            <div class="shortcut-hint">Ctrl+Z to Undo • Ctrl+Shift+Z to Redo</div>
+        </div>
+    </div><div id="enl_ldr" style="visibility: hidden; position: absolute; left: -5000px; top: 0px; z-index: 9999;"><img src="/assets/enfiles/loader.gif" id="enl_ldrgif" style="border-width: 1px; border-style: solid; border-color: black;"></div><div id="enl_brd" style="visibility: hidden; position: absolute; left: -5000px; top: 0px; background-color: rgb(255, 255, 255);"></div><div id="enl_shd" style="visibility: hidden; position: absolute; left: -5000px; top: 0px; background-color: black; opacity: 0.09;"></div><div id="enl_drk" style="visibility: hidden; position: absolute; left: -5000px; top: 0px; background-color: black; z-index: 9670;"></div></body></html>
