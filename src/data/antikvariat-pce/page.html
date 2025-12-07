@@ -1,0 +1,1048 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" class=""><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="robots" content="index,follow">
+<meta name="description" content="Antikvariát PCE, Pardubice" lang="cs">
+<meta name="keywords" content="Antikvariát, Pardubice, on-line, antik, staré použité knihy" lang="cs">
+<meta name="description" content="Czech on-line antiquarian bookshop, used books" lang="en">
+<meta name="keywords" content="antiquarian bookshop, used books on-line" lang="en">
+<meta name="Content-language" content="cs">
+
+<link rel="stylesheet" href="/assets/style-pce.css" type="text/css">
+<link rel="icon" type="image/gif" href="/favicon.gif">
+
+<title>Antikvariát PCE</title>
+<style type="text/css">
+<!--
+body {
+	margin: 0px;
+	padding: 0px;
+	background-color: #DAEFA7;
+}
+a:link {
+	color: #333333;
+}
+a:visited {
+	color: #333333;
+}
+#list-view {margin-left: 246px;}
+#list-view {margin-right: 216px;}
+#rightbar {width: 200px;}
+#list-view {margin-top: 0px;}
+
+-->
+</style>
+<script type="text/javascript" async="" src="https://ssl.google-analytics.com/ga.js"></script><script type="text/javascript" src="/assets/enlargeitp.js"></script>
+<script type="text/javascript" src="/assets/ajax.js"></script>
+<script type="text/javascript">
+function onAjaxCart(resp) {
+var pars=resp.split(',');
+if(e=document.getElementById('c'+pars[0]))
+{e.className='crt'+pars[1];e.title=pars[2]};
+if(e=document.getElementById('cart-box'))e.style.display=pars[5];
+if(e=document.getElementById('cart-num'))e.innerHTML=pars[3];
+if(e=document.getElementById('cart-price'))e.innerHTML=pars[4];
+}
+
+function onAjaxCookies() {
+if(e=document.getElementById('cookies-consent'))
+{e.style.display = 'none'};}
+</script>
+
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-23491429-18']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<style type="text/css">/* --- SELECTION HIGHLIGHTS --- */
+.pw-hover {
+    outline: 2px dashed #4da6ff !important;
+    outline-offset: -2px !important;
+    background-color: rgba(77, 166, 255, 0.15) !important;
+    cursor: crosshair !important;
+}
+.pw-selected {
+    outline: 2px solid #00ff9d !important;
+    outline-offset: -2px !important;
+    background-color: rgba(0, 255, 157, 0.2) !important;
+    box-shadow: 0 0 10px rgba(0, 255, 157, 0.3) !important;
+}
+
+/* --- DARK MODE UI CONTAINER --- */
+#pw-ui {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 320px !important;
+    background: rgba(20, 20, 23, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
+    z-index: 2147483647 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, sans-serif !important;
+    color: #fff !important;
+    backdrop-filter: blur(20px) !important;
+    transform: translate3d(0,0,0); 
+}
+
+/* --- HEADER (DRAGGABLE) --- */
+#pw-ui-header {
+    padding: 14px 16px !important;
+    background: rgba(255, 255, 255, 0.03) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    cursor: grab !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    user-select: none !important;
+    border-radius: 12px 12px 0 0 !important;
+}
+#pw-ui-header:active { cursor: grabbing !important; }
+
+#pw-ui h2 {
+    margin: 0 !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    color: #888 !important;
+    pointer-events: none !important;
+}
+
+#pw-category-name {
+    color: #fff !important;
+    margin-left: 8px !important;
+}
+
+/* --- BODY --- */
+#pw-ui-body { padding: 16px !important; }
+
+.pw-stat-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    margin-bottom: 12px !important;
+    font-size: 13px !important;
+    color: #aaa !important;
+}
+
+#pw-count-badge {
+    background: rgba(0, 255, 157, 0.1) !important;
+    color: #00ff9d !important;
+    padding: 2px 8px !important;
+    border-radius: 4px !important;
+    font-weight: bold !important;
+}
+
+#pw-selector-box {
+    background: #000 !important;
+    border: 1px solid #333 !important;
+    color: #00ff9d !important;
+    border-radius: 6px !important;
+    padding: 12px !important;
+    font-family: 'Menlo', 'Monaco', monospace !important;
+    font-size: 11px !important;
+    line-height: 1.5 !important;
+    margin-bottom: 16px !important;
+    word-break: break-all !important;
+    min-height: 45px !important;
+    max-height: 100px !important;
+    overflow-y: auto !important;
+}
+
+/* --- BUTTONS --- */
+.pw-btn-group { display: flex !important; gap: 8px !important; }
+.pw-btn-group-top { display: flex !important; gap: 8px !important; margin-bottom: 12px !important; }
+
+.pw-btn {
+    flex: 1 !important;
+    padding: 10px !important;
+    border: none !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+}
+.pw-btn:hover { filter: brightness(1.1) !important; }
+.pw-btn:active { transform: scale(0.96) !important; }
+
+.pw-btn-secondary { background: rgba(255,255,255,0.1) !important; color: #fff !important; }
+.pw-btn-primary { background: #007aff !important; color: white !important; }
+.pw-btn-success { background: #00b341 !important; color: white !important; }
+.pw-btn-predict { background: #ff9500 !important; color: white !important; }
+.pw-hidden { display: none !important; }
+
+/* --- PREDICTION HIGHLIGHTS --- */
+.pw-predicted {
+    outline: 2px dashed #ff9500 !important;
+    outline-offset: -2px !important;
+    background-color: rgba(255, 149, 0, 0.15) !important;
+}
+
+.pw-hint {
+    text-align: center !important;
+    margin-top: 12px !important;
+    font-size: 10px !important;
+    color: #555 !important;
+}</style></head>
+<body class="">
+<div id="wrap">
+ <div id="header-main">
+  <a id="logo" title="Antikvariát-PCE.cz" href="/">
+  <h1 id="logo-text">Antikvariát-PCE.cz</h1></a>
+  <div id="account"><a href="/ucet?ac_func=login" onclick="this.href='/ucet?ac_func=login&amp;ac_url='+encodeURIComponent(location.href)"><img src="/assets/key.png" alt="klic" title="přihlášení"></a>
+</div>
+ </div>	<!-- end header-main -->
+ <div id="nav">
+ <div id="nav-bar">
+ <ul>
+<li id="selected"><span>Nabídka</span></li>
+<li><a href="/gramodeska">Gramodesky</a></li>
+<li><a href="/predmet">Haraburďárna</a></li>
+<li><a href="/hledani">Hledání</a></li>
+<li><a href="/kategorie">Kategorie</a></li>
+<li><a href="/o-nas">O nás</a></li>
+<li><a href="/podminky">Obchodní podmínky</a></li>
+<li><a href="/osobni-udaje">Osobní údaje</a></li>
+<li><a href="/kontakty">Kontakty</a></li>
+
+ </ul>
+ </div> <!-- end nav-bar -->
+ </div> <!-- end nav -->
+ <div id="content-wrap" class="">
+
+  <div id="leftbar" class="sidebar">
+   <h1>Vyhledávání</h1>
+   <div id="sear" class="left-box">
+    <form method="post" action="/hledani">
+    <p>
+     <input class="textbox" type="text" name="q" value="">
+     <input class="ibtn button" type="submit" name="Submit" value="&gt;">
+     <a href="/hledani?fn=info"><img src="/assets/info16.png" alt="hledání-info"></a>
+    </p>
+    </form>
+   </div>
+
+   <h1>Hlavní kategorie</h1>
+<div id="cat_container">
+<p style="text-align:center;margin:10px">Přejít na <a class="btn" href="/kategorie">všechny kategorie</a></p>
+<ul id="cat_list">
+<li class="alt-odd"><a href="/kategorie/aaa-antikvariat-doporucuje" class="">AAA - Antikvariát doporučuje</a>
+</li>
+<li class="alt-even"><a href="/kategorie/abc-vystrihovanky" class="">ABC + vystřihovánky</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/anglicke-knihy-english-books" class="">Anglické knihy / English books</a>
+</li>
+<li class="alt-even"><a href="/kategorie/antika-a-starovek">Antika a starověk</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/archeologie">Archeologie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/astronomie-a-kosmonautika">Astronomie a kosmonautika</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/auto-moto">Auto-Moto</a>
+</li>
+<li class="alt-even"><a href="/kategorie/autogramy-rukopisy">Autogramy / Rukopisy</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/beletrie">Beletrie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/bibliofilie">bibliofilie</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/biografie-a-memoary">Biografie a memoáry</a>
+</li>
+<li class="alt-even"><a href="/kategorie/casopisy-detske">časopisy - dětské</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/casopisy-noviny">Časopisy / Noviny</a>
+</li>
+<li class="alt-even"><a href="/kategorie/cd">CD</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/ceska-hudebni-scena">Česká hudební scéna</a>
+</li>
+<li class="alt-even"><a href="/kategorie/cestopisy">Cestopisy</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/cestovni-pruvodce-turisticke-suvenyry">Cestovní průvodce / Turistické suvenýry</a>
+</li>
+<li class="alt-even"><a href="/kategorie/chemie-fyzika">chemie-fyzika</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/design">Design</a>
+</li>
+<li class="alt-even"><a href="/kategorie/detektivky">Detektivky</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/detske">Dětské</a>
+</li>
+<li class="alt-even"><a href="/kategorie/divadlo-hry">Divadlo - hry</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/divadlo-tanec-hudba">Divadlo / Tanec / Hudba</a>
+</li>
+<li class="alt-even"><a href="/kategorie/dobrodruzne">Dobrodružné</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/dobrodruzne-jules-verne">Dobrodružné - Jules Verne</a>
+</li>
+<li class="alt-even"><a href="/kategorie/dobrodruzne-karel-may">Dobrodružné - Karel May</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/doklady-dokumenty">Doklady/dokumenty</a>
+</li>
+<li class="alt-even"><a href="/kategorie/doprava-autobusy-a-mhd">doprava - autobusy a MHD</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/doprava-letadla">Doprava - letadla</a>
+</li>
+<li class="alt-even"><a href="/kategorie/doprava-zeleznice">Doprava - železnice</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/doprava-lode">Doprava-lodě</a>
+</li>
+<li class="alt-even"><a href="/kategorie/druha-svetova-valka">Druhá světová válka</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/duchovni-literatura">Duchovní literatura</a>
+</li>
+<li class="alt-even"><a href="/kategorie/dum-udrzba-opravy">Dům - údržba opravy</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/dvd">dvd</a>
+</li>
+<li class="alt-even"><a href="/kategorie/ekonomie">Ekonomie</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/encyklopedie">Encyklopedie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/erotika">Erotika</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/etika">Etika</a>
+</li>
+<li class="alt-even"><a href="/kategorie/filatelie">Filatelie</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/filosofie-psychologie">filosofie - psychologie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/fotky-kabinetky-cdv">Fotky/Kabinetky/CDV</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/fotografie-film">fotografie/film</a>
+</li>
+<li class="alt-even"><a href="/kategorie/francouzsky-knihy-livres-en-francais">Francouzsky knihy / Livres en français</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/geografie-geologie">Geografie - Geologie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/grafika">Grafika</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/harlequin-romany-a-podobne">Harlequin romány a podobné</a>
+</li>
+<li class="alt-even"><a href="/kategorie/heraldika">Heraldika</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/herci">Herci</a>
+</li>
+<li class="alt-even"><a href="/kategorie/historie-a-politika-cesko">Historie a politika Česko</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/historie-a-politika-svet">Historie a politika svět</a>
+</li>
+<li class="alt-even"><a href="/kategorie/hracky">hračky</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/humor-satira">Humor-satira</a>
+</li>
+<li class="alt-even"><a href="/kategorie/jazykove-ucebnice-slovniky">Jazykové učebnice/ slovníky</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/judaica">Judaica</a>
+</li>
+<li class="alt-even"><a href="/kategorie/kalendare">Kalendáře</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/karavana">Karavana</a>
+</li>
+<li class="alt-even"><a href="/kategorie/karavana-sv-152">Karavana, sv. 152</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/karavana-sv-175">Karavana, sv. 175</a>
+</li>
+<li class="alt-even"><a href="/kategorie/kod-knihy-odvahy-a-dobrodruzstvi">KOD - Knihy odvahy a dobrodružství</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/komiks">Komiks</a>
+</li>
+<li class="alt-even"><a href="/kategorie/komiks-ctyrlistek">komiks - Čtyřlístek</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/krizovky-a-hadanky">Křížovky a hádanky</a>
+</li>
+<li class="alt-even"><a href="/kategorie/kucharky">Kuchařky</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/leporela">leporela</a>
+</li>
+<li class="alt-even"><a href="/kategorie/lingvistika">Lingvistika</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/literarni-veda">literární věda</a>
+</li>
+<li class="alt-even"><a href="/kategorie/literatura-faktu">Literatůra faktu</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/lp-mluvene-slovo">lp mluvené slovo</a>
+</li>
+<li class="alt-even"><a href="/kategorie/mapy-zemepisne-atlasy">Mapy/zeměpisné atlasy</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/matematika">matematika</a>
+</li>
+<li class="alt-even"><a href="/kategorie/miniaturni-knihy">Miniaturní knihy</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/mistopis">Místopis</a>
+</li>
+<li class="alt-even"><a href="/kategorie/moda">Móda</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/modelarstvi">Modelářství</a>
+</li>
+<li class="alt-even"><a href="/kategorie/myslivost">Myslivost</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/mystika-esoterika-okultismus-astrologie">Mystika / Esoterika / Okultismus / Astrologie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/mytologie-a-legendy">Mytologie a Legendy</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/nabozenstvi-theologie">Naboženství / Theologie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/nemecke-knihy-deutsche-bucher">Německé knihy / Deutsche Bücher</a>
+</li>
+
+</ul>
+<p style="text-align:center;margin:10px">Přejít na <a class="btn" href="/kategorie">všechny kategorie</a></p>
+</div>
+  </div> <!-- end left-bar -->
+  <div id="rightbar" class="sidebar">
+
+   <div id="cart-box" style="display: none;">
+   <h1>Košík</h1>
+   <div class="left-box">
+    <p><span id="cart-num">0</span> za <span id="cart-price">0</span> Kč <a href="/kosik" class="ibtn">Zobrazit</a></p>
+   </div>
+   </div>
+
+   <h1 class="">Kontaktní údaje</h1>
+   <div id="contacts" class="left-box">
+<p class="">
+Antikvariát, Michal Bartoš<br>
+Pernštýnské náměstí 5<br>
+530 02 Pardubice</p>
+<p class="">
+Tel.: 723 881 941<br>
+<span style="font-size:80%">antikvariat-pce@seznam.cz</span><br>
+IČ: 72962500<br>
+Účet : 8584016001/5500<br>
+<span style="font-size:80%"><i class="">Údaje pro platbu ze zahraničí</i><br>
+číslo: 8584016001/5500<br>
+IBAN CZ6455000000008584016001<br>
+SWIFT kód: RZBCCZPP<br></span>
+</p>
+<p>
+<strong>Prodejní doba</strong><br>
+PO-PÁ : 9.00 – 18.00<br>
+SO-NE : ZAVŘENO<br>
+</p>
+<p>
+<a href="https://goo.gl/maps/7DAgvx77wbqaXGfD9" target="_blanc">Mapa</a>
+</p>
+   </div>
+
+   <h1>Odkazy</h1>
+   <div class="left-box">
+    <ul class="sidemenu">
+     <li><a href="http://www.termokamera-pce.cz">www.termokamera-pce.cz</a></li>
+     <li><a href="http://www.elektro-in.cz">www.elektro-in.cz</a></li>
+     <li><a href="http://muj-antikvariat.cz">Můj-antikvariát.cz</a></li>
+    </ul>
+   </div>
+  </div> <!-- end right-bar -->
+
+<div id="list-view">
+<ul class="menu">
+  <li><a href="?mn_lst=para" class="active"><span>Odstavce</span></a></li>
+  <li><a href="?mn_lst=table"><span>Tabulka</span></a></li>
+  <li class="menu-ord"><a href="?mn_lst=title"><span>Abeceda</span></a></li>
+  <li class="menu-ord"><a href="?mn_lst=recent" class="active"><span>Nejnovější</span></a></li>
+<li><span class="lbl">Řazení:</span></li>
+</ul>
+  <div id="content" class="">
+<h1>Nejnovější nabídka</h1><ul class="pager">
+<b>1</b>
+<li><a href="/?mn_offs=13">2</a></li>
+<li><a href="/?mn_offs=25">3</a></li>
+<li><a href="/?mn_offs=37">4</a></li>
+<li><a href="/?mn_offs=49">5</a></li>
+<li><a href="/?mn_offs=61">6</a></li>
+<li><a href="/?mn_offs=73">7</a></li>
+<li><a href="/?mn_offs=85">8</a></li>
+ ... 
+<li><a href="/?mn_offs=29989">2500</a></li>
+<li><a href="/?mn_offs=13">[další]</a></li>
+</ul>
+
+<div id="p226831" class="para grow alt-odd">
+<div class="crt"><a href="/kosik?fn=add&amp;id=226831" onclick="javascript:ajax('?fn=cart&amp;id=226831',onAjaxCart);return false;">
+<img id="c226831" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/braf-albin-almuzna-a-mzda-1883" title="Almužna a mzda" class="">Almužna a mzda</a></h3>
+<a href="/files/213982.jpg" onclick="return false;"><img src="/files/thumb_213982.png" id="pic213982" class="picgrp pw-selected" alt="Almužna a mzda" onclick="enlarge(this);" longdesc="/files/213982.jpg" name="/kniha/braf-albin-almuzna-a-mzda-1883" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong class="">Název:</strong>
+<span class="">Almužna a mzda</span>
+</div>
+<div class="para-au">
+<strong class="">Autor:</strong>
+<span class="">Albín Bráf</span>
+</div>
+<div class="para-issued">
+<strong class="">Rok vydání:</strong>
+<span>1883</span>
+</div>
+<div class="para-pg">
+<strong class="">Počet stran:</strong>
+<span>30 s.</span>
+</div>
+<div class="para-series">
+<strong>Edice, série:</strong>
+<span class="">Sbírka přednášek a rozprav / ser. 2, č. 10</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/historie-a-politika-svet" class="">Historie a politika svět</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'m%C4%9Bkk%C3%A1'">měkká</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span class="">stav: dobrý,poškozené kraje obálky</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span class="">59 Kč</span>
+</div>
+</div>
+</div>
+<div id="p226830" class="para grow alt-even">
+<div class="crt"><a href="/kosik?fn=add&amp;id=226830" onclick="javascript:ajax('?fn=cart&amp;id=226830',onAjaxCart);return false;">
+<img id="c226830" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/kral-josef-o-tanci-antickem-1884" title="O tanci antickém" class="">O tanci antickém</a></h3>
+<a href="/files/213981.jpg" onclick="return false;"><img src="/files/thumb_213981.png" id="pic213981" class="picgrp pw-selected" alt="O tanci antickém" onclick="enlarge(this);" longdesc="/files/213981.jpg" name="/kniha/kral-josef-o-tanci-antickem-1884" width="120" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span class="">O tanci antickém</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Kr%C3%A1l,%20Josef'">Josef Král</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span class="">1884</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>31 s.</span>
+</div>
+<div class="para-series">
+<strong>Edice, série:</strong>
+<span>Sbírka přednášek a rozprav / ser. 3, č. 2</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/divadlo-tanec-hudba" class="">Divadlo / Tanec / Hudba</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'m%C4%9Bkk%C3%A1'">měkká</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span class="">dobrý - velmi pěkný</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span class="">69 Kč</span>
+</div>
+</div>
+</div>
+<div id="p226829" class="para grow alt-odd">
+<div class="crt"><a href="/kosik?fn=add&amp;id=226829" onclick="javascript:ajax('?fn=cart&amp;id=226829',onAjaxCart);return false;">
+<img id="c226829" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/durdik-josef-o-pokroku-mravnosti-1884" title="O pokroku mravnosti" class="">O pokroku mravnosti</a></h3>
+<a href="/files/213980.jpg" onclick="return false;"><img src="/files/thumb_213980.png" id="pic213980" class="picgrp pw-selected" alt="O pokroku mravnosti" onclick="enlarge(this);" longdesc="/files/213980.jpg" name="/kniha/durdik-josef-o-pokroku-mravnosti-1884" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>O pokroku mravnosti</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Durd%C3%ADk,%20Josef'" class="">Josef Durdík</a></span>
+</div>
+<div class="para-issued">
+<strong class="">Rok vydání:</strong>
+<span>1884</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span class="">35 s.</span>
+</div>
+<div class="para-series">
+<strong class="">Edice, série:</strong>
+<span>Sbírka přednášek a rozprav / ser. 3, č. 3</span>
+</div>
+<div class="para-cat">
+<strong class="">Kategorie:</strong>
+<span><a href="/kategorie/spolecenske-vedy" class="">společenské vědy</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span class=""><a href="/hledani?q=binding:'m%C4%9Bkk%C3%A1'" class="">měkká</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span class="">dobrý - velmi pěkný</span>
+</div>
+<div class="para-price">
+<strong class="">Cena:</strong>
+<span class="">39 Kč</span>
+</div>
+</div>
+</div>
+<div id="p226828" class="para grow alt-even">
+<div class="crt"><a href="/kosik?fn=add&amp;id=226828" onclick="javascript:ajax('?fn=cart&amp;id=226828',onAjaxCart);return false;">
+<img id="c226828" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/durdik-josef-toma-ze-stitneho-praotec-filosofie-ceske-1879" title="Tóma ze Štítného" class="">Tóma ze Štítného</a></h3>
+<a href="/files/213979.jpg" onclick="return false;"><img src="/files/thumb_213979.png" id="pic213979" class="picgrp pw-selected" alt="Tóma ze Štítného" onclick="enlarge(this);" longdesc="/files/213979.jpg" name="/kniha/durdik-josef-toma-ze-stitneho-praotec-filosofie-ceske-1879" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span class="">Tóma ze Štítného - praotec filosofie české</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Durd%C3%ADk,%20Josef'">Josef Durdík</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1879</span>
+</div>
+<div class="para-pg">
+<strong class="">Počet stran:</strong>
+<span class="">34 s.</span>
+</div>
+<div class="para-series">
+<strong>Edice, série:</strong>
+<span>Sbírka přednášek a rozprav / ser. 1, č. 1</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/filosofie-psychologie">filosofie - psychologie</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'m%C4%9Bkk%C3%A1'" class="">měkká</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span class="">dobrý - velmi pěkný</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span class="">59 Kč</span>
+</div>
+</div>
+</div>
+<div id="p226827" class="para grow alt-odd">
+<div class="crt"><a href="/kosik?fn=add&amp;id=226827" onclick="javascript:ajax('?fn=cart&amp;id=226827',onAjaxCart);return false;">
+<img id="c226827" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/goll-jaroslav-vznik-anglickeho-parlamentu-1879" title="Vznik anglického parlamentu" class="">Vznik anglického parlamentu</a></h3>
+<a href="/files/213978.jpg" onclick="return false;"><img src="/files/thumb_213978.png" id="pic213978" class="picgrp pw-selected" alt="Vznik anglického parlamentu" onclick="enlarge(this);" longdesc="/files/213978.jpg" name="/kniha/goll-jaroslav-vznik-anglickeho-parlamentu-1879" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Vznik anglického parlamentu</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span>Jaroslav Goll</span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span class="">1879</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>30 s.</span>
+</div>
+<div class="para-series">
+<strong>Edice, série:</strong>
+<span class="">Sbírka přednášek a rozprav / sér. 1, č. 2</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/historie-a-politika-svet" class="">Historie a politika svět</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'m%C4%9Bkk%C3%A1'" class="">měkká</a></span>
+</div>
+<div class="para-state">
+<strong class="">Stav:</strong>
+<span class="">dobrý - velmi pěkný</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span class="">69 Kč</span>
+</div>
+</div>
+</div>
+<div id="p226826" class="para grow alt-even">
+<div class="crt"><a href="/kosik?fn=add&amp;id=226826" onclick="javascript:ajax('?fn=cart&amp;id=226826',onAjaxCart);return false;">
+<img id="c226826" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/albert-eduard-jan-dominik-larrey-1879" title="Jan Dominik Larrey" class="">Jan Dominik Larrey</a></h3>
+<a href="/files/213977.jpg" onclick="return false;"><img src="/files/thumb_213977.png" id="pic213977" class="picgrp pw-selected" alt="Jan Dominik Larrey" onclick="enlarge(this);" longdesc="/files/213977.jpg" name="/kniha/albert-eduard-jan-dominik-larrey-1879" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span class="">Jan Dominik Larrey</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span class="">Eduard Albert</span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span class="">1879</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span class="">25 s.</span>
+</div>
+<div class="para-series">
+<strong>Edice, série:</strong>
+<span class="">Sbírka přednášek a rozprav / ser. 1, č. 3</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/historie-a-politika-svet" class="">Historie a politika svět</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'m%C4%9Bkk%C3%A1'">měkká</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>dobrý - velmi pěkný</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span class="">75 Kč</span>
+</div>
+</div>
+</div>
+<div id="p226825" class="para grow alt-odd">
+<div class="crt"><a href="/kosik?fn=add&amp;id=226825" onclick="javascript:ajax('?fn=cart&amp;id=226825',onAjaxCart);return false;">
+<img id="c226825" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/kral-josef-nalezy-schliemannovy-v-tirynthe-a-mykenach-1879" title="Nálezy Schliemannovy v Tirynthě a Mykenách" class="">Nálezy Schliemannovy v Tirynthě a Mykenách</a></h3>
+<a href="/files/213976.jpg" onclick="return false;"><img src="/files/thumb_213976.png" id="pic213976" class="picgrp pw-selected" alt="Nálezy Schliemannovy v Tirynthě a Mykenách" onclick="enlarge(this);" longdesc="/files/213976.jpg" name="/kniha/kral-josef-nalezy-schliemannovy-v-tirynthe-a-mykenach-1879" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Nálezy Schliemannovy v Tirynthě a Mykenách</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Kr%C3%A1l,%20Josef'">Josef Král</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span class="">1879</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span class="">48 s.</span>
+</div>
+<div class="para-series">
+<strong class="">Edice, série:</strong>
+<span>Sbírka přednášek a rozprav / ser. 1, č. 4</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/historie-a-politika-svet" class="">Historie a politika svět</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'m%C4%9Bkk%C3%A1'" class="">měkká</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span class="">dobrý - velmi pěkný</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span class="">150 Kč</span>
+</div>
+</div>
+</div>
+<div id="p226824" class="para grow alt-even">
+<div class="crt"><a href="/kosik?fn=add&amp;id=226824" onclick="javascript:ajax('?fn=cart&amp;id=226824',onAjaxCart);return false;">
+<img id="c226824" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/vlach-jaroslav-pevnina-africka-ve-svetle-nejnovejsich-vyzkumu-afrika-severni-a-jizni-1879" title="Pevnina africká ve světle nejnovějších výzkumů, Afrika severní a jižní" class="">Pevnina africká ve světle nejnovějších výzkumů, Afrika severní a jižní</a></h3>
+<a href="/files/213975.jpg" onclick="return false;"><img src="/files/thumb_213975.png" id="pic213975" class="picgrp pw-selected" alt="Pevnina africká ve světle nejnovějších výzkumů, Afrika severní a jižní" onclick="enlarge(this);" longdesc="/files/213975.jpg" name="/kniha/vlach-jaroslav-pevnina-africka-ve-svetle-nejnovejsich-vyzkumu-afrika-severni-a-jizni-1879" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>Pevnina africká ve světle nejnovějších výzkumů, Afrika severní a jižní</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Vlach,%20Jaroslav'" class="">Jaroslav Vlach</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1879</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>36 s.</span>
+</div>
+<div class="para-series">
+<strong class="">Edice, série:</strong>
+<span>Sbírka přednášek a rozprav / ser. 1, č. 5</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/historie-a-politika-svet">Historie a politika svět</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'m%C4%9Bkk%C3%A1'">měkká</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>dobrý - velmi pěkný</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span class="">150 Kč</span>
+</div>
+</div>
+</div>
+<div id="p226823" class="para grow alt-odd">
+<div class="crt"><a href="/kosik?fn=add&amp;id=226823" onclick="javascript:ajax('?fn=cart&amp;id=226823',onAjaxCart);return false;">
+<img id="c226823" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/tyrs-miroslav-o-slohu-gotickem-podminky-historicke-myslenky-konstruktivni-rozbor-estheticky-1881" title="O slohu gotickém" class="">O slohu gotickém</a></h3>
+<a href="/files/213974.jpg" onclick="return false;"><img src="/files/thumb_213974.png" id="pic213974" class="picgrp pw-selected" alt="O slohu gotickém" onclick="enlarge(this);" longdesc="/files/213974.jpg" name="/kniha/tyrs-miroslav-o-slohu-gotickem-podminky-historicke-myslenky-konstruktivni-rozbor-estheticky-1881" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span class="">O slohu gotickém - podmínky historické - myšlénky konstruktivní - rozbor esthetický</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Tyr%C5%A1,%20Miroslav'" class="">Miroslav Tyrš</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span class="">1881</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span class="">38 s.</span>
+</div>
+<div class="para-series">
+<strong>Edice, série:</strong>
+<span class="">Sbírka přednášek a rozprav / ser. 2, č. 1</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span class=""><a href="/kategorie/umeni-architektura" class="">umění - architektura</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span class=""><a href="/hledani?q=binding:'m%C4%9Bkk%C3%A1'" class="">měkká</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span class="">dobrý- natržená obálka</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span class="">59 Kč</span>
+</div>
+</div>
+</div>
+<div id="p226822" class="para grow alt-even">
+<div class="crt"><a href="/kosik?fn=add&amp;id=226822" onclick="javascript:ajax('?fn=cart&amp;id=226822',onAjaxCart);return false;">
+<img id="c226822" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/seydler-augustin-rozhledy-v-oboru-mechanickych-ved-1881" title="Rozhledy v oboru mechanických věd" class="">Rozhledy v oboru mechanických věd</a></h3>
+<a href="/files/213973.jpg" onclick="return false;"><img src="/files/thumb_213973.png" id="pic213973" class="picgrp pw-selected" alt="Rozhledy v oboru mechanických věd" onclick="enlarge(this);" longdesc="/files/213973.jpg" name="/kniha/seydler-augustin-rozhledy-v-oboru-mechanickych-ved-1881" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span class="">Rozhledy v oboru mechanických věd</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span class="">Augustin Seydler</span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span class="">1881</span>
+</div>
+<div class="para-pg">
+<strong class="">Počet stran:</strong>
+<span>56 s.</span>
+</div>
+<div class="para-series">
+<strong class="">Edice, série:</strong>
+<span>Sbírka přednášek a rozprav / ser. 2 / č. 2</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/technika" class="">Technika</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'m%C4%9Bkk%C3%A1'" class="">měkká</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span class="">dobrý - velmi pěkný</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span class="">150 Kč</span>
+</div>
+</div>
+</div>
+<div id="p226821" class="para grow alt-odd">
+<div class="crt"><a href="/kosik?fn=add&amp;id=226821" onclick="javascript:ajax('?fn=cart&amp;id=226821',onAjaxCart);return false;">
+<img id="c226821" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/celakovsky-ladislav-o-chlorofyllu-uryvek-z-fysiologie-rostlin-1881" title="O chlorofyllu" class="">O chlorofyllu</a></h3>
+<a href="/files/213972.jpg" onclick="return false;"><img src="/files/thumb_213972.png" id="pic213972" class="picgrp pw-selected" alt="O chlorofyllu" onclick="enlarge(this);" longdesc="/files/213972.jpg" name="/kniha/celakovsky-ladislav-o-chlorofyllu-uryvek-z-fysiologie-rostlin-1881" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span class="">O chlorofyllu - úryvek z fysiologie rostlin</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span>Ladislav Čelakovský</span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1881</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span class="">63 s.</span>
+</div>
+<div class="para-series">
+<strong>Edice, série:</strong>
+<span>Sbírka přednášek a rozprav / ser. 2, č. 3</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/zahrada-kvetiny" class="">Zahrada/ květiny</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'m%C4%9Bkk%C3%A1'">měkká</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>dobrý - velmi pěkný</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span class="">180 Kč</span>
+</div>
+</div>
+</div>
+<div id="p226820" class="para grow alt-even">
+<div class="crt"><a href="/kosik?fn=add&amp;id=226820" onclick="javascript:ajax('?fn=cart&amp;id=226820',onAjaxCart);return false;">
+<img id="c226820" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/durdik-josef-o-kantove-kritice-cisteho-rozumu-1882" title="O Kantově kritice čistého rozumu" class="">O Kantově kritice čistého rozumu</a></h3>
+<a href="/files/213971.jpg" onclick="return false;"><img src="/files/thumb_213971.png" id="pic213971" class="picgrp pw-selected" alt="O Kantově kritice čistého rozumu" onclick="enlarge(this);" longdesc="/files/213971.jpg" name="/kniha/durdik-josef-o-kantove-kritice-cisteho-rozumu-1882" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span class="">O Kantově kritice čistého rozumu - přednáška ve stoletou ročnici díla Kantova ve valné hromadě Filosofické jednoty dne 27. října 1881</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Durd%C3%ADk,%20Josef'" class="">Josef Durdík</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span class="">1882</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span class="">22 s.</span>
+</div>
+<div class="para-series">
+<strong class="">Edice, série:</strong>
+<span class="">Sbírka přednášek a rozprav / ser. 2, č. 4</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/filosofie-psychologie" class="">filosofie - psychologie</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'m%C4%9Bkk%C3%A1'">měkká</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span class="">dobrý - velmi pěkný</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span class="">59 Kč</span>
+</div>
+</div>
+</div>
+<div class="clearfix"></div>
+<ul class="pager">
+<b>1</b>
+<li><a href="/?mn_offs=13">2</a></li>
+<li><a href="/?mn_offs=25">3</a></li>
+<li><a href="/?mn_offs=37">4</a></li>
+<li><a href="/?mn_offs=49">5</a></li>
+<li><a href="/?mn_offs=61">6</a></li>
+<li><a href="/?mn_offs=73">7</a></li>
+<li><a href="/?mn_offs=85">8</a></li>
+ ... 
+<li><a href="/?mn_offs=29989">2500</a></li>
+<li><a href="/?mn_offs=13">[další]</a></li>
+</ul>
+
+
+
+  </div> <!-- end content -->
+</div> <!-- end list-view -->
+
+ <div class="clearfix"></div>
+ </div> <!-- end content-wrap -->
+
+ <div id="footer">
+<!--Removing the links will void the Creative Commons License.-->
+  <div align="center">© 2011 <strong>Textrix</strong> | Template by <a href="http://www.themebin.com/">ThemeBin</a> | Icons by <a href="http://p.yusukekamiyamane.com/">Yusuke</a> &amp; <a href="http://www.starfishwebconsulting.co.uk/articles/free-ecommerce-icons?/ecommerce-icons">Starfish</a></div>
+ </div> <!-- end footer -->
+</div> <!-- end wrap -->
+<script>if(e=document.getElementById('cart-box'))e.style.display='none';</script>
+
+<div id="pw-ui">
+            <div id="pw-ui-header" style="cursor: grab;">
+                <h2>Select <span id="pw-category-name">image</span></h2>
+                <div style="opacity:0.5">::</div>
+            </div>
+            <div id="pw-ui-body">
+                <div class="pw-stat-row">
+                    <span id="pw-step-counter">Step 3/3</span>
+                    <span id="pw-count-badge">12 selected</span>
+                </div>
+                <div id="pw-selector-box">body</div>
+                <div class="pw-btn-group-top">
+                    <button id="pw-btn-predict" class="pw-btn pw-btn-predict">🔮 Auto-Predict</button>
+                </div>
+                <div class="pw-btn-group">
+                    <button id="pw-btn-prev" class="pw-btn pw-btn-secondary">Back</button>
+                    <button id="pw-btn-next" class="pw-btn pw-btn-primary pw-hidden">Next Category</button>
+                    <button id="pw-btn-done" class="pw-btn pw-btn-success">Finish &amp; Save</button>
+                </div>
+                <div class="pw-hint">Right-Click to interact (close modals)<br>Ctrl+Shift+Z to Redo</div>
+            </div>
+        </div><div id="enl_ldr" style="visibility: hidden; position: absolute; left: -5000px; top: 0px; z-index: 9999;"><img src="/assets/enfiles/loader.gif" id="enl_ldrgif" style="border-width: 1px; border-style: solid; border-color: black;"></div><div id="enl_brd" style="visibility: hidden; position: absolute; left: -5000px; top: 0px; background-color: rgb(255, 255, 255);"></div><div id="enl_shd" style="visibility: hidden; position: absolute; left: -5000px; top: 0px; background-color: black; opacity: 0.09;"></div><div id="enl_drk" style="visibility: hidden; position: absolute; left: -5000px; top: 0px; background-color: black; z-index: 9670;"></div></body></html>

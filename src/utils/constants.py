@@ -68,5 +68,5 @@ PRICE_REGEX = re.compile(
 
 # Model training constants
 RANDOM_STATE = 42
-EXCLUDED_FEATURES = ['Category', 'Selector']
+EXCLUDED_FEATURES = ['Category']
 DATA_NAME = 'data.csv'

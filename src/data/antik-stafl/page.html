@@ -1,0 +1,866 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml" class=""><head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="robots" content="index,follow">
+<meta name="description" content="Internetový antikvariát s krásnými tisky a vzácnějšími knihami, Havlíčkův Brod, Igor Domkář" lang="cs">
+<meta name="keywords" content="Antikvariát, vzácné knihy, antik, Havlíčkův Brod, staré použité knihy on-line, Otakar Štáfl, próza, poezie, dějiny, místopis, dětské, dobrodružné, fantastika, filozofie, duchovní, periodika, podpisy, śamizdat, exil, umění, literatura" lang="cs">
+<meta name="description" content="Czech antiquarian bookshop, used books" lang="en">
+<meta name="keywords" content="antiquarian bookshop, used books on-line" lang="en">
+<meta name="Content-language" content="cs">
+
+<link rel="stylesheet" href="/assets/style-stafl.css" type="text/css">
+
+<title>Antikvariát Štáfl a spol.</title>
+<style type="text/css">
+<!--
+body {
+	margin: 0px;
+	padding: 0px;
+	background-color: #F8F4F1;
+	color:#ea8d42;
+}
+a:link {
+	color : #a65322;
+}
+a:visited {
+	color : #a65322;
+}
+#list-view {margin-left: 246px;}
+#list-view {margin-right: 216px;}
+#rightbar {width: 200px;}
+#list-view {margin-top: 0px;}
+
+-->
+</style>
+<script type="text/javascript" async="" src="https://ssl.google-analytics.com/ga.js"></script><script type="text/javascript" src="/assets/enlargeitp.js"></script>
+<script type="text/javascript" src="/assets/ajax.js"></script>
+<script type="text/javascript">
+function onAjaxCart(resp) {
+var pars=resp.split(',');
+if(e=document.getElementById('c'+pars[0]))
+{e.className='crt'+pars[1];e.title=pars[2]};
+if(e=document.getElementById('cart-box'))e.style.display=pars[5];
+if(e=document.getElementById('cart-num'))e.innerHTML=pars[3];
+if(e=document.getElementById('cart-price'))e.innerHTML=pars[4];
+}
+
+function onAjaxCookies() {
+if(e=document.getElementById('cookies-consent'))
+{e.style.display = 'none'};}
+</script>
+
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-23491429-6']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<style type="text/css">/* --- SELECTION HIGHLIGHTS --- */
+.pw-hover {
+    outline: 2px dashed #4da6ff !important;
+    outline-offset: -2px !important;
+    background-color: rgba(77, 166, 255, 0.15) !important;
+    cursor: crosshair !important;
+}
+.pw-selected {
+    outline: 2px solid #00ff9d !important;
+    outline-offset: -2px !important;
+    background-color: rgba(0, 255, 157, 0.2) !important;
+    box-shadow: 0 0 10px rgba(0, 255, 157, 0.3) !important;
+}
+
+/* --- DARK MODE UI CONTAINER --- */
+#pw-ui {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 320px !important;
+    background: rgba(20, 20, 23, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
+    z-index: 2147483647 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, sans-serif !important;
+    color: #fff !important;
+    backdrop-filter: blur(20px) !important;
+    transform: translate3d(0,0,0); 
+}
+
+/* --- HEADER (DRAGGABLE) --- */
+#pw-ui-header {
+    padding: 14px 16px !important;
+    background: rgba(255, 255, 255, 0.03) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    cursor: grab !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    user-select: none !important;
+    border-radius: 12px 12px 0 0 !important;
+}
+#pw-ui-header:active { cursor: grabbing !important; }
+
+#pw-ui h2 {
+    margin: 0 !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    color: #888 !important;
+    pointer-events: none !important;
+}
+
+#pw-category-name {
+    color: #fff !important;
+    margin-left: 8px !important;
+}
+
+/* --- BODY --- */
+#pw-ui-body { padding: 16px !important; }
+
+.pw-stat-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    margin-bottom: 12px !important;
+    font-size: 13px !important;
+    color: #aaa !important;
+}
+
+#pw-count-badge {
+    background: rgba(0, 255, 157, 0.1) !important;
+    color: #00ff9d !important;
+    padding: 2px 8px !important;
+    border-radius: 4px !important;
+    font-weight: bold !important;
+}
+
+#pw-selector-box {
+    background: #000 !important;
+    border: 1px solid #333 !important;
+    color: #00ff9d !important;
+    border-radius: 6px !important;
+    padding: 12px !important;
+    font-family: 'Menlo', 'Monaco', monospace !important;
+    font-size: 11px !important;
+    line-height: 1.5 !important;
+    margin-bottom: 16px !important;
+    word-break: break-all !important;
+    min-height: 45px !important;
+    max-height: 100px !important;
+    overflow-y: auto !important;
+}
+
+/* --- BUTTONS --- */
+.pw-btn-group { display: flex !important; gap: 8px !important; }
+.pw-btn-group-top { display: flex !important; gap: 8px !important; margin-bottom: 12px !important; }
+
+.pw-btn {
+    flex: 1 !important;
+    padding: 10px !important;
+    border: none !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+}
+.pw-btn:hover { filter: brightness(1.1) !important; }
+.pw-btn:active { transform: scale(0.96) !important; }
+
+.pw-btn-secondary { background: rgba(255,255,255,0.1) !important; color: #fff !important; }
+.pw-btn-primary { background: #007aff !important; color: white !important; }
+.pw-btn-success { background: #00b341 !important; color: white !important; }
+.pw-btn-predict { background: #ff9500 !important; color: white !important; }
+.pw-hidden { display: none !important; }
+
+/* --- PREDICTION HIGHLIGHTS --- */
+.pw-predicted {
+    outline: 2px dashed #ff9500 !important;
+    outline-offset: -2px !important;
+    background-color: rgba(255, 149, 0, 0.15) !important;
+}
+
+.pw-hint {
+    text-align: center !important;
+    margin-top: 12px !important;
+    font-size: 10px !important;
+    color: #555 !important;
+}</style></head>
+<body class="">
+<div id="wrap">
+ <div id="header-top"></div>
+ <div id="header-main">
+  <div id="logo-img"></div>
+  <h1 id="logo-text"><a href="/">Antikvariát Štáfl a spol.</a></h1>
+  <h2 id="logo-slogan">Knihy a jejich výtvarná a obsahová podoba<br> převážně 20. století</h2>
+  <div id="account"><a href="/ucet?ac_func=login" onclick="this.href='/ucet?ac_func=login&amp;ac_url='+encodeURIComponent(location.href)"><img src="/assets/key.png" alt="klic" title="přihlášení"></a>
+</div>
+<!--  <a id="header-add" href="http://antik-jirasek.cz/"><img src="/assets/reklama-jirasek.gif" alt="Antikvariát Jirásek" title="Antikvariát Jirásek a spol." /></a>-->
+ </div>	<!-- end header-main -->
+ <div id="nav">
+ <div id="nav-bar">
+ <ul>
+<li id="selected"><span>Nabídka</span></li>
+<li><a href="/hledani">Hledání</a></li>
+<li><a href="/podminky">Obchodní podmínky</a></li>
+<li><a href="/osobni-udaje">Osobní údaje</a></li>
+<li><a href="/o-nas">O nás</a></li>
+<li><a href="/kosik">Košík</a></li>
+
+ </ul>
+ </div> <!-- end nav-bar -->
+ </div> <!-- end nav -->
+ <div id="content-wrap" class="">
+
+  <div id="leftbar" class="sidebar">
+   <h1>Vyhledávání</h1>
+   <div id="sear" class="left-box">
+    <form method="post" action="/hledani">
+    <p>
+     <input class="textbox" type="text" name="q" value="">
+     <input class="ibtn button" type="submit" name="Submit" value="&gt;">
+     <a href="/hledani?fn=info"><img src="/assets/info16.png" alt="hledání-info"></a>
+    </p>
+    </form>
+   </div>
+
+   <h1>Kategorie</h1>
+<div id="cat_container">
+<ul id="cat_list">
+<li class="alt-odd"><a href="/kategorie/1600-1699">1600 - 1699</a>
+</li>
+<li class="alt-even"><a href="/kategorie/1700-1799">1700 - 1799</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/1800-1893">1800 - 1893</a>
+<ul>
+<li class="alt-even"><a href="/kategorie/1800-1893-poezie">Poezie</a></li>
+<li class="alt-odd"><a href="/kategorie/1800-1893-proza">Próza</a></li>
+<li class="alt-even"><a href="/kategorie/1800-1893-umeni-literatura">Umění, literatura</a></li>
+</ul>
+</li>
+<li class="alt-odd"><a href="/kategorie/1894-1918">1894 - 1918</a>
+<ul>
+<li class="alt-even"><a href="/kategorie/1894-1918-poezie">Poezie</a></li>
+<li class="alt-odd"><a href="/kategorie/1894-1918-proza">Próza</a></li>
+<li class="alt-even"><a href="/kategorie/1894-1918-umeni-literatura">Umění, literatura</a></li>
+</ul>
+</li>
+<li class="alt-odd"><a href="/kategorie/1919-1937">1919 - 1937</a>
+<ul>
+<li class="alt-even"><a href="/kategorie/1919-1937-poezie">Poezie</a></li>
+<li class="alt-odd"><a href="/kategorie/1919-1937-proza">Próza</a></li>
+<li class="alt-even"><a href="/kategorie/1919-1937-umeni-literatura">Umění, literatura</a></li>
+</ul>
+</li>
+<li class="alt-odd"><a href="/kategorie/1938-1948">1938 - 1948</a>
+<ul>
+<li class="alt-even"><a href="/kategorie/1938-1948-poezie">Poezie</a></li>
+<li class="alt-odd"><a href="/kategorie/1938-1948-proza">Próza</a></li>
+<li class="alt-even"><a href="/kategorie/1938-1948-umeni-literatura">Umění, literatura</a></li>
+</ul>
+</li>
+<li class="alt-odd"><a href="/kategorie/1949-1957">1949 - 1957</a>
+<ul>
+<li class="alt-even"><a href="/kategorie/1949-1957-poezie">Poezie</a></li>
+<li class="alt-odd"><a href="/kategorie/1949-1957-proza">Próza</a></li>
+<li class="alt-even"><a href="/kategorie/1949-1957-umeni-literatura">Umění, literatura</a></li>
+</ul>
+</li>
+<li class="alt-odd"><a href="/kategorie/1958-1970">1958 - 1970</a>
+<ul>
+<li class="alt-even"><a href="/kategorie/1958-1970-poezie">Poezie</a></li>
+<li class="alt-odd"><a href="/kategorie/1958-1970-proza">Próza</a></li>
+<li class="alt-even"><a href="/kategorie/1958-1970-umeni-literatura">Umění, literatura</a></li>
+</ul>
+</li>
+<li class="alt-odd"><a href="/kategorie/1971-1989">1971 - 1989</a>
+<ul>
+<li class="alt-even"><a href="/kategorie/1971-1989-poezie">Poezie</a></li>
+<li class="alt-odd"><a href="/kategorie/1971-1989-proza">Próza</a></li>
+<li class="alt-even"><a href="/kategorie/1971-1989-umeni-literatura">Umění, literatura</a></li>
+</ul>
+</li>
+<li class="alt-odd"><a href="/kategorie/1990-2014">1990 - 2014</a>
+<ul>
+<li class="alt-even"><a href="/kategorie/1990-2014-poezie">Poezie</a></li>
+<li class="alt-odd"><a href="/kategorie/1990-2014-proza">Próza</a></li>
+<li class="alt-even"><a href="/kategorie/1990-2014-umeni-literatura">Umění, literatura</a></li>
+</ul>
+</li>
+<li class="alt-odd"><a href="/kategorie/2015-soucasnost">2015 - Současnost</a>
+<ul>
+<li class="alt-even"><a href="/kategorie/2015-soucasnost-poezie">Poezie</a></li>
+<li class="alt-odd"><a href="/kategorie/2015-soucasnost-proza">Próza</a></li>
+<li class="alt-even"><a href="/kategorie/2015-soucasnost-umeni-literatura">Umění, literatura</a></li>
+</ul>
+</li>
+<li class="alt-odd"><a href="/kategorie/bibliofilie">Bibliofilie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/dejiny-mistopis">Dějiny, místopis</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/detske">Dětské</a>
+</li>
+<li class="alt-even"><a href="/kategorie/dobrodruzne-fantastika">Dobrodružné, fantastika</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/filozofie-duchovni">Filozofie, duchovní</a>
+</li>
+<li class="alt-even"><a href="/kategorie/grafika1">Grafika</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/periodika">Periodika</a>
+</li>
+<li class="alt-even"><a href="/kategorie/podpisy">Podpisy</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/poezie">Poezie</a>
+</li>
+<li class="alt-even"><a href="/kategorie/priroda">Příroda</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/proza">Próza</a>
+</li>
+<li class="alt-even"><a href="/kategorie/samizdat-exil">Samizdat, exil</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/tec">tec</a>
+</li>
+<li class="alt-even"><a href="/kategorie/technika-remesla">Technika, řemesla</a>
+</li>
+<li class="alt-odd"><a href="/kategorie/umeni-literatura">Umění, literatura</a>
+</li>
+<li class="alt-even"><a href="/kategorie/varia">Varia</a>
+</li>
+
+</ul>
+</div>
+  </div> <!-- end left-bar -->
+  <div id="rightbar" class="sidebar">
+
+   <div id="cart-box" style="display: none;">
+   <h1>Košík</h1>
+   <div class="left-box">
+    <p><span id="cart-num">0</span> za <span id="cart-price">0</span> Kč <a href="/kosik" class="ibtn">Zobrazit</a></p>
+   </div>
+   </div>
+<h1>Informace</h1>
+   <div class="left-box">
+<strong>OTEVÍRACÍ DOBA : PONDĚLÍ - ZAVŘENO, ÚTERÝ - PÁTEK 10-17h, SOBOTA 9-12h</strong>
+   </div>
+   <h1 class="">Kontaktní údaje</h1>
+   <div id="contacts" class="left-box">
+<p class="">
+Antikvariát Štáflova chalupa<br>
+B. Kobzinové 2015<br>
+580 01 Havlíčkův Brod
+</p>
+<p class="">
+antikhb@seznam.cz<br>
+tel.: +420 604 130 962<br>
+</p>
+   </div>
+
+   <h1 class="">Odkazy</h1>
+   <div class="left-box">
+    <ul class="sidemenu">
+     <li class=""><a href="http://antikhb.cz" class="">Štáflova chalupa</a></li>
+     <li class=""><a href="http://antikvariat.skoda-abzeichen.eu/" target="_blanc" class="">Antik Skoda Abzeichen</a></li>
+     <li><a href="http://antikvariatukalicha.cz/">Antikvariát U Kalicha</a></li>
+     <li><a href="http://www.krupska-skola.cz">www.krupska-skola.cz</a></li>
+     <li><a href="http://www.protibet.org">www.protibet.org</a></li>
+     <li><a href="http://muj-antikvariat.cz">Můj-antikvariát.cz</a></li>
+    </ul>
+<div style="text-align:center"><a target="_blanc" href="https://www.instagram.com/staflovachalupa/"><img width="50" height="50" src="/assets/insta.svg"></a></div>
+<a href="http://toplist.cz/stat/1246642"><img src="https://toplist.cz/dot.asp?id=1246642" border="0" alt="TOPlist" width="1" height="1"></a>
+   </div>
+  </div> <!-- end right-bar -->
+
+<div id="list-view">
+<ul class="menu">
+  <li><a href="?mn_lst=para" class="active"><span>Odstavce</span></a></li>
+  <li><a href="?mn_lst=table"><span>Tabulka</span></a></li>
+  <li class="menu-ord"><a href="?mn_lst=title" class="active"><span>Abeceda</span></a></li>
+  <li class="menu-ord"><a href="?mn_lst=recent"><span>Nejnovější</span></a></li>
+<li><span class="lbl">Řazení:</span></li>
+</ul>
+  <div id="content" class="">
+<p style="border:2px solid #ffff00;background: #ffff80;padding: 3px;text-align: center;">
+<strong>VÁŽENÍ A MILÍ ZÁKAZNÍCI, V TÝDNU OD 8.-12. 12. NEBUDEME MOCI ZASÍLAT A ANI ODPOVÍDAT NA OBJEDNÁVKY Z E-SHOPU.<br> VŠE VYŘÍDÍME CO NEJDŘÍVE POTÉ.<br> CHALUPA JE OTEVŘENA BEZ OMEZENÍ.<br>DĚKUJEME ZA POCHOPENÍ</strong>
+</p><h1 class="">Nejnovější nabídka</h1><ul class="pager">
+<b class="">1</b>
+<li><a href="/?mn_offs=11" class="">2</a></li>
+<li><a href="/?mn_offs=21" class="">3</a></li>
+<li><a href="/?mn_offs=31" class="">4</a></li>
+<li><a href="/?mn_offs=41" class="">5</a></li>
+<li><a href="/?mn_offs=51" class="">6</a></li>
+<li><a href="/?mn_offs=61" class="">7</a></li>
+<li><a href="/?mn_offs=71" class="">8</a></li>
+ ... 
+<li><a href="/?mn_offs=3711" class="">372</a></li>
+<li><a href="/?mn_offs=11">[další]</a></li>
+</ul>
+
+<div id="p26022" class="para grow alt-odd">
+<div class="crt"><a href="/kosik?fn=add&amp;id=26022" onclick="javascript:ajax('?fn=cart&amp;id=26022',onAjaxCart);return false;">
+<img id="c26022" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/stoll-martin-1-5-1953-zahajeni-televizniho-vysilani-zrozeni-televizniho-naroda-2011" title="1.5.1953 - zahájení televizního vysílání" class="">1.5.1953 - zahájení televizního vysílání</a></h3>
+<a href="/files/82303.jpg" onclick="return false;"><img src="/files/thumb_82303.png" id="pic82303" class="picgrp pw-selected" alt="1.5.1953 - zahájení televizního vysílání" onclick="enlarge(this);" longdesc="/files/82303.jpg" name="/kniha/stoll-martin-1-5-1953-zahajeni-televizniho-vysilani-zrozeni-televizniho-naroda-2011" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span class="">1.5.1953 - zahájení televizního vysílání - zrození televizního národa</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span class=""><a href="/hledani?q=au:'%C5%A0toll,%20Martin'" class="">Martin Štoll</a></span>
+</div>
+<div class="para-ill">
+<strong class="">Ilustrátor:</strong>
+<span><a href="/hledani?q=ill:'foto%20p%C5%99%C3%ADlohy'" class="">foto přílohy</a></span>
+</div>
+<div class="para-issued">
+<strong class="">Rok vydání:</strong>
+<span class="">2011</span>
+</div>
+<div class="para-pg">
+<strong class="">Počet stran:</strong>
+<span class="">208 s.</span>
+</div>
+<div class="para-series">
+<strong class="">Edice, série:</strong>
+<span><a href="/hledani?q=series:'Dny,%20kter%C3%A9%20tvo%C5%99ily%20%C4%8Desk%C3%A9%20d%C4%9Bjiny%20;%20sv.%2021'" class="">Dny, které tvořily české dějiny / sv. 21</a></span>
+</div>
+<div class="para-cat">
+<strong class="">Kategorie:</strong>
+<span><a href="/kategorie/1990-2014" class="">1990 - 2014</a>, <a href="/kategorie/dejiny-mistopis">Dějiny, místopis</a>, <a href="/kategorie/technika-remesla">Technika, řemesla</a></span>
+</div>
+<div class="para-binding">
+<strong class="">Vazba:</strong>
+<span><a href="/hledani?q=binding:'v%C3%A1zan%C3%A1%20s%20ob%C3%A1lkou%208%C2%B0'" class="">vázaná s obálkou 8°</a></span>
+</div>
+<div class="para-state">
+<strong class="">Stav:</strong>
+<span class="">razítka a štítky knihovny, jinak dobrý stav</span>
+</div>
+<div class="para-price">
+<strong class="">Cena:</strong>
+<span class="">80 Kč</span>
+</div>
+</div>
+</div>
+<div id="p22682" class="para grow alt-even">
+<div class="crt"><a href="/kosik?fn=add&amp;id=22682" onclick="javascript:ajax('?fn=cart&amp;id=22682',onAjaxCart);return false;">
+<img id="c22682" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/10-pohledu-z-teplic" title="10 pohledů z Teplic" class="">10 pohledů z Teplic</a></h3>
+<a href="/files/72170.jpg" onclick="return false;"><img src="/files/thumb_72170.png" id="pic72170" class="picgrp pw-selected" alt="10 pohledů z Teplic" onclick="enlarge(this);" longdesc="/files/72170.jpg" name="/kniha/10-pohledu-z-teplic" width="120" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span>10 pohledů z Teplic</span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span class="">-</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/dejiny-mistopis">Dějiny, místopis</a>, <a href="/kategorie/1919-1937">1919 - 1937</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span class="">pohlednice jako leporelov papírovém přebalu 16°</span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>dobrý</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span class="">150 Kč</span>
+</div>
+</div>
+</div>
+<div id="p22666" class="para grow alt-odd">
+<div class="crt"><a href="/kosik?fn=add&amp;id=22666" onclick="javascript:ajax('?fn=cart&amp;id=22666',onAjaxCart);return false;">
+<img id="c22666" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/hermann-frantisek-100-ceskych-lecivych-rostlin-2007" title="100 českých léčivých rostlin" class="">100 českých léčivých rostlin</a></h3>
+<a href="/files/72112.jpg" onclick="return false;"><img src="/files/thumb_72112.png" id="pic72112" class="picgrp pw-selected" alt="100 českých léčivých rostlin" onclick="enlarge(this);" longdesc="/files/72112.jpg" name="/kniha/hermann-frantisek-100-ceskych-lecivych-rostlin-2007" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong class="">Název:</strong>
+<span class="">100 českých léčivých rostlin</span>
+</div>
+<div class="para-au">
+<strong class="">Autor:</strong>
+<span><a href="/hledani?q=au:'Hermann,%20Franti%C5%A1ek'" class="">František Hermann</a></span>
+</div>
+<div class="para-ill">
+<strong class="">Ilustrátor:</strong>
+<span><a href="/hledani?q=ill:'obrazov%C3%BD%20doprovod'" class="">obrazový doprovod</a></span>
+</div>
+<div class="para-issued">
+<strong class="">Rok vydání:</strong>
+<span class="">2007</span>
+</div>
+<div class="para-pg">
+<strong class="">Počet stran:</strong>
+<span class="">222 s.</span>
+</div>
+<div class="para-cat">
+<strong class="">Kategorie:</strong>
+<span><a href="/kategorie/1990-2014" class="">1990 - 2014</a>, <a href="/kategorie/priroda">Příroda</a></span>
+</div>
+<div class="para-binding">
+<strong class="">Vazba:</strong>
+<span><a href="/hledani?q=binding:'lamino%20vazba%208%C2%B0'" class="">lamino vazba 8°</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>dobrý</span>
+</div>
+<div class="para-price">
+<strong class="">Cena:</strong>
+<span class="">220 Kč</span>
+</div>
+</div>
+</div>
+<div id="p26507" class="para grow alt-even">
+<div class="crt"><a href="/kosik?fn=add&amp;id=26507" onclick="javascript:ajax('?fn=cart&amp;id=26507',onAjaxCart);return false;">
+<img id="c26507" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/100-let-ceske-prumyslove-skoly-prvni-statni-ceskoslovenska-prumyslova-skola-v-praze-1937" title="100 let české průmyslové školy - první státní československá průmyslová škola v Praze" class="">100 let české průmyslové školy - první státní československá průmyslová škola v Praze</a></h3>
+<a href="/files/83557.jpg" onclick="return false;"><img src="/files/thumb_83557.png" id="pic83557" class="picgrp pw-selected" alt="100 let české průmyslové školy - první státní československá průmyslová škola v Praze" onclick="enlarge(this);" longdesc="/files/83557.jpg" name="/kniha/100-let-ceske-prumyslove-skoly-prvni-statni-ceskoslovenska-prumyslova-skola-v-praze-1937" width="120" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong class="">Název:</strong>
+<span class="">100 let české průmyslové školy - první státní československá průmyslová škola v Praze</span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span class="">1937</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span class="">28 s.</span>
+</div>
+<div class="para-cat">
+<strong class="">Kategorie:</strong>
+<span><a href="/kategorie/1919-1937" class="">1919 - 1937</a>, <a href="/kategorie/dejiny-mistopis">Dějiny, místopis</a>, <a href="/kategorie/technika-remesla">Technika, řemesla</a></span>
+</div>
+<div class="para-binding">
+<strong class="">Vazba:</strong>
+<span><a href="/hledani?q=binding:'p%C5%AFvodn%C3%AD%20bro%C5%BE.%208%C2%B0'" class="">původní brož. 8°</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span class="">obálka zašlá a pokreslená, viditelné stopy používání</span>
+</div>
+<div class="para-price">
+<strong class="">Cena:</strong>
+<span class="">80 Kč</span>
+</div>
+</div>
+</div>
+<div id="p22773" class="para grow alt-odd">
+<div class="crt"><a href="/kosik?fn=add&amp;id=22773" onclick="javascript:ajax('?fn=cart&amp;id=22773',onAjaxCart);return false;">
+<img id="c22773" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/degener-martin-100-nejkrasnejsich-mest-severni-ameriky-urbanisticka-tvar-severoamerickeho-kontinentu-2008" title="100 nejkrásnějších měst Severní Ameriky" class="">100 nejkrásnějších měst Severní Ameriky</a></h3>
+<a href="/files/72436.jpg" onclick="return false;"><img src="/files/thumb_72436.png" id="pic72436" class="picgrp pw-selected" alt="100 nejkrásnějších měst Severní Ameriky" onclick="enlarge(this);" longdesc="/files/72436.jpg" name="/kniha/degener-martin-100-nejkrasnejsich-mest-severni-ameriky-urbanisticka-tvar-severoamerickeho-kontinentu-2008" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong class="">Název:</strong>
+<span class="">100 nejkrásnějších měst Severní Ameriky - urbanistická tvář severoamerického kontinentu</span>
+</div>
+<div class="para-au">
+<strong class="">Autor:</strong>
+<span><a href="/hledani?q=au:'Degener,%20Martin'" class="">Martin Degener</a></span>
+</div>
+<div class="para-ill">
+<strong class="">Ilustrátor:</strong>
+<span class=""><a href="/hledani?q=ill:'obrazov%C3%BD%20doprovod'" class="">obrazový doprovod</a></span>
+</div>
+<div class="para-issued">
+<strong class="">Rok vydání:</strong>
+<span class="">2008</span>
+</div>
+<div class="para-pg">
+<strong class="">Počet stran:</strong>
+<span class="">208 s.</span>
+</div>
+<div class="para-cat">
+<strong class="">Kategorie:</strong>
+<span><a href="/kategorie/1990-2014" class="">1990 - 2014</a></span>
+</div>
+<div class="para-binding">
+<strong class="">Vazba:</strong>
+<span><a href="/hledani?q=binding:'v%C3%A1zan%C3%A1%20s%20ob%C3%A1lkou%204%C2%B0'" class="">vázaná s obálkou 4°</a></span>
+</div>
+<div class="para-state">
+<strong class="">Stav:</strong>
+<span>dobrý</span>
+</div>
+<div class="para-price">
+<strong class="">Cena:</strong>
+<span class="">80 Kč</span>
+</div>
+</div>
+</div>
+<div id="p23800" class="para grow alt-even">
+<div class="crt"><a href="/kosik?fn=add&amp;id=23800" onclick="javascript:ajax('?fn=cart&amp;id=23800',onAjaxCart);return false;">
+<img id="c23800" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/texty-olga-pohl-100-okamziku-fotografie-ceske-tiskove-kancelare-2018" title="100 okamžiků" class="">100 okamžiků</a></h3>
+<a href="/files/75320.jpg" onclick="return false;"><img src="/files/thumb_75320.png" id="pic75320" class="picgrp pw-selected" alt="100 okamžiků" onclick="enlarge(this);" longdesc="/files/75320.jpg" name="/kniha/texty-olga-pohl-100-okamziku-fotografie-ceske-tiskove-kancelare-2018" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong class="">Název:</strong>
+<span class="">100 okamžiků: Fotografie české tiskové kanceláře</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'texty%20Olga%20Pohl'" class="">texty Olga Pohl</a></span>
+</div>
+<div class="para-ill">
+<strong>Ilustrátor:</strong>
+<span class=""><a href="/hledani?q=ill:'fotografie'" class="">fotografie</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span class="">2018</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/2015-soucasnost-umeni-literatura">2015 - Současnost / Umění, literatura</a>, <a href="/kategorie/dejiny-mistopis">Dějiny, místopis</a>, <a href="/kategorie/2015-soucasnost" class="">2015 - Současnost</a>, <a href="/kategorie/umeni-literatura">Umění, literatura</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'kniha%20v%20pap%C3%ADrov%C3%A9m%20p%C5%99ebalu'" class="">kniha v papírovém přebalu</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span class="">velmi dobrý</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span class="">200 Kč</span>
+</div>
+</div>
+</div>
+<div id="p26430" class="para grow alt-odd">
+<div class="crt"><a href="/kosik?fn=add&amp;id=26430" onclick="javascript:ajax('?fn=cart&amp;id=26430',onAjaxCart);return false;">
+<img id="c26430" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/charlotte-and-peter-fiell-1000-chairs-2000" title="1000 chairs" class="">1000 chairs</a></h3>
+<a href="/files/83315.jpg" onclick="return false;"><img src="/files/thumb_83315.png" id="pic83315" class="picgrp pw-selected" alt="1000 chairs" onclick="enlarge(this);" longdesc="/files/83315.jpg" name="/kniha/charlotte-and-peter-fiell-1000-chairs-2000" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span class="">1000 chairs</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Charlotte%20and%20Peter%20Fiell'" class="">Charlotte and Peter Fiell</a></span>
+</div>
+<div class="para-ill">
+<strong class="">Ilustrátor:</strong>
+<span><a href="/hledani?q=ill:'obrazov%C3%BD%20doprovod'" class="">obrazový doprovod</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span class="">2000</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span>768 s.</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/1990-2014-umeni-literatura">1990 - 2014 / Umění, literatura</a>, <a href="/kategorie/1990-2014">1990 - 2014</a>, <a href="/kategorie/umeni-literatura">Umění, literatura</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'v%C3%A1zan%C3%A1%208%C2%B0'" class="">vázaná 8°</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>velmi dobrý</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span class="">300 Kč</span>
+</div>
+</div>
+</div>
+<div id="p25762" class="para grow alt-even">
+<div class="crt"><a href="/kosik?fn=add&amp;id=25762" onclick="javascript:ajax('?fn=cart&amp;id=25762',onAjaxCart);return false;">
+<img id="c25762" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/urban-eberhard-1000-lodi-2007" title="1000 lodí" class="">1000 lodí</a></h3>
+<a href="/files/81667.jpg" onclick="return false;"><img src="/files/thumb_81667.png" id="pic81667" class="picgrp pw-selected" alt="1000 lodí" onclick="enlarge(this);" longdesc="/files/81667.jpg" name="/kniha/urban-eberhard-1000-lodi-2007" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span class="">1000 lodí</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Urban,%20Eberhard'" class="">Eberhard Urban</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span class="">2007</span>
+</div>
+<div class="para-pg">
+<strong class="">Počet stran:</strong>
+<span class="">336 s.</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span class=""><a href="/kategorie/1990-2014" class="">1990 - 2014</a>, <a href="/kategorie/technika-remesla">Technika, řemesla</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'lamino%20vazba%204%C2%B0'" class="">lamino vazba 4°</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span class="">razítka a štítky knihovny, jinak dobrý stav</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span class="">150 Kč</span>
+</div>
+</div>
+</div>
+<div id="p25251" class="para grow alt-odd">
+<div class="crt"><a href="/kosik?fn=add&amp;id=25251" onclick="javascript:ajax('?fn=cart&amp;id=25251',onAjaxCart);return false;">
+<img id="c25251" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/12-pohar-pratelstvi-1974" title="12. pohár přátelství" class="">12. pohár přátelství</a></h3>
+<a href="/files/79818.jpg" onclick="return false;"><img src="/files/thumb_79818.png" id="pic79818" class="picgrp pw-selected" alt="12. pohár přátelství" onclick="enlarge(this);" longdesc="/files/79818.jpg" name="/kniha/12-pohar-pratelstvi-1974" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span class="">12. pohár přátelství - Katalog 12. mezin. soutěže socialist. států. v účesové tvorbě, Praha, 5.-6. října 1974</span>
+</div>
+<div class="para-ill">
+<strong>Ilustrátor:</strong>
+<span><a href="/hledani?q=ill:'bohat%C3%BD%20obrazov%C3%BD%20doprovod'">bohatý obrazový doprovod</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1974</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span class="">17 s.</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/1971-1989" class="">1971 - 1989</a>, <a href="/kategorie/varia">Varia</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'p%C5%AFvodn%C3%AD%20bro%C5%BE.%204%C2%B0'" class="">původní brož. 4°</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span class="">obálka zašlá, jinak dobrý stav</span>
+</div>
+<div class="para-price">
+<strong class="">Cena:</strong>
+<span class="">70 Kč</span>
+</div>
+</div>
+</div>
+<div id="p11728" class="para grow alt-even">
+<div class="crt"><a href="/kosik?fn=add&amp;id=11728" onclick="javascript:ajax('?fn=cart&amp;id=11728',onAjaxCart);return false;">
+<img id="c11728" src="/assets/cart-ar.png" alt="košík" title="Přidat do košíku" class="crt1"></a></div>
+<h3 class=""><a href="/kniha/brabec-jan-13-pro-prave-stesti-1948" title="13 pro pravé štěstí" class="">13 pro pravé štěstí</a></h3>
+<a href="/files/39140.jpg" onclick="return false;"><img src="/files/thumb_39140.png" id="pic39140" class="picgrp pw-selected" alt="13 pro pravé štěstí" onclick="enlarge(this);" longdesc="/files/39140.jpg" name="/kniha/brabec-jan-13-pro-prave-stesti-1948" width="100" title="" style="cursor: url(&quot;/assets/enfiles/pluscur.cur&quot;), pointer;"></a>
+<div class="para-flds">
+<div class="para-title">
+<strong>Název:</strong>
+<span class="">13 pro pravé štěstí</span>
+</div>
+<div class="para-au">
+<strong>Autor:</strong>
+<span><a href="/hledani?q=au:'Brabec,%20Jan'">Jan Brabec</a></span>
+</div>
+<div class="para-ill">
+<strong>Ilustrátor:</strong>
+<span><a href="/hledani?q=ill:'Emil%20Kotrba'" class="">Emil Kotrba</a>, <a href="/hledani?q=ill:'upravil%20Jindra%20Vichnar'">upravil Jindra Vichnar</a></span>
+</div>
+<div class="para-issued">
+<strong>Rok vydání:</strong>
+<span>1948</span>
+</div>
+<div class="para-pg">
+<strong>Počet stran:</strong>
+<span class="">71 s.</span>
+</div>
+<div class="para-cat">
+<strong>Kategorie:</strong>
+<span><a href="/kategorie/1938-1948" class="">1938 - 1948</a>, <a href="/kategorie/varia">Varia</a></span>
+</div>
+<div class="para-binding">
+<strong>Vazba:</strong>
+<span><a href="/hledani?q=binding:'p%C5%AFvodn%C3%AD%20bro%C5%BE.%208%C2%B0'" class="">původní brož. 8°</a></span>
+</div>
+<div class="para-state">
+<strong>Stav:</strong>
+<span>dobrý</span>
+</div>
+<div class="para-price">
+<strong>Cena:</strong>
+<span class="">100 Kč</span>
+</div>
+</div>
+</div>
+<div class="clearfix"></div>
+<ul class="pager">
+<b>1</b>
+<li><a href="/?mn_offs=11">2</a></li>
+<li><a href="/?mn_offs=21">3</a></li>
+<li><a href="/?mn_offs=31">4</a></li>
+<li><a href="/?mn_offs=41">5</a></li>
+<li><a href="/?mn_offs=51">6</a></li>
+<li><a href="/?mn_offs=61">7</a></li>
+<li><a href="/?mn_offs=71">8</a></li>
+ ... 
+<li><a href="/?mn_offs=3711">372</a></li>
+<li><a href="/?mn_offs=11">[další]</a></li>
+</ul>
+
+
+
+  </div> <!-- end content -->
+</div> <!-- end list-view -->
+
+ <div class="clearfix"></div>
+ </div> <!-- end content-wrap -->
+
+ <div id="footer">
+<!--Removing the links will void the Creative Commons License.-->
+  <div align="center">© 2011 <strong>TexTrix</strong> | Template by <a href="http://www.themebin.com/">ThemeBin</a> | Icons by <a href="http://p.yusukekamiyamane.com/">Yusuke</a> &amp; <a href="http://www.starfishwebconsulting.co.uk/articles/free-ecommerce-icons?/ecommerce-icons">Starfish</a></div>
+ </div> <!-- end footer -->
+</div> <!-- end wrap -->
+<script>if(e=document.getElementById('cart-box'))e.style.display='none';</script>
+
+<div id="pw-ui">
+            <div id="pw-ui-header" style="cursor: grab;">
+                <h2>Select <span id="pw-category-name">image</span></h2>
+                <div style="opacity:0.5">::</div>
+            </div>
+            <div id="pw-ui-body">
+                <div class="pw-stat-row">
+                    <span id="pw-step-counter">Step 3/3</span>
+                    <span id="pw-count-badge">10 selected</span>
+                </div>
+                <div id="pw-selector-box">body</div>
+                <div class="pw-btn-group-top">
+                    <button id="pw-btn-predict" class="pw-btn pw-btn-predict">🔮 Auto-Predict</button>
+                </div>
+                <div class="pw-btn-group">
+                    <button id="pw-btn-prev" class="pw-btn pw-btn-secondary">Back</button>
+                    <button id="pw-btn-next" class="pw-btn pw-btn-primary pw-hidden">Next Category</button>
+                    <button id="pw-btn-done" class="pw-btn pw-btn-success">Finish &amp; Save</button>
+                </div>
+                <div class="pw-hint">Right-Click to interact (close modals)<br>Ctrl+Shift+Z to Redo</div>
+            </div>
+        </div><div id="enl_ldr" style="visibility: hidden; position: absolute; left: -5000px; top: 0px; z-index: 9999;"><img src="/assets/enfiles/loader.gif" id="enl_ldrgif" style="border-width: 1px; border-style: solid; border-color: black;"></div><div id="enl_brd" style="visibility: hidden; position: absolute; left: -5000px; top: 0px; background-color: rgb(255, 255, 255);"></div><div id="enl_shd" style="visibility: hidden; position: absolute; left: -5000px; top: 0px; background-color: black; opacity: 0.09;"></div><div id="enl_drk" style="visibility: hidden; position: absolute; left: -5000px; top: 0px; background-color: black; z-index: 9670;"></div></body></html>

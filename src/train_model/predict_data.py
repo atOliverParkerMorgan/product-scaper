@@ -26,6 +26,7 @@ def predict_selectors(html_content: str, category: str, model_path: Optional[Pat
         model = model_data['model']
         label_encoder = model_data['label_encoder']
         feature_names = model_data['feature_names']
+        tag_encoder = model_data.get('tag_encoder')  # Get tag encoder if available
         
         # Extract features from all elements
         document = lxml.html.fromstring(html_content)
@@ -44,8 +45,19 @@ def predict_selectors(html_content: str, category: str, model_path: Optional[Pat
         if not all_features:
             return []
         
-        # Create DataFrame and predict
+        # Create DataFrame
         df = pd.DataFrame(all_features)
+        
+        # Encode tag and parent_tag features if tag_encoder is available
+        if tag_encoder is not None:
+            if 'tag' in df.columns:
+                # Handle unknown tags by mapping to 'unknown'
+                df['tag'] = df['tag'].apply(lambda x: x if x in tag_encoder.classes_ else 'unknown')
+                df['tag'] = tag_encoder.transform(df['tag'])
+            if 'parent_tag' in df.columns:
+                df['parent_tag'] = df['parent_tag'].apply(lambda x: x if x in tag_encoder.classes_ else 'unknown')
+                df['parent_tag'] = tag_encoder.transform(df['parent_tag'])
+        
         # Filter to only include features that the model was trained on
         X = df[feature_names].fillna(0)
         predictions = model.predict(X)
@@ -71,7 +83,7 @@ def predict_selectors(html_content: str, category: str, model_path: Optional[Pat
                             predicted_selectors.append(selector)
                     except Exception:
                         continue
-        
+        print(predicted_selectors)
         print(f"🔮 Predicted {len(predicted_selectors)} potential matches for '{category}'")
         return predicted_selectors[:20]  # Limit to top 20 predictions
         

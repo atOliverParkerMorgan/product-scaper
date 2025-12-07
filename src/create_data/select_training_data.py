@@ -8,7 +8,6 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright, Error as PlaywrightError
 
 from train_model.predict_data import predict_selectors
-from utils.utils import generate_selector_for_element
     
 
 # --- CONFIGURATION ---
@@ -23,18 +22,23 @@ CSS_CONTENT = (UI_PATH / 'styles.css').read_text(encoding='utf-8')
 JS_CORE_LOGIC = (UI_PATH / 'core.js').read_text(encoding='utf-8')
 JS_UPDATE_UI = (UI_PATH / 'update.js').read_text(encoding='utf-8')
 
-def highlight_selectors(page, selectors):
-    """Helper to re-apply green outlines securely."""
+def highlight_selectors(page, selectors, force_update=False):
+    """Helper to re-apply green outlines securely and remove predicted highlights."""
     try:
-        page.evaluate("document.querySelectorAll('.pw-selected').forEach(el => el.classList.remove('pw-selected'))")
-        for sel in selectors:
-            safe_sel = sel.replace('"', '\\"')
-            page.evaluate(f"""
-                try {{
-                    const els = document.querySelectorAll("{safe_sel}");
-                    els.forEach(el => el.classList.add('pw-selected'));
-                }} catch(e) {{}}
-            """)
+        # Only update if forced or if we need to sync state
+        if force_update:
+            page.evaluate("document.querySelectorAll('.pw-selected').forEach(el => el.classList.remove('pw-selected'))")
+            for sel in selectors:
+                safe_sel = sel.replace('"', '\\"').replace('\n', ' ')
+                page.evaluate(f"""
+                    try {{
+                        const els = document.querySelectorAll("{safe_sel}");
+                        els.forEach(el => {{
+                            el.classList.add('pw-selected');
+                            el.classList.remove('pw-predicted');
+                        }});
+                    }} catch(e) {{}}
+                """)
     except PlaywrightError:
         pass
 
@@ -170,6 +174,7 @@ def select_data(url: str, categories: List[str]):
         undo_stack = [] 
         redo_stack = []
         current_idx = 0
+        last_selections_hash = None  # Track if selections changed
         
         try:
             should_exit = False
@@ -186,13 +191,18 @@ def select_data(url: str, categories: List[str]):
                         continue
                     break
 
-                highlight_selectors(page, current_selection_list)
+                # Only re-highlight if selections changed
+                current_hash = hash(tuple(current_selection_list))
+                if current_hash != last_selections_hash:
+                    highlight_selectors(page, current_selection_list, force_update=True)
+                    last_selections_hash = current_hash
 
                 action_type, action_payload = poll_for_action(page)
 
                 if action_type == 'toggle':
                     handle_toggle_action(action_payload, category, selections, 
                                        undo_stack, redo_stack, current_idx)
+                    last_selections_hash = None  # Force re-highlight on next loop
 
                 elif action_type == 'navigate':
                     if action_payload == 'predict':
@@ -202,33 +212,54 @@ def select_data(url: str, categories: List[str]):
                         predicted = predict_selectors(html_content, category)
                         
                         if predicted:
-                            # Clear predicted highlights
+                            # Clear previous predicted highlights
                             page.evaluate("document.querySelectorAll('.pw-predicted').forEach(el => el.classList.remove('pw-predicted'))")
                             
-                            # Highlight predicted elements
+                            # Highlight predicted elements (skip already selected ones)
+                            highlighted_count = 0
                             for sel in predicted:
                                 try:
-                                    safe_sel = sel.replace('"', '\\"')
-                                    page.evaluate(f"""
-                                        try {{
-                                            const els = document.querySelectorAll("{safe_sel}");
-                                            els.forEach(el => el.classList.add('pw-predicted'));
-                                        }} catch(e) {{}}
+                                    # Clean and escape the selector
+                                    safe_sel = sel.replace('"', '\\"').replace('\n', ' ').strip()
+                                    # Only highlight if not already selected
+                                    result = page.evaluate(f"""
+                                        (() => {{
+                                            try {{
+                                                const els = document.querySelectorAll("{safe_sel}");
+                                                let count = 0;
+                                                els.forEach(el => {{
+                                                    if (!el.classList.contains('pw-selected')) {{
+                                                        el.classList.add('pw-predicted');
+                                                        count++;
+                                                    }}
+                                                }});
+                                                return count;
+                                            }} catch(e) {{
+                                                console.log('Selector error:', e.message, '{safe_sel}');
+                                                return 0;
+                                            }}
+                                        }})()
                                     """)
-                                except Exception:
-                                    pass
+                                    highlighted_count += result
+                                except Exception as e:
+                                    print(f"   ⚠️ Skipped invalid selector: {sel[:50]}... ({e})")
                             
-                            print(f"💡 Highlighted {len(predicted)} predicted elements (orange outline)")
-                            print("   Click on predicted elements to add them to selection")
+                            print(f"💡 Highlighted {highlighted_count} predicted elements (orange outline)")
+                            if highlighted_count > 0:
+                                print("   Click on predicted elements to add them to selection")
+                            else:
+                                print("   ⚠️ None of the predictions could be highlighted (selector mismatch)")
                         else:
                             print("⚠️ No predictions found. Train a model first.")
                     else:
                         current_idx, should_exit = handle_navigate_action(
                             action_payload, current_idx, categories, undo_stack, redo_stack)
+                        last_selections_hash = None  # Force re-highlight when changing categories
 
                 elif action_type == 'history':
                     selections = handle_history_action(
                         action_payload, current_idx, selections, undo_stack, redo_stack)
+                    last_selections_hash = None  # Force re-highlight after undo/redo
 
         except PlaywrightError as e:
             if "Target closed" in str(e):
@@ -250,7 +281,7 @@ def get_save_directory(url):
     """Determine save directory from URL."""
     domain = urlparse(url).netloc.replace('www.', '')
     base_name = domain.split('.')[0] or 'site'
-    save_dir = Path(__file__).parent.parent.parent / 'data' / base_name
+    save_dir = Path(__file__).parent.parent / 'data' / base_name
     
     if not save_dir.exists():
         save_dir.mkdir(parents=True, exist_ok=True)

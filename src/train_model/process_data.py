@@ -21,11 +21,9 @@ from utils.constants import (
 from utils.utils import normalize_tag, count_unique_tags
 
 class FeatureEncoders:
-    """Container for all feature encoders used in the pipeline."""
+    """Container for encoding tag features."""
     def __init__(self):
         self.tag_encoder = LabelEncoder()
-        self.category_encoder = LabelEncoder()
-        self.selector_encoder = LabelEncoder()
         
     def save(self, filepath: Path):
         """Save encoders to disk for reuse during inference."""
@@ -157,7 +155,7 @@ def extract_features_from_html(html_content: str, selectors: dict, features_to_e
 
     all_features_data = []
     encoders = encoders or FeatureEncoders()
-    all_tags, all_parent_tags, all_categories, all_selectors = [], [], [], []
+    all_tags, all_parent_tags, all_categories = [], [], []
     selected_elements = set()
 
     for category, selector_list in selectors.items():
@@ -172,11 +170,9 @@ def extract_features_from_html(html_content: str, selectors: dict, features_to_e
                     selected_elements.add(element)
                     feature_row = {'Category': category}
                     feature_row = _extract_element_features(element, features_to_extract, feature_row)
-                    feature_row['Selector'] = selector
                     all_features_data.append(feature_row)
                     
                     all_categories.append(category)
-                    all_selectors.append(selector)
                     if 'tag' in feature_row:
                         all_tags.append(feature_row['tag'])
                     if 'parent_tag' in feature_row:
@@ -193,11 +189,9 @@ def extract_features_from_html(html_content: str, selectors: dict, features_to_e
 
         feature_row = {'Category': OTHER_CATEGORY}
         feature_row = _extract_element_features(element, features_to_extract, feature_row)
-        feature_row['Selector'] = 'none'
         all_features_data.append(feature_row)
         
         all_categories.append(OTHER_CATEGORY)
-        all_selectors.append('none')
         if 'tag' in feature_row:
             all_tags.append(feature_row['tag'])
         if 'parent_tag' in feature_row:
@@ -206,18 +200,14 @@ def extract_features_from_html(html_content: str, selectors: dict, features_to_e
     all_unique_tags = list(set(all_tags + all_parent_tags + COMMON_TAGS))
     if all_unique_tags:
         encoders.tag_encoder.fit(all_unique_tags)
-    if all_categories:
-        encoders.category_encoder.fit(list(set(all_categories)))
-    if all_selectors:
-        encoders.selector_encoder.fit(list(set(all_selectors)))
     
+    # Only encode tag and parent_tag features, NOT Category
+    # Category should remain as string labels for training
     for row in all_features_data:
         if 'tag' in row:
             row['tag'] = encoders.tag_encoder.transform([row['tag']])[0]
         if 'parent_tag' in row:
             row['parent_tag'] = encoders.tag_encoder.transform([row['parent_tag']])[0]
-        if 'Selector' in row:
-            row['Selector'] = encoders.selector_encoder.transform([row['Selector']])[0]
 
     return all_features_data, encoders
 

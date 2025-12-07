@@ -18,6 +18,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.preprocessing import LabelEncoder
 from xgboost import XGBClassifier
+from utils.constants import RANDOM_STATE, EXCLUDED_FEATURES, DATA_NAME
 
 from .evaluate_model import compare_models, evaluate_model
 
@@ -32,7 +33,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 console = Console()
 
-from utils.constants import RANDOM_STATE, EXCLUDED_FEATURES, DATA_NAME
 
 # Configuration constants are now imported from utils.constants
 
@@ -187,9 +187,11 @@ def _get_param_grid(model_type: str) -> Dict[str, List]:
 
 def train_model(
     X_train: pd.DataFrame,
-    y_train: pd.Series,
+    y_train_encoded: pd.Series,
+    y_train_original: pd.Series,
     X_val: pd.DataFrame,
-    y_val: pd.Series,
+    y_val_encoded: pd.Series,
+    y_val_original: pd.Series,
     label_encoder: LabelEncoder,
     use_smote: bool = True,
     model_type: str = 'xgboost',
@@ -200,9 +202,11 @@ def train_model(
     
     Args:
         X_train: Training features
-        y_train: Training labels (encoded)
+        y_train_encoded: Training labels (encoded as numbers)
+        y_train_original: Training labels (original strings)
         X_val: Validation features
-        y_val: Validation labels (original, not encoded)
+        y_val_encoded: Validation labels (encoded as numbers)
+        y_val_original: Validation labels (original strings)
         label_encoder: Label encoder for inverse transform
         use_smote: Whether to use SMOTE for handling class imbalance
         model_type: Type of model ('xgboost' or 'random_forest')
@@ -246,7 +250,7 @@ def train_model(
             n_jobs=-1,
             verbose=0
         )
-        grid_search.fit(X_train, y_train)
+        grid_search.fit(X_train, y_train_encoded)
         model = grid_search.best_estimator_
         
         logger.info(
@@ -255,15 +259,15 @@ def train_model(
         )
     else:
         model = pipeline
-        model.fit(X_train, y_train)
+        model.fit(X_train, y_train_encoded)
     
-    # Evaluate on training set
+    # Evaluate on training set (use original labels for evaluation)
     logger.info("[bold]Training Set:[/bold]")
-    train_metrics = evaluate_model(model, X_train, y_train, label_encoder, "Training")
+    train_metrics = evaluate_model(model, X_train, y_train_original, label_encoder, "Training")
     
-    # Evaluate on validation set
+    # Evaluate on validation set (use original labels for evaluation)
     logger.info("[bold]Validation Set:[/bold]")
-    val_metrics = evaluate_model(model, X_val, y_val, label_encoder, "Validation")
+    val_metrics = evaluate_model(model, X_val, y_val_original, label_encoder, "Validation")
     
     console.print(Panel(
         val_metrics['classification_report'],
@@ -350,9 +354,11 @@ def _display_data_split(X_train: pd.DataFrame, X_val: pd.DataFrame, X_test: Opti
 
 def _train_multiple_models(
     X_train: pd.DataFrame,
-    y_train: pd.Series,
+    y_train_encoded: pd.Series,
+    y_train_original: pd.Series,
     X_val: pd.DataFrame,
-    y_val: pd.Series,
+    y_val_encoded: pd.Series,
+    y_val_original: pd.Series,
     label_encoder: LabelEncoder
 ) -> Tuple[Dict[str, Any], Dict[str, Dict[str, float]]]:
     """Train multiple models and return them with their metrics."""
@@ -362,8 +368,9 @@ def _train_multiple_models(
     # Train XGBoost with SMOTE
     try:
         model1, metrics1 = train_model(
-            X_train, y_train, X_val, y_val, label_encoder,
-            use_smote=True, model_type='xgboost'
+            X_train, y_train_encoded, y_train_original,
+            X_val, y_val_encoded, y_val_original,
+            label_encoder, use_smote=True, model_type='xgboost'
         )
         models['xgboost_smote'] = model1
         metrics['xgboost_smote'] = metrics1
@@ -373,8 +380,9 @@ def _train_multiple_models(
     # Train Random Forest
     try:
         model2, metrics2 = train_model(
-            X_train, y_train, X_val, y_val, label_encoder,
-            use_smote=False, model_type='random_forest'
+            X_train, y_train_encoded, y_train_original,
+            X_val, y_val_encoded, y_val_original,
+            label_encoder, use_smote=False, model_type='random_forest'
         )
         models['random_forest'] = model2
         metrics['random_forest'] = metrics2
@@ -425,7 +433,8 @@ def run(
         return None
 
     # Preprocess training/validation data
-    X_train_val, y_train_val, feature_names, class_names, label_encoder = preprocess_data(train_df)
+    X_train_val, y_train_val_encoded, feature_names, class_names, label_encoder = preprocess_data(train_df)
+    y_train_val_original = train_df['Category']  # Keep original string labels
     
     if len(X_train_val) < 10:
         logger.error("Not enough training data.")
@@ -433,31 +442,36 @@ def run(
 
     # Split into train and validation sets
     try:
-        X_train, X_val, y_train, y_val = train_test_split(
-            X_train_val, y_train_val,
+        X_train, X_val, y_train_encoded, y_val_encoded, y_train_original, y_val_original = train_test_split(
+            X_train_val, y_train_val_encoded, y_train_val_original,
             test_size=0.2,
             random_state=RANDOM_STATE,
-            stratify=y_train_val
+            stratify=y_train_val_encoded
         )
     except ValueError:
         # Fallback if stratification fails
-        X_train, X_val, y_train, y_val = train_test_split(
-            X_train_val, y_train_val,
+        X_train, X_val, y_train_encoded, y_val_encoded, y_train_original, y_val_original = train_test_split(
+            X_train_val, y_train_val_encoded, y_train_val_original,
             test_size=0.2,
             random_state=RANDOM_STATE
         )
     
     # Preprocess test data if available
     if len(test_df) > 0:
-        X_test, y_test, _, _, _ = preprocess_data(test_df, label_encoder)
+        X_test, y_test_encoded, _, _, _ = preprocess_data(test_df, label_encoder)
+        y_test_original = test_df['Category']
     else:
-        X_test, y_test = None, None
+        X_test, y_test_encoded, y_test_original = None, None, None
     
     # Display data split
     _display_data_split(X_train, X_val, X_test)
     
     # Train multiple models
-    models, metrics = _train_multiple_models(X_train, y_train, X_val, y_val, label_encoder)
+    models, metrics = _train_multiple_models(
+        X_train, y_train_encoded, y_train_original,
+        X_val, y_val_encoded, y_val_original,
+        label_encoder
+    )
     
     if not models:
         logger.error("No models trained successfully.")
@@ -472,7 +486,7 @@ def run(
             "[bold yellow]Test Set Evaluation[/bold yellow]",
             box=box.DOUBLE_EDGE
         ))
-        test_metrics = evaluate_model(best_model, X_test, y_test, label_encoder, "Test")
+        test_metrics = evaluate_model(best_model, X_test, y_test_original, label_encoder, "Test")
         console.print(Panel(
             test_metrics['classification_report'],
             title="[bold]Test Report[/bold]",

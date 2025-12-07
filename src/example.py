@@ -4,7 +4,7 @@ from train_model.train_model import run
 
 
 WEBSITES = [
-    "https://trigon-knihy.cz/antikvariat/"
+    # "https://trigon-knihy.cz/antikvariat/",
     "https://www.artonpaper.ch/new",
     "http://antik-stafl.cz/",
     "http://antikvariat-bohemia.cz/",
