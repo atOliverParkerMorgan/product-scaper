@@ -64,6 +64,9 @@
                     <span id="pw-count-badge">0 selected</span>
                 </div>
                 <div id="pw-selector-box">Hover an element...</div>
+                <div class="pw-btn-group-top">
+                    <button id="pw-btn-predict" class="pw-btn pw-btn-predict">🔮 Auto-Predict</button>
+                </div>
                 <div class="pw-btn-group">
                     <button id="pw-btn-prev" class="pw-btn pw-btn-secondary">Back</button>
                     <button id="pw-btn-next" class="pw-btn pw-btn-primary">Next Category</button>
@@ -77,6 +80,7 @@
         document.getElementById('pw-btn-prev').onclick = () => window._action = 'prev';
         document.getElementById('pw-btn-next').onclick = () => window._action = 'next';
         document.getElementById('pw-btn-done').onclick = () => window._action = 'done';
+        document.getElementById('pw-btn-predict').onclick = () => window._action = 'predict';
         
         // --- DRAGGABLE LOGIC ---
         const header = document.getElementById('pw-ui-header');

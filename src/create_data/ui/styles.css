@@ -95,6 +95,7 @@
 
 /* --- BUTTONS --- */
 .pw-btn-group { display: flex !important; gap: 8px !important; }
+.pw-btn-group-top { display: flex !important; gap: 8px !important; margin-bottom: 12px !important; }
 
 .pw-btn {
     flex: 1 !important;
@@ -112,7 +113,15 @@
 .pw-btn-secondary { background: rgba(255,255,255,0.1) !important; color: #fff !important; }
 .pw-btn-primary { background: #007aff !important; color: white !important; }
 .pw-btn-success { background: #00b341 !important; color: white !important; }
+.pw-btn-predict { background: #ff9500 !important; color: white !important; }
 .pw-hidden { display: none !important; }
+
+/* --- PREDICTION HIGHLIGHTS --- */
+.pw-predicted {
+    outline: 2px dashed #ff9500 !important;
+    outline-offset: -2px !important;
+    background-color: rgba(255, 149, 0, 0.15) !important;
+}
 
 .pw-hint {
     text-align: center !important;

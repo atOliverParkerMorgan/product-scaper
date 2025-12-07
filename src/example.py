@@ -1,5 +1,6 @@
 from create_data import select_data
 from train_model.process_data import data_to_csv
+from train_model.train_model import run
 
 
 WEBSITES = [
@@ -91,4 +92,5 @@ if __name__ == "__main__":
         print(f"Processing {url}...")
         select_data(url, CATEGORIES)
         data_to_csv()
-        # model = train_model()
+        run()
+        

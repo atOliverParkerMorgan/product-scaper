@@ -7,6 +7,10 @@ from urllib.parse import urlparse
 from pathlib import Path
 from playwright.sync_api import sync_playwright, Error as PlaywrightError
 
+from train_model.predict_data import predict_selectors
+from utils.utils import generate_selector_for_element
+    
+
 # --- CONFIGURATION ---
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 
@@ -116,6 +120,8 @@ def handle_navigate_action(direction, current_idx, categories, undo_stack, redo_
         return current_idx - 1, False
     elif direction == 'done':
         return current_idx, True
+    elif direction == 'predict':
+        return current_idx, False
     return current_idx, False
 
 
@@ -146,6 +152,9 @@ def navigate_to_url(page, url):
         page.goto(url, wait_until='domcontentloaded', timeout=60000)
     except Exception as e:
         print(f"⚠️ Navigation warning: {e}")
+
+
+# Removed: _generate_selector_for_element is now in utils.utils
 
 
 def select_data(url: str, categories: List[str]):
@@ -186,8 +195,36 @@ def select_data(url: str, categories: List[str]):
                                        undo_stack, redo_stack, current_idx)
 
                 elif action_type == 'navigate':
-                    current_idx, should_exit = handle_navigate_action(
-                        action_payload, current_idx, categories, undo_stack, redo_stack)
+                    if action_payload == 'predict':
+                        # Run prediction
+                        print(f"\n🔮 Running prediction for '{category}'...")
+                        html_content = page.content()
+                        predicted = predict_selectors(html_content, category)
+                        
+                        if predicted:
+                            # Clear predicted highlights
+                            page.evaluate("document.querySelectorAll('.pw-predicted').forEach(el => el.classList.remove('pw-predicted'))")
+                            
+                            # Highlight predicted elements
+                            for sel in predicted:
+                                try:
+                                    safe_sel = sel.replace('"', '\\"')
+                                    page.evaluate(f"""
+                                        try {{
+                                            const els = document.querySelectorAll("{safe_sel}");
+                                            els.forEach(el => el.classList.add('pw-predicted'));
+                                        }} catch(e) {{}}
+                                    """)
+                                except Exception:
+                                    pass
+                            
+                            print(f"💡 Highlighted {len(predicted)} predicted elements (orange outline)")
+                            print("   Click on predicted elements to add them to selection")
+                        else:
+                            print("⚠️ No predictions found. Train a model first.")
+                    else:
+                        current_idx, should_exit = handle_navigate_action(
+                            action_payload, current_idx, categories, undo_stack, redo_stack)
 
                 elif action_type == 'history':
                     selections = handle_history_action(
@@ -253,6 +290,4 @@ def save_results(selections, url, page):
         print(f"Save error: {e}")
 
 if __name__ == "__main__":
-    target_url = "https://books.toscrape.com/" 
-    cats = ['product_name', 'price', 'image']
-    select_data(target_url, cats)
+    pass # TODO

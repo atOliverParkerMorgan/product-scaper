@@ -3,58 +3,22 @@ import csv
 import yaml
 import lxml.html
 from lxml.etree import XPathEvalError
-from enum import Enum
-import regex as re
 from typing import List, Dict, Any, Optional
 import textstat
 from urllib.parse import urlparse
 from sklearn.preprocessing import LabelEncoder
 import pickle
 import os
-# --- Feature Definitions ---
 
-class Features(Enum):
-    """Enumeration of all possible features we can extract for an element."""
-    
-    TAG = "tag"
-    ID_NAME = 'id_name'
-    CLASS_NAME = 'class_name'
-    ALL_ATTRIBUTES = 'all_attributes'
-    
-    # Text Content Features
-    TEXT_CONTENT = 'text_content' # TODO: convert to transformed features only?
-
-    TEXT_CONTENT_LENGTH = 'text_content_length'
-    TEXT_CONTENT_NUM_WORDS = 'text_content_num_words'
-    TEXT_CONTENT_NUM_DIGITS = 'text_content_num_digits'
-    TEXT_CONTENT_PRICE_FORMAT_PROBABILITY = 'text_content_price_format'
-    TEXT_CONTENT_DIFFICULTY = 'text_content_difficulty' 
-
-    PARENT_TAG = 'parent_tag'
-    NUM_CHILDREN = 'num_children'
-    NUM_SIBLINGS = 'num_siblings' 
-    POSITION_IN_SIBLINGS = 'position_in_siblings' 
-    CHILD_TAGS = 'child_tags'
-    SIBLING_TAGS = 'sibling_tags' 
-    DOM_DISTANCE_FROM_ROOT = 'dom_distance_from_root'
-    
-    # --- Other Obvious Feature Ideas ---
-    HAS_HREF = 'has_href' # Boolean: is it a link?
-    HREF_DOMAIN = 'href_domain' # The netloc of the link
-    IS_IMAGE = 'is_image' # Boolean: is it an img tag?
-    IMAGE_SRC = 'image_src' # The 'src' attribute
-    
-    #  TODO: Future features
-    IS_TAG_A_PART_OF_A_LINK = 'is_tag_a_part_of_a_link'
-    DOM_DISTANCE_FROM_NEAREST_IMAGE = 'dom_distance_from_nearest_image'
-
-ALL_FEATURES = [feat for feat in Features]
-UNWANTED_TAGS = ['script', 'style', 'meta', 'link', 'noscript', 'iframe', 'head', 'input',]
-
-OTHER_CATEGORY = 'other'
-
-
-PRICE_REGEX = re.compile(r'(\p{Sc}\s*\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?|\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?\s*\p{Sc})', re.UNICODE)
+from utils.constants import (
+    ALL_FEATURES,
+    COMMON_TAGS,
+    Features,
+    OTHER_CATEGORY,
+    PRICE_REGEX,
+    UNWANTED_TAGS,
+)
+from utils.utils import normalize_tag, count_unique_tags
 
 class FeatureEncoders:
     """Container for all feature encoders used in the pipeline."""
@@ -74,19 +38,7 @@ class FeatureEncoders:
         with open(filepath, 'rb') as f:
             return pickle.load(f)
 
-COMMON_TAGS = ['div', 'span', 'p', 'a', 'img', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 
-               'table', 'tr', 'td', 'th', 'form', 'input', 'button', 'select', 'option', 'textarea', 
-               'label', 'nav', 'header', 'footer', 'section', 'article', 'aside', 'main', 'body', 'html', 'unknown']
-
-def _normalize_tag(tag_name) -> str:
-    """Normalize tag name to string."""
-    if not tag_name or not hasattr(tag_name, 'lower'):
-        return 'unknown'
-    return str(tag_name).lower()
-
-def _count_unique_tags(tag_list: List[str]) -> int:
-    """Count unique tags."""
-    return len(set(tag_list)) if tag_list else 0
+# Use utility functions from utils module
 
 
 def _extract_element_features(element: lxml.html.HtmlElement, requested_features: List[Features] = ALL_FEATURES, features: Dict[str, Any] = None) -> Dict[str, Any]:
@@ -105,7 +57,7 @@ def _extract_element_features(element: lxml.html.HtmlElement, requested_features
         try:
             if feat == Features.TAG:
                 # Store normalized tag name - will be encoded by LabelEncoder later
-                features[feat.value] = _normalize_tag(element.tag)
+                features[feat.value] = normalize_tag(element.tag)
             
             elif feat == Features.ID_NAME:
                 # Binary: has ID or not (IDs are usually unique, not good for encoding)
@@ -142,7 +94,7 @@ def _extract_element_features(element: lxml.html.HtmlElement, requested_features
                     features[feat.value] = 0
 
             elif feat == Features.PARENT_TAG:
-                features[feat.value] = _normalize_tag(parent.tag) if parent is not None else 'unknown'
+                features[feat.value] = normalize_tag(parent.tag) if parent is not None else 'unknown'
 
             elif feat == Features.NUM_CHILDREN:
                 features[feat.value] = len(element)
@@ -156,13 +108,13 @@ def _extract_element_features(element: lxml.html.HtmlElement, requested_features
             elif feat == Features.CHILD_TAGS:
                 # Count unique child tags
                 child_tags = [child.tag for child in element.iterchildren(tag='*')]
-                features[feat.value] = _count_unique_tags(child_tags)
+                features[feat.value] = count_unique_tags(child_tags)
             
             elif feat == Features.SIBLING_TAGS:
                 # Count unique sibling tags
                 if parent is not None:
                     sibling_tags = [child.tag for child in parent.iterchildren(tag='*') if child != element]
-                    features[feat.value] = _count_unique_tags(sibling_tags)
+                    features[feat.value] = count_unique_tags(sibling_tags)
                 else:
                     features[feat.value] = 0
 
