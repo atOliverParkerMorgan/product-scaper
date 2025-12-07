@@ -1,37 +1,61 @@
+"""Model training utilities for product category classification."""
+
 import logging
-from typing import Dict, List, Optional, Tuple, Any
-import numpy as np
-import pandas as pd
-from pathlib import Path
-from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, f1_score, precision_recall_fscore_support
-from sklearn.preprocessing import LabelEncoder
-from xgboost import XGBClassifier
-from imblearn.over_sampling import SMOTE
-from imblearn.pipeline import Pipeline as ImbPipeline
-from rich.console import Console
-from rich.table import Table
-from rich.logging import RichHandler
-from rich.panel import Panel
-from rich import box
 import pickle
 import warnings
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
+import pandas as pd
+from imblearn.over_sampling import SMOTE
+from imblearn.pipeline import Pipeline as ImbPipeline
+from rich import box
+from rich.console import Console
+from rich.logging import RichHandler
+from rich.panel import Panel
+from rich.table import Table
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.preprocessing import LabelEncoder
+from xgboost import XGBClassifier
+
+from .evaluate_model import compare_models, evaluate_model
 
 warnings.filterwarnings('ignore')
 
-logging.basicConfig(level=logging.INFO, format="%(message)s", datefmt="[%X]", handlers=[RichHandler(rich_tracebacks=True, markup=True)])
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(message)s",
+    datefmt="[%X]",
+    handlers=[RichHandler(rich_tracebacks=True, markup=True)]
+)
 logger = logging.getLogger(__name__)
 console = Console()
 
-random_state = 42
+# Configuration constants
+RANDOM_STATE = 42
 EXCLUDED_FEATURES = ['Category']
-EXCLUDED_FROM_EVAL = ['other']
 DATA_NAME = 'data.csv'
 
 
-def load_data(project_root: Optional[Path] = None, test_domains: Optional[List[str]] = None) -> Tuple[pd.DataFrame, pd.DataFrame]:
-    """Load data with optional domain-specific test split."""
+def load_data(
+    project_root: Optional[Path] = None,
+    test_domains: Optional[List[str]] = None
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    Load training and test data from CSV files.
+    
+    Args:
+        project_root: Root directory of the project
+        test_domains: List of domain names to use as test set
+        
+    Returns:
+        Tuple of (train_df, test_df)
+        
+    Raises:
+        FileNotFoundError: If data directory doesn't exist
+        ValueError: If no training data found
+    """
     if project_root is None:
         project_root = Path.cwd()
     
@@ -39,25 +63,28 @@ def load_data(project_root: Optional[Path] = None, test_domains: Optional[List[s
     if not data_dir.exists():
         raise FileNotFoundError(f"Data directory not found at {data_dir}")
     
-    all_data = []
+    train_data = []
     test_data = []
 
     for site_dir in data_dir.iterdir():
-        if site_dir.is_dir():
-            data_file = site_dir / DATA_NAME
-            if data_file.exists():
-                df = pd.read_csv(data_file)
-                if test_domains and site_dir.name in test_domains:
-                    test_data.append(df)
-                else:
-                    all_data.append(df)
-            else:
-                logger.warning(f"No {DATA_NAME} found in {site_dir}, skipping.")
+        if not site_dir.is_dir():
+            continue
+            
+        data_file = site_dir / DATA_NAME
+        if not data_file.exists():
+            logger.warning(f"No {DATA_NAME} found in {site_dir}, skipping.")
+            continue
+        
+        df = pd.read_csv(data_file)
+        if test_domains and site_dir.name in test_domains:
+            test_data.append(df)
+        else:
+            train_data.append(df)
 
-    if not all_data:
+    if not train_data:
         raise ValueError("No training data found.")
 
-    train_df = pd.concat(all_data, ignore_index=True)
+    train_df = pd.concat(train_data, ignore_index=True)
     test_df = pd.concat(test_data, ignore_index=True) if test_data else pd.DataFrame()
     
     return train_df, test_df
@@ -66,8 +93,20 @@ def load_data(project_root: Optional[Path] = None, test_domains: Optional[List[s
 
 
 
-def preprocess_data(df: pd.DataFrame, label_encoder: Optional[LabelEncoder] = None) -> Tuple[pd.DataFrame, pd.Series, List[str], List[str], LabelEncoder]:
-    """Preprocess data with label encoding for target variable."""
+def preprocess_data(
+    df: pd.DataFrame,
+    label_encoder: Optional[LabelEncoder] = None
+) -> Tuple[pd.DataFrame, pd.Series, List[str], List[str], LabelEncoder]:
+    """
+    Preprocess data with label encoding for target variable.
+    
+    Args:
+        df: Input DataFrame with features and 'Category' column
+        label_encoder: Optional pre-fitted LabelEncoder for transform-only mode
+        
+    Returns:
+        Tuple of (X, y_encoded, feature_names, class_names, label_encoder)
+    """
     X = df.drop(columns=EXCLUDED_FEATURES, errors='ignore').fillna(0)
     y = df['Category']
     
@@ -77,9 +116,18 @@ def preprocess_data(df: pd.DataFrame, label_encoder: Optional[LabelEncoder] = No
     else:
         y_encoded = label_encoder.transform(y)
     
-    logger.info(f"[bold]Features:[/bold] {len(X.columns)} | [bold]Classes:[/bold] {len(label_encoder.classes_)}\n")
+    logger.info(
+        f"[bold]Features:[/bold] {len(X.columns)} | "
+        f"[bold]Classes:[/bold] {len(label_encoder.classes_)}\n"
+    )
     
-    return X, pd.Series(y_encoded), X.columns.tolist(), label_encoder.classes_.tolist(), label_encoder
+    return (
+        X,
+        pd.Series(y_encoded),
+        X.columns.tolist(),
+        label_encoder.classes_.tolist(),
+        label_encoder
+    )
 
 
 def _calculate_meaningful_metrics(y_true: np.ndarray, y_pred: np.ndarray, excluded_categories: List[str] = None) -> Tuple[float, float, Optional[Dict]]:

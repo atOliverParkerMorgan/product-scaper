@@ -28,7 +28,7 @@ class Features(Enum):
     TEXT_CONTENT_NUM_WORDS = 'text_content_num_words'
     TEXT_CONTENT_NUM_DIGITS = 'text_content_num_digits'
     TEXT_CONTENT_PRICE_FORMAT_PROBABILITY = 'text_content_price_format'
-    TEXT_CONTENT_DIFFICULTY = 'text_content_difficulty' # (Requires a library like textstat)
+    TEXT_CONTENT_DIFFICULTY = 'text_content_difficulty' 
 
     PARENT_TAG = 'parent_tag'
     NUM_CHILDREN = 'num_children'
