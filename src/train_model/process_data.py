@@ -1,260 +1,176 @@
+"""Data processing utilities for HTML element feature extraction."""
+
+import re
+import logging
 from pathlib import Path
-import csv
-import yaml
+from typing import Dict, Any, List, Optional
+
 import lxml.html
-from lxml.etree import XPathEvalError
-from typing import List, Dict, Any, Optional
+import pandas as pd
 import textstat
-from urllib.parse import urlparse
+import yaml
 from sklearn.preprocessing import LabelEncoder
-import pickle
-import os
 
-from utils.constants import (
-    ALL_FEATURES,
-    COMMON_TAGS,
-    Features,
-    OTHER_CATEGORY,
-    PRICE_REGEX,
-    UNWANTED_TAGS,
-)
-from utils.utils import normalize_tag, count_unique_tags
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-class FeatureEncoders:
-    """Container for encoding tag features."""
-    def __init__(self):
-        self.tag_encoder = LabelEncoder()
-        
-    def save(self, filepath: Path):
-        """Save encoders to disk for reuse during inference."""
-        with open(filepath, 'wb') as f:
-            pickle.dump(self, f)
-    
-    @staticmethod
-    def load(filepath: Path):
-        """Load encoders from disk."""
-        with open(filepath, 'rb') as f:
-            return pickle.load(f)
+# Constants
+PRICE_REGEX = re.compile(r'[$€£¥₹]|(\d+[.,]\d{2})')
+CURRENCY_SYMBOLS = re.compile(r'[$€£¥₹]')
 
-# Use utility functions from utils module
+def normalize_tag(tag: Any) -> str:
+    """Normalize HTML tag to string."""
+    if not isinstance(tag, str):
+        return 'unknown'
+    return str(tag).lower()
 
-
-def _extract_element_features(element: lxml.html.HtmlElement, requested_features: List[Features] = ALL_FEATURES, features: Dict[str, Any] = None) -> Dict[str, Any]:
-    """Extract features for a single lxml element."""
-    if features is None:
-        features = {}
-    
+def _extract_element_features(
+    element: lxml.html.HtmlElement, 
+    category: str = 'other'
+) -> Dict[str, Any]:
+    """
+    Extract comprehensive features from a single HTML element.
+    """
     try:
         text = element.text_content().strip()
         parent = element.getparent()
-    except ValueError:
-        text = ''
-        parent = None
         
-    for feat in requested_features:
+        # Structural / DOM Features
+        features = {
+            'Category': category,
+            'tag': normalize_tag(element.tag),
+            'parent_tag': normalize_tag(parent.tag) if parent is not None else 'root',
+            'num_children': len(element),
+            'num_siblings': len(parent) - 1 if parent is not None else 0,
+            'dom_depth': len(list(element.iterancestors())),
+        }
+
+        # Attribute Semantic Features
+        features['class_str'] = " ".join(element.get('class', '').split()) if element.get('class') else ""
+        features['id_str'] = element.get('id', '')
+        
+        # Text Content Features
+        features['text_len'] = len(text)
+        features['text_word_count'] = len(text.split())
+        features['text_digit_count'] = sum(c.isdigit() for c in text)
+        features['has_currency_symbol'] = 1 if CURRENCY_SYMBOLS.search(text) else 0
+        features['is_price_format'] = 1 if PRICE_REGEX.search(text) else 0
+        
+        # Density & Readability
+        num_descendants = len(list(element.iterdescendants())) + 1
+        features['text_density'] = len(text) / num_descendants
+        
         try:
-            if feat == Features.TAG:
-                # Store normalized tag name - will be encoded by LabelEncoder later
-                features[feat.value] = normalize_tag(element.tag)
-            
-            elif feat == Features.ID_NAME:
-                # Binary: has ID or not (IDs are usually unique, not good for encoding)
-                features[feat.value] = 1 if element.get('id') else 0
-            
-            elif feat == Features.CLASS_NAME:
-                # Count number of classes (better than encoding class names)
-                class_attr = element.get('class')
-                features[feat.value] = len(class_attr.split()) if class_attr else 0
-            
-            elif feat == Features.ALL_ATTRIBUTES:
-                # Count number of attributes
-                features[feat.value] = len(element.attrib)
-            
-            elif feat == Features.TEXT_CONTENT:
-                features[feat.value] = len(text) / max(len(text.split()), 1) if text else 0
-            
-            elif feat == Features.TEXT_CONTENT_LENGTH:
-                features[feat.value] = len(text)
-            
-            elif feat == Features.TEXT_CONTENT_NUM_WORDS:
-                features[feat.value] = len(text.split())
-            
-            elif feat == Features.TEXT_CONTENT_NUM_DIGITS:
-                features[feat.value] = sum(c.isdigit() for c in text)
-            
-            elif feat == Features.TEXT_CONTENT_PRICE_FORMAT_PROBABILITY:
-                features[feat.value] = 1 if PRICE_REGEX.search(text) else 0
-            
-            elif feat == Features.TEXT_CONTENT_DIFFICULTY:
-                try:
-                    features[feat.value] = textstat.flesch_reading_ease(text) if text else 0
-                except Exception:
-                    features[feat.value] = 0
+            features['reading_ease'] = textstat.flesch_reading_ease(text) if text else 0
+        except Exception:
+            features['reading_ease'] = 0
 
-            elif feat == Features.PARENT_TAG:
-                features[feat.value] = normalize_tag(parent.tag) if parent is not None else 'unknown'
+        # Hyperlink context
+        features['has_href'] = 1 if element.get('href') else 0
+        features['is_image'] = 1 if element.tag == 'img' else 0
 
-            elif feat == Features.NUM_CHILDREN:
-                features[feat.value] = len(element)
-            
-            elif feat == Features.NUM_SIBLINGS:
-                features[feat.value] = len(parent) - 1 if parent is not None else 0
-            
-            elif feat == Features.POSITION_IN_SIBLINGS:
-                features[feat.value] = element.getparent().index(element) if parent is not None else 0
+        return features
 
-            elif feat == Features.CHILD_TAGS:
-                # Count unique child tags
-                child_tags = [child.tag for child in element.iterchildren(tag='*')]
-                features[feat.value] = count_unique_tags(child_tags)
-            
-            elif feat == Features.SIBLING_TAGS:
-                # Count unique sibling tags
-                if parent is not None:
-                    sibling_tags = [child.tag for child in parent.iterchildren(tag='*') if child != element]
-                    features[feat.value] = count_unique_tags(sibling_tags)
-                else:
-                    features[feat.value] = 0
-
-            elif feat == Features.DOM_DISTANCE_FROM_ROOT:
-                features[feat.value] = len(element.xpath('ancestor::*'))
-            
-            elif feat == Features.HAS_HREF:
-                features[feat.value] = 1 if element.get('href') is not None else 0
-            
-            elif feat == Features.HREF_DOMAIN:
-                href = element.get('href')
-                try:
-                    features[feat.value] = 1 if href and urlparse(href).netloc else 0
-                except Exception:
-                    features[feat.value] = 0
-            
-            elif feat == Features.IS_IMAGE:
-                features[feat.value] = 1 if element.tag == 'img' else 0
-            
-            elif feat == Features.IMAGE_SRC:
-                features[feat.value] = 1 if element.tag == 'img' and element.get('src') else 0
-
-        except Exception as e:
-            print(f"Warning: Could not extract feature '{feat.value}': {e}")
-            features[feat.value] = 0
-            
-    return features
-
-
-def extract_features_from_html(html_content: str, selectors: dict, features_to_extract: List[Features] = ALL_FEATURES, 
-                               unwanted_tags: List[str] = None, encoders: Optional[FeatureEncoders] = None) -> tuple[List[Dict[str, Any]], FeatureEncoders]:
-    """Extract features from HTML content for each category using provided CSS selectors."""
-    if unwanted_tags is None:
-        unwanted_tags = UNWANTED_TAGS
-    try:
-        document = lxml.html.fromstring(html_content)
     except Exception as e:
-        print(f"Error parsing HTML: {e}")
-        return [], FeatureEncoders()
+        # Suppress warnings for expected non-element issues if any slip through
+        return {}
 
-    all_features_data = []
-    encoders = encoders or FeatureEncoders()
-    all_tags, all_parent_tags, all_categories = [], [], []
-    selected_elements = set()
 
-    for category, selector_list in selectors.items():
-        for selector in selector_list:
-            try:
-                elements = document.cssselect(selector)
-                if not elements:
-                    print(f"Warning: Selector '{selector}' matched 0 elements.")
-                    continue
-                    
-                for element in elements:
-                    selected_elements.add(element)
-                    feature_row = {'Category': category}
-                    feature_row = _extract_element_features(element, features_to_extract, feature_row)
-                    all_features_data.append(feature_row)
-                    
-                    all_categories.append(category)
-                    if 'tag' in feature_row:
-                        all_tags.append(feature_row['tag'])
-                    if 'parent_tag' in feature_row:
-                        all_parent_tags.append(feature_row['parent_tag'])
-                    
-            except XPathEvalError:
-                print(f"Error: Invalid selector '{selector}'.")
-            except Exception as e:
-                print(f"Error: {e}")
+def html_to_dataframe(
+    html_content: str, 
+    selectors: Optional[Dict[str, List[str]]] = None
+) -> pd.DataFrame:
+    """
+    Parse HTML and extract features into a DataFrame.
+    """
+    try:
+        tree = lxml.html.fromstring(html_content)
+    except Exception as e:
+        logger.error(f"Failed to parse HTML: {e}")
+        return pd.DataFrame()
 
-    for element in document.iter():
-        if element in selected_elements or element.tag in unwanted_tags or not isinstance(element.tag, str):
+    all_data = []
+    labeled_elements = set()
+
+    # 1. Extract Positive Labels (if selectors provided)
+    if selectors:
+        for category, css_selectors in selectors.items():
+            for selector in css_selectors:
+                try:
+                    elements = tree.cssselect(selector)
+                    for elem in elements:
+                        if elem not in labeled_elements:
+                            data = _extract_element_features(elem, category=category)
+                            if data:
+                                all_data.append(data)
+                                labeled_elements.add(elem)
+                except Exception as e:
+                    logger.warning(f"Invalid selector {selector}: {e}")
+
+    # 2. Extract Negative Samples (Everything else is 'other')
+    for elem in tree.iter():
+        # FIX: Skip comments (HtmlComment) and ProcessingInstructions
+        if not isinstance(elem.tag, str):
             continue
 
-        feature_row = {'Category': OTHER_CATEGORY}
-        feature_row = _extract_element_features(element, features_to_extract, feature_row)
-        all_features_data.append(feature_row)
+        if elem in labeled_elements:
+            continue
         
-        all_categories.append(OTHER_CATEGORY)
-        if 'tag' in feature_row:
-            all_tags.append(feature_row['tag'])
-        if 'parent_tag' in feature_row:
-            all_parent_tags.append(feature_row['parent_tag'])
+        # Optimization: Skip empty structural tags that have no attributes
+        try:
+            if not elem.text_content().strip() and not elem.attrib:
+                continue
+        except Exception:
+            continue
+            
+        # Treat as 'other'
+        data = _extract_element_features(elem, category='other')
+        if data:
+            all_data.append(data)
 
-    all_unique_tags = list(set(all_tags + all_parent_tags + COMMON_TAGS))
-    if all_unique_tags:
-        encoders.tag_encoder.fit(all_unique_tags)
+    df = pd.DataFrame(all_data)
     
-    # Only encode tag and parent_tag features, NOT Category
-    # Category should remain as string labels for training
-    for row in all_features_data:
-        if 'tag' in row:
-            row['tag'] = encoders.tag_encoder.transform([row['tag']])[0]
-        if 'parent_tag' in row:
-            row['parent_tag'] = encoders.tag_encoder.transform([row['parent_tag']])[0]
-
-    return all_features_data, encoders
+    # Fill NAs for text columns with empty strings
+    text_cols = ['class_str', 'id_str']
+    for col in text_cols:
+        if col in df.columns:
+            df[col] = df[col].fillna("")
+            
+    return df.fillna(0)
 
 def selector_data_to_csv(data_domain_dir: Path) -> None:
-    """Convert stored selector data (YAML + HTML) into 'data.csv' with extracted features."""
+    """Convert YAML/HTML pair to CSV."""
     yaml_path = data_domain_dir / 'selectors.yaml'
     html_path = data_domain_dir / 'page.html'
-    data_csv_path = data_domain_dir / 'data.csv'
-    encoders_path = data_domain_dir / 'encoders.pkl'
+    csv_path = data_domain_dir / 'data.csv'
 
     if not yaml_path.exists() or not html_path.exists():
-        raise FileNotFoundError(f"Missing files in {data_domain_dir}")
+        return
 
     try:
-        with open(yaml_path, 'r', encoding='utf-8') as f:
+        with open(yaml_path, 'r') as f:
             selectors = yaml.safe_load(f)
-        with open(html_path, 'r', encoding='utf-8') as f:
-            html_content = f.read()
+        with open(html_path, 'r') as f:
+            html = f.read()
+
+        df = html_to_dataframe(html, selectors)
+        if not df.empty:
+            df.to_csv(csv_path, index=False)
+            logger.info(f"Saved {len(df)} rows to {csv_path}")
     except Exception as e:
-        print(f"Error loading files: {e}")
-        return
-
-    print(f"Extracting features from {html_path}...")
-    extracted_data, encoders = extract_features_from_html(html_content, selectors)
-
-    if not extracted_data:
-        print("No data extracted.")
-        return
-    
-    encoders.save(encoders_path)
-    print(f"Saved encoders to {encoders_path}")
-
-    try:
-        with open(data_csv_path, 'w', newline='', encoding='utf-8') as f:
-            writer = csv.DictWriter(f, fieldnames=list(extracted_data[0].keys()))
-            writer.writeheader()
-            writer.writerows(extracted_data)
-        print(f"Saved {len(extracted_data)} rows to {data_csv_path}")
-    except Exception as e:
-        print(f"Error writing CSV: {e}")
-
+        logger.error(f"Failed to process {data_domain_dir}: {e}")
 
 def data_to_csv(project_root: Path = Path.cwd()) -> None:
-    """Process all domain directories and generate 'data.csv' files."""
-    if not (project_root / 'src' / 'data').exists():
-        os.makedirs(project_root / 'src' / 'data')
+    """Batch process all data."""
+    data_dir = project_root / 'src' / 'data'
+    if not data_dir.exists():
+        logger.error(f"Data directory not found: {data_dir}")
+        return
 
-    for domain_dir in (project_root / 'src' / 'data').iterdir():
-        if domain_dir.is_dir():
-            selector_data_to_csv(domain_dir)
+    for site_dir in data_dir.iterdir():
+        if site_dir.is_dir():
+            selector_data_to_csv(site_dir)
+
+if __name__ == "__main__":
+    data_to_csv()

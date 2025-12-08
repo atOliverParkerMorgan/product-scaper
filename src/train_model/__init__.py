@@ -10,11 +10,7 @@ from .evaluate_model import (
 from .process_data import data_to_csv
 from .train_model import (
     load_data,
-    load_trained_model,
-    run,
-    preprocess_data,
-    save_model,
-    train_model,
+    run
 )
 
 __all__ = [
@@ -25,7 +21,6 @@ __all__ = [
     # Model training
     'train_model',
     'save_model',
-    'load_trained_model',
     'run',
     # Model evaluation
     'evaluate_model',

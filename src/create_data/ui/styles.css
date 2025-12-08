@@ -6,7 +6,7 @@
     cursor: crosshair !important;
 }
 .pw-selected {
-    outline: 2px solid #00ff9d !important;
+    outline: 2px solid #09ff00 !important;
     outline-offset: -2px !important;
     background-color: rgba(0, 255, 157, 0.2) !important;
     box-shadow: 0 0 10px rgba(0, 255, 157, 0.3) !important;
@@ -77,6 +77,14 @@
     font-weight: bold !important;
 }
 
+#pw-predicted-badge {
+    background: rgba(168, 85, 247, 0.15) !important;
+    color: #a855f7 !important;
+    padding: 2px 8px !important;
+    border-radius: 4px !important;
+    font-weight: bold !important;
+}
+
 #pw-selector-box {
     background: #000 !important;
     border: 1px solid #333 !important;
@@ -113,14 +121,22 @@
 .pw-btn-secondary { background: rgba(255,255,255,0.1) !important; color: #fff !important; }
 .pw-btn-primary { background: #007aff !important; color: white !important; }
 .pw-btn-success { background: #00b341 !important; color: white !important; }
-.pw-btn-predict { background: #ff9500 !important; color: white !important; }
+.pw-btn-predict { background: #a855f7 !important; color: white !important; }
+.pw-btn-select-predicted { 
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important; 
+    color: white !important; 
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3) !important;
+}
+.pw-btn-select-predicted:hover {
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important;
+}
 .pw-hidden { display: none !important; }
 
 /* --- PREDICTION HIGHLIGHTS --- */
 .pw-predicted {
-    outline: 2px dashed #ff9500 !important;
+    outline: 2px dashed #a855f7 !important;
     outline-offset: -2px !important;
-    background-color: rgba(255, 149, 0, 0.15) !important;
+    background-color: rgba(168, 85, 247, 0.15) !important;
 }
 
 .pw-hint {

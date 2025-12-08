@@ -195,7 +195,7 @@ def evaluate_model(
 def compare_models(
     models: Dict[str, Any],
     metrics: Dict[str, Dict[str, float]],
-    metric_key: str = 'val_f1'
+    metric_key: str = 'f1'
 ) -> Tuple[str, Any]:
     """
     Compare multiple models and select the best one.
@@ -203,7 +203,7 @@ def compare_models(
     Args:
         models: Dictionary mapping model names to model objects
         metrics: Dictionary mapping model names to their metrics
-        metric_key: Metric to use for comparison
+        metric_key: Metric to use for comparison (default: 'f1' for meaningful categories)
         
     Returns:
         Tuple of (best_model_name, best_model)
@@ -219,7 +219,7 @@ def compare_models(
     for model_name, model_metrics in metrics.items():
         style = "bold green" if model_name == best_model_name else ""
         prefix = "★ " if model_name == best_model_name else ""
-        f1_value = model_metrics.get('val_f1') or 0
+        f1_value = model_metrics.get(metric_key) or 0
         summary_table.add_row(f"{prefix}{model_name}", f"{f1_value:.4f}", style=style)
     
     console.print(summary_table)

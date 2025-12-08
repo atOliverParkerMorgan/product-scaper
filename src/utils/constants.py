@@ -26,12 +26,19 @@ class Features(Enum):
     TEXT_CONTENT_DIFFICULTY = 'text_content_difficulty' 
 
     PARENT_TAG = 'parent_tag'
+    GRANDPARENT_TAG = 'grandparent_tag'
+    GREAT_GRANDPARENT_TAG = 'great_grandparent_tag'
+    ANCESTOR_PATH_SIGNATURE = 'ancestor_path_signature'
     NUM_CHILDREN = 'num_children'
     NUM_SIBLINGS = 'num_siblings' 
-    POSITION_IN_SIBLINGS = 'position_in_siblings' 
+    POSITION_IN_SIBLINGS = 'position_in_siblings'
+    RELATIVE_POSITION_IN_SIBLINGS = 'relative_position_in_siblings'
     CHILD_TAGS = 'child_tags'
     SIBLING_TAGS = 'sibling_tags' 
     DOM_DISTANCE_FROM_ROOT = 'dom_distance_from_root'
+    HAS_SEMANTIC_CONTAINER_ANCESTOR = 'has_semantic_container_ancestor'
+    TEXT_DENSITY = 'text_density'
+    AVG_WORD_LENGTH = 'avg_word_length'
     
     # --- Other Obvious Feature Ideas ---
     HAS_HREF = 'has_href'
@@ -55,6 +62,11 @@ COMMON_TAGS = [
     'ul', 'ol', 'li', 'table', 'tr', 'td', 'th', 'form', 'input', 'button', 
     'select', 'option', 'textarea', 'label', 'nav', 'header', 'footer', 
     'section', 'article', 'aside', 'main', 'body', 'html', 'unknown'
+]
+
+# Semantic container tags that often contain product information
+SEMANTIC_CONTAINERS = [
+    'article', 'section', 'main', 'aside', 'div', 'nav', 'header', 'footer'
 ]
 
 # Category for unselected elements

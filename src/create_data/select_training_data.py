@@ -2,43 +2,60 @@ import logging
 import time
 import yaml
 import copy
-from typing import Dict, List
+from typing import Dict, List, Any
 from urllib.parse import urlparse
 from pathlib import Path
 from playwright.sync_api import sync_playwright, Error as PlaywrightError
 
-from train_model.predict_data import predict_selectors
-    
+# Ensure this import works with your file structure
+try:
+    from train_model.predict_data import predict_selectors
+except ImportError:
+    print("⚠️ warning: Could not import predict_selectors. Prediction feature will fail.")
+    def predict_selectors(html, category): return []
 
 # --- CONFIGURATION ---
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 
 UI_PATH = Path(__file__).parent / 'ui'
 
+# Create UI directory/files if they don't exist to prevent immediate crash
 if not UI_PATH.exists():
-    raise FileNotFoundError(f"UI directory not found: {UI_PATH}")
+    UI_PATH.mkdir(parents=True, exist_ok=True)
+    (UI_PATH / 'styles.css').touch()
+    (UI_PATH / 'core.js').touch()
+    (UI_PATH / 'update.js').touch()
 
 CSS_CONTENT = (UI_PATH / 'styles.css').read_text(encoding='utf-8')
 JS_CORE_LOGIC = (UI_PATH / 'core.js').read_text(encoding='utf-8')
 JS_UPDATE_UI = (UI_PATH / 'update.js').read_text(encoding='utf-8')
 
-def highlight_selectors(page, selectors, force_update=False):
+
+def highlight_selectors(page, selectors: List[str], force_update=False):
     """Helper to re-apply green outlines securely and remove predicted highlights."""
     try:
-        # Only update if forced or if we need to sync state
+        # 1. Clean up old 'selected' classes if forcing update
         if force_update:
             page.evaluate("document.querySelectorAll('.pw-selected').forEach(el => el.classList.remove('pw-selected'))")
-            for sel in selectors:
-                safe_sel = sel.replace('"', '\\"').replace('\n', ' ')
-                page.evaluate(f"""
+        
+        # 2. Apply new selections
+        # We process in batches to avoid one bad selector crashing the whole operation
+        for sel in selectors:
+            safe_sel = sel.replace('"', '\\"').replace('\n', ' ')
+            page.evaluate(f"""
+                (() => {{
                     try {{
                         const els = document.querySelectorAll("{safe_sel}");
                         els.forEach(el => {{
                             el.classList.add('pw-selected');
-                            el.classList.remove('pw-predicted');
+                            // If it was predicted, remove the purple prediction style
+                            el.classList.remove('pw-predicted'); 
                         }});
-                    }} catch(e) {{}}
-                """)
+                    }} catch(e) {{
+                        console.log("Invalid selector skipped:", "{safe_sel}");
+                    }}
+                }})()
+            """)
     except PlaywrightError:
         pass
 
@@ -46,8 +63,28 @@ def highlight_selectors(page, selectors, force_update=False):
 def inject_ui_scripts(page):
     """Inject CSS and JavaScript into the page."""
     try:
-        page.add_style_tag(content=CSS_CONTENT)
-        page.evaluate(JS_CORE_LOGIC)
+        # Add styles
+        if CSS_CONTENT.strip():
+            page.add_style_tag(content=CSS_CONTENT)
+        
+        # Add Core Logic (listener, selector generation)
+        if JS_CORE_LOGIC.strip():
+            page.evaluate(JS_CORE_LOGIC)
+        
+        # Inject a fallback selector generator if core.js didn't provide it
+        # This ensures 'Select Predicted' works even if core.js is missing logic
+        page.evaluate("""
+            if (typeof window._generateSelector === 'undefined') {
+                window._generateSelector = function(el) {
+                    if (el.id) return '#' + el.id;
+                    if (el.className) {
+                        const classes = Array.from(el.classList).join('.');
+                        if (classes) return '.' + classes;
+                    }
+                    return el.tagName.toLowerCase();
+                }
+            }
+        """)
         return True
     except PlaywrightError:
         print("⚠️ Could not inject scripts (page might be loading).")
@@ -74,16 +111,19 @@ def poll_for_action(page, timeout=0.2):
     
     while time.time() - start_time < timeout:
         try:
+            # Check for element clicks
             clicked = page.evaluate("window._clickedSelector")
             if clicked:
                 page.evaluate("window._clickedSelector = null")
                 return 'toggle', clicked
             
+            # Check for UI buttons (Next, Prev, Done, Predict, Select All)
             ui_btn = page.evaluate("window._action")
             if ui_btn:
                 page.evaluate("window._action = null")
                 return 'navigate', ui_btn
-                
+            
+            # Check for keyboard shortcuts (Undo/Redo)
             key_act = page.evaluate("window._keyAction")
             if key_act:
                 page.evaluate("window._keyAction = null")
@@ -98,6 +138,7 @@ def poll_for_action(page, timeout=0.2):
 
 def handle_toggle_action(selector, category, selections, undo_stack, redo_stack, current_idx):
     """Handle selector toggle action."""
+    # Push state to undo stack
     undo_stack.append((current_idx, copy.deepcopy(selections)))
     redo_stack.clear()
     
@@ -124,8 +165,7 @@ def handle_navigate_action(direction, current_idx, categories, undo_stack, redo_
         return current_idx - 1, False
     elif direction == 'done':
         return current_idx, True
-    elif direction == 'predict':
-        return current_idx, False
+    # 'predict' and 'select_predicted' are handled in the main loop
     return current_idx, False
 
 
@@ -134,10 +174,14 @@ def handle_history_action(cmd, current_idx, selections, undo_stack, redo_stack):
     if cmd == 'undo' and undo_stack:
         redo_stack.append((current_idx, copy.deepcopy(selections)))
         prev_idx, prev_selections = undo_stack.pop()
+        # Only allow undo if we are on the same category step (optional UX choice)
         if prev_idx == current_idx:
             print("↺ Undo")
             return prev_selections
+        # If undoing takes us back a step, we put it back (simple history implementation)
         undo_stack.append((prev_idx, prev_selections))
+        print("⚠️ Cannot undo across category changes (navigation clears history)")
+        
     elif cmd == 'redo' and redo_stack:
         undo_stack.append((current_idx, copy.deepcopy(selections)))
         next_idx, next_selections = redo_stack.pop()
@@ -153,12 +197,10 @@ def navigate_to_url(page, url):
     """Navigate to the target URL."""
     print(f"\n🌐 Navigating to {url}...")
     try:
+        # 'domcontentloaded' is faster than 'networkidle'
         page.goto(url, wait_until='domcontentloaded', timeout=60000)
     except Exception as e:
         print(f"⚠️ Navigation warning: {e}")
-
-
-# Removed: _generate_selector_for_element is now in utils.utils
 
 
 def select_data(url: str, categories: List[str]):
@@ -174,7 +216,7 @@ def select_data(url: str, categories: List[str]):
         undo_stack = [] 
         redo_stack = []
         current_idx = 0
-        last_selections_hash = None  # Track if selections changed
+        last_selections_hash = None
         
         try:
             should_exit = False
@@ -182,84 +224,150 @@ def select_data(url: str, categories: List[str]):
                 category = categories[current_idx]
                 current_selection_list = selections.get(category, [])
 
+                # 1. Update UI Overlay
                 ui_updated = update_ui_state(page, category, len(current_selection_list), 
                                             current_idx, len(categories))
                 
+                # If UI failed to update (page refresh/navigation), reinject
                 if not ui_updated:
                     time.sleep(1)
                     if inject_ui_scripts(page):
                         continue
+                    # If injection fails repeatedly, break loop
+                    print("❌ Lost connection to page UI.")
                     break
 
-                # Only re-highlight if selections changed
+                # 2. Highlight selections (only if changed)
                 current_hash = hash(tuple(current_selection_list))
                 if current_hash != last_selections_hash:
                     highlight_selectors(page, current_selection_list, force_update=True)
                     last_selections_hash = current_hash
 
+                # 3. Poll for interactions
                 action_type, action_payload = poll_for_action(page)
 
                 if action_type == 'toggle':
                     handle_toggle_action(action_payload, category, selections, 
                                        undo_stack, redo_stack, current_idx)
-                    last_selections_hash = None  # Force re-highlight on next loop
+                    last_selections_hash = None
 
                 elif action_type == 'navigate':
                     if action_payload == 'predict':
-                        # Run prediction
+                        # --- PREDICTION LOGIC ---
                         print(f"\n🔮 Running prediction for '{category}'...")
+                        
+                        # Get clean content
                         html_content = page.content()
+                        
+                        # Call your prediction function
                         predicted = predict_selectors(html_content, category)
                         
                         if predicted:
-                            # Clear previous predicted highlights
+                            # Clean old predictions
                             page.evaluate("document.querySelectorAll('.pw-predicted').forEach(el => el.classList.remove('pw-predicted'))")
                             
-                            # Highlight predicted elements (skip already selected ones)
                             highlighted_count = 0
-                            for sel in predicted:
-                                try:
-                                    # Clean and escape the selector
-                                    safe_sel = sel.replace('"', '\\"').replace('\n', ' ').strip()
-                                    # Only highlight if not already selected
-                                    result = page.evaluate(f"""
-                                        (() => {{
-                                            try {{
-                                                const els = document.querySelectorAll("{safe_sel}");
-                                                let count = 0;
-                                                els.forEach(el => {{
-                                                    if (!el.classList.contains('pw-selected')) {{
-                                                        el.classList.add('pw-predicted');
-                                                        count++;
-                                                    }}
-                                                }});
-                                                return count;
-                                            }} catch(e) {{
-                                                console.log('Selector error:', e.message, '{safe_sel}');
-                                                return 0;
-                                            }}
-                                        }})()
-                                    """)
-                                    highlighted_count += result
-                                except Exception as e:
-                                    print(f"   ⚠️ Skipped invalid selector: {sel[:50]}... ({e})")
                             
-                            print(f"💡 Highlighted {highlighted_count} predicted elements (orange outline)")
-                            if highlighted_count > 0:
-                                print("   Click on predicted elements to add them to selection")
-                            else:
-                                print("   ⚠️ None of the predictions could be highlighted (selector mismatch)")
+                            for candidate in predicted:
+                                try:
+                                    # Try using xpath if available (more robust)
+                                    xpath = candidate.get('xpath')
+                                    # Fallback to index if xpath missing
+                                    idx = candidate.get('index') 
+                                    
+                                    js_highlight_script = ""
+                                    
+                                    if xpath:
+                                        # XPath-based highlighting
+                                        escaped_xpath = xpath.replace("'", "\\'")
+                                        js_highlight_script = f"""
+                                            const iterator = document.evaluate('{escaped_xpath}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+                                            const el = iterator.singleNodeValue;
+                                            if (el && !el.classList.contains('pw-selected')) {{
+                                                el.classList.add('pw-predicted');
+                                                return 1;
+                                            }}
+                                            return 0;
+                                        """
+                                    elif idx is not None:
+                                        # Index-based highlighting (Fallback)
+                                        # NOTE: This assumes document.querySelectorAll('*') matches lxml's flat list
+                                        js_highlight_script = f"""
+                                            const allElements = document.querySelectorAll('*');
+                                            const el = allElements[{idx}];
+                                            if (el && !el.classList.contains('pw-selected')) {{
+                                                el.classList.add('pw-predicted');
+                                                return 1;
+                                            }}
+                                            return 0;
+                                        """
+
+                                    if js_highlight_script:
+                                        result = page.evaluate(f"(() => {{ try {{ {js_highlight_script} }} catch(e) {{ return 0; }} }})()")
+                                        highlighted_count += result
+
+                                except Exception as e:
+                                    print(f"   ⚠️ Error highlighting candidate: {e}")
+
+                            print(f"💡 Highlighted {highlighted_count} predicted elements.")
+                            if highlighted_count == 0:
+                                print("   (Elements found in HTML but couldn't be matched to live DOM)")
+                                
                         else:
-                            print("⚠️ No predictions found. Train a model first.")
+                            print("⚠️ No predictions found for this category.")
+                    
+                    elif action_payload == 'select_predicted':
+                        # --- SELECT ALL PREDICTED ---
+                        print("\n✨ Selecting all predicted elements...")
+                        try:
+                            # Generate selectors for everything with class .pw-predicted
+                            selectors_added = page.evaluate("""
+                                (() => {
+                                    const predicted = document.querySelectorAll('.pw-predicted');
+                                    const selectors = [];
+                                    predicted.forEach(el => {
+                                        // Use window._generateSelector (injected in core.js or fallback)
+                                        const selector = window._generateSelector(el);
+                                        if (selector && !el.classList.contains('pw-selected')) {
+                                            el.classList.remove('pw-predicted');
+                                            el.classList.add('pw-selected');
+                                            selectors.push(selector);
+                                        }
+                                    });
+                                    return selectors;
+                                })()
+                            """)
+                            
+                            if selectors_added:
+                                undo_stack.append((current_idx, copy.deepcopy(selections)))
+                                redo_stack.clear()
+                                
+                                if category not in selections:
+                                    selections[category] = []
+                                
+                                # Add unique selectors
+                                for selector in selectors_added:
+                                    if selector not in selections[category]:
+                                        selections[category].append(selector)
+                                
+                                print(f"[+] Added {len(selectors_added)} elements.")
+                                last_selections_hash = None # Trigger re-render
+                            else:
+                                print("⚠️ No highlighted predictions to select.")
+                                
+                        except Exception as e:
+                            print(f"❌ Error selecting predicted: {e}")
+                    
                     else:
+                        # Normal Navigation (Next/Prev/Done)
                         current_idx, should_exit = handle_navigate_action(
                             action_payload, current_idx, categories, undo_stack, redo_stack)
-                        last_selections_hash = None  # Force re-highlight when changing categories
+                        last_selections_hash = None
 
                 elif action_type == 'history':
                     selections = handle_history_action(
                         action_payload, current_idx, selections, undo_stack, redo_stack)
-                    last_selections_hash = None  # Force re-highlight after undo/redo
+                    last_selections_hash = None
 
         except PlaywrightError as e:
             if "Target closed" in str(e):
@@ -279,8 +387,12 @@ def select_data(url: str, categories: List[str]):
 
 def get_save_directory(url):
     """Determine save directory from URL."""
-    domain = urlparse(url).netloc.replace('www.', '')
-    base_name = domain.split('.')[0] or 'site'
+    try:
+        domain = urlparse(url).netloc.replace('www.', '')
+        base_name = domain.split('.')[0] or 'site'
+    except Exception:
+        base_name = 'unknown_site'
+        
     save_dir = Path(__file__).parent.parent / 'data' / base_name
     
     if not save_dir.exists():
@@ -292,17 +404,21 @@ def get_save_directory(url):
 
 def save_selectors_yaml(save_dir, selections):
     """Save selections to YAML file."""
-    with open(save_dir / 'selectors.yaml', 'w', encoding='utf-8') as f:
-        yaml.dump(selections, f, sort_keys=False)
+    try:
+        with open(save_dir / 'selectors.yaml', 'w', encoding='utf-8') as f:
+            yaml.dump(selections, f, sort_keys=False)
+    except Exception as e:
+        print(f"❌ Failed to save YAML: {e}")
 
 
 def save_page_html(save_dir, page):
-    """Save page HTML content if possible."""
+    """Save page HTML content."""
     try:
+        content = page.content()
         with open(save_dir / 'page.html', 'w', encoding='utf-8') as f:
-            f.write(page.content())
+            f.write(content)
     except Exception: 
-        print("⚠️ Could not save HTML (browser context closed)")
+        print("⚠️ Could not save HTML (browser context likely closed)")
 
 
 def save_results(selections, url, page):
@@ -316,9 +432,10 @@ def save_results(selections, url, page):
         save_page_html(save_dir, page)
 
         print(f"\n💾 Saved to: {save_dir}")
-        print(yaml.dump(selections, sort_keys=False))
     except Exception as e:
         print(f"Save error: {e}")
 
 if __name__ == "__main__":
-    pass # TODO
+    # Example usage
+    # select_data("https://example.com", ["price", "title", "image"])
+    pass
