@@ -2,17 +2,11 @@ import logging
 import time
 import yaml
 import copy
-from typing import Dict, List, Any
+from typing import Dict, List
 from urllib.parse import urlparse
 from pathlib import Path
 from playwright.sync_api import sync_playwright, Error as PlaywrightError
-
-# Ensure this import works with your file structure
-try:
-    from train_model.predict_data import predict_selectors
-except ImportError:
-    print("⚠️ warning: Could not import predict_selectors. Prediction feature will fail.")
-    def predict_selectors(html, category): return []
+from train_model.predict_data import predict_selectors
 
 # --- CONFIGURATION ---
 logging.basicConfig(level=logging.INFO, format='%(message)s')

@@ -1,271 +1,43 @@
-Category,tag,parent_tag,num_children,num_siblings,dom_depth,class_str,id_str,text_len,text_word_count,text_digit_count,has_currency_symbol,is_price_format,text_density,reading_ease,has_href,is_image
-title,h2,div,0,2,8,,11542,44,8,10,0,0,44.0,103.04428571428575,0,0
-title,h2,div,0,3,8,,11541,23,4,0,0,0,23.0,75.87500000000001,0,0
-title,h2,div,0,2,8,,11540,39,6,0,0,0,39.0,-38.954999999999984,0,0
-title,h2,div,0,2,8,,11536,44,9,0,0,0,44.0,54.70142857142861,0,0
-title,h2,div,0,2,8,,11535,44,5,0,0,0,44.0,12.425000000000011,0,0
-title,h2,div,0,3,8,,11534,16,3,0,0,0,16.0,34.59000000000003,0,0
-title,h2,div,0,2,8,,1073,44,9,3,0,0,44.0,54.70142857142861,0,0
-title,h2,div,0,2,8,,6303,44,7,0,0,0,44.0,87.94500000000002,0,0
-title,h2,div,0,2,8,,6195,44,7,0,0,0,44.0,17.44500000000002,0,0
-title,h2,div,0,2,8,,11188,44,9,0,0,0,44.0,42.61571428571432,0,0
-title,h2,div,0,2,8,,11479,27,3,8,0,0,27.0,119.19000000000003,0,0
-title,h2,div,0,2,8,,8546,44,6,2,0,0,44.0,15.640000000000015,0,0
-price,h1,div,0,0,9,,,6,2,2,0,0,6.0,120.20500000000001,0,0
-price,h1,div,0,0,9,,,6,2,2,0,0,6.0,120.20500000000001,0,0
-price,h1,div,0,0,9,,,6,2,2,0,0,6.0,120.20500000000001,0,0
-price,h1,div,0,0,9,,,6,2,2,0,0,6.0,120.20500000000001,0,0
-price,h1,div,0,0,9,,,6,2,2,0,0,6.0,120.20500000000001,0,0
-price,h1,div,0,0,9,,,7,2,3,0,0,7.0,120.20500000000001,0,0
-price,h1,div,0,0,9,,,6,2,2,0,0,6.0,120.20500000000001,0,0
-price,h1,div,0,0,9,,,7,2,3,0,0,7.0,120.20500000000001,0,0
-price,h1,div,0,0,9,,,6,2,2,0,0,6.0,120.20500000000001,0,0
-price,h1,div,0,0,9,,,4,1,0,0,0,4.0,121.22000000000003,0,0
-price,h1,div,0,0,9,,,4,1,0,0,0,4.0,121.22000000000003,0,0
-price,h1,div,0,0,9,,,4,1,0,0,0,4.0,121.22000000000003,0,0
-price,h1,div,0,0,9,,,4,1,0,0,0,4.0,121.22000000000003,0,0
-price,h1,div,0,0,9,,,4,1,0,0,0,4.0,121.22000000000003,0,0
-price,h1,div,0,0,9,,,4,1,0,0,0,4.0,121.22000000000003,0,0
-image,img,div,0,0,8,pw-selected,,0,0,0,0,0,0.0,0.0,0,1
-image,img,div,0,0,8,pw-selected,,0,0,0,0,0,0.0,0.0,0,1
-image,img,div,0,0,8,pw-selected,,0,0,0,0,0,0.0,0.0,0,1
-image,img,div,0,0,8,pw-selected,,0,0,0,0,0,0.0,0.0,0,1
-image,img,div,0,0,8,pw-selected,,0,0,0,0,0,0.0,0.0,0,1
-image,img,div,0,0,8,pw-selected,,0,0,0,0,0,0.0,0.0,0,1
-image,img,div,0,0,8,pw-selected,,0,0,0,0,0,0.0,0.0,0,1
-image,img,div,0,0,8,pw-selected,,0,0,0,0,0,0.0,0.0,0,1
-image,img,div,0,0,8,pw-selected,,0,0,0,0,0,0.0,0.0,0,1
-image,img,div,0,0,8,pw-selected,,0,0,0,0,0,0.0,0.0,0,1
-image,img,div,0,0,8,pw-selected,,0,0,0,0,0,0.0,0.0,0,1
-image,img,div,0,0,8,pw-selected,,0,0,0,0,0,0.0,0.0,0,1
-image,img,div,0,0,8,pw-selected,,0,0,0,0,0,0.0,0.0,0,1
-image,img,div,0,0,8,pw-selected,,0,0,0,0,0,0.0,0.0,0,1
-image,img,div,0,0,8,pw-selected,,0,0,0,0,0,0.0,0.0,0,1
-other,html,root,2,0,0,,,27591,1312,788,0,1,87.3132911392405,-9.94359266409262,0,0
-other,head,html,15,1,1,,,4221,451,257,0,1,263.8125,24.7248289862205,0,0
-other,title,head,0,14,2,,,12,2,0,0,0,12.0,35.60500000000002,0,0
-other,link,head,0,14,2,,,0,0,0,0,0,0.0,0.0,1,0
-other,meta,head,0,14,2,,,0,0,0,0,0,0.0,0.0,0,0
-other,meta,head,0,14,2,,,0,0,0,0,0,0.0,0.0,0,0
-other,meta,head,0,14,2,,,0,0,0,0,0,0.0,0.0,0,0
-other,link,head,0,14,2,,,0,0,0,0,0,0.0,0.0,1,0
-other,meta,head,0,14,2,,,0,0,0,0,0,0.0,0.0,0,0
-other,meta,head,0,14,2,,,0,0,0,0,0,0.0,0.0,0,0
-other,meta,head,0,14,2,,,0,0,0,0,0,0.0,0.0,0,0
-other,link,head,0,14,2,,,0,0,0,0,0,0.0,0.0,1,0
-other,link,head,0,14,2,,,0,0,0,0,0,0.0,0.0,1,0
-other,link,head,0,14,2,,,0,0,0,0,0,0.0,0.0,1,0
-other,link,head,0,14,2,,,0,0,0,0,0,0.0,0.0,1,0
-other,link,head,0,14,2,,,0,0,0,0,0,0.0,0.0,1,0
-other,style,head,0,14,2,,,4078,449,257,0,1,4078.0,24.656924316067204,0,0
-other,body,html,10,1,1,w3-content body-background,,23361,861,531,0,0,78.1304347826087,-31.71753185312616,0,0
-other,div,body,2,9,2,cookie-banner,cookieBanner,98,16,0,0,0,32.666666666666664,47.83250000000001,0,0
-other,h5,div,0,1,3,w3-container w3-padding-16,,79,14,0,0,0,79.0,53.639285714285734,0,0
-other,button,div,0,1,3,w3-large w3-button w3-green w3-round,acceptCookiesBtn,14,2,0,0,0,14.0,35.60500000000002,0,0
-other,nav,body,2,9,2,w3-sidebar w3-collapse nav-bar-container w3-animate-left,mySidebar,683,21,0,0,0,11.775862068965518,16.32000000000002,0,0
-other,div,nav,8,1,3,category-menu,,563,18,0,0,0,11.97872340425532,19.36500000000001,0,0
-other,div,div,4,7,4,w3-hide-small,,0,0,0,0,0,0.0,0.0,0,0
-other,a,div,1,7,4,w3-hide-large w3-right w3-jumbo w3-padding w3-hover-grey,,0,0,0,0,0,0.0,0.0,1,0
-other,i,a,0,0,5,fa fa-remove,,0,0,0,0,0,0.0,0.0,0,0
-other,img,div,0,7,4,logo-img,,0,0,0,0,0,0.0,0.0,0,1
-other,p,div,0,7,4,w3-text-grey,,0,0,0,0,0,0.0,0.0,0,0
-other,div,div,11,7,4,w3-bar-block,,563,18,0,0,0,16.558823529411764,19.36500000000001,0,0
-other,h4,div,1,10,5,,Newest,12,2,0,0,0,3.0,35.60500000000002,0,0
-other,a,h4,2,0,6,w3-bar-item w3-button w3-padding selected_menu,,12,2,0,0,0,4.0,35.60500000000002,1,0
-other,i,a,0,1,7,fa fa-th-large w3-margin-right,th,0,0,0,0,0,0.0,0.0,0,0
-other,b,a,0,1,7,,,12,2,0,0,0,12.0,35.60500000000002,0,0
-other,h3,div,1,10,5,,,12,1,0,0,0,4.0,-132.57999999999996,0,0
-other,a,h3,1,0,6,w3-bar-item w3-button w3-hover-text-black,,12,1,0,0,0,6.0,-132.57999999999996,1,0
-other,i,a,0,0,7,fa fa-minus w3-margin-right,,0,0,0,0,0,0.0,0.0,0,0
-other,h3,div,1,10,5,,,3,1,0,0,0,1.0,121.22000000000003,0,0
-other,a,h3,1,0,6,w3-bar-item w3-button w3-hover-text-black,,3,1,0,0,0,1.5,121.22000000000003,1,0
-other,i,a,0,0,7,fa fa-minus w3-margin-right,,0,0,0,0,0,0.0,0.0,0,0
-other,h3,div,1,10,5,,,15,3,0,0,0,5.0,119.19000000000003,0,0
-other,a,h3,1,0,6,w3-bar-item w3-button w3-hover-text-black,,15,3,0,0,0,7.5,119.19000000000003,1,0
-other,i,a,0,0,7,fa fa-minus w3-margin-right,,0,0,0,0,0,0.0,0.0,0,0
-other,h3,div,1,10,5,,,16,2,0,0,0,5.333333333333333,77.90500000000002,0,0
-other,a,h3,1,0,6,w3-bar-item w3-button w3-padding w3-hover-text-black,,16,2,0,0,0,8.0,77.90500000000002,1,0
-other,i,a,0,0,7,fa fa-minus w3-margin-right,,0,0,0,0,0,0.0,0.0,0,0
-other,h3,div,1,10,5,,,6,1,0,0,0,2.0,36.62000000000003,0,0
-other,a,h3,1,0,6,w3-bar-item w3-button w3-padding w3-hover-text-black,,6,1,0,0,0,3.0,36.62000000000003,1,0
-other,i,a,0,0,7,fa fa-minus w3-margin-right,,0,0,0,0,0,0.0,0.0,0,0
-other,h3,div,1,10,5,,,17,2,0,0,0,5.666666666666667,-6.694999999999993,0,0
-other,a,h3,1,0,6,w3-bar-item w3-button w3-padding w3-hover-text-black,,17,2,0,0,0,8.5,-6.694999999999993,1,0
-other,i,a,0,0,7,fa fa-minus w3-margin-right,,0,0,0,0,0,0.0,0.0,0,0
-other,h3,div,1,10,5,,,29,4,0,0,0,7.25,75.87500000000001,0,0
-other,a,h3,2,0,6,w3-bar-item w3-button w3-padding w3-hover-text-black,,29,4,0,0,0,9.666666666666666,75.87500000000001,1,0
-other,i,a,0,1,7,fa fa-minus w3-margin-right,,0,0,0,0,0,0.0,0.0,0,0
-other,span,a,0,1,7,,,9,1,0,0,0,9.0,36.62000000000003,0,0
-other,h3,div,1,10,5,,,11,1,0,0,0,3.6666666666666665,-132.57999999999996,0,0
-other,a,h3,1,0,6,w3-bar-item w3-button w3-padding w3-hover-text-black,,11,1,0,0,0,5.5,-132.57999999999996,1,0
-other,i,a,0,0,7,fa fa-minus w3-margin-right,,0,0,0,0,0,0.0,0.0,0,0
-other,h3,div,1,10,5,,,10,1,0,0,0,3.3333333333333335,-132.57999999999996,0,0
-other,a,h3,1,0,6,w3-bar-item w3-button w3-padding w3-hover-text-black,,10,1,0,0,0,5.0,-132.57999999999996,1,0
-other,i,a,0,0,7,fa fa-minus w3-margin-right,,0,0,0,0,0,0.0,0.0,0,0
-other,div,nav,3,1,3,w3-text-white w3-bar-block,,69,3,0,0,0,6.9,34.59000000000003,0,0
-other,h4,div,1,2,4,,,8,1,0,0,0,2.6666666666666665,36.62000000000003,0,0
-other,a,h4,1,0,5,w3-bar-item w3-button w3-padding w3-hover-text-black,,8,1,0,0,0,4.0,36.62000000000003,1,0
-other,i,a,0,0,6,fa fa-shopping-cart w3-margin-right,,0,0,0,0,0,0.0,0.0,0,0
-other,h4,div,1,2,4,,,7,1,0,0,0,2.3333333333333335,36.62000000000003,0,0
-other,a,h4,1,0,5,w3-bar-item w3-button w3-padding w3-hover-text-black,,7,1,0,0,0,3.5,36.62000000000003,1,0
-other,i,a,0,0,6,fa fa-envelope w3-margin-right,,0,0,0,0,0,0.0,0.0,0,0
-other,h4,div,1,2,4,,,5,1,0,0,0,1.6666666666666667,36.62000000000003,0,0
-other,a,h4,1,0,5,w3-bar-item w3-button w3-padding w3-hover-text-black,,5,1,0,0,0,2.5,36.62000000000003,1,0
-other,i,a,0,0,6,fa fa-user w3-margin-right,,0,0,0,0,0,0.0,0.0,0,0
-other,div,body,0,9,2,w3-overlay w3-hide-large w3-animate-opacity,myOverlay,0,0,0,0,0,0.0,0.0,0,0
-other,div,body,3,9,2,w3-main,,883,55,4,0,0,36.791666666666664,-4.378882113821106,0,0
-other,header,div,2,2,3,,,800,52,4,0,0,57.142857142857146,-11.093333333333334,0,0
-other,span,header,1,1,4,w3-button w3-hide-large w3-hover-text-grey w3-xxlarge,,0,0,0,0,0,0.0,0.0,0,0
-other,i,span,0,0,5,fa fa-bars,,0,0,0,0,0,0.0,0.0,0,0
-other,div,header,7,1,4,w3-container,,800,52,4,0,0,72.72727272727273,-11.093333333333334,0,0
-other,h1,div,0,6,5,w3-hide-large new-arrivals,,12,2,0,0,0,12.0,35.60500000000002,0,0
-other,form,div,2,6,5,,,0,0,0,0,0,0.0,0.0,0,0
-other,input,form,0,1,6,,,0,0,0,0,0,0.0,0.0,0,0
-other,div,div,1,6,5,w3-padding w3-display-topright,,0,0,0,0,0,0.0,0.0,0,0
-other,img,div,0,0,6,w3-hover-opacity,,0,0,0,0,0,0.0,0.0,0,1
-other,script,div,0,6,5,,,621,50,4,0,0,621.0,-13.104999999999961,0,0
-other,div,div,1,2,3,modal w3-animate-right,id01,13,3,0,0,0,1.625,90.99000000000004,0,0
-other,form,div,4,0,4,modal-content,,13,3,0,0,0,1.8571428571428572,90.99000000000004,0,0
-other,span,form,1,3,5,close,,0,0,0,0,0,0.0,0.0,0,0
-other,img,span,0,0,6,w3-animate-opacity w3-hover-border,,0,0,0,0,0,0.0,0.0,0,1
-other,h1,form,1,3,5,w3-center w3-text-red,,13,3,0,0,0,6.5,90.99000000000004,0,0
-other,b,h1,0,0,6,,,13,3,0,0,0,13.0,90.99000000000004,0,0
-other,div,body,4,9,2,w3-main,,19658,640,519,0,0,103.46315789473684,-45.65863577903946,0,0
-other,div,div,31,3,3,w3-row-padding w3-animate-opacity,,19658,640,519,0,0,106.25945945945946,-45.65863577903946,0,0
-other,script,div,0,30,4,,,16,2,0,0,0,16.0,77.90500000000002,0,0
-other,div,div,1,30,4,spacing w3-container w3-margin-bottom,,991,44,52,0,0,90.0909090909091,-15.365833333333313,0,0
-other,div,div,1,0,5,w3-container grid-container w3-center w3-padding-16,,991,44,52,0,0,99.1,-15.365833333333313,0,0
-other,a,div,3,0,6,,,991,44,52,0,0,110.11111111111111,-15.365833333333313,1,0
-other,div,a,1,2,7,img-hover-zoom img-hover-zoom--slowmo image-container,,0,0,0,0,0,0.0,0.0,0,0
-other,hr,a,0,2,7,,,0,0,0,0,0,0.0,0.0,0,0
-other,div,a,3,2,7,w3-center,11542_id,991,44,52,0,0,198.2,-15.365833333333313,0,0
-other,script,div,0,2,8,,,729,34,40,0,0,729.0,-62.668782608695665,0,0
-other,div,div,1,2,8,,,6,2,2,0,0,3.0,120.20500000000001,0,0
-other,div,div,1,30,4,spacing w3-container w3-margin-bottom,,940,36,31,0,0,78.33333333333333,-55.42399999999995,0,0
-other,div,div,1,0,5,w3-container grid-container w3-center w3-padding-16,,940,36,31,0,0,85.45454545454545,-55.42399999999995,0,0
-other,a,div,3,0,6,,,940,36,31,0,0,94.0,-55.42399999999995,1,0
-other,div,a,1,2,7,img-hover-zoom img-hover-zoom--slowmo image-container,,0,0,0,0,0,0.0,0.0,0,0
-other,hr,a,0,2,7,,,0,0,0,0,0,0.0,0.0,0,0
-other,div,a,4,2,7,w3-center,11541_id,940,36,31,0,0,156.66666666666666,-55.42399999999995,0,0
-other,div,div,0,3,8,,11541_br,0,0,0,0,0,0.0,0.0,0,0
-other,script,div,0,3,8,,,699,30,29,0,0,699.0,-99.80094736842102,0,0
-other,div,div,1,3,8,,,6,2,2,0,0,3.0,120.20500000000001,0,0
-other,div,div,1,30,4,spacing w3-container w3-margin-bottom,,972,40,31,0,0,88.36363636363636,-76.18993103448273,0,0
-other,div,div,1,0,5,w3-container grid-container w3-center w3-padding-16,,972,40,31,0,0,97.2,-76.18993103448273,0,0
-other,a,div,3,0,6,,,972,40,31,0,0,108.0,-76.18993103448273,1,0
-other,div,a,1,2,7,img-hover-zoom img-hover-zoom--slowmo image-container,,0,0,0,0,0,0.0,0.0,0,0
-other,div,a,3,2,7,w3-center,11540_id,972,40,31,0,0,194.4,-76.18993103448273,0,0
-other,script,div,0,2,8,,,715,32,29,0,0,715.0,-103.59942857142858,0,0
-other,div,div,1,2,8,,,6,2,2,0,0,3.0,120.20500000000001,0,0
-other,div,div,1,30,4,spacing w3-container w3-margin-bottom,,940,36,31,0,0,78.33333333333333,-41.88799999999995,0,0
-other,div,div,1,0,5,w3-container grid-container w3-center w3-padding-16,,940,36,31,0,0,85.45454545454545,-41.88799999999995,0,0
-other,a,div,3,0,6,,,940,36,31,0,0,94.0,-41.88799999999995,1,0
-other,div,a,1,2,7,img-hover-zoom img-hover-zoom--slowmo image-container,,0,0,0,0,0,0.0,0.0,0,0
-other,hr,a,0,2,7,,,0,0,0,0,0,0.0,0.0,0,0
-other,div,a,4,2,7,w3-center,11539_id,940,36,31,0,0,156.66666666666666,-41.88799999999995,0,0
-other,h2,div,0,3,8,,11539,23,4,0,0,0,23.0,118.17500000000001,0,0
-other,div,div,0,3,8,,11539_br,0,0,0,0,0,0.0,0.0,0,0
-other,script,div,0,3,8,,,699,30,29,0,0,699.0,-90.89568421052633,0,0
-other,div,div,1,3,8,,,6,2,2,0,0,3.0,120.20500000000001,0,0
-other,div,div,1,30,4,spacing w3-container w3-margin-bottom,,986,42,35,0,0,89.63636363636364,-46.39999999999995,0,0
-other,div,div,1,0,5,w3-container grid-container w3-center w3-padding-16,,986,42,35,0,0,98.6,-46.39999999999995,0,0
-other,a,div,3,0,6,,,986,42,35,0,0,109.55555555555556,-46.39999999999995,1,0
-other,div,a,1,2,7,img-hover-zoom img-hover-zoom--slowmo image-container,,0,0,0,0,0,0.0,0.0,0,0
-other,div,a,3,2,7,w3-center,11538_id,986,42,35,0,0,197.2,-46.39999999999995,0,0
-other,h2,div,0,2,8,,11538,44,7,2,0,0,44.0,45.64500000000001,0,0
-other,script,div,0,2,8,,,724,33,31,0,0,724.0,-86.04009090909088,0,0
-other,div,div,1,2,8,,,6,2,2,0,0,3.0,120.20500000000001,0,0
-other,div,div,1,30,4,spacing w3-container w3-margin-bottom,,959,38,32,0,0,87.18181818181819,-65.576,0,0
-other,div,div,1,0,5,w3-container grid-container w3-center w3-padding-16,,959,38,32,0,0,95.9,-65.576,0,0
-other,a,div,3,0,6,,,959,38,32,0,0,106.55555555555556,-65.576,1,0
-other,div,a,1,2,7,img-hover-zoom img-hover-zoom--slowmo image-container,,0,0,0,0,0,0.0,0.0,0,0
-other,div,a,3,2,7,w3-center,11537_id,959,38,32,0,0,191.8,-65.576,0,0
-other,h2,div,0,2,8,,11537,32,5,0,0,0,32.0,33.57500000000002,0,0
-other,script,div,0,2,8,,,708,31,29,0,0,708.0,-104.2535789473684,0,0
-other,div,div,1,2,8,,,7,2,3,0,0,3.5,120.20500000000001,0,0
-other,div,div,1,30,4,spacing w3-container w3-margin-bottom,,1117,62,31,0,0,101.54545454545455,-18.915833333333296,0,0
-other,div,div,1,0,5,w3-container grid-container w3-center w3-padding-16,,1117,62,31,0,0,111.7,-18.915833333333296,0,0
-other,a,div,3,0,6,,,1117,62,31,0,0,124.11111111111111,-18.915833333333296,1,0
-other,div,a,1,2,7,img-hover-zoom img-hover-zoom--slowmo image-container,,0,0,0,0,0,0.0,0.0,0,0
-other,hr,a,0,2,7,,,0,0,0,0,0,0.0,0.0,0,0
-other,div,a,3,2,7,w3-center,11536_id,1117,62,31,0,0,223.4,-18.915833333333296,0,0
-other,script,div,0,2,8,,,855,51,29,0,0,855.0,-39.09478947368419,0,0
-other,div,div,1,2,8,,,6,2,2,0,0,3.0,120.20500000000001,0,0
-other,div,div,1,30,4,spacing w3-container w3-margin-bottom,,1021,43,32,0,0,92.81818181818181,-63.319999999999965,0,0
-other,div,div,1,0,5,w3-container grid-container w3-center w3-padding-16,,1021,43,32,0,0,102.1,-63.319999999999965,0,0
-other,a,div,3,0,6,,,1021,43,32,0,0,113.44444444444444,-63.319999999999965,1,0
-other,div,a,1,2,7,img-hover-zoom img-hover-zoom--slowmo image-container,,0,0,0,0,0,0.0,0.0,0,0
-other,hr,a,0,2,7,,,0,0,0,0,0,0.0,0.0,0,0
-other,div,a,3,2,7,w3-center,11535_id,1021,43,32,0,0,204.2,-63.319999999999965,0,0
-other,script,div,0,2,8,,,758,36,29,0,0,758.0,-90.61199999999997,0,0
-other,div,div,1,2,8,,,7,2,3,0,0,3.5,120.20500000000001,0,0
-other,div,div,1,30,4,spacing w3-container w3-margin-bottom,,926,34,31,0,0,77.16666666666667,-73.70356521739126,0,0
-other,div,div,1,0,5,w3-container grid-container w3-center w3-padding-16,,926,34,31,0,0,84.18181818181819,-73.70356521739126,0,0
-other,a,div,3,0,6,,,926,34,31,0,0,92.6,-73.70356521739126,1,0
-other,div,a,1,2,7,img-hover-zoom img-hover-zoom--slowmo image-container,,0,0,0,0,0,0.0,0.0,0,0
-other,div,a,4,2,7,w3-center,11534_id,926,34,31,0,0,154.33333333333334,-73.70356521739126,0,0
-other,div,div,0,3,8,,11534_br,0,0,0,0,0,0.0,0.0,0,0
-other,script,div,0,3,8,,,692,29,29,0,0,692.0,-111.71899999999997,0,0
-other,div,div,1,3,8,,,6,2,2,0,0,3.0,120.20500000000001,0,0
-other,div,div,1,30,4,spacing w3-container w3-margin-bottom,,951,44,31,0,0,86.45454545454545,-49.21999999999997,0,0
-other,div,div,1,0,5,w3-container grid-container w3-center w3-padding-16,,951,44,31,0,0,95.1,-49.21999999999997,0,0
-other,a,div,3,0,6,,,951,44,31,0,0,105.66666666666667,-49.21999999999997,1,0
-other,div,a,1,2,7,img-hover-zoom img-hover-zoom--slowmo image-container,,0,0,0,0,0,0.0,0.0,0,0
-other,hr,a,0,2,7,,,0,0,0,0,0,0.0,0.0,0,0
-other,div,a,3,2,7,w3-center,1073_id,951,44,31,0,0,190.2,-49.21999999999997,0,0
-other,script,div,0,2,8,,,724,34,28,0,0,724.0,-89.88554545454545,0,0
-other,div,div,1,2,8,,,4,1,0,0,0,2.0,121.22000000000003,0,0
-other,div,div,1,30,4,spacing w3-container w3-margin-bottom,,976,47,25,0,0,88.72727272727273,-8.531428571428535,0,0
-other,div,div,1,0,5,w3-container grid-container w3-center w3-padding-16,,976,47,25,0,0,97.6,-8.531428571428535,0,0
-other,a,div,3,0,6,,,976,47,25,0,0,108.44444444444444,-8.531428571428535,1,0
-other,div,a,1,2,7,img-hover-zoom img-hover-zoom--slowmo image-container,,0,0,0,0,0,0.0,0.0,0,0
-other,div,a,3,2,7,w3-center,6303_id,976,47,25,0,0,195.2,-8.531428571428535,0,0
-other,script,div,0,2,8,,,749,39,25,0,0,749.0,-33.57309523809522,0,0
-other,div,div,1,2,8,,,4,1,0,0,0,2.0,121.22000000000003,0,0
-other,div,div,1,30,4,spacing w3-container w3-margin-bottom,,1000,56,50,0,0,90.9090909090909,-28.072815315315268,0,0
-other,div,div,1,0,5,w3-container grid-container w3-center w3-padding-16,,1000,56,50,0,0,100.0,-28.072815315315268,0,0
-other,a,div,3,0,6,,,1000,56,50,0,0,111.11111111111111,-28.072815315315268,1,0
-other,div,a,1,2,7,img-hover-zoom img-hover-zoom--slowmo image-container,,0,0,0,0,0,0.0,0.0,0,0
-other,div,a,3,2,7,w3-center,6195_id,1000,56,50,0,0,200.0,-28.072815315315268,0,0
-other,script,div,0,2,8,,,773,48,50,0,0,773.0,-41.77499999999998,0,0
-other,div,div,1,2,8,,,4,1,0,0,0,2.0,121.22000000000003,0,0
-other,div,div,1,30,4,spacing w3-container w3-margin-bottom,,950,45,33,0,0,86.36363636363636,-46.75110215053763,0,0
-other,div,div,1,0,5,w3-container grid-container w3-center w3-padding-16,,950,45,33,0,0,95.0,-46.75110215053763,0,0
-other,a,div,3,0,6,,,950,45,33,0,0,105.55555555555556,-46.75110215053763,1,0
-other,div,a,1,2,7,img-hover-zoom img-hover-zoom--slowmo image-container,,0,0,0,0,0,0.0,0.0,0,0
-other,div,a,3,2,7,w3-center,11188_id,950,45,33,0,0,190.0,-46.75110215053763,0,0
-other,script,div,0,2,8,,,723,35,33,0,0,723.0,-81.06008695652173,0,0
-other,div,div,1,2,8,,,4,1,0,0,0,2.0,121.22000000000003,0,0
-other,div,div,1,30,4,spacing w3-container w3-margin-bottom,,913,33,45,0,0,83.0,-62.967363636363615,0,0
-other,div,div,1,0,5,w3-container grid-container w3-center w3-padding-16,,913,33,45,0,0,91.3,-62.967363636363615,0,0
-other,a,div,3,0,6,,,913,33,45,0,0,101.44444444444444,-62.967363636363615,1,0
-other,div,a,1,2,7,img-hover-zoom img-hover-zoom--slowmo image-container,,0,0,0,0,0,0.0,0.0,0,0
-other,hr,a,0,2,7,,,0,0,0,0,0,0.0,0.0,0,0
-other,div,a,3,2,7,w3-center,11479_id,913,33,45,0,0,182.6,-62.967363636363615,0,0
-other,script,div,0,2,8,,,703,29,37,0,0,703.0,-102.31899999999999,0,0
-other,div,div,1,2,8,,,4,1,0,0,0,2.0,121.22000000000003,0,0
-other,div,div,1,30,4,spacing w3-container w3-margin-bottom,,943,38,29,0,0,85.72727272727273,-74.14025641025637,0,0
-other,div,div,1,0,5,w3-container grid-container w3-center w3-padding-16,,943,38,29,0,0,94.3,-74.14025641025637,0,0
-other,a,div,3,0,6,,,943,38,29,0,0,104.77777777777777,-74.14025641025637,1,0
-other,div,a,1,2,7,img-hover-zoom img-hover-zoom--slowmo image-container,,0,0,0,0,0,0.0,0.0,0,0
-other,div,a,3,2,7,w3-center,8546_id,943,38,29,0,0,188.6,-74.14025641025637,0,0
-other,script,div,0,2,8,,,716,31,27,0,0,716.0,-106.01499999999996,0,0
-other,div,div,1,2,8,,,4,1,0,0,0,2.0,121.22000000000003,0,0
-other,script,body,0,9,2,,,983,102,2,0,0,983.0,-14.516346153846115,0,0
-other,div,body,2,9,2,,pw-ui,486,27,6,0,0,27.0,19.15045454545455,0,0
-other,div,div,2,1,3,,pw-ui-header,31,3,0,0,0,7.75,35.60500000000002,0,0
-other,h2,div,1,1,4,,,12,2,0,0,0,6.0,35.60500000000002,0,0
-other,span,h2,0,0,5,,pw-category-name,5,1,0,0,0,5.0,36.62000000000003,0,0
-other,div,div,0,1,4,,,2,1,0,0,0,2.0,0.0,0,0
-other,div,div,5,1,3,,pw-ui-body,391,24,6,0,0,30.076923076923077,21.565000000000026,0,0
-other,div,div,2,4,4,pw-stat-row,,40,4,4,0,0,13.333333333333334,75.87500000000001,0,0
-other,span,div,0,1,5,,pw-step-counter,8,2,2,0,0,8.0,120.20500000000001,0,0
-other,span,div,0,1,5,,pw-count-badge,11,2,2,0,0,11.0,35.60500000000002,0,0
-other,div,div,0,4,4,,pw-selector-box,46,5,2,0,0,46.0,-21.809999999999945,0,0
-other,div,div,1,4,4,pw-btn-group-top,,14,2,0,0,0,7.0,-132.57999999999996,0,0
-other,button,div,0,0,5,pw-btn pw-btn-predict,pw-btn-predict,14,2,0,0,0,14.0,-132.57999999999996,0,0
-other,div,div,3,4,4,pw-btn-group,,72,6,0,0,0,18.0,49.48000000000002,0,0
-other,button,div,0,2,5,pw-btn pw-btn-secondary,pw-btn-prev,4,1,0,0,0,4.0,121.22000000000003,0,0
-other,button,div,0,2,5,pw-btn pw-btn-primary pw-hidden,pw-btn-next,13,2,0,0,0,13.0,-6.694999999999993,0,0
-other,button,div,0,2,5,pw-btn pw-btn-success,pw-btn-done,13,3,0,0,0,13.0,77.90500000000002,0,0
-other,div,div,1,4,4,pw-hint,,58,7,0,0,0,29.0,54.70142857142861,0,0
+Category,tag,parent_tag,gparent_tag,ggparent_tag,num_children,num_siblings,dom_depth,class_str,id_str,text_len,text_word_count,text_digit_count,is_price_format,text_density,reading_ease,has_href,is_image
+title,h2,div,a,div,0,2,8,,11542,44,8,10,0,44.0,103.04428571428575,0,0
+title,h2,div,a,div,0,3,8,,11541,23,4,0,0,23.0,75.87500000000001,0,0
+title,h2,div,a,div,0,2,8,,11540,39,6,0,0,39.0,-38.954999999999984,0,0
+title,h2,div,a,div,0,2,8,,11536,44,9,0,0,44.0,54.70142857142861,0,0
+title,h2,div,a,div,0,2,8,,11535,44,5,0,0,44.0,12.425000000000011,0,0
+title,h2,div,a,div,0,3,8,,11534,16,3,0,0,16.0,34.59000000000003,0,0
+title,h2,div,a,div,0,2,8,,1073,44,9,3,0,44.0,54.70142857142861,0,0
+title,h2,div,a,div,0,2,8,,6303,44,7,0,0,44.0,87.94500000000002,0,0
+title,h2,div,a,div,0,2,8,,6195,44,7,0,0,44.0,17.44500000000002,0,0
+title,h2,div,a,div,0,2,8,,11188,44,9,0,0,44.0,42.61571428571432,0,0
+title,h2,div,a,div,0,2,8,,11479,27,3,8,0,27.0,119.19000000000003,0,0
+title,h2,div,a,div,0,2,8,,8546,44,6,2,0,44.0,15.640000000000015,0,0
+price,h1,div,div,a,0,0,9,,,6,2,2,0,6.0,120.20500000000001,0,0
+price,h1,div,div,a,0,0,9,,,6,2,2,0,6.0,120.20500000000001,0,0
+price,h1,div,div,a,0,0,9,,,6,2,2,0,6.0,120.20500000000001,0,0
+price,h1,div,div,a,0,0,9,,,6,2,2,0,6.0,120.20500000000001,0,0
+price,h1,div,div,a,0,0,9,,,6,2,2,0,6.0,120.20500000000001,0,0
+price,h1,div,div,a,0,0,9,,,7,2,3,0,7.0,120.20500000000001,0,0
+price,h1,div,div,a,0,0,9,,,6,2,2,0,6.0,120.20500000000001,0,0
+price,h1,div,div,a,0,0,9,,,7,2,3,0,7.0,120.20500000000001,0,0
+price,h1,div,div,a,0,0,9,,,6,2,2,0,6.0,120.20500000000001,0,0
+price,h1,div,div,a,0,0,9,,,4,1,0,0,4.0,121.22000000000003,0,0
+price,h1,div,div,a,0,0,9,,,4,1,0,0,4.0,121.22000000000003,0,0
+price,h1,div,div,a,0,0,9,,,4,1,0,0,4.0,121.22000000000003,0,0
+price,h1,div,div,a,0,0,9,,,4,1,0,0,4.0,121.22000000000003,0,0
+price,h1,div,div,a,0,0,9,,,4,1,0,0,4.0,121.22000000000003,0,0
+price,h1,div,div,a,0,0,9,,,4,1,0,0,4.0,121.22000000000003,0,0
+image,img,div,a,div,0,0,8,pw-selected,,0,0,0,0,0.0,0.0,0,1
+image,img,div,a,div,0,0,8,pw-selected,,0,0,0,0,0.0,0.0,0,1
+image,img,div,a,div,0,0,8,pw-selected,,0,0,0,0,0.0,0.0,0,1
+image,img,div,a,div,0,0,8,pw-selected,,0,0,0,0,0.0,0.0,0,1
+image,img,div,a,div,0,0,8,pw-selected,,0,0,0,0,0.0,0.0,0,1
+image,img,div,a,div,0,0,8,pw-selected,,0,0,0,0,0.0,0.0,0,1
+image,img,div,a,div,0,0,8,pw-selected,,0,0,0,0,0.0,0.0,0,1
+image,img,div,a,div,0,0,8,pw-selected,,0,0,0,0,0.0,0.0,0,1
+image,img,div,a,div,0,0,8,pw-selected,,0,0,0,0,0.0,0.0,0,1
+image,img,div,a,div,0,0,8,pw-selected,,0,0,0,0,0.0,0.0,0,1
+image,img,div,a,div,0,0,8,pw-selected,,0,0,0,0,0.0,0.0,0,1
+image,img,div,a,div,0,0,8,pw-selected,,0,0,0,0,0.0,0.0,0,1
+image,img,div,a,div,0,0,8,pw-selected,,0,0,0,0,0.0,0.0,0,1
+image,img,div,a,div,0,0,8,pw-selected,,0,0,0,0,0.0,0.0,0,1
+image,img,div,a,div,0,0,8,pw-selected,,0,0,0,0,0.0,0.0,0,1

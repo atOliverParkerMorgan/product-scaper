@@ -1,24 +1,36 @@
 """Data processing utilities for HTML element feature extraction."""
 
-import re
+import regex as re
 import logging
+import sys
 from pathlib import Path
 from typing import Dict, Any, List, Optional
+
 
 import lxml.html
 import pandas as pd
 import textstat
 import yaml
-from sklearn.preprocessing import LabelEncoder
+
+UNWANTED_TAGS = ['script', 'style', 'meta', 'link', 'noscript', 'iframe', 'head', 'input']
+
+OTHER_CATEGORY = 'other'
+
+CURRENCY_HINTS = r'(?:\p{Sc}|(?:USD|EUR|GBP|JPY|CNY|CZK|Kč|kr|zł|Rs)\b)'
+
+NUMBER_PATTERN = r'(?:\d{1,3}(?:[., ]\d{3})+|\d+)(?:[.,]\d{1,2})?'
+
+PRICE_REGEX = re.compile(
+    fr'(?:{CURRENCY_HINTS}\s*{NUMBER_PATTERN}|{NUMBER_PATTERN}\s*{CURRENCY_HINTS})',
+    re.UNICODE | re.IGNORECASE
+)
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Constants
-PRICE_REGEX = re.compile(r'[$€£¥₹]|(\d+[.,]\d{2})')
-CURRENCY_SYMBOLS = re.compile(r'[$€£¥₹]')
-
 def normalize_tag(tag: Any) -> str:
     """Normalize HTML tag to string."""
     if not isinstance(tag, str):
@@ -27,7 +39,7 @@ def normalize_tag(tag: Any) -> str:
 
 def _extract_element_features(
     element: lxml.html.HtmlElement, 
-    category: str = 'other'
+    category: str = OTHER_CATEGORY
 ) -> Dict[str, Any]:
     """
     Extract comprehensive features from a single HTML element.
@@ -35,12 +47,17 @@ def _extract_element_features(
     try:
         text = element.text_content().strip()
         parent = element.getparent()
+        # Get grandparent and great-grandparent
+        gparent = parent.getparent() if parent is not None else None
+        ggparent = gparent.getparent() if gparent is not None else None
         
-        # Structural / DOM Features
+        # Structural
         features = {
             'Category': category,
             'tag': normalize_tag(element.tag),
             'parent_tag': normalize_tag(parent.tag) if parent is not None else 'root',
+            'gparent_tag': normalize_tag(gparent.tag) if gparent is not None else 'root',
+            'ggparent_tag': normalize_tag(ggparent.tag) if ggparent is not None else 'root',
             'num_children': len(element),
             'num_siblings': len(parent) - 1 if parent is not None else 0,
             'dom_depth': len(list(element.iterancestors())),
@@ -54,7 +71,6 @@ def _extract_element_features(
         features['text_len'] = len(text)
         features['text_word_count'] = len(text.split())
         features['text_digit_count'] = sum(c.isdigit() for c in text)
-        features['has_currency_symbol'] = 1 if CURRENCY_SYMBOLS.search(text) else 0
         features['is_price_format'] = 1 if PRICE_REGEX.search(text) else 0
         
         # Density & Readability
@@ -75,6 +91,55 @@ def _extract_element_features(
     except Exception as e:
         # Suppress warnings for expected non-element issues if any slip through
         return {}
+    
+
+def get_main_html_content_tag(html_content: str) -> Optional[lxml.html.HtmlElement]:
+    """
+    Identify the specific element that wraps the main content in the HTML document.
+    Calculates score based on:
+        (total_text_length + total_img_tags * IMG_IMPORTANCE) / total_tags
+    """
+    IMG_IMPORTANCE = 50
+    
+    if not html_content:
+        return None
+
+    try:
+        tree = lxml.html.fromstring(html_content)
+    except Exception as e:
+        logger.error(f"Failed to parse HTML: {e}")
+        return None
+
+    best_elem = None
+    best_score = -1.0
+
+    # Iterate over every element in the tree
+    for elem in tree.iter():
+        # Skip comments and processing instructions
+        if not isinstance(elem.tag, str):
+            continue
+        
+        # Calculate Text Length
+        text_content = elem.text_content()
+        if not text_content:
+            continue
+        text_len = len(text_content.strip())
+
+        # Efficiently count images
+        img_count = sum(1 for _ in elem.iter('img'))
+
+        # Count Total Tags (Descendants + Self)
+        total_tags = sum(1 for _ in elem.iterdescendants()) + 1
+
+        # Calculate Score
+        score = (text_len + (img_count * IMG_IMPORTANCE)) / total_tags
+
+        # Update Best Candidate
+        if score > best_score:
+            best_score = score
+            best_elem = elem
+
+    return best_elem
 
 
 def html_to_dataframe(
@@ -83,22 +148,28 @@ def html_to_dataframe(
 ) -> pd.DataFrame:
     """
     Parse HTML and extract features into a DataFrame.
+    Uses get_main_html_content_tag to narrow scope to relevant content.
     """
+    main_content = get_main_html_content_tag(html_content)
+    
     try:
-        tree = lxml.html.fromstring(html_content)
-    except Exception as e:
-        logger.error(f"Failed to parse HTML: {e}")
+        root = lxml.html.fromstring(html_content)
+    except Exception:
         return pd.DataFrame()
+    
+    if main_content is None:
+        main_content = root
 
     all_data = []
     labeled_elements = set()
 
-    # 1. Extract Positive Labels (if selectors provided)
+    # Extract Positive Labels (scoped to root_node)
     if selectors:
         for category, css_selectors in selectors.items():
             for selector in css_selectors:
                 try:
-                    elements = tree.cssselect(selector)
+                    # cssselect will search within the full document root
+                    elements = root.cssselect(selector)
                     for elem in elements:
                         if elem not in labeled_elements:
                             data = _extract_element_features(elem, category=category)
@@ -108,16 +179,16 @@ def html_to_dataframe(
                 except Exception as e:
                     logger.warning(f"Invalid selector {selector}: {e}")
 
-    # 2. Extract Negative Samples (Everything else is 'other')
-    for elem in tree.iter():
-        # FIX: Skip comments (HtmlComment) and ProcessingInstructions
-        if not isinstance(elem.tag, str):
+    # Extract Negative Samples (Only from main_content to avoid noise)
+    for elem in main_content.iter():
+        # Skip comments
+        if not isinstance(elem.tag, str) or normalize_tag(elem.tag) in UNWANTED_TAGS:
             continue
 
         if elem in labeled_elements:
             continue
         
-        # Optimization: Skip empty structural tags that have no attributes
+        # Skip empty structural tags that have no attributes
         try:
             if not elem.text_content().strip() and not elem.attrib:
                 continue
@@ -125,12 +196,15 @@ def html_to_dataframe(
             continue
             
         # Treat as 'other'
-        data = _extract_element_features(elem, category='other')
+        data = _extract_element_features(elem, category=OTHER_CATEGORY)
         if data:
             all_data.append(data)
 
     df = pd.DataFrame(all_data)
     
+    if df.empty:
+        return df
+
     # Fill NAs for text columns with empty strings
     text_cols = ['class_str', 'id_str']
     for col in text_cols:
@@ -173,4 +247,6 @@ def data_to_csv(project_root: Path = Path.cwd()) -> None:
             selector_data_to_csv(site_dir)
 
 if __name__ == "__main__":
+    sys.path.insert(0, str(Path(__file__).parent.parent))
+
     data_to_csv()

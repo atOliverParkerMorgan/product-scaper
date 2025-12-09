@@ -3,7 +3,8 @@ import lxml.html
 import pandas as pd
 import numpy as np
 from pathlib import Path
-from typing import List, Optional, Dict
+from typing import List, Optional
+from train_model.process_data import get_main_html_content_tag
 
 # Import the feature extractor from your process_data script
 # Ensure this import works based on your folder structure
@@ -22,7 +23,8 @@ def get_unique_xpath(element) -> str:
 def predict_selectors(
     html_content: str, 
     category: str, 
-    model_path: Optional[Path] = None
+    model_path: Optional[Path] = None,
+    only_main_content: bool = True
 ) -> List[dict]:
     """
     Predict selectors for a given category using the trained Pipeline.
@@ -54,7 +56,15 @@ def predict_selectors(
     # We must replicate the iteration logic from process_data EXACTLY 
     # to ensure 'elements' list aligns with 'features' list.
     try:
-        tree = lxml.html.fromstring(html_content)
+        if only_main_content:
+
+            tree = get_main_html_content_tag(html_content)
+            print(f"Main content tag: {tree if tree is not None else 'None'}")
+            if tree is None:
+                print("⚠️ Could not find main content tag, falling back to full HTML")
+                tree = lxml.html.fromstring(html_content)
+        else:
+            tree = lxml.html.fromstring(html_content)
     except Exception as e:
         print(f"Error parsing HTML: {e}")
         return []

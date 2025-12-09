@@ -1,11 +1,7 @@
 """Utilities module for product scraper."""
 
 from .constants import (
-    ALL_FEATURES,
-    COMMON_TAGS,
     DATA_NAME,
-    EXCLUDED_FEATURES,
-    Features,
     OTHER_CATEGORY,
     PRICE_REGEX,
     RANDOM_STATE,
@@ -19,11 +15,7 @@ from .utils import (
 
 __all__ = [
     # Constants
-    'ALL_FEATURES',
-    'COMMON_TAGS',
     'DATA_NAME',
-    'EXCLUDED_FEATURES',
-    'Features',
     'OTHER_CATEGORY',
     'PRICE_REGEX',
     'RANDOM_STATE',
