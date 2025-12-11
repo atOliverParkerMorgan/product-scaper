@@ -1,4 +1,4 @@
-import src.train_model.process_data as process_data
+from train_model import process_data
 
 def test_basic_main_content_():
     html = """

@@ -1,5 +1,6 @@
-from train_model.process_data import html_to_dataframe, get_main_html_content_tag, UNWANTED_TAGS, normalize_tag
-from utils.utils import get_unique_xpath
+from train_model.process_data import html_to_dataframe, get_main_html_content_tag
+from utils.features import UNWANTED_TAGS
+from utils.utils import get_unique_xpath, normalize_tag
 import lxml.html
 import numpy as np
 from typing import Any, Dict, List

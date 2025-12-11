@@ -17,7 +17,7 @@ import lxml.html
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from src.train_model.process_data import get_main_html_content_tag
-from src.utils.console import CONSOLE, log_info
+from src.utils.console import CONSOLE, log_info, log_error
 
 
 # Ground truth: Expected main content tag identifiers for each test page
@@ -91,7 +91,7 @@ def load_test_pages() -> Dict[str, str]:
             with open(page_file, 'r', encoding='utf-8') as f:
                 pages[page_name] = f.read()
         except Exception as e:
-            logger.error(f"Failed to load {page_file}: {e}")
+            log_error(f"Failed to load {page_file}: {e}")
     
     return pages
 
@@ -170,7 +170,7 @@ def grid_search(pages: Dict[str, str]) -> Tuple[Dict[str, Any], float, Dict[str,
         len(parent_improvement_threshold_values)
     )
     
-    logger.info(f"Starting grid search with {total_combinations} combinations...")
+    log_info(f"Starting grid search with {total_combinations} combinations")
     
     best_params = None
     best_accuracy = -1.0
@@ -192,7 +192,7 @@ def grid_search(pages: Dict[str, str]) -> Tuple[Dict[str, Any], float, Dict[str,
         combination_count += 1
         
         if combination_count % 100 == 0:
-            logger.info(f"Progress: {combination_count}/{total_combinations}")
+            log_info(f"Progress: {combination_count}/{total_combinations}")
         
         accuracy, matches = evaluate_params(
             pages,
@@ -217,13 +217,13 @@ def grid_search(pages: Dict[str, str]) -> Tuple[Dict[str, Any], float, Dict[str,
             }
             best_matches = matches
             
-            logger.info(
+            log_info(
                 f"New best accuracy: {best_accuracy:.2%} "
                 f"| IMG_IMPORTANCE={img_imp}, MIN_TEXT={min_text}, MIN_IMG={min_img}, "
                 f"LINK_DENS={link_dens}, DEPTH_COEF={depth_coef}, PARENT_THRESH={parent_thresh}"
             )
     
-    logger.info(f"Grid search completed. Evaluated {combination_count} combinations.")
+    log_info(f"Grid search completed. Evaluated {combination_count} combinations")
     
     return best_params, best_accuracy, best_matches
 

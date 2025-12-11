@@ -219,7 +219,7 @@ class ProductScraper:
 
             try:
                 html_content = self.get_html(url)
-            except requests.RequestException as e:
+            except requests.RequestException:
                 log_warning(f"Skipping {url} due to network error")
                 continue
 
