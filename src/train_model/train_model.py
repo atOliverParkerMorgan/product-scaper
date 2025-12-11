@@ -1,12 +1,9 @@
 """Advanced Model Training Pipeline."""
 
 import logging
-import pickle
 import warnings
-from pathlib import Path
-from typing import List, Optional
+from typing import List
 
-import pandas as pd
 from rich.console import Console
 from rich.panel import Panel
 
@@ -27,30 +24,6 @@ logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger(__name__)
 warnings.filterwarnings('ignore')
 
-def load_data(project_root: Path) -> pd.DataFrame:
-    """Load and concatenate all data.csv files."""
-    data_dir = project_root / 'src' / 'data'
-    dfs = []
-    
-    # Check if directory exists
-    if not data_dir.exists():
-        raise FileNotFoundError(f"Data directory not found: {data_dir}")
-
-    for file in data_dir.rglob('data.csv'):
-        try:
-            df = pd.read_csv(file)
-            # Ensure text columns are strings (pandas might infer as float if empty)
-            for col in ['class_str', 'id_str', 'tag', 'parent_tag']:
-                if col in df.columns:
-                    df[col] = df[col].astype(str).replace('nan', '')
-            dfs.append(df)
-        except Exception as e:
-            logger.warning(f"Skipping {file}: {e}")
-            
-    if not dfs:
-        raise ValueError("No training data found.")
-        
-    return pd.concat(dfs, ignore_index=True)
 
 def build_pipeline(num_cols: List[str], cat_cols: List[str], text_cols: List[str]) -> Pipeline:
     """
@@ -73,7 +46,6 @@ def build_pipeline(num_cols: List[str], cat_cols: List[str], text_cols: List[str
         remainder='drop'
     )
     
-    # 2. Model: Random Forest (CPU Native)
     # class_weight='balanced' automatically handles the "Other" category dominance
     clf = RandomForestClassifier(
         n_estimators=200,
@@ -91,28 +63,18 @@ def build_pipeline(num_cols: List[str], cat_cols: List[str], text_cols: List[str
     
     return pipeline
 
-def run(project_root: Optional[Path] = None):
-    project_root = project_root or Path.cwd()
-    save_dir = project_root / 'src' / 'models'
-    save_dir.mkdir(parents=True, exist_ok=True)
+def train_model(df, pipeline: Pipeline = None):
     
     CONSOLE.print(Panel("[bold cyan]Starting Training Pipeline (Random Forest)[/bold cyan]"))
     
-    # 1. Load Data
-    try:
-        df = load_data(project_root)
-    except Exception as e:
-        logger.error(f"Error loading data: {e}")
-        return
-
-    # 2. Define Features
     target_col = 'Category'
     
     # Basic numeric features
     numeric_features = [
         'num_children', 'num_siblings', 'dom_depth', 'text_len', 
         'text_word_count', 'text_digit_count', 'text_density', 'reading_ease',
-        'has_currency_symbol', 'is_price_format', 'has_href', 'is_image'
+        'has_currency_symbol', 'is_price_format', 'has_href', 'is_image',
+        'has_src', 'has_alt', 'alt_len', 'has_dimensions', 'parent_is_link', 'sibling_image_count'
     ]
     
     categorical_features = ['tag', 'parent_tag']
@@ -128,35 +90,37 @@ def run(project_root: Optional[Path] = None):
     X = df.drop(columns=[target_col])
     y = df[target_col]
     
-    # 3. Label Encoding Target
+    # Label Encoding Target
     label_encoder = LabelEncoder()
     y_encoded = label_encoder.fit_transform(y)
     
-    # 4. Split
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y_encoded, test_size=0.2, random_state=RANDOM_STATE, stratify=y_encoded
-    )
+    # Split
+    try:
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y_encoded, test_size=0.2, random_state=RANDOM_STATE, stratify=y_encoded
+        )
+    except ValueError as e:
+        logger.error(f"Error during train-test split: {e}")
+        return
     
-    # 5. Build Pipeline
-    pipeline = build_pipeline(numeric_features, categorical_features, text_features)
+    if pipeline is None:
+        pipeline = build_pipeline(numeric_features, categorical_features, text_features)
     
     CONSOLE.print(f"Training on {len(X_train)} samples using Random Forest...")
     
-    # 6. Train
     # Random Forest uses class_weight='balanced' in init, so we don't need to pass weights here
     pipeline.fit(X_train, y_train)
     
-    # 7. Evaluate
     CONSOLE.print("[bold]Evaluating...[/bold]")
     y_pred = pipeline.predict(X_test)
     y_test_decoded = label_encoder.inverse_transform(y_test)
     y_pred_decoded = label_encoder.inverse_transform(y_pred)
     
-    # Detailed Report
+
     report = classification_report(y_test_decoded, y_pred_decoded)
     CONSOLE.print(Panel(report, title="Classification Report"))
     
-    # 8. Save Everything
+
     model_artifact = {
         'pipeline': pipeline,
         'label_encoder': label_encoder,
@@ -166,12 +130,6 @@ def run(project_root: Optional[Path] = None):
             'text': text_features
         }
     }
-    
-    model_path = save_dir / 'category_classifier.pkl'
-    with open(model_path, 'wb') as f:
-        pickle.dump(model_artifact, f)
-        
-    CONSOLE.print(f"[bold green]✓ Model saved to {model_path}[/bold green]")
 
-if __name__ == '__main__':
-    run()
+    return model_artifact
+        

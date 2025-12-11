@@ -123,9 +123,9 @@
 .pw-btn-success { background: #00b341 !important; color: white !important; }
 .pw-btn-predict { background: #a855f7 !important; color: white !important; }
 .pw-btn-select-predicted { 
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important; 
+    background: #a855f7 !important; 
     color: white !important; 
-    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3) !important;
+    box-shadow: 0 2px 8px #7835b8 !important;
 }
 .pw-btn-select-predicted:hover {
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important;

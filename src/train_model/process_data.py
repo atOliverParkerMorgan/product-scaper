@@ -3,6 +3,7 @@
 import regex as re
 import logging
 import sys
+from utils import normalize_tag
 from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple
 import lxml.html
@@ -28,12 +29,6 @@ PRICE_REGEX = re.compile(
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Constants
-def normalize_tag(tag: Any) -> str:
-    """Normalize HTML tag to string."""
-    if not isinstance(tag, str):
-        return 'unknown'
-    return str(tag).lower()
 
 def _extract_element_features(
     element: lxml.html.HtmlElement, 
@@ -69,6 +64,7 @@ def _extract_element_features(
         features['text_len'] = len(text)
         features['text_word_count'] = len(text.split())
         features['text_digit_count'] = sum(c.isdigit() for c in text)
+        features['has_currency_symbol'] = 1 if re.search(CURRENCY_HINTS, text) else 0
         features['is_price_format'] = 1 if PRICE_REGEX.search(text) else 0
         
         # Density & Readability
@@ -83,10 +79,33 @@ def _extract_element_features(
         # Hyperlink context
         features['has_href'] = 1 if element.get('href') else 0
         features['is_image'] = 1 if element.tag == 'img' else 0
+        
+        # Image-specific features
+        features['has_src'] = 1 if element.get('src') else 0
+        features['has_alt'] = 1 if element.get('alt') else 0
+        features['alt_len'] = len(element.get('alt', ''))
+        
+        # Image dimension hints (width/height attributes)
+        try:
+            width = element.get('width', '')
+            height = element.get('height', '')
+            features['has_dimensions'] = 1 if (width or height) else 0
+        except Exception:
+            features['has_dimensions'] = 0
+        
+        # Parent context for images (images in links are often product images)
+        features['parent_is_link'] = 1 if (parent is not None and normalize_tag(parent.tag) == 'a') else 0
+        
+        # Count nearby images (siblings that are images)
+        if parent is not None:
+            sibling_images = sum(1 for sibling in parent if normalize_tag(getattr(sibling, 'tag', '')) == 'img')
+            features['sibling_image_count'] = sibling_images
+        else:
+            features['sibling_image_count'] = 0
 
         return features
 
-    except Exception as e:
+    except Exception:
         # Suppress warnings for expected non-element issues if any slip through
         return {}
     
@@ -157,7 +176,7 @@ def get_main_html_content_tag(
 
         base_score = total_text + (total_imgs * IMG_IMPORTANCE)
         
-        # --- FIX 1: Gallery Exception ---
+        # --- Gallery Exception ---
         # If an element has many images (e.g., > 5), it is likely a product grid or gallery.
         # We should IGNORE or reduce link density penalty for these, because product grids are usually 100% links.
         if total_imgs > 5:
@@ -167,13 +186,13 @@ def get_main_html_content_tag(
 
         penalty_factor = 1.0 - (link_density * effective_link_weight)
         
-        # --- FIX 2: Depth Bonus (Additive) ---
+        # --- Depth Bonus (Additive) ---
         # We want to favor the specific container (depth 5) over the body (depth 1)
         depth_score = current_depth * DEPTH_SCORE_COEFFICIENT
         
         final_score = (base_score * max(0.01, penalty_factor)) + depth_score
 
-        # --- FIX 3: Hard Body Penalty ---
+        # --- Hard Body Penalty ---
         # The body tag accumulates everything. Unless the page is very flat, 
         # we almost never want to return 'body' as the specific main content.
         if tag == 'body' or tag == 'html':

@@ -1,9 +1,7 @@
 import logging
 import time
-import yaml
 import copy
 from typing import Dict, List
-from urllib.parse import urlparse
 from pathlib import Path
 from playwright.sync_api import sync_playwright, Error as PlaywrightError
 from train_model.predict_data import predict_selectors
@@ -206,7 +204,7 @@ def navigate_to_url(page, url):
         print(f"⚠️ Navigation warning: {e}")
 
 
-def select_data(url: str, categories: List[str]):
+def select_data(url: str, categories: List[str], model=None)-> Dict[str, List[str]]:
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=False, args=['--start-maximized'])
         context = browser.new_context(no_viewport=True)
@@ -232,7 +230,12 @@ def select_data(url: str, categories: List[str]):
                 if category != last_category:
                     print(f"\n🔮 Auto-predicting for '{category}'...")
                     html_content = page.content()
-                    predicted = predict_selectors(html_content, category)
+                    if model is None:
+                        print("⚠️ No model provided for predictions.")
+                        last_category = category
+                        continue
+                    
+                    predicted = predict_selectors(html_content, model, category)
                     
                     if predicted:
                         page.evaluate("document.querySelectorAll('.pw-predicted').forEach(el => el.classList.remove('pw-predicted'))")
@@ -368,63 +371,9 @@ def select_data(url: str, categories: List[str]):
         except Exception as e:
             print(f"\n❌ Error: {e}")
         finally:
-            save_results(selections, url, page)
             try:
                 browser.close()
             except Exception:
                 pass
-
-def get_save_directory(url):
-    """Determine save directory from URL."""
-    try:
-        domain = urlparse(url).netloc.replace('www.', '')
-        base_name = domain.split('.')[0] or 'site'
-    except Exception:
-        base_name = 'unknown_site'
-        
-    save_dir = Path(__file__).parent.parent / 'data' / base_name
-    
-    if not save_dir.exists():
-        save_dir.mkdir(parents=True, exist_ok=True)
-        print(f"📁 Created directory: {save_dir}")
-    
-    return save_dir
-
-
-def save_selectors_yaml(save_dir, selections):
-    """Save selections to YAML file."""
-    try:
-        with open(save_dir / 'selectors.yaml', 'w', encoding='utf-8') as f:
-            yaml.dump(selections, f, sort_keys=False)
-    except Exception as e:
-        print(f"❌ Failed to save YAML: {e}")
-
-
-def save_page_html(save_dir, page):
-    """Save page HTML content."""
-    try:
-        content = page.content()
-        with open(save_dir / 'page.html', 'w', encoding='utf-8') as f:
-            f.write(content)
-    except Exception: 
-        print("⚠️ Could not save HTML (browser context likely closed)")
-
-
-def save_results(selections, url, page):
-    """Save selections and page HTML to disk."""
-    if not selections:
-        return
-    
-    try:
-        save_dir = get_save_directory(url)
-        save_selectors_yaml(save_dir, selections)
-        save_page_html(save_dir, page)
-
-        print(f"\n💾 Saved to: {save_dir}")
-    except Exception as e:
-        print(f"Save error: {e}")
-
-if __name__ == "__main__":
-    # Example usage
-    # select_data("https://example.com", ["price", "title", "image"])
-    pass
+            finally:
+                return selections

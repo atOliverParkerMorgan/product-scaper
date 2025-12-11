@@ -1,7 +1,4 @@
-from create_data import select_data
-from train_model.process_data import data_to_csv
-from train_model.train_model import run
-
+from ProductScaper import ProductScraper
 
 WEBSITES = [
     # "https://trigon-knihy.cz/antikvariat/",
@@ -72,25 +69,8 @@ CATEGORIES = [
 ]
 
 if __name__ == "__main__":
-    from pathlib import Path
-    from urllib.parse import urlparse
-    
-    data_dir = Path.cwd() / 'src' / 'data'
-    
-    for url in WEBSITES:
-        # Extract domain name from URL
-        parsed_url = urlparse(url)
-        domain = parsed_url.netloc.replace('www.', '')
-        base_name = domain.split('.')[0] or 'default_site'
-        
-        # Check if data directory already exists
-        site_data_dir = data_dir / base_name
-        if site_data_dir.exists() and (site_data_dir / 'selectors.yaml').exists():
-            print(f"Skipping {url} - data already exists at {site_data_dir}")
-            continue
-        
-        print(f"Processing {url}...")
-        data = select_data(url, CATEGORIES)
-        data_to_csv()
-        run()
+    product_scraper = ProductScraper(categories=CATEGORIES, websites_urls=WEBSITES)
+    product_scraper.train()
+    product_scraper.evaluate()
+    product_scraper.save()
         
