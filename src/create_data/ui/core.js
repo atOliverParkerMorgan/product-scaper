@@ -63,14 +63,13 @@
                     <span id="pw-step-counter">Step 1/1</span>
                     <span id="pw-count-badge">0 selected</span>
                 </div>
-                <div class="pw-stat-row" id="pw-predicted-row" style="display:none">
+                <div class="pw-stat-row" id="pw-predicted-row">
                     <span style="color: #888;">Predicted:</span>
                     <span id="pw-predicted-badge">0 found</span>
                 </div>
                 <div id="pw-selector-box">Hover an element...</div>
                 <div class="pw-btn-group-top">
-                    <button id="pw-btn-predict" class="pw-btn pw-btn-predict">Auto-Label</button>
-                    <button id="pw-btn-select-predicted" class="pw-btn pw-btn-secondary pw-hidden">Select Auto-Labeled</button>
+                    <button id="pw-btn-select-predicted" class="pw-btn pw-btn-select-predicted">Select Predictions</button>
                 </div>
                 <div class="pw-btn-group">
                     <button id="pw-btn-prev" class="pw-btn pw-btn-secondary">Back</button>
@@ -85,7 +84,6 @@
         document.getElementById('pw-btn-prev').onclick = () => window._action = 'prev';
         document.getElementById('pw-btn-next').onclick = () => window._action = 'next';
         document.getElementById('pw-btn-done').onclick = () => window._action = 'done';
-        document.getElementById('pw-btn-predict').onclick = () => window._action = 'predict';
         document.getElementById('pw-btn-select-predicted').onclick = () => window._action = 'select_predicted';
         
         // --- DRAGGABLE LOGIC ---

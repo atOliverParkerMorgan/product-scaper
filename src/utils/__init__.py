@@ -1,12 +1,5 @@
 """Utilities module for product scraper."""
 
-from .constants import (
-    DATA_NAME,
-    OTHER_CATEGORY,
-    PRICE_REGEX,
-    RANDOM_STATE,
-    UNWANTED_TAGS,
-)
 from .utils import (
     count_unique_tags,
     generate_selector_for_element,

@@ -7,7 +7,6 @@ from urllib.parse import urlparse
 from pathlib import Path
 from playwright.sync_api import sync_playwright, Error as PlaywrightError
 from train_model.predict_data import predict_selectors
-
 # --- CONFIGURATION ---
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 
@@ -147,19 +146,29 @@ def handle_toggle_action(selector, category, selections, undo_stack, redo_stack,
         print(f"[+] Added: {selector}")
 
 
-def handle_navigate_action(direction, current_idx, categories, undo_stack, redo_stack):
+def handle_navigate_action(direction, current_idx, categories, undo_stack, redo_stack, page):
     """Handle navigation action (next, prev, done)."""
     if direction == 'next':
         undo_stack.clear()
         redo_stack.clear()
+        # Clear predictions when navigating
+        try:
+            page.evaluate("document.querySelectorAll('.pw-predicted').forEach(el => el.classList.remove('pw-predicted'))")
+        except:
+            pass
         return current_idx + 1, False
     elif direction == 'prev' and current_idx > 0:
         undo_stack.clear()
         redo_stack.clear()
+        # Clear predictions when navigating
+        try:
+            page.evaluate("document.querySelectorAll('.pw-predicted').forEach(el => el.classList.remove('pw-predicted'))")
+        except:
+            pass
         return current_idx - 1, False
     elif direction == 'done':
         return current_idx, True
-    # 'predict' and 'select_predicted' are handled in the main loop
+    # 'select_predicted' is handled in the main loop
     return current_idx, False
 
 
@@ -211,6 +220,7 @@ def select_data(url: str, categories: List[str]):
         redo_stack = []
         current_idx = 0
         last_selections_hash = None
+        last_category = None  # Track category changes to re-run predictions
         
         try:
             should_exit = False
@@ -218,7 +228,59 @@ def select_data(url: str, categories: List[str]):
                 category = categories[current_idx]
                 current_selection_list = selections.get(category, [])
 
-                # 1. Update UI Overlay
+                # 1. Auto-run predictions for this category (when category changes)
+                if category != last_category:
+                    print(f"\n🔮 Auto-predicting for '{category}'...")
+                    html_content = page.content()
+                    predicted = predict_selectors(html_content, category)
+                    
+                    if predicted:
+                        page.evaluate("document.querySelectorAll('.pw-predicted').forEach(el => el.classList.remove('pw-predicted'))")
+                        highlighted_count = 0
+                        
+                        for candidate in predicted:
+                            try:
+                                xpath = candidate.get('xpath')
+                                idx = candidate.get('index')
+                                
+                                js_highlight_script = ""
+                                
+                                if xpath:
+                                    escaped_xpath = xpath.replace("'", "\\'")
+                                    js_highlight_script = f"""
+                                        const iterator = document.evaluate('{escaped_xpath}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+                                        const el = iterator.singleNodeValue;
+                                        if (el && !el.classList.contains('pw-selected')) {{
+                                            el.classList.add('pw-predicted');
+                                            return 1;
+                                        }}
+                                        return 0;
+                                    """
+                                elif idx is not None:
+                                    js_highlight_script = f"""
+                                        const allElements = document.querySelectorAll('*');
+                                        const el = allElements[{idx}];
+                                        if (el && !el.classList.contains('pw-selected')) {{
+                                            el.classList.add('pw-predicted');
+                                            return 1;
+                                        }}
+                                        return 0;
+                                    """
+
+                                if js_highlight_script:
+                                    result = page.evaluate(f"(() => {{ try {{ {js_highlight_script} }} catch(e) {{ return 0; }} }})()")
+                                    highlighted_count += result
+
+                            except Exception as e:
+                                print(f"   ⚠️ Error highlighting candidate: {e}")
+
+                        print(f"💡 Highlighted {highlighted_count} predicted elements.")
+                    else:
+                        print("⚠️ No predictions found for this category.")
+                    
+                    last_category = category
+
+                # 2. Update UI Overlay
                 ui_updated = update_ui_state(page, category, len(current_selection_list), 
                                             current_idx, len(categories))
                 
@@ -230,14 +292,14 @@ def select_data(url: str, categories: List[str]):
                     # If injection fails repeatedly, break loop
                     print("❌ Lost connection to page UI.")
                     break
-
-                # 2. Highlight selections (only if changed)
+                
+                # 3. Highlight selections (only if changed)
                 current_hash = hash(tuple(current_selection_list))
                 if current_hash != last_selections_hash:
                     highlight_selectors(page, current_selection_list, force_update=True)
                     last_selections_hash = current_hash
 
-                # 3. Poll for interactions
+                # 4. Poll for interactions
                 action_type, action_payload = poll_for_action(page)
 
                 if action_type == 'toggle':
@@ -246,81 +308,15 @@ def select_data(url: str, categories: List[str]):
                     last_selections_hash = None
 
                 elif action_type == 'navigate':
-                    if action_payload == 'predict':
-                        # --- PREDICTION LOGIC ---
-                        print(f"\n🔮 Running prediction for '{category}'...")
-                        
-                        # Get clean content
-                        html_content = page.content()
-                        
-                        # Call your prediction function
-                        predicted = predict_selectors(html_content, category)
-                        
-                        if predicted:
-                            # Clean old predictions
-                            page.evaluate("document.querySelectorAll('.pw-predicted').forEach(el => el.classList.remove('pw-predicted'))")
-                            
-                            highlighted_count = 0
-                            
-                            for candidate in predicted:
-                                try:
-                                    # Try using xpath if available (more robust)
-                                    xpath = candidate.get('xpath')
-                                    # Fallback to index if xpath missing
-                                    idx = candidate.get('index') 
-                                    
-                                    js_highlight_script = ""
-                                    
-                                    if xpath:
-                                        # XPath-based highlighting
-                                        escaped_xpath = xpath.replace("'", "\\'")
-                                        js_highlight_script = f"""
-                                            const iterator = document.evaluate('{escaped_xpath}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
-                                            const el = iterator.singleNodeValue;
-                                            if (el && !el.classList.contains('pw-selected')) {{
-                                                el.classList.add('pw-predicted');
-                                                return 1;
-                                            }}
-                                            return 0;
-                                        """
-                                    elif idx is not None:
-                                        # Index-based highlighting (Fallback)
-                                        # NOTE: This assumes document.querySelectorAll('*') matches lxml's flat list
-                                        js_highlight_script = f"""
-                                            const allElements = document.querySelectorAll('*');
-                                            const el = allElements[{idx}];
-                                            if (el && !el.classList.contains('pw-selected')) {{
-                                                el.classList.add('pw-predicted');
-                                                return 1;
-                                            }}
-                                            return 0;
-                                        """
-
-                                    if js_highlight_script:
-                                        result = page.evaluate(f"(() => {{ try {{ {js_highlight_script} }} catch(e) {{ return 0; }} }})()")
-                                        highlighted_count += result
-
-                                except Exception as e:
-                                    print(f"   ⚠️ Error highlighting candidate: {e}")
-
-                            print(f"💡 Highlighted {highlighted_count} predicted elements.")
-                            if highlighted_count == 0:
-                                print("   (Elements found in HTML but couldn't be matched to live DOM)")
-                                
-                        else:
-                            print("⚠️ No predictions found for this category.")
-                    
-                    elif action_payload == 'select_predicted':
+                    if action_payload == 'select_predicted':
                         # --- SELECT ALL PREDICTED ---
                         print("\n✨ Selecting all predicted elements...")
                         try:
-                            # Generate selectors for everything with class .pw-predicted
                             selectors_added = page.evaluate("""
                                 (() => {
                                     const predicted = document.querySelectorAll('.pw-predicted');
                                     const selectors = [];
                                     predicted.forEach(el => {
-                                        // Use window._generateSelector (injected in core.js or fallback)
                                         const selector = window._generateSelector(el);
                                         if (selector && !el.classList.contains('pw-selected')) {
                                             el.classList.remove('pw-predicted');
@@ -339,13 +335,12 @@ def select_data(url: str, categories: List[str]):
                                 if category not in selections:
                                     selections[category] = []
                                 
-                                # Add unique selectors
                                 for selector in selectors_added:
                                     if selector not in selections[category]:
                                         selections[category].append(selector)
                                 
                                 print(f"[+] Added {len(selectors_added)} elements.")
-                                last_selections_hash = None # Trigger re-render
+                                last_selections_hash = None
                             else:
                                 print("⚠️ No highlighted predictions to select.")
                                 
@@ -355,7 +350,7 @@ def select_data(url: str, categories: List[str]):
                     else:
                         # Normal Navigation (Next/Prev/Done)
                         current_idx, should_exit = handle_navigate_action(
-                            action_payload, current_idx, categories, undo_stack, redo_stack)
+                            action_payload, current_idx, categories, undo_stack, redo_stack, page)
                         last_selections_hash = None
 
                 elif action_type == 'history':

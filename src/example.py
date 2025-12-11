@@ -27,7 +27,7 @@ WEBSITES = [
     "https://www.antikalfa.cz/obalky-ilustrace-vazby-podpisy-1-vydani/",
     "https://www.antikavion.cz/",
     "https://www.antikvariat-benes.cz/eshop/",
-    "https://www.antikvariatchrudim.cz/",
+    # "https://www.antikvariatchrudim.cz/",
     "https://www.antikvariat-delta.cz/",
     "https://www.antikvariat-divis.cz/cze/novinky",
     "https://www.antikvariatik.sk/en/novinky",
@@ -90,7 +90,7 @@ if __name__ == "__main__":
             continue
         
         print(f"Processing {url}...")
-        select_data(url, CATEGORIES)
+        data = select_data(url, CATEGORIES)
         data_to_csv()
         run()
         

@@ -1,0 +1,1230 @@
+<!DOCTYPE html><html lang="cs"><head>
+  <title> Antikvariát Dlážděná</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="title" content=" Antikvariát Dlážděná">
+  <meta name="description" content="Nejnovější tituly knih: - Prodejní galerie knih, obrazů a umělěckých děl. Antikvariát Dlážděná">
+  <meta name="keywords" content="Nejnovější tituly knih: - Knihy, antikvariat">
+      <meta name="robots" content="all, follow">
+    <meta name="author" content="MiniObr.cz">
+  <link rel="shortcut icon" href="/ad/images/favicon.ico">
+  <link rel="stylesheet" type="text/css" media="screen" href="/ad/css/style.css?v=3">
+  <link rel="stylesheet" type="text/css" media="screen" href="/css/jquery.lightbox-0.5.css">
+    <script type="text/javascript" src="/js/jquery.js"></script>
+  <script type="text/javascript" src="/js/jquery.lightbox-0.5.min.js"></script>
+  <style type="text/css">/* --- SELECTION HIGHLIGHTS --- */
+.pw-hover {
+    outline: 2px dashed #4da6ff !important;
+    outline-offset: -2px !important;
+    background-color: rgba(77, 166, 255, 0.15) !important;
+    cursor: crosshair !important;
+}
+.pw-selected {
+    outline: 2px solid #09ff00 !important;
+    outline-offset: -2px !important;
+    background-color: rgba(0, 255, 157, 0.2) !important;
+    box-shadow: 0 0 10px rgba(0, 255, 157, 0.3) !important;
+}
+
+/* --- DARK MODE UI CONTAINER --- */
+#pw-ui {
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    width: 320px !important;
+    background: rgba(20, 20, 23, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5) !important;
+    z-index: 2147483647 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, sans-serif !important;
+    color: #fff !important;
+    backdrop-filter: blur(20px) !important;
+    transform: translate3d(0,0,0); 
+}
+
+/* --- HEADER (DRAGGABLE) --- */
+#pw-ui-header {
+    padding: 14px 16px !important;
+    background: rgba(255, 255, 255, 0.03) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    cursor: grab !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    user-select: none !important;
+    border-radius: 12px 12px 0 0 !important;
+}
+#pw-ui-header:active { cursor: grabbing !important; }
+
+#pw-ui h2 {
+    margin: 0 !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    color: #888 !important;
+    pointer-events: none !important;
+}
+
+#pw-category-name {
+    color: #fff !important;
+    margin-left: 8px !important;
+}
+
+/* --- BODY --- */
+#pw-ui-body { padding: 16px !important; }
+
+.pw-stat-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    margin-bottom: 12px !important;
+    font-size: 13px !important;
+    color: #aaa !important;
+}
+
+#pw-count-badge {
+    background: rgba(0, 255, 157, 0.1) !important;
+    color: #00ff9d !important;
+    padding: 2px 8px !important;
+    border-radius: 4px !important;
+    font-weight: bold !important;
+}
+
+#pw-predicted-badge {
+    background: rgba(168, 85, 247, 0.15) !important;
+    color: #a855f7 !important;
+    padding: 2px 8px !important;
+    border-radius: 4px !important;
+    font-weight: bold !important;
+}
+
+#pw-selector-box {
+    background: #000 !important;
+    border: 1px solid #333 !important;
+    color: #00ff9d !important;
+    border-radius: 6px !important;
+    padding: 12px !important;
+    font-family: 'Menlo', 'Monaco', monospace !important;
+    font-size: 11px !important;
+    line-height: 1.5 !important;
+    margin-bottom: 16px !important;
+    word-break: break-all !important;
+    min-height: 45px !important;
+    max-height: 100px !important;
+    overflow-y: auto !important;
+}
+
+/* --- BUTTONS --- */
+.pw-btn-group { display: flex !important; gap: 8px !important; }
+.pw-btn-group-top { display: flex !important; gap: 8px !important; margin-bottom: 12px !important; }
+
+.pw-btn {
+    flex: 1 !important;
+    padding: 10px !important;
+    border: none !important;
+    border-radius: 6px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+}
+.pw-btn:hover { filter: brightness(1.1) !important; }
+.pw-btn:active { transform: scale(0.96) !important; }
+
+.pw-btn-secondary { background: rgba(255,255,255,0.1) !important; color: #fff !important; }
+.pw-btn-primary { background: #007aff !important; color: white !important; }
+.pw-btn-success { background: #00b341 !important; color: white !important; }
+.pw-btn-predict { background: #a855f7 !important; color: white !important; }
+.pw-btn-select-predicted { 
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important; 
+    color: white !important; 
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3) !important;
+}
+.pw-btn-select-predicted:hover {
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important;
+}
+.pw-hidden { display: none !important; }
+
+/* --- PREDICTION HIGHLIGHTS --- */
+.pw-predicted {
+    outline: 2px dashed #a855f7 !important;
+    outline-offset: -2px !important;
+    background-color: rgba(168, 85, 247, 0.15) !important;
+}
+
+.pw-hint {
+    text-align: center !important;
+    margin-top: 12px !important;
+    font-size: 10px !important;
+    color: #555 !important;
+}</style></head>
+<body>
+<div class="modal-window cart">
+  <div class="modal-overlay"></div>
+  <div class="modal-wrap">
+    <a href="#" title="X" class="close" onclick="$('.modal-window.cart').removeClass('active');location.reload();">x</a>
+    <div class="modal-content">
+      <div class="title"></div>
+      <div class="content">
+        <div class="modal-info">Položka byla vložena do košíku</div>
+        <div class="modal-cart">
+          <a href="https://www.adplus.cz/kosik">Do košíku</a>
+          <span class="ar"><span></span></span>
+        </div>
+        <div class="modal-list">
+          <a href="#" onclick="$('.modal-window.cart').removeClass('active');location.reload();" class="pw-predicted">Pokračovat v nákupu</a>
+          <span class="ar"><span></span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="wrapper" class="">
+  <div id="page-over">
+    <div id="page">
+      <div id="header">
+        <h1> Antikvariát Dlážděná</h1>
+        <div id="header-box">
+          <div id="mobil-login">
+                          <a href="https://www.adplus.cz/prihlaseni">přihlášení</a>&nbsp;/
+              <a href="https://www.adplus.cz/registrace">nový účet &nbsp;</a>
+                      </div>
+          <div id="user-box">
+              <form method="post" action="https://www.adplus.cz/prihlaseni" name="login" id="sf_guard_signin" class="sf_apply_signin_inline">
+    <label for="signin_username">Login</label>
+    <input type="text" name="orderUser[web_username]" id="signin_username" required="">
+    <label for="signin_password">Heslo</label>
+    <input type="password" name="orderUser[web_password]" id="signin_password" required="">
+    <!--<label for="signin_remember">Pamatovat</label>
+    <input type="checkbox" name="orderUser[remember]" id="signin_remember" />
+    -->
+    <input type="hidden" id="orderUser__token" name="orderUser[_token]" value="lYLM_hUA7e2inO0VZal_hwmvHdpgNcW6O3PuTtlDBKg">
+    <input class="submit" type="submit" value="Přihlásit">
+    &nbsp;&nbsp;&nbsp;
+    <a href="https://www.adplus.cz/registrace">Nový účet</a>
+  </form>
+
+          </div>
+                    <!-- kosik -->
+                    <div id="search">
+            <form method="get" action="https://www.adplus.cz/vyhledavani">
+              <div>
+                <span>Vyhledávání:
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.adplus.cz/trideni-knih">- pokročilé třídění</a>
+                                    <br>
+                </span>
+                <input type="text" name="q" id="search-text" value="">
+                <input type="submit" id="search-submit" value="vyhledat">
+              </div>
+            </form>
+          </div>
+        </div>
+        <div id="logo">
+                      <div id="title">
+              <a href="https://www.adplus.cz/">
+                Antikvariát<br>Dlážděná
+              </a>
+            </div>
+            <a href="https://www.adplus.cz/">
+              <img src="/ad/images/logo.png" alt="Antikvariát Dlážděná">
+            </a>
+                    <div id="address">
+            AD Plus, s.r.o<br>Dlážděná 7<br>110 00 Praha 1
+          </div>
+        </div>
+      </div>
+      <div id="mobil-sidebar">menu &nbsp;<span>→</span></div>
+<div id="sidebar" class="">
+  <div id="menu">
+    <ul>
+      <li class="first"><a href="https://www.adplus.cz/knihy"><strong>Knihy</strong></a></li>
+      <li><a href="https://www.adplus.cz/knihy">Nabídka</a></li>
+      <li><a href="https://www.adplus.cz/stranka/vykupujeme">Vykupujeme</a></li>
+    </ul>
+    <ul>
+      <li class="first"><a href="https://www.adplus.cz/aukce"><strong>Aukce</strong></a></li>
+              <li><a href="https://www.adplus.cz/aukce/nove">Aktuální aukce</a></li>
+            <li><a href="https://www.adplus.cz/stranka/prijem-do-aukci" class="pw-predicted">Příjem do aukcí</a></li>
+      <li><a href="https://www.adplus.cz/aukce/historie">Historie aukcí</a></li>
+    </ul>
+    <ul>
+      <li class="first"><a href="https://www.adplus.cz/grafiky"><strong>Obrazy, grafiky</strong></a></li>
+    </ul>
+  </div>
+    <ul>
+      <li>
+        <div id="other_categories">
+          <h2>Sběratelský koutek:</h2>
+                    <ul>
+            <li class="categories"><a href="https://www.adplus.cz/seznam-edic">- Edice</a></li>
+                                          <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/bibliofilie-a-krasna-kniha">- Bibliofilie a krásná kniha</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/exilova-vydani-a-samizdat">- Exilová vydání a samizdat</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/japanistika-1">- Japanistika</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/pohlednice">- Pohlednice</a>
+                </li>
+                                      <li class="categories">
+              <a href="https://www.adplus.cz/doporucujeme">- Doporučujeme</a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h2>Kategorie:</h2>
+          <ul>
+                                          <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/edice-symposium">Edice Symposium</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/anticka-literatura-a-ziva-dila-minulosti-klasika">Antická literatura a Živá díla minulosti, klasika</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/avantgarda-a-obalky">Avantgarda a obálky</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/beletrie-ceska-a-zahranicni">Beletrie česká a zahraniční</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/bilingvni-literatura">Bilingvní literatura</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/burian-zdenek">Burian Zdeněk</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/cestopisy-a-pruvodce">Cestopisy a průvodce</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/cizojazycne-tituly">Cizojazyčné tituly</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/capek-karel">Čapek Karel</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/casopisy">Časopisy</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/devatenacte-stol-a-starsi">Devatenácté stol. a starší</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/detska-a-dobrodruzna-literatura">Dětská a dobrodružná literatura</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/divadlo-hudba-film">Divadlo, hudba, film</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/edice-kod">Edice KOD</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/edice-oko">Edice OKO</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/edice-plamen">Edice PLAMEN</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/filosofie">Filosofie</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/foglar-jaroslav">Foglar Jaroslav</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/fotograficke-publikace-a-knihy-o-fotografii">Fotografické publikace a knihy o fotografii</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/grafika-kresby-fotografie-pohledy-mapy">Grafika, kresby, fotografie, pohledy, mapy</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/historie-a-militaria">Historie a militária</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/houby">Houby</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/hudebni-cd-dvd-audio-knihy">Hudební CD, DVD, Audio knihy</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/judaica">Judaica</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/jules-verne">Jules Verne</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/kant">Kant</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/katalogy-vystav-umelecke-foto-a-jine">Katalogy výstav, umělecké, foto a jiné</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/podpisy-a-dedikace">Podpisy a dedikace</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/komiks">Komiks</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/kubasta-vojtech">Kubašta Vojtěch</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/kucharky">Kuchařky</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/literarni-veda">Literární věda</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/marvel-dc">MARVEL, DC</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/mistopis-a-zemepis-pruvodce">Místopis a zeměpis, průvodce</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/mystika-esoterika-nabozenstvi-a-podobne">Mystika, esoterika, náboženství a podobné</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/mytologie-povesti-baje-legendy">Mytologie, pověsti, báje, legendy</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/nakladatelstvi-vltavin">Nakladatelství Vltavín</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/noty-pisnicky-zpevniky">Noty, písničky, zpěvníky</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/pameti-a-zivotopisy">Paměti a životopisy</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/poezie-ceska-a-zahranicni">Poezie česká a zahraniční</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/pragensie">Pragensie</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/pravo">Právo</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/prirodni-vedy">Přírodní vědy</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/sachy">Šachy</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/sci-fi-fantasy">Sci-fi, fantasy</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/skautska-literatura">Skautská literatura</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/spolecenske-vedy">Společenské vědy</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/sport">Sport</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/stara-rise">Stará Říše</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/technicka-literatura">Technická literatura</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/thrillery-detektivky-horory">Thrillery, detektivky, horory</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/ucebnice-slovniky-encyklopedie-atlasy">Učebnice, slovníky, encyklopedie, atlasy</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/umeni-a-architektura">Umění a architektura</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/varia">Varia</a>
+                </li>
+                                                        <li class="categories">
+                  <a href="https://www.adplus.cz/kategorie/vinyl">Vinyl</a>
+                </li>
+                                    </ul>
+        </div>
+      </li>
+    </ul>
+    <br>
+    <div id="menu-down">
+      <ul>
+        <li class="first"><a href="https://www.adplus.cz/stranka/vykupujeme"><strong>FAQ</strong></a></li>
+        <li><a href="https://www.adplus.cz/stranka/obchodni-podminky">Obchodní podmínky</a></li>
+        <li><a href="https://www.adplus.cz/stranka/kontakt">Kontakt</a></li>
+      </ul>
+    </div>
+  <br><br>
+      <small>Odkazy:</small><br>
+    <ul>
+      <li>
+        <ul>
+                    <li>
+            <a href="https://www.auctions-art.cz/" title="Aukční síň Vltavín" target="_blank"><small>Aukční síň Vltavín</small></a>
+          </li>
+                    <li>
+            <a href="https://www.antiqari.at/" title="Antikvariát Radhošť" target="_blank"><small>Antikvariát Radhošť</small></a>
+          </li>
+                    <li>
+            <a href="https://www.antikvariat-vltavin.cz/" title="Antikvariát Vltavín" target="_blank"><small>Antikvariát Vltavín</small></a>
+          </li>
+                  </ul>
+      </li>
+    </ul>
+  </div>
+<!-- end #sidebar -->
+
+      <div id="page-content" class="">
+        <div id="content" class="">
+                                   <div class="entry-hp">
+    <p style="text-align:center">Chcete koupit nebo prodat knihy? V našem antikvariátu naleznete mnoho zajímavého čtení. Prodáváme a vykupujeme knihy, staré tisky, rukopisy, bibliofilie, beletrii, historii, ale i obrazy, grafiku,&nbsp;sochy, fotografie, mapy, svaté obrázky…</p>
+
+<p style="text-align:center"><strong><u class="">KNIHY PROSÍM OBJEDNÁVEJTE PŘEDEM, NEŽ SE VYDÁTE K NÁM DO OBCHODU.&nbsp;<br>
+MUSÍME JE PŘIPRAVIT.<br>
+REZERVACE JE NAPROSTO NEZÁVAZNÁ.</u></strong></p>
+
+<p style="text-align:center" class="">Dovolujeme si zároveň upozornit, že veškeré tituly jsou současně nabízeny i přímo na prodejně a může se tedy stát, že Vámi vybraný titul již byl prodán, ale nestihl se odepsat z on-line nabídky.<br>
+Za tuto skutečnost se Vám předem omlouváme.</p>
+
+<hr class="">
+<p style="text-align:center" class=""><strong><u class="">VÝKUP KNIH -&nbsp;PONDĚLÍ 10:00-18:00</u></strong></p>
+
+<hr class="">
+<p style="text-align:center" class=""><u><strong class="">GARANCE DODÁNÍ DO VÁNOC</strong></u><br>
+Vážení zákazníci,<br>
+dodání vašich zásilek do Vánoc garantujeme u objednávek zaplacených&nbsp;nejpozději<br>
+v pondělí 15.12.2025.<br>
+Děkujeme za pochopení.</p>
+
+<hr class="">
+<p style="text-align:center" class="">Vážení zákazníci,<br>
+z technických důvodů bude v úterý <strong class="">16.12.2025</strong> naše prodejna uzavřena.<br>
+Děkujeme za pochopení.</p>
+
+<hr class="">
+<p style="text-align:center" class=""><strong class=""><u class="">VÁNOČNÍ OTEVÍRACÍ DOBA</u><br>
+22.12.2025&nbsp;- 10-18<br>
+23.12.2025&nbsp;- 10-16<br>
+24.12.2025 - 26.12.2025 - ZAVŘENO<br>
+29.12.2025 - 10-18<br>
+30.12.2025 - 2.1.2026 - ZAVŘENO</strong></p>
+  </div>
+
+                      <h2 class="title pw-predicted">Nejnovější tituly knih:</h2>
+  <hr class="">
+  <div id="articles" class="padd">
+    
+      <div class="items-list">
+          <div class="item-over rt fr">
+        <div class="item">
+          <div class="list-gallery">
+            <a href="https://www.adplus.cz/kniha/litevstina-konverzace" title="Litevština konverzace" class=""><img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/books/litevstina-konverzace.jpg" class="pw-selected"></a>
+          </div>
+          <div class="item-content">
+            <div class="item-header">
+              <a href="https://www.adplus.cz/kniha/litevstina-konverzace" class="">
+                <strong class="">Litevština konverzace</strong>
+              </a>
+              <div class="item-cart">
+                                                                                              150,-
+                                                                                                                          <a rel="nofollow" href="javascript:void(0);" class="ajax-cart" data-href="https://www.adplus.cz/pridat-do-kosiku?b=283251&amp;c=1&amp;p=150" title="přidat do košíku"><img src="/ad/images/kosik.gif" alt="košík"></a>
+                                                                                          </div><!-- /item-cart  -->
+            </div><!-- /item-header  -->
+            <div class="item-autor"><div class="">Autor</div><div class=""><a href="/autor/kolektiv-autoru" class="">Kolektiv  autorů</a></div> </div> <div class="item-meta">
+                <p class="">2012, Lingea</p> <p></p><p class="">Stav: velmi dobrý - mírné opotřebení</p></div>
+          </div><!-- /item-content  -->
+        </div><!-- /item  -->
+        <br class="clear">
+      </div><!-- /item-over -->
+            <div class="item-over fr">
+        <div class="item">
+          <div class="list-gallery">
+            <a href="https://www.adplus.cz/kniha/lotystina-konverzace" title="Lotyština konverzace"><img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/books/lotystina-konverzace.jpg" class="pw-selected"></a>
+          </div>
+          <div class="item-content">
+            <div class="item-header">
+              <a href="https://www.adplus.cz/kniha/lotystina-konverzace" class="">
+                <strong class="">Lotyština konverzace</strong>
+              </a>
+              <div class="item-cart">
+                                                                                              150,-
+                                                                                                                          <a rel="nofollow" href="javascript:void(0);" class="ajax-cart" data-href="https://www.adplus.cz/pridat-do-kosiku?b=283250&amp;c=1&amp;p=150" title="přidat do košíku"><img src="/ad/images/kosik.gif" alt="košík"></a>
+                                                                                          </div><!-- /item-cart  -->
+            </div><!-- /item-header  -->
+            <div class="item-autor"><div class="">Autor</div><div><a href="/autor/kolektiv-autoru" class="">Kolektiv  autorů</a></div> </div> <div class="item-meta">
+                <p class="">2012, Lingea</p> <p></p><p class="">Stav: velmi dobrý - mírné opotřebení</p></div>
+          </div><!-- /item-content  -->
+        </div><!-- /item  -->
+        <br class="clear">
+      </div><!-- /item-over -->
+            <div class="item-over rt">
+        <div class="item">
+          <div class="list-gallery">
+            <a href="https://www.adplus.cz/kniha/estonstina-konverzace" title="Estonština konverzace"><img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/books/estonstina-konverzace.jpg" class="pw-selected"></a>
+          </div>
+          <div class="item-content">
+            <div class="item-header">
+              <a href="https://www.adplus.cz/kniha/estonstina-konverzace">
+                <strong class="">Estonština konverzace</strong>
+              </a>
+              <div class="item-cart">
+                                                                                              150,-
+                                                                                                                          <a rel="nofollow" href="javascript:void(0);" class="ajax-cart" data-href="https://www.adplus.cz/pridat-do-kosiku?b=283249&amp;c=1&amp;p=150" title="přidat do košíku"><img src="/ad/images/kosik.gif" alt="košík"></a>
+                                                                                          </div><!-- /item-cart  -->
+            </div><!-- /item-header  -->
+            <div class="item-autor"><div class="">Autor</div><div class=""><a href="/autor/kolektiv-autoru" class="">Kolektiv  autorů</a></div> </div> <div class="item-meta">
+                <p class="">2012, Lingea</p> <p></p><p class="">Stav: velmi dobrý - mírné opotřebení</p></div>
+          </div><!-- /item-content  -->
+        </div><!-- /item  -->
+        <br class="clear">
+      </div><!-- /item-over -->
+            <div class="item-over">
+        <div class="item">
+          <div class="list-gallery">
+            <a href="https://www.adplus.cz/kniha/srbstina-konverzace" title="Srbština konverzace"><img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/books/srbstina-konverzace.jpg" class="pw-selected"></a>
+          </div>
+          <div class="item-content">
+            <div class="item-header">
+              <a href="https://www.adplus.cz/kniha/srbstina-konverzace" class="">
+                <strong class="">Srbština konverzace</strong>
+              </a>
+              <div class="item-cart">
+                                                                                              150,-
+                                                                                                                          <a rel="nofollow" href="javascript:void(0);" class="ajax-cart" data-href="https://www.adplus.cz/pridat-do-kosiku?b=283248&amp;c=1&amp;p=150" title="přidat do košíku"><img src="/ad/images/kosik.gif" alt="košík"></a>
+                                                                                          </div><!-- /item-cart  -->
+            </div><!-- /item-header  -->
+            <div class="item-autor"><div class="">Autor</div><div><a href="/autor/kolektiv-autoru" class="">Kolektiv  autorů</a></div> </div> <div class="item-meta">
+                <p class="">2015, Lingea</p> <p></p><p class="">Stav: velmi dobrý - mírné opotřebení - velmi lehce ušpiněná ořízka</p></div>
+          </div><!-- /item-content  -->
+        </div><!-- /item  -->
+        <br class="clear">
+      </div><!-- /item-over -->
+            <div class="item-over rt">
+        <div class="item">
+          <div class="list-gallery">
+            <a href="https://www.adplus.cz/kniha/slovinstina-konverzace" title="Slovinština konverzace"><img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/books/slovinstina-konverzace.jpg" class="pw-selected"></a>
+          </div>
+          <div class="item-content">
+            <div class="item-header">
+              <a href="https://www.adplus.cz/kniha/slovinstina-konverzace" class="">
+                <strong class="">Slovinština konverzace</strong>
+              </a>
+              <div class="item-cart">
+                                                                                              100,-
+                                                                                                                          <a rel="nofollow" href="javascript:void(0);" class="ajax-cart" data-href="https://www.adplus.cz/pridat-do-kosiku?b=283247&amp;c=1&amp;p=100" title="přidat do košíku"><img src="/ad/images/kosik.gif" alt="košík"></a>
+                                                                                          </div><!-- /item-cart  -->
+            </div><!-- /item-header  -->
+            <div class="item-autor"><div class="">Autor</div><div><a href="/autor/kolektiv-autoru" class="">Kolektiv  autorů</a></div> </div> <div class="item-meta">
+                <p class="">2018, Lingea</p> <p></p><p class="">Stav: velmi dobrý - mírné opotřebení</p></div>
+          </div><!-- /item-content  -->
+        </div><!-- /item  -->
+        <br class="clear">
+      </div><!-- /item-over -->
+            <div class="item-over">
+        <div class="item">
+          <div class="list-gallery">
+            <a href="https://www.adplus.cz/kniha/chorvatstina-konverzace" title="Chorvatština konverzace"><img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/books/chorvatstina-konverzace.jpg" class="pw-selected"></a>
+          </div>
+          <div class="item-content">
+            <div class="item-header">
+              <a href="https://www.adplus.cz/kniha/chorvatstina-konverzace">
+                <strong class="">Chorvatština konverzace</strong>
+              </a>
+              <div class="item-cart">
+                                                                                              150,-
+                                                                                                                          <a rel="nofollow" href="javascript:void(0);" class="ajax-cart" data-href="https://www.adplus.cz/pridat-do-kosiku?b=283246&amp;c=1&amp;p=150" title="přidat do košíku"><img src="/ad/images/kosik.gif" alt="košík"></a>
+                                                                                          </div><!-- /item-cart  -->
+            </div><!-- /item-header  -->
+            <div class="item-autor"><div class="">Autor</div><div><a href="/autor/kolektiv-autoru">Kolektiv  autorů</a></div> </div> <div class="item-meta">
+                <p class="">2010, Lingea</p> <p></p><p class="">Stav: velmi dobrý - mírné opotřebení</p></div>
+          </div><!-- /item-content  -->
+        </div><!-- /item  -->
+        <br class="clear">
+      </div><!-- /item-over -->
+            <div class="item-over rt">
+        <div class="item">
+          <div class="list-gallery">
+            <a href="https://www.adplus.cz/kniha/madarstina-konverzace-1" title="Maďarština konverzace"><img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/books/madarstina-konverzace-1.jpg" class="pw-selected"></a>
+          </div>
+          <div class="item-content">
+            <div class="item-header">
+              <a href="https://www.adplus.cz/kniha/madarstina-konverzace-1">
+                <strong class="">Maďarština konverzace</strong>
+              </a>
+              <div class="item-cart">
+                                                                                              100,-
+                                                                                                                          <a rel="nofollow" href="javascript:void(0);" class="ajax-cart" data-href="https://www.adplus.cz/pridat-do-kosiku?b=283245&amp;c=1&amp;p=100" title="přidat do košíku"><img src="/ad/images/kosik.gif" alt="košík"></a>
+                                                                                          </div><!-- /item-cart  -->
+            </div><!-- /item-header  -->
+            <div class="item-autor"><div class="">Autor</div><div class=""><a href="/autor/kolektiv-autoru" class="">Kolektiv  autorů</a></div> </div> <div class="item-meta">
+                <p class="">2017, Lingea</p> <p></p><p class="">Stav: velmi dobrý - mírné opotřebení</p></div>
+          </div><!-- /item-content  -->
+        </div><!-- /item  -->
+        <br class="clear">
+      </div><!-- /item-over -->
+            <div class="item-over">
+        <div class="item">
+          <div class="list-gallery">
+            <a href="https://www.adplus.cz/kniha/polstina-konverzace" title="Polština konverzace"><img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/books/polstina-konverzace.jpg" class="pw-selected"></a>
+          </div>
+          <div class="item-content">
+            <div class="item-header">
+              <a href="https://www.adplus.cz/kniha/polstina-konverzace" class="">
+                <strong class="">Polština konverzace</strong>
+              </a>
+              <div class="item-cart">
+                                                                                              150,-
+                                                                                                                          <a rel="nofollow" href="javascript:void(0);" class="ajax-cart" data-href="https://www.adplus.cz/pridat-do-kosiku?b=283244&amp;c=1&amp;p=150" title="přidat do košíku"><img src="/ad/images/kosik.gif" alt="košík"></a>
+                                                                                          </div><!-- /item-cart  -->
+            </div><!-- /item-header  -->
+            <div class="item-autor"><div class="">Autor</div><div><a href="/autor/kolektiv-autoru" class="">Kolektiv  autorů</a></div> </div> <div class="item-meta">
+                <p class="">2010, Lingea</p> <p></p><p>Stav: velmi dobrý - mírné opotřebení</p></div>
+          </div><!-- /item-content  -->
+        </div><!-- /item  -->
+        <br class="clear">
+      </div><!-- /item-over -->
+            <div class="item-over rt">
+        <div class="item">
+          <div class="list-gallery">
+            <a href="https://www.adplus.cz/kniha/armenstina-konverzace" title="Arménština konverzace"><img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/books/armenstina-konverzace.jpg" class="pw-selected"></a>
+          </div>
+          <div class="item-content">
+            <div class="item-header">
+              <a href="https://www.adplus.cz/kniha/armenstina-konverzace" class="">
+                <strong class="">Arménština konverzace</strong>
+              </a>
+              <div class="item-cart">
+                                                                                              150,-
+                                                                                                                          <a rel="nofollow" href="javascript:void(0);" class="ajax-cart" data-href="https://www.adplus.cz/pridat-do-kosiku?b=283243&amp;c=1&amp;p=150" title="přidat do košíku"><img src="/ad/images/kosik.gif" alt="košík"></a>
+                                                                                          </div><!-- /item-cart  -->
+            </div><!-- /item-header  -->
+            <div class="item-autor"><div class="">Autor</div><div><a href="/autor/kolektiv-autoru" class="">Kolektiv  autorů</a></div> </div> <div class="item-meta">
+                <p class="">2012, Lingea</p> <p></p><p class="">Stav: velmi dobrý - mírné opotřebení</p></div>
+          </div><!-- /item-content  -->
+        </div><!-- /item  -->
+        <br class="clear">
+      </div><!-- /item-over -->
+            <div class="item-over">
+        <div class="item">
+          <div class="list-gallery">
+            <a href="https://www.adplus.cz/kniha/gruzinstina-konverzace" title="Gruzínština konverzace"><img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/books/gruzinstina-konverzace.jpg" class="pw-selected"></a>
+          </div>
+          <div class="item-content">
+            <div class="item-header">
+              <a href="https://www.adplus.cz/kniha/gruzinstina-konverzace">
+                <strong class="">Gruzínština konverzace</strong>
+              </a>
+              <div class="item-cart">
+                                                                                              150,-
+                                                                                                                          <a rel="nofollow" href="javascript:void(0);" class="ajax-cart" data-href="https://www.adplus.cz/pridat-do-kosiku?b=283242&amp;c=1&amp;p=150" title="přidat do košíku"><img src="/ad/images/kosik.gif" alt="košík"></a>
+                                                                                          </div><!-- /item-cart  -->
+            </div><!-- /item-header  -->
+            <div class="item-autor"><div class="">Autor</div><div class=""><a href="/autor/kolektiv-autoru" class="">Kolektiv  autorů</a></div> </div> <div class="item-meta">
+                <p class="">2015, Lingea</p> <p></p><p class="">Stav: velmi dobrý - mírné opotřebení</p></div>
+          </div><!-- /item-content  -->
+        </div><!-- /item  -->
+        <br class="clear">
+      </div><!-- /item-over -->
+            <div class="item-over rt">
+        <div class="item">
+          <div class="list-gallery">
+            <a href="https://www.adplus.cz/kniha/turectina-konverzace" title="Turečtina konverzace"><img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/books/turectina-konverzace.jpg" class="pw-selected"></a>
+          </div>
+          <div class="item-content">
+            <div class="item-header">
+              <a href="https://www.adplus.cz/kniha/turectina-konverzace">
+                <strong class="">Turečtina konverzace</strong>
+              </a>
+              <div class="item-cart">
+                                                                                              100,-
+                                                                                                                          <a rel="nofollow" href="javascript:void(0);" class="ajax-cart" data-href="https://www.adplus.cz/pridat-do-kosiku?b=283241&amp;c=1&amp;p=100" title="přidat do košíku"><img src="/ad/images/kosik.gif" alt="košík"></a>
+                                                                                          </div><!-- /item-cart  -->
+            </div><!-- /item-header  -->
+            <div class="item-autor"><div class="">Autor</div><div><a href="/autor/kolektiv-autoru" class="">Kolektiv  autorů</a></div> </div> <div class="item-meta">
+                <p class="">2010, Lingea</p> <p></p><p class="">Stav: dobrý - opotřebeno</p></div>
+          </div><!-- /item-content  -->
+        </div><!-- /item  -->
+        <br class="clear">
+      </div><!-- /item-over -->
+            <div class="item-over">
+        <div class="item">
+          <div class="list-gallery">
+            <a href="https://www.adplus.cz/kniha/albanstina-konverzace" title="Albánština konverzace"><img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/books/albanstina-konverzace.jpg" class="pw-selected"></a>
+          </div>
+          <div class="item-content">
+            <div class="item-header">
+              <a href="https://www.adplus.cz/kniha/albanstina-konverzace">
+                <strong class="">Albánština konverzace</strong>
+              </a>
+              <div class="item-cart">
+                                                                                              150,-
+                                                                                                                          <a rel="nofollow" href="javascript:void(0);" class="ajax-cart" data-href="https://www.adplus.cz/pridat-do-kosiku?b=283240&amp;c=1&amp;p=150" title="přidat do košíku"><img src="/ad/images/kosik.gif" alt="košík"></a>
+                                                                                          </div><!-- /item-cart  -->
+            </div><!-- /item-header  -->
+            <div class="item-autor"><div class="">Autor</div><div><a href="/autor/kolektiv-autoru" class="">Kolektiv  autorů</a></div> </div> <div class="item-meta">
+                <p class="">2010, Lingea</p> <p></p><p>Stav: velmi dobrý - mírné opotřebení</p></div>
+          </div><!-- /item-content  -->
+        </div><!-- /item  -->
+        <br class="clear">
+      </div><!-- /item-over -->
+            <div class="item-over rt">
+        <div class="item">
+          <div class="list-gallery">
+            <a href="https://www.adplus.cz/kniha/mongolstina-konverzace" title="Mongolština konverzace"><img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/books/mongolstina-konverzace.jpg" class="pw-selected"></a>
+          </div>
+          <div class="item-content">
+            <div class="item-header">
+              <a href="https://www.adplus.cz/kniha/mongolstina-konverzace" class="">
+                <strong class="">Mongolština konverzace</strong>
+              </a>
+              <div class="item-cart">
+                                                                                              150,-
+                                                                                                                          <a rel="nofollow" href="javascript:void(0);" class="ajax-cart" data-href="https://www.adplus.cz/pridat-do-kosiku?b=283239&amp;c=1&amp;p=150" title="přidat do košíku"><img src="/ad/images/kosik.gif" alt="košík"></a>
+                                                                                          </div><!-- /item-cart  -->
+            </div><!-- /item-header  -->
+            <div class="item-autor"><div>Autor</div><div class=""><a href="/autor/kolektiv-autoru" class="">Kolektiv  autorů</a></div> </div> <div class="item-meta">
+                <p class="">2023, Lingea</p> <p></p><p class="">Stav: velmi dobrý - mírné opotřebení</p></div>
+          </div><!-- /item-content  -->
+        </div><!-- /item  -->
+        <br class="clear">
+      </div><!-- /item-over -->
+            <div class="item-over">
+        <div class="item">
+          <div class="list-gallery">
+            <a href="https://www.adplus.cz/kniha/hindstina-konverzace" title="Hindština konverzace"><img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/books/hindstina-konverzace.jpg" class="pw-selected"></a>
+          </div>
+          <div class="item-content">
+            <div class="item-header">
+              <a href="https://www.adplus.cz/kniha/hindstina-konverzace">
+                <strong class="">Hindština konverzace</strong>
+              </a>
+              <div class="item-cart">
+                                                                                              150,-
+                                                                                                                          <a rel="nofollow" href="javascript:void(0);" class="ajax-cart" data-href="https://www.adplus.cz/pridat-do-kosiku?b=283238&amp;c=1&amp;p=150" title="přidat do košíku"><img src="/ad/images/kosik.gif" alt="košík"></a>
+                                                                                          </div><!-- /item-cart  -->
+            </div><!-- /item-header  -->
+            <div class="item-autor"><div class="">Autor</div><div class=""><a href="/autor/kolektiv-autoru" class="">Kolektiv  autorů</a></div> </div> <div class="item-meta">
+                <p class="">2016, Lingea</p> <p></p><p class="">Stav: velmi dobrý - mírné opotřebení</p></div>
+          </div><!-- /item-content  -->
+        </div><!-- /item  -->
+        <br class="clear">
+      </div><!-- /item-over -->
+            <div class="item-over rt">
+        <div class="item">
+          <div class="list-gallery">
+            <a href="https://www.adplus.cz/kniha/filipinstina-konverzace" title="Filipínština konverzace" class=""><img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/books/filipinstina-konverzace.jpg" class="pw-selected"></a>
+          </div>
+          <div class="item-content">
+            <div class="item-header">
+              <a href="https://www.adplus.cz/kniha/filipinstina-konverzace" class="">
+                <strong class="">Filipínština konverzace</strong>
+              </a>
+              <div class="item-cart">
+                                                                                              150,-
+                                                                                                                          <a rel="nofollow" href="javascript:void(0);" class="ajax-cart" data-href="https://www.adplus.cz/pridat-do-kosiku?b=283237&amp;c=1&amp;p=150" title="přidat do košíku"><img src="/ad/images/kosik.gif" alt="košík"></a>
+                                                                                          </div><!-- /item-cart  -->
+            </div><!-- /item-header  -->
+            <div class="item-autor"><div class="">Autor</div><div class=""><a href="/autor/kolektiv-autoru" class="">Kolektiv  autorů</a></div> </div> <div class="item-meta">
+                <p class="">2017, Lingea</p> <p></p><p>Stav: velmi dobrý - mírné opotřebení</p></div>
+          </div><!-- /item-content  -->
+        </div><!-- /item  -->
+        <br class="clear">
+      </div><!-- /item-over -->
+            <div class="item-over">
+        <div class="item">
+          <div class="list-gallery">
+            <a href="https://www.adplus.cz/kniha/thajstina-konverzace" title="Thajština konverzace"><img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/books/thajstina-konverzace.jpg" class="pw-selected"></a>
+          </div>
+          <div class="item-content">
+            <div class="item-header">
+              <a href="https://www.adplus.cz/kniha/thajstina-konverzace">
+                <strong class="">Thajština konverzace</strong>
+              </a>
+              <div class="item-cart">
+                                                                                              150,-
+                                                                                                                          <a rel="nofollow" href="javascript:void(0);" class="ajax-cart" data-href="https://www.adplus.cz/pridat-do-kosiku?b=283236&amp;c=1&amp;p=150" title="přidat do košíku"><img src="/ad/images/kosik.gif" alt="košík"></a>
+                                                                                          </div><!-- /item-cart  -->
+            </div><!-- /item-header  -->
+            <div class="item-autor"><div class="">Autor</div><div><a href="/autor/kolektiv-autoru" class="">Kolektiv  autorů</a></div> </div> <div class="item-meta">
+                <p class="">2011, Lingea</p> <p></p><p class="">Stav: velmi dobrý - mírné opotřebení</p></div>
+          </div><!-- /item-content  -->
+        </div><!-- /item  -->
+        <br class="clear">
+      </div><!-- /item-over -->
+            <div class="item-over rt">
+        <div class="item">
+          <div class="list-gallery">
+            <a href="https://www.adplus.cz/kniha/indonestina-konverzace" title="Indonéština konverzace"><img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/books/indonestina-konverzace.jpg" class="pw-selected"></a>
+          </div>
+          <div class="item-content">
+            <div class="item-header">
+              <a href="https://www.adplus.cz/kniha/indonestina-konverzace">
+                <strong class="">Indonéština konverzace</strong>
+              </a>
+              <div class="item-cart">
+                                                                                              150,-
+                                                                                                                          <a rel="nofollow" href="javascript:void(0);" class="ajax-cart" data-href="https://www.adplus.cz/pridat-do-kosiku?b=283235&amp;c=1&amp;p=150" title="přidat do košíku"><img src="/ad/images/kosik.gif" alt="košík"></a>
+                                                                                          </div><!-- /item-cart  -->
+            </div><!-- /item-header  -->
+            <div class="item-autor"><div class="">Autor</div><div><a href="/autor/kolektiv-autoru" class="">Kolektiv  autorů</a></div> </div> <div class="item-meta">
+                <p class="">2016, Lingea</p> <p></p><p class="">Stav: velmi dobrý - mírné opotřebení</p></div>
+          </div><!-- /item-content  -->
+        </div><!-- /item  -->
+        <br class="clear">
+      </div><!-- /item-over -->
+            <div class="item-over">
+        <div class="item">
+          <div class="list-gallery">
+            <a href="https://www.adplus.cz/kniha/vietnamstina-konverzace-1" title="Vietnamština konverzace"><img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/books/vietnamstina-konverzace-1.jpg" class="pw-selected"></a>
+          </div>
+          <div class="item-content">
+            <div class="item-header">
+              <a href="https://www.adplus.cz/kniha/vietnamstina-konverzace-1">
+                <strong class="">Vietnamština konverzace</strong>
+              </a>
+              <div class="item-cart">
+                                                                                              150,-
+                                                                                                                          <a rel="nofollow" href="javascript:void(0);" class="ajax-cart" data-href="https://www.adplus.cz/pridat-do-kosiku?b=283234&amp;c=1&amp;p=150" title="přidat do košíku"><img src="/ad/images/kosik.gif" alt="košík"></a>
+                                                                                          </div><!-- /item-cart  -->
+            </div><!-- /item-header  -->
+            <div class="item-autor"><div class="">Autor</div><div><a href="/autor/kolektiv-autoru" class="">Kolektiv  autorů</a></div> </div> <div class="item-meta">
+                <p class="">2016, Lingea</p> <p></p><p class="">Stav: velmi dobrý - mírné opotřebení</p></div>
+          </div><!-- /item-content  -->
+        </div><!-- /item  -->
+        <br class="clear">
+      </div><!-- /item-over -->
+            <div class="item-over rt">
+        <div class="item">
+          <div class="list-gallery">
+            <a href="https://www.adplus.cz/kniha/japonstina-konverzace" title="Japonština konverzace" class=""><img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/books/japonstina-konverzace.jpg" class="pw-selected"></a>
+          </div>
+          <div class="item-content">
+            <div class="item-header">
+              <a href="https://www.adplus.cz/kniha/japonstina-konverzace" class="">
+                <strong class="">Japonština konverzace</strong>
+              </a>
+              <div class="item-cart">
+                                                                                              180,-
+                                                                                                                          <a rel="nofollow" href="javascript:void(0);" class="ajax-cart" data-href="https://www.adplus.cz/pridat-do-kosiku?b=283233&amp;c=1&amp;p=180" title="přidat do košíku"><img src="/ad/images/kosik.gif" alt="košík"></a>
+                                                                                          </div><!-- /item-cart  -->
+            </div><!-- /item-header  -->
+            <div class="item-autor"><div class="">Autor</div><div><a href="/autor/kolektiv-autoru" class="">Kolektiv  autorů</a></div> </div> <div class="item-meta">
+                <p class="">2011, Lingea</p> <p></p><p class="">Stav: velmi dobrý - mírné opotřebení</p></div>
+          </div><!-- /item-content  -->
+        </div><!-- /item  -->
+        <br class="clear">
+      </div><!-- /item-over -->
+            <div class="item-over">
+        <div class="item">
+          <div class="list-gallery">
+            <a href="https://www.adplus.cz/kniha/cinstina-konverzace" title="Čínština konverzace"><img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/books/cinstina-konverzace.jpg" class="pw-selected"></a>
+          </div>
+          <div class="item-content">
+            <div class="item-header">
+              <a href="https://www.adplus.cz/kniha/cinstina-konverzace">
+                <strong class="">Čínština konverzace</strong>
+              </a>
+              <div class="item-cart">
+                                                                                              150,-
+                                                                                                                          <a rel="nofollow" href="javascript:void(0);" class="ajax-cart" data-href="https://www.adplus.cz/pridat-do-kosiku?b=283232&amp;c=1&amp;p=150" title="přidat do košíku"><img src="/ad/images/kosik.gif" alt="košík"></a>
+                                                                                          </div><!-- /item-cart  -->
+            </div><!-- /item-header  -->
+            <div class="item-autor"><div class="">Autor</div><div><a href="/autor/kolektiv-autoru" class="">Kolektiv  autorů</a></div> </div> <div class="item-meta">
+                <p class="">2011, Lingea</p> <p></p><p class="">Stav: dobrý - opotřebeno - odřeno a ušpiněno - vypadlých pár stran - na první stránce razítko</p></div>
+          </div><!-- /item-content  -->
+        </div><!-- /item  -->
+        <br class="clear">
+      </div><!-- /item-over -->
+          <!--br class="clear"-->
+  </div><!-- /items-list -->
+                        <div class="more">
+      <a href="https://www.adplus.cz/2">Další »</a>
+  </div>
+
+<div class="less">
+  </div>
+
+<div id="pager">
+  <div class="items-page">
+                                      <a class="curr" title="strana: 1" href="https://www.adplus.cz/">1</a>
+                        <a title="strana: 2" href="https://www.adplus.cz/2">2</a>
+                        <a title="strana: 3" href="https://www.adplus.cz/3">3</a>
+                        <a title="strana: 4" href="https://www.adplus.cz/4">4</a>
+                        <a title="strana: 5" href="https://www.adplus.cz/5">5</a>
+                        <a title="strana: 6" href="https://www.adplus.cz/6">6</a>
+                        <a title="strana: 7" href="https://www.adplus.cz/7">7</a>
+                        <a title="strana: 8" href="https://www.adplus.cz/8">8</a>
+                        <a title="strana: 9" href="https://www.adplus.cz/9">9</a>
+                        <a title="strana: 10" href="https://www.adplus.cz/10">10</a>
+                        <a title="strana: 11" href="https://www.adplus.cz/11">11</a>
+                        <a title="strana: 12" href="https://www.adplus.cz/12">12</a>
+                        <a title="strana: 13" href="https://www.adplus.cz/13">13</a>
+                        <a title="strana: 14" href="https://www.adplus.cz/14">14</a>
+                        <a title="strana: 15" href="https://www.adplus.cz/15">15</a>
+                        <a title="strana: 16" href="https://www.adplus.cz/16">16</a>
+                        <a title="strana: 17" href="https://www.adplus.cz/17">17</a>
+                        <a title="strana: 18" href="https://www.adplus.cz/18">18</a>
+                        <a title="strana: 19" href="https://www.adplus.cz/19">19</a>
+                        <a title="strana: 20" href="https://www.adplus.cz/20">20</a>
+                    <a href="https://www.adplus.cz/2">&gt;</a>
+      <a href="https://www.adplus.cz/1600">»</a>
+      </div>
+</div>
+      
+
+  </div>
+        </div>
+        <div class="clear"></div>
+      </div><!-- end #page-content -->
+    </div><!-- end #page -->
+    <div id="rightbar">
+      <div class="box banner">
+  <a href="https://livebid.cz/auction/vltavin_vanocni_224" title="a224" target="_blank">
+    <img alt="" src="/uploads/banner/d_129797.jpg">
+  </a>
+</div>
+
+  <div class="box">
+    <h2 class="title"><a href="https://www.adplus.cz/grafiky" class="pw-predicted">Obrazy, grafika</a></h2><a href="https://www.adplus.cz/grafiky">
+    </a><div class="item-list"><a href="https://www.adplus.cz/grafiky">
+              </a><div class="item-over"><a href="https://www.adplus.cz/grafiky">
+          </a><div class="item"><a href="https://www.adplus.cz/grafiky">
+            </a><div class="item-header"><a href="https://www.adplus.cz/grafiky">
+              </a><a href="https://www.adplus.cz/grafika/blue-lady"><strong>Blue Lady</strong></a>
+            </div>
+            <div class="list-gallery">
+              <a href="https://www.adplus.cz/grafika/blue-lady" class="">
+                <img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/grafika/blue-lady.jpg" class="">
+              </a>
+            </div>
+            <div class="item-autor"><div>Autor</div><div><a href="/grafika-autor/sliva-jiri">Slíva, Jiří</a></div></div><div class="item-meta"><p class="">litografie</p><p class="">15x5,5</p><p class="">Stav: velmi dobrý</p><p class="">32/40</p></div>
+          </div>
+        </div>
+        <br class="clear">
+              <div class="item-over">
+          <div class="item">
+            <div class="item-header">
+              <a href="https://www.adplus.cz/grafika/miss-beer"><strong>Miss Beer</strong></a>
+            </div>
+            <div class="list-gallery">
+              <a href="https://www.adplus.cz/grafika/miss-beer">
+                <img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/grafika/miss-beer.jpg" class="">
+              </a>
+            </div>
+            <div class="item-autor"><div class="">Autor</div><div class=""><a href="/grafika-autor/sliva-jiri" class="">Slíva, Jiří</a></div></div><div class="item-meta"><p class="">litografie</p><p class="">8,5x6</p><p class="">Stav: velmi dobrý</p><p class="">27/55</p></div>
+          </div>
+        </div>
+        <br class="clear">
+              <div class="item-over">
+          <div class="item">
+            <div class="item-header">
+              <a href="https://www.adplus.cz/grafika/slow-love"><strong class="">Slow Love</strong></a>
+            </div>
+            <div class="list-gallery">
+              <a href="https://www.adplus.cz/grafika/slow-love">
+                <img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/grafika/slow-love.jpg" class="">
+              </a>
+            </div>
+            <div class="item-autor"><div class="">Autor</div><div class=""><a href="/grafika-autor/sliva-jiri">Slíva, Jiří</a></div></div><div class="item-meta"><p class="">litografie</p><p class="">13,5x9,5</p><p class="">Stav: velmi dobrý</p><p class="">18/50</p></div>
+          </div>
+        </div>
+        <br class="clear">
+          </div>
+  </div>
+
+<div class="box">
+  <h2 class="title"><a href="https://www.adplus.cz/aukce">Aukce:</a></h2><a href="https://www.adplus.cz/aukce">
+  </a><div class="item-list"><a href="https://www.adplus.cz/aukce">
+          </a><div class="item-over"><a href="https://www.adplus.cz/aukce">
+        </a><div class="item"><a href="https://www.adplus.cz/aukce">
+          </a><div class="item-header"><a href="https://www.adplus.cz/aukce">
+            </a><a href="https://www.adplus.cz/aukce-polozka/kazdy-den-zazrak"><strong>Každý den zázrak</strong></a>
+          </div>
+          <div class="list-gallery">
+            <a href="https://www.adplus.cz/aukce-polozka/kazdy-den-zazrak">
+              <img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/aukce/kazdy-den-zazrak.jpg" class="">
+            </a>
+          </div>
+          <div class="item-autor">
+                <div>Autor</div><div><a href="/aukce-autor/hrabal">Bohumil Hrabal</a></div> 
+            </div>
+          <p>podpis autora, u Tygra, 1990, vyd. Československý spisovatel, Praha, 1979, pův. clpl. vazba s obálkou, 356s., obálce lehce potrhána, dobrý stav</p>
+        </div>
+      </div>
+      <br class="clear">
+          <div class="item-over">
+        <div class="item">
+          <div class="item-header">
+            <a href="https://www.adplus.cz/aukce-polozka/kouzelna-fletna"><strong>Kouzelná flétna</strong></a>
+          </div>
+          <div class="list-gallery">
+            <a href="https://www.adplus.cz/aukce-polozka/kouzelna-fletna">
+              <img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/aukce/kouzelna-fletna.jpg">
+            </a>
+          </div>
+          <div class="item-autor">
+                <div>Autor</div><div><a href="/aukce-autor/hrabal">Bohumil Hrabal</a></div> 
+            </div>
+          <p>podpis autora, u Tygra, 1990, vyd. Československý spisovatel, Praha, 1990, pův. brož, 152s., dobrý stav</p>
+        </div>
+      </div>
+      <br class="clear">
+          <div class="item-over">
+        <div class="item">
+          <div class="item-header">
+            <a href="https://www.adplus.cz/aukce-polozka/bambino-di-praga-barvotisky-krasna-poldi" class="pw-predicted"><strong>Bambino di Praga / Barvotisky...</strong></a>
+          </div>
+          <div class="list-gallery">
+            <a href="https://www.adplus.cz/aukce-polozka/bambino-di-praga-barvotisky-krasna-poldi">
+              <img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/aukce/bambino-di-praga-barvotisky-krasna-poldi.jpg">
+            </a>
+          </div>
+          <div class="item-autor">
+                <div>Autor</div><div><a href="/aukce-autor/hrabal">Bohumil Hrabal</a></div> 
+            </div>
+          <p>podpis&nbsp;autora, u Tygra, 1991, vyd. Československý spisovatel, Praha, 1990, pův. clpl. vazba, 115s., dobrý stav</p>
+        </div>
+      </div>
+      <br class="clear">
+      </div>
+</div>
+
+<div class="box">
+  <h2 class="title"><a href="https://www.adplus.cz/doporucujeme" class="pw-predicted">Doporučujeme:</a></h2><a href="https://www.adplus.cz/doporucujeme">
+  </a><div class="item-list"><a href="https://www.adplus.cz/doporucujeme">
+        </a><div class="item-over"><a href="https://www.adplus.cz/doporucujeme">
+      </a><div class="item"><a href="https://www.adplus.cz/doporucujeme">
+        </a><div class="item-header"><a href="https://www.adplus.cz/doporucujeme">
+          </a><a href="https://www.adplus.cz/kniha/umelec-vila-a-bazen"><strong>Umělec, vila a bazén</strong></a>
+        </div>
+        <div class="list-gallery">
+          <a href="https://www.adplus.cz/kniha/umelec-vila-a-bazen" title="Umělec, vila a bazén"><img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/books/um/umelec-vila-bazen.jpg" class=""></a>
+        </div>
+        <div class="item-autor"><div>Autor</div><div><a href="/autor/bartkova-alena">Bartková Alena</a>, <a href="/autor/pivonkova-barbora-j">Pivoňková Barbora J.</a>, <a href="/autor/svadlenkova-zdenka">Švadlenková Zdenka</a></div> </div> <div class="item-meta">
+                <p>2014, PageFive</p><p>Stav: dobrý, mírné opotřebení, lehce ošoupána obálka</p></div>
+      </div>
+    </div>
+    <br class="clear">
+        <div class="item-over">
+      <div class="item">
+        <div class="item-header">
+          <a href="https://www.adplus.cz/kniha/guns-n-roses"><strong>Guns n´Roses</strong></a>
+        </div>
+        <div class="list-gallery">
+          <a href="https://www.adplus.cz/kniha/guns-n-roses" title="Guns n´Roses"><img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/books/gu/guns-n-roses.jpg"></a>
+        </div>
+        <div class="item-autor"><div>Autor</div><div><a href="/autor/putterford-mark">Putterford Mark</a></div> </div> <div class="item-meta">
+                <p>1994, Champagne Avantgarde</p><p>Stav: dobrý, mírné opotřebení, lehce zažloutlá titulka</p></div>
+      </div>
+    </div>
+    <br class="clear">
+        <div class="item-over">
+      <div class="item">
+        <div class="item-header">
+          <a href="https://www.adplus.cz/kniha/tri-z-valasska"><strong>Tři z Valašska</strong></a>
+        </div>
+        <div class="list-gallery">
+          <a href="https://www.adplus.cz/kniha/tri-z-valasska" title="Tři z Valašska"><img alt="" src="https://www.adplus.cz/uploads/120x120/uploads/books/tr/tri-z-valasska.jpg"></a>
+        </div>
+        <div class="item-autor"><div>Autor</div><div><a href="/autor/kol-autoru">kol. autorů</a></div> </div> <div class="item-meta">
+                <p>1942, Vilém Šmidt</p><p>Stav: dobrý</p></div>
+      </div>
+    </div>
+    <br class="clear">
+      </div>
+</div>
+
+<div class="box">
+  <div class="item-list">
+      <div class="item" style="height: 80px;">
+        <iframe src="https://www.facebook.com/plugins/likebox.php?href=https%3A%2F%2Fwww.facebook.com%2FAntikvariatDlazdena&amp;width=273&amp;height=100&amp;colorscheme=dark&amp;show_faces=false&amp;border_color&amp;stream=false&amp;header=false" scrolling="no" style="border:none; width:273px; height:80px; overflow: visible;" allowtransparency="true" frameborder="0"></iframe>
+    </div>
+  </div>
+</div>
+<br class="clear">
+<div>
+  <a href="https://obchody.heureka.cz/adplus-cz/recenze/" target="_blank">
+    <img src="https://im9.cz/cb/22787-12.png" alt="Heureka.cz - ověřené hodnocení obchodu Antikvariát Dlážděná" style="border: 0;" width="130" height="160">
+  </a>
+</div>
+
+    </div>
+  </div><!-- end #page-over -->
+  <div id="footer" class="clear">
+    <p>Copyright (c) 2025 Antikvariát Dlážděná</p>
+  </div>
+</div>
+<!-- end #footer -->
+  <div class="modal-window cookie">
+  <div class="modal-overlay"></div>
+  <div class="modal-wrap cookie">
+    <div class="modal-content cookie">
+      <div class="title"><strong>Používáme soubory cookies</strong></div>
+      <div class="content">
+        <div class="modal-info cookie">
+            Tyto webové stránky používají soubory cookies a další nástroje sloužící ke správné funkčnosti stránek,
+            analýzy návštěvnosti webových stránek a zjištění zdroje návštěvnosti.
+            <div class="modal-more">
+              <div class="modal-more-content">
+              <strong>Bezpodmínečně nutné soubory cookies</strong>
+              <br>
+                Tyto soubory cookies jsou nezbytné k tomu, abychom vám mohli poskytovat služby dostupné prostřednictvím našeho webu a abychom vám umožnili používat určité funkce našeho webu. Bez těchto cookies vám nemůžeme na naší webové stránce poskytovat určité služby
+              </div>
+              <div class="more-content">
+              <strong>Sledovací a výkonnostní soubory cookies</strong>
+              <br>
+                Tyto soubory cookies se používají ke shromažďování informací pro analýzu provozu na našich webových stránkách a sledování používání našich webových stránek uživateli. Tyto soubory cookies mohou například sledovat věci jako je doba kterou na webu trávíte, nebo stránky, které navštěvujete, což nám pomáhá pochopit, jak pro vás můžeme vylepšit náš web. Informace shromážděné prostřednictvím těchto sledovacích a výkonnostních cookies neidentifikují žádné osoby.
+              </div>
+            </div>
+          <a href="javascript:void(0);" class="toggle-more active" onclick="$('.modal-more').addClass('active');$('.toggle-less').addClass('active');$('.toggle-more').removeClass('active');">Více</a>
+          <a href="javascript:void(0);" class="toggle-less" onclick="$('.modal-more').removeClass('active');$('.toggle-more').addClass('active');$('.toggle-less').removeClass('active');">Skrýt</a>
+          <br class="clear">
+        </div>
+        <div class="modal-cart cookie">
+          <a href="javascript:void(0);" class="ajax-cookie pw-predicted" data-href="https://www.adplus.cz/ajax/cookie/less">
+            Používat pouze nezbytné cookies
+          </a>
+        </div>
+        <div class="modal-list cookie">
+          <a href="javascript:void(0);" class="ajax-cookie pw-predicted" data-href="https://www.adplus.cz/ajax/cookie/all">
+            Používat všechny cookies
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript" src="/js/main.js?v=4"></script>
+
+
+<div id="pw-ui">
+            <div id="pw-ui-header" style="cursor: grab;">
+                <h2>Select <span id="pw-category-name">image</span></h2>
+                <div style="opacity:0.5">::</div>
+            </div>
+            <div id="pw-ui-body">
+                <div class="pw-stat-row">
+                    <span id="pw-step-counter">Step 3/3</span>
+                    <span id="pw-count-badge">20 selected</span>
+                </div>
+                <div class="pw-stat-row" id="pw-predicted-row" style="display: flex;">
+                    <span style="color: #888;">Predicted:</span>
+                    <span id="pw-predicted-badge">8 found</span>
+                </div>
+                <div id="pw-selector-box">body &gt; div:nth-of-type(2)</div>
+                <div class="pw-btn-group-top">
+                    <button id="pw-btn-predict" class="pw-btn pw-btn-predict">Auto-Label</button>
+                    <button id="pw-btn-select-predicted" class="pw-btn pw-btn-secondary">Select Auto-Labeled</button>
+                </div>
+                <div class="pw-btn-group">
+                    <button id="pw-btn-prev" class="pw-btn pw-btn-secondary">Back</button>
+                    <button id="pw-btn-next" class="pw-btn pw-btn-primary pw-hidden">Next Category</button>
+                    <button id="pw-btn-done" class="pw-btn pw-btn-success">Finish &amp; Save</button>
+                </div>
+                <div class="pw-hint">Right-Click to interact (close modals)<br>Ctrl+Shift+Z to Redo</div>
+            </div>
+        </div></body></html>

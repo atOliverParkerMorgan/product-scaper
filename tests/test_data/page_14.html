@@ -1,0 +1,2842 @@
+<html xmlns:og="http://ogp.me/ns#" xmlns:fb="http://www.facebook.com/2008/fbml" lang="cs" class="tmpl__3r01 supports csstransforms3d csstransitions"><head>
+          <script>
+              window.cookie_preferences = getCookieSettings('cookie_preferences');
+              window.cookie_statistics = getCookieSettings('cookie_statistics');
+              window.cookie_marketing = getCookieSettings('cookie_marketing');
+
+              function getCookieSettings(cookie_name) {
+                  if (document.cookie.length > 0)
+                  {
+                      cookie_start = document.cookie.indexOf(cookie_name + "=");
+                      if (cookie_start != -1)
+                      {
+                          cookie_start = cookie_start + cookie_name.length + 1;
+                          cookie_end = document.cookie.indexOf(";", cookie_start);
+                          if (cookie_end == -1)
+                          {
+                              cookie_end = document.cookie.length;
+                          }
+                          return unescape(document.cookie.substring(cookie_start, cookie_end));
+                      }
+                  }
+                  return false;
+              }
+          </script>
+                <title>Antikvariát Chrudim</title>
+        <script type="text/javascript">var action_unavailable='action_unavailable';var id_language = 'cs';var id_country_code = 'CZ';var language_code = 'cs-CZ';var path_request = '/request.php';var type_request = 'POST';var cache_break = "2484"; var enable_console_debug = false; var enable_logging_errors = false;var administration_id_language = 'cs';var administration_id_country_code = 'CZ';</script>          <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+          <script type="text/javascript" src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+                  <script src="/wa_script/js/jquery.hoverIntent.minified.js?_=2025-12-09-10-19" type="text/javascript"></script>
+        <script type="text/javascript" src="/admin/jscripts/jquery.qtip.min.js?_=2025-12-09-10-19"></script>
+                  <script src="/wa_script/js/jquery.selectBoxIt.min.js?_=2025-12-09-10-19" type="text/javascript"></script>
+                  <script src="/wa_script/js/bs_overlay.js?_=2025-12-09-10-19" type="text/javascript"></script>
+        <script src="/wa_script/js/bs_design.js?_=2025-12-09-10-19" type="text/javascript"></script>
+        <script src="/admin/jscripts/wa_translation.js?_=2025-12-09-10-19" type="text/javascript"></script>
+        <link rel="stylesheet" type="text/css" href="/css/jquery.selectBoxIt.wa_script.css?_=2025-12-09-10-19" media="screen, projection">
+        <link rel="stylesheet" type="text/css" href="/css/jquery.qtip.lupa.css?_=2025-12-09-10-19">
+        
+                  <script src="/wa_script/js/jquery.colorbox-min.js?_=2025-12-09-10-19" type="text/javascript"></script>
+          <link rel="stylesheet" type="text/css" href="/css/colorbox.css?_=2025-12-09-10-19">
+          <script type="text/javascript">
+            jQuery(document).ready(function() {
+              (function() {
+                function createGalleries(rel) {
+                  var regex = new RegExp(rel + "\\[(\\d+)]"),
+                      m, group = "g_" + rel, groupN;
+                  $("a[rel*=" + rel + "]").each(function() {
+                    m = regex.exec(this.getAttribute("rel"));
+                    if(m) {
+                      groupN = group + m[1];
+                    } else {
+                      groupN = group;
+                    }
+                    $(this).colorbox({
+                      rel: groupN,
+                      slideshow:false,
+                       maxWidth: "85%",
+                       maxHeight: "85%",
+                       returnFocus: false
+                    });
+                  });
+                }
+                createGalleries("lytebox");
+                createGalleries("lyteshow");
+              })();
+            });</script>
+          <script type="text/javascript">
+      function init_products_hovers()
+      {
+        jQuery(".product").hoverIntent({
+          over: function(){
+            jQuery(this).find(".icons_width_hack").animate({width: "130px"}, 300, function(){});
+          } ,
+          out: function(){
+            jQuery(this).find(".icons_width_hack").animate({width: "10px"}, 300, function(){});
+          },
+          interval: 40
+        });
+      }
+      jQuery(document).ready(function(){
+
+        jQuery(".param select, .sorting select").selectBoxIt();
+
+        jQuery(".productFooter").click(function()
+        {
+          var $product_detail_link = jQuery(this).parent().find("a:first");
+
+          if($product_detail_link.length && $product_detail_link.attr("href"))
+          {
+            window.location.href = $product_detail_link.attr("href");
+          }
+        });
+        init_products_hovers();
+        
+        ebar_details_visibility = {};
+        ebar_details_visibility["user"] = false;
+        ebar_details_visibility["basket"] = false;
+
+        ebar_details_timer = {};
+        ebar_details_timer["user"] = setTimeout(function(){},100);
+        ebar_details_timer["basket"] = setTimeout(function(){},100);
+
+        function ebar_set_show($caller)
+        {
+          var $box_name = $($caller).attr("id").split("_")[0];
+
+          ebar_details_visibility["user"] = false;
+          ebar_details_visibility["basket"] = false;
+
+          ebar_details_visibility[$box_name] = true;
+
+          resolve_ebar_set_visibility("user");
+          resolve_ebar_set_visibility("basket");
+        }
+
+        function ebar_set_hide($caller)
+        {
+          var $box_name = $($caller).attr("id").split("_")[0];
+
+          ebar_details_visibility[$box_name] = false;
+
+          clearTimeout(ebar_details_timer[$box_name]);
+          ebar_details_timer[$box_name] = setTimeout(function(){resolve_ebar_set_visibility($box_name);},300);
+        }
+
+        function resolve_ebar_set_visibility($box_name)
+        {
+          if(   ebar_details_visibility[$box_name]
+             && jQuery("#"+$box_name+"_detail").is(":hidden"))
+          {
+            jQuery("#"+$box_name+"_detail").slideDown(300);
+          }
+          else if(   !ebar_details_visibility[$box_name]
+                  && jQuery("#"+$box_name+"_detail").not(":hidden"))
+          {
+            jQuery("#"+$box_name+"_detail").slideUp(0, function() {
+              $(this).css({overflow: ""});
+            });
+          }
+        }
+
+        
+        jQuery("#user_icon, #basket_icon").hoverIntent({
+          over: function(){
+            ebar_set_show(this);
+            
+          } ,
+          out: function(){
+            ebar_set_hide(this);
+          },
+          interval: 40
+        });
+        
+        jQuery("#user_icon").click(function(e)
+        {
+          if(jQuery(e.target).attr("id") == "user_icon")
+          {
+            window.location.href = "https://www.antikvariatchrudim.cz/74op4gt7/e-login/";
+          }
+        });
+
+        jQuery("#basket_icon").click(function(e)
+        {
+          if(jQuery(e.target).attr("id") == "basket_icon")
+          {
+            window.location.href = "https://www.antikvariatchrudim.cz/74op4gt7/e-basket/";
+          }
+        });
+      
+      });
+    </script>        <meta http-equiv="Content-language" content="cs">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="language" content="czech">
+        <meta name="keywords" content="antikvariát chrudim, antikvariát, knihy chrudim, výkup knih, chrudim ">
+        <meta name="description" content="Antikvariát Chrudim ">
+        <meta name="revisit-after" content="1 Days">
+        <meta name="distribution" content="global">
+        <meta name="expires" content="never">
+                  <meta name="expires" content="never">
+          <meta property="og:image" content="http://www.antikvariatchrudim.cz/fotky61664/design_setup/images/logo_LOGO2.jpg">
+<meta property="og:image:secure_url" content="https://www.antikvariatchrudim.cz/fotky61664/design_setup/images/logo_LOGO2.jpg">
+<meta property="og:image:type" content="image/jpeg">
+            <meta name="robots" content="index, follow">
+                    <link rel="stylesheet" type="text/css" href="/css/lang_dependent_css/lang_cs.css?_=2025-12-09-10-19" media="screen, projection">
+                <link rel="stylesheet" type="text/css" href="/wa_script/js/styles.css?_=2025-12-09-10-19">
+        <script language="javascript" type="text/javascript" src="/wa_script/js/javascripts.js?_=2025-12-09-10-19"></script>
+        <script language="javascript" type="text/javascript" src="/wa_script/js/check_tel.js?_=2025-12-09-10-19"></script>
+          <script src="/assets/javascripts/buy_button.js?_=2025-12-09-10-19"></script>
+            <script type="text/javascript" src="/wa_script/js/bs_user.js?_=2025-12-09-10-19"></script>
+        <script type="text/javascript" src="/wa_script/js/bs_fce.js?_=2025-12-09-10-19"></script>
+        <script type="text/javascript" src="/wa_script/js/bs_fixed_bar.js?_=2025-12-09-10-19"></script>
+        <script type="text/javascript" src="/bohemiasoft/js/bs.js?_=2025-12-09-10-19"></script>
+        <script src="/wa_script/js/jquery.number.min.js?_=2025-12-09-10-19" type="text/javascript"></script>
+        <script type="text/javascript">
+            BS.User.id = 61664;
+            BS.User.domain = "74op4gt7";
+            BS.User.is_responsive_layout = true;
+            BS.User.max_search_query_length = 50;
+            BS.User.max_autocomplete_words_count = 5;
+
+            WA.Translation._autocompleter_ambiguous_query = ' Hledavý výraz je pro našeptávač příliš obecný. Zadejte prosím další znaky, slova nebo pokračujte odesláním formuláře pro vyhledávání.';
+            WA.Translation._autocompleter_no_results_found = ' Nebyly nalezeny žádné produkty ani kategorie.';
+            WA.Translation._error = " Chyba";
+            WA.Translation._success = " Nastaveno";
+            WA.Translation._warning = " Upozornění";
+            WA.Translation._multiples_inc_notify = '<p class="multiples-warning"><strong>Tento produkt je možné objednat pouze v násobcích #inc#. </strong><br><small>Vámi zadaný počet kusů byl navýšen dle tohoto násobku.</small></p>';
+            WA.Translation._shipping_change_selected = " Změnit...";
+            WA.Translation._shipping_deliver_to_address = " Zásilka bude doručena na zvolenou adresu";
+
+            BS.Design.template = {
+              name: "3r01",
+              is_selected: function(name) {
+                if(Array.isArray(name)) {
+                  return name.indexOf(this.name) > -1;
+                } else {
+                  return name === this.name;
+                }
+              }
+            };
+            BS.Design.isLayout3 = true;
+            BS.Design.templates = {
+              TEMPLATE_ARGON: "argon",TEMPLATE_NEON: "neon",TEMPLATE_CARBON: "carbon",TEMPLATE_XENON: "xenon",TEMPLATE_AURUM: "aurum",TEMPLATE_CUPRUM: "cuprum",TEMPLATE_ERBIUM: "erbium",TEMPLATE_CADMIUM: "cadmium",TEMPLATE_BARIUM: "barium",TEMPLATE_CHROMIUM: "chromium",TEMPLATE_SILICIUM: "silicium",TEMPLATE_IRIDIUM: "iridium",TEMPLATE_INDIUM: "indium",TEMPLATE_OXYGEN: "oxygen",TEMPLATE_HELIUM: "helium",TEMPLATE_FLUOR: "fluor",TEMPLATE_FERRUM: "ferrum",TEMPLATE_TERBIUM: "terbium",TEMPLATE_URANIUM: "uranium",TEMPLATE_ZINCUM: "zincum",TEMPLATE_CERIUM: "cerium",TEMPLATE_KRYPTON: "krypton",TEMPLATE_THORIUM: "thorium",TEMPLATE_ETHERUM: "etherum",TEMPLATE_KRYPTONIT: "kryptonit",TEMPLATE_TITANIUM: "titanium",TEMPLATE_PLATINUM: "platinum"            };
+        </script>
+                  <script src="/js/progress_button/modernizr.custom.js"></script>
+                      <link rel="stylesheet" type="text/css" href="/bower_components/owl.carousel/dist/assets/owl.carousel.min.css">
+            <link rel="stylesheet" type="text/css" href="/bower_components/owl.carousel/dist/assets/owl.theme.default.min.css">
+            <script src="/bower_components/owl.carousel/dist/owl.carousel.min.js"></script>
+                    <link rel="stylesheet" type="text/css" href="//static.bohemiasoft.com/jave/style.css?_=2025-12-09-10-19" media="screen">
+                    <link rel="stylesheet" type="text/css" href="/css/font-awesome.4.7.0.min.css" media="screen">
+          <link rel="stylesheet" type="text/css" href="/sablony/nove/3r01/3r01coral/css/product_var3.css?_=2025-12-09-10-19" media="screen">
+                    <link rel="stylesheet" type="text/css" id="tpl-editor-stylesheet" href="/sablony/nove/3r01/3r01coral/css/colors.css?_=2025-12-09-10-19" media="screen">
+
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <link rel="stylesheet" type="text/css" href="https://static.bohemiasoft.com/custom-css/neon.css?_1764923377" media="screen"><style type="text/css">
+               <!--#site_logo{
+                  width: 275px;
+                  height: 100px;
+                  background-image: url('/fotky61664/design_setup/images/logo_LOGO2.jpg?cache_time=1553463744');
+                  background-repeat: no-repeat;
+                  
+                }html body .myheader { 
+          background-image: url('/fotky61664/design_setup/images/custom_image_centerpage.JPG?cache_time=1553463744');
+          border: black;
+          background-repeat: no-repeat;
+          background-position: 50% 0%;
+          background-color: #10153d;
+        }#page_background{
+                  background-image: url('/fotky61664/design_setup/images/custom_image_aroundpage.png?cache_time=1553463744');
+                  background-repeat: repeat;
+                  background-position: 50% 50%;
+                  background-color: transparent;
+                }.bgLupa{
+                  padding: 0;
+                  border: none;
+                }
+      /***pozadi kategorie***/
+      body #page .leftmenu2 ul li a {
+                  background-color:#dbe5ec!important;
+      }
+      body #page .leftmenu ul li a {
+                  background-color:#dbe5ec!important;
+      }
+      /***font kategorie - hover, active***/
+      body #page .leftmenu2 ul li a:hover, body #page .leftmenu2 ul li.leftmenuAct a {
+                  color:#020000 !important;
+      }
+      body #page .leftmenu ul li a:hover, body #page .leftmenu ul li.leftmenuAct a {
+                  color:#020000 !important;
+      }
+      /***pozadi kategorie - hover, active***/
+      body #page .leftmenu2 ul li a:hover, body #page .leftmenu2 ul li.leftmenuAct a {
+                  background-color:#ffffff!important;
+      }
+      #left-box .leftmenu > ul > li:hover > a, html #page ul li.leftmenuAct a, #left-box ul li a:hover {
+                  background-color:#ffffff!important;
+      }
+      /***before kategorie***/
+      #left-box li a::before {
+                  color: #000000!important; 
+        } 
+      /***ramecek***/
+      #left-box ul li a, #left-box .leftmenu > ul > li:hover > a, #left-box .leftmenuAct a, #left-box .leftmenu2 > ul > li:hover > a, #left-box .leftmenuAct a {
+          border-color: #000000!important;
+        }
+      /***font podkategorie - hover, active***/
+      body #page .leftmenu2 ul ul li a:hover, body #page .leftmenu2 ul ul li.leftmenu2Act a{
+                  color: #0b0000 !important;
+        }
+      body #page .leftmenu ul ul li a:hover, body #page .leftmenu ul li.leftmenuAct ul li a:hover{
+            color: #0b0000 !important;
+        }
+
+ :root { 
+ }
+-->
+                </style>          <link rel="stylesheet" type="text/css" href="/fotky61664/design_setup/css/user_defined.css?_=1507380914" media="screen, projection">
+                    <script type="text/javascript" src="/admin/jscripts/wa_dialogs.js?_=2025-12-09-10-19"></script>
+            <script>
+      $(document).ready(function() {
+        if (getCookie('show_cookie_message' + '_61664_cz') != 'no') {
+          if($('#cookies-agreement').attr('data-location') === '0')
+          {
+            $('.cookies-wrapper').css("top", "0px");
+          }
+          else
+          {
+            $('.cookies-wrapper').css("bottom", "0px");
+          }
+          $('.cookies-wrapper').show();
+        }
+
+        $('#cookies-notify__close').click(function() {
+          setCookie('show_cookie_message' + '_61664_cz', 'no');
+          $('#cookies-agreement').slideUp();
+          $("#masterpage").attr("style", "");
+          setCookie('cookie_preferences', 'true');
+          setCookie('cookie_statistics', 'true');
+          setCookie('cookie_marketing', 'true');
+          window.cookie_preferences = true;
+          window.cookie_statistics = true;
+          window.cookie_marketing = true;
+          if(typeof gtag === 'function') {
+              gtag('consent', 'update', {
+                  'ad_storage': 'granted',
+                  'analytics_storage': 'granted',
+                  'ad_user_data': 'granted',
+                  'ad_personalization': 'granted'
+              });
+          }
+         return false;
+        });
+
+        $("#cookies-notify__disagree").click(function(){
+            save_preferences();
+        });
+
+        $('#cookies-notify__preferences-button-close').click(function(){
+            var cookies_notify_preferences = $("#cookies-notify-checkbox__preferences").is(':checked');
+            var cookies_notify_statistics = $("#cookies-notify-checkbox__statistics").is(':checked');
+            var cookies_notify_marketing = $("#cookies-notify-checkbox__marketing").is(':checked');
+            save_preferences(cookies_notify_preferences, cookies_notify_statistics, cookies_notify_marketing);
+        });
+
+        function save_preferences(preferences = false, statistics = false, marketing = false)
+        {
+            setCookie('show_cookie_message' + '_61664_cz', 'no');
+            $('#cookies-agreement').slideUp();
+            $("#masterpage").attr("style", "");
+            setCookie('cookie_preferences', preferences);
+            setCookie('cookie_statistics', statistics);
+            setCookie('cookie_marketing', marketing);
+            window.cookie_preferences = preferences;
+            window.cookie_statistics = statistics;
+            window.cookie_marketing = marketing;
+            if(marketing && typeof gtag === 'function')
+            {
+                gtag('consent', 'update', {
+                    'ad_storage': 'granted'
+                });
+            }
+            if(statistics && typeof gtag === 'function')
+            {
+                gtag('consent', 'update', {
+                    'analytics_storage': 'granted',
+                    'ad_user_data': 'granted',
+                    'ad_personalization': 'granted',
+                });
+            }
+            if(marketing === false && BS && BS.seznamIdentity) {
+                BS.seznamIdentity.clearIdentity();
+            }
+        }
+
+        /**
+         * @param {String} cookie_name
+         * @returns {String}
+         */
+        function getCookie(cookie_name) {
+          if (document.cookie.length > 0)
+          {
+            cookie_start = document.cookie.indexOf(cookie_name + "=");
+            if (cookie_start != -1)
+            {
+              cookie_start = cookie_start + cookie_name.length + 1;
+              cookie_end = document.cookie.indexOf(";", cookie_start);
+              if (cookie_end == -1)
+              {
+                cookie_end = document.cookie.length;
+              }
+              return unescape(document.cookie.substring(cookie_start, cookie_end));
+            }
+          }
+          return "";
+        }
+        
+        /**
+         * @param {String} cookie_name
+         * @param {String} value
+         */
+        function setCookie(cookie_name, value) {
+          var time = new Date();
+          time.setTime(time.getTime() + 365*24*60*60*1000); // + 1 rok
+          var expires = "expires="+time.toUTCString();
+          document.cookie = cookie_name + "=" + escape(value) + "; " + expires + "; path=/";
+        }
+      });
+    </script>
+            <script type="text/javascript" src="/wa_script/js/search_autocompleter.js?_=2025-12-09-10-19"></script>
+                <link rel="stylesheet" type="text/css" href="/assets/vendor/magnific-popup/magnific-popup.css">
+      <script src="/assets/vendor/magnific-popup/jquery.magnific-popup.js"></script>
+      <script type="text/javascript">
+        BS.env = {
+          decPoint: ",",
+          basketFloatEnabled: false        };
+      </script>
+      <script type="text/javascript" src="/node_modules/select2/dist/js/select2.min.js"></script>
+      <script type="text/javascript" src="/node_modules/maximize-select2-height/maximize-select2-height.min.js"></script>
+      <script type="text/javascript">
+        (function() {
+          $.fn.select2.defaults.set("language", {
+            noResults: function() {return " Nenalezeny žádné položky"},
+            inputTooShort: function(o) {
+              var n = o.minimum - o.input.length;
+              return " Prosím zadejte #N# nebo více znaků.".replace("#N#", n);
+            }
+          });
+          $.fn.select2.defaults.set("width", "100%")
+        })();
+
+      </script>
+      <link type="text/css" rel="stylesheet" href="/node_modules/select2/dist/css/select2.min.css">
+      <script type="text/javascript" src="/wa_script/js/countdown_timer.js?_=2025-12-09-10-19"></script>
+      <script type="text/javascript" src="/wa_script/js/app.js?_=2025-12-09-10-19"></script>
+      <script type="text/javascript" src="/node_modules/jquery-validation/dist/jquery.validate.min.js"></script>
+
+      
+          </head>
+      <body class="lang-cs layout3 home basket-empty vat-payer-n alternative-currency-n">
+        <a name="topweb"></a>
+            <div id="cookies-agreement" class="cookies-wrapper" data-location="0" style="top: 0px; display: none;">
+      <div class="cookies-notify-background"></div>
+      <div class="cookies-notify" style="display:block!important;">
+        <div class="cookies-notify__bar">
+          <div class="cookies-notify__bar1">
+            <div class="cookies-notify__text">
+                S cílem usnadnit uživatelům používat naše webové stránky využíváme cookies. Kliknutím na tlačítko "OK" souhlasíte s použitím preferenčních, statistických i marketingových cookies pro nás i naše partnery. Funkční cookies jsou v rámci zachování funkčnosti webu používány po celou dobu procházení webem. Podrobné informace a nastavení ke cookies najdete <span class="cookies-notify__detail_button">zde</span>.            </div>
+            <div class="cookies-notify__button">
+                <a href="#" id="cookies-notify__disagree" class="secondary-btn" style="color: #000000;
+                           background-color: #c8c8c8;
+                           opacity: 1">Odmítnout vše</a>
+              <a href="#" id="cookies-notify__close" style="color: #000000;
+                        background-color: #c8c8c8;
+                        opacity: 1">Souhlasím</a>
+            </div>
+          </div>
+                        <div class="cookies-notify__detail_box hidden">
+                <div id="cookies-nofify__close_detail"> Zavřít</div>
+                <div>
+                    <br>
+                    <b> Co jsou cookies?</b><br>
+                    <span> Cookies jsou krátké textové informace, které jsou uloženy ve Vašem prohlížeči. Tyto informace běžně používají všechny webové stránky a jejich procházením dochází k ukládání cookies. Pomocí partnerských skriptů, které mohou stránky používat (například Google analytics</span><br><br>
+                    <b> Jak lze nastavit práci webu s cookies?</b><br>
+                    <span> Přestože doporučujeme povolit používání všech typů cookies, práci webu s nimi můžete nastavit dle vlastních preferencí pomocí checkboxů zobrazených níže. Po odsouhlasení nastavení práce s cookies můžete změnit své rozhodnutí smazáním či editací cookies přímo v nastavení Vašeho prohlížeče. Podrobnější informace k promazání cookies najdete v nápovědě Vašeho prohlížeče.</span>
+                </div>
+                <div class="cookies-notify__checkboxes">
+                    <div class="checkbox-custom checkbox-default cookies-notify__checkbox">
+                        <input type="checkbox" id="cookies-notify-checkbox__functional" checked="" disabled="">
+                        <label for="cookies-notify-checkbox__functional" class="cookies-notify__checkbox_label"> Nutné</label>
+                    </div>
+                    <div class="checkbox-custom checkbox-default cookies-notify__checkbox">
+                        <input type="checkbox" id="cookies-notify-checkbox__preferences" checked="">
+                        <label for="cookies-notify-checkbox__preferences" class="cookies-notify__checkbox_label"> Preferenční</label>
+                    </div>
+                    <div class="checkbox-custom checkbox-default cookies-notify__checkbox">
+                        <input type="checkbox" id="cookies-notify-checkbox__statistics" checked="">
+                        <label for="cookies-notify-checkbox__statistics" class="cookies-notify__checkbox_label"> Statistické</label>
+                    </div>
+                    <div class="checkbox-custom checkbox-default cookies-notify__checkbox">
+                        <input type="checkbox" id="cookies-notify-checkbox__marketing" checked="">
+                        <label for="cookies-notify-checkbox__marketing" class="cookies-notify__checkbox_label"> Marketingové</label>
+                    </div>
+                </div>
+                <div id="cookies-notify__cookie_types">
+                    <div class="cookies-notify__cookie_type cookie-active" data-type="functional">
+                         Nutné (13)
+                    </div>
+                    <div class="cookies-notify__cookie_type" data-type="preferences">
+                         Preferenční (1)
+                    </div>
+                    <div class="cookies-notify__cookie_type" data-type="statistics">
+                         Statistické (15)
+                    </div>
+                    <div class="cookies-notify__cookie_type" data-type="marketing">
+                         Marketingové (15)
+                    </div>
+                    <div class="cookies-notify__cookie_type" data-type="unclassified">
+                         Neklasifikované (7)
+                    </div>
+                </div>
+                <div id="cookies-notify__cookie_detail">
+                    <div class="cookie-notify__cookie_description">
+                        <span id="cookie-notify__description_functional" class="cookie_description_active"> Tyto informace jsou nezbytné ke správnému chodu webové stránky jako například vkládání zboží do košíku, uložení vyplněných údajů nebo přihlášení do zákaznické sekce.</span>
+                        <span id="cookie-notify__description_preferences" class="hidden"> Tyto cookies umožní přizpůsobit chování nebo vzhled stránky dle Vašich potřeb, například volba jazyka.</span>
+                        <span id="cookie-notify__description_statistics" class="hidden"> Díky těmto cookies mohou majitelé i developeři webu více porozumět chování uživatelů a vyvijet stránku tak, aby byla co nejvíce prozákaznická. Tedy abyste co nejrychleji našli hledané zboží nebo co nejsnáze dokončili jeho nákup.</span>
+                        <span id="cookie-notify__description_marketing" class="hidden"> Tyto informace umožní personalizovat zobrazení nabídek přímo pro Vás díky historické zkušenosti procházení dřívějších stránek a nabídek.</span>
+                        <span id="cookie-notify__description_unclassified" class="hidden"> Tyto cookies prozatím nebyly roztříděny do vlastní kategorie.</span>
+                    </div>
+                    <style>
+                        #cookies-notify__cookie_detail_table td
+                        {
+                            color: #ffffff                        }
+                    </style>
+                    <table class="table" id="cookies-notify__cookie_detail_table">
+                        <thead>
+                            <tr>
+                                <th> Jméno</th>
+                                <th> Účel</th>
+                                <th> Vypršení</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                                    <tr>
+                                <td>show_cookie_message</td>
+                                <td>Ukládá informaci o potřebě zobrazení cookie lišty</td>
+                                <td>1 rok</td>
+                            </tr>
+                                                        <tr>
+                                <td>__zlcmid</td>
+                                <td>Tento soubor cookie se používá k uložení identity návštěvníka během návštěv a preference návštěvníka deaktivovat naši funkci živého chatu. </td>
+                                <td>1 rok</td>
+                            </tr>
+                                                        <tr>
+                                <td>__cfruid</td>
+                                <td>Tento soubor cookie je součástí služeb poskytovaných společností Cloudflare – včetně vyrovnávání zátěže, doručování obsahu webových stránek a poskytování připojení DNS pro provozovatele webových stránek. </td>
+                                <td>relace</td>
+                            </tr>
+                                                        <tr>
+                                <td>_auth</td>
+                                <td>Zajišťuje bezpečnost procházení návštěvníků tím, že zabraňuje padělání požadavků mezi stránkami. Tento soubor cookie je nezbytný pro bezpečnost webu a návštěvníka. </td>
+                                <td>1 rok</td>
+                            </tr>
+                                                        <tr>
+                                <td>csrftoken</td>
+                                <td>Pomáhá předcházet útokům Cross-Site Request Forgery (CSRF). 
+</td>
+                                <td>1 rok</td>
+                            </tr>
+                                                        <tr>
+                                <td>PHPSESSID</td>
+                                <td>Zachovává stav uživatelské relace napříč požadavky na stránky. </td>
+                                <td>relace</td>
+                            </tr>
+                                                        <tr>
+                                <td>rc::a</td>
+                                <td>Tento soubor cookie se používá k rozlišení mezi lidmi a roboty. To je výhodné pro web, aby
+vytvářet platné zprávy o používání jejich webových stránek. </td>
+                                <td>persistentní</td>
+                            </tr>
+                                                        <tr>
+                                <td>rc::c</td>
+                                <td>Tento soubor cookie se používá k rozlišení mezi lidmi a roboty. </td>
+                                <td>relace</td>
+                            </tr>
+                                                        <tr>
+                                <td>AWSALBCORS</td>
+                                <td>Registruje, který server-cluster obsluhuje návštěvníka. To se používá v kontextu s vyrovnáváním zátěže, aby se optimalizovala uživatelská zkušenost. </td>
+                                <td>6 dnů</td>
+                            </tr>
+                                                        <tr>
+                                <td>18plus_allow_access#</td>
+                                <td>Ukládá informaci o odsouhlasení okna 18+ pro web.</td>
+                                <td>neznámý</td>
+                            </tr>
+                                                        <tr>
+                                <td>18plus_cat#</td>
+                                <td>Ukládá informaci o odsouhlasení okna 18+ pro kategorii.</td>
+                                <td>neznámý</td>
+                            </tr>
+                                                        <tr>
+                                <td>bs_slide_menu</td>
+                                <td></td>
+                                <td>neznámý</td>
+                            </tr>
+                                                        <tr>
+                                <td>left_menu</td>
+                                <td>Ukládá informaci o způsobu zobrazení levého menu.</td>
+                                <td>neznámý</td>
+                            </tr>
+                                                    </tbody>
+                    </table>
+                    <div class="cookies-notify__button">
+                        <a href="#" id="cookies-notify__preferences-button-close" style="color: #000000;
+                                background-color: #c8c8c8;
+                                opacity: 1">
+                            Uložit nastavení                        </a>
+                    </div>
+                </div>
+            </div>
+                    </div>
+      </div>
+    </div>
+    
+  <div id="responsive_layout_large"></div><div id="page">    <script type="text/javascript">
+      var responsive_articlemenu_name = ' Menu';
+      var responsive_eshopmenu_name = ' E-shop';
+    </script>
+        <div class="myheader">
+            <div class="content">
+            <div class="logo-wrapper">
+            <a id="site_logo" href="//www.antikvariatchrudim.cz" class="mylogo" aria-label="Logo"></a>
+    </div>
+                <div id="search">
+      <form name="search" id="searchForm" action="/search-engine.htm" method="GET" enctype="multipart/form-data">
+        <label for="q" class="title_left2"> Hľadanie</label>
+        <p>
+          <input name="slovo" type="text" class="inputBox ui-autocomplete-input" id="q" placeholder=" Zadejte text vyhledávání" maxlength="50" autocomplete="off">
+          
+          <input type="hidden" id="source_service" value="www.webareal.cz">
+        </p>
+        <div class="wrapper_search_submit">
+          <input type="submit" class="search_submit" aria-label="search" name="search_submit" value="">
+        </div>
+        <div id="search_setup_area">
+          <input id="hledatjak2" checked="checked" type="radio" name="hledatjak" value="2">
+          <label for="hledatjak2">Hledat ve zboží</label>
+          <br>
+          <input id="hledatjak1" type="radio" name="hledatjak" value="1">
+          <label for="hledatjak1">Hledat v článcích</label>
+                    <script type="text/javascript">
+            function resolve_search_mode_visibility()
+            {
+              if (jQuery('form[name=search] input').is(':focus'))
+              {
+                if (jQuery('#search_setup_area').is(':hidden'))
+                {
+                  jQuery('#search_setup_area').slideDown(400);
+                }
+              }
+              else
+              {
+                if (jQuery('#search_setup_area').not(':hidden'))
+                {
+                  jQuery('#search_setup_area').slideUp(400);
+                }
+              }
+            }
+
+            $('form[name=search] input').click(function() {
+              this.focus();
+            });
+
+            jQuery('form[name=search] input')
+                .focus(function() {
+                  resolve_search_mode_visibility();
+                })
+                .blur(function() {
+                  setTimeout(function() {
+                    resolve_search_mode_visibility();
+                  }, 1000);
+                });
+
+          </script>
+                  </div>
+      </form>
+    </div>
+          </div>
+          </div>
+    <div id="page_background">      <div class="hack-box"><!-- HACK MIN WIDTH FOR IE 5, 5.5, 6  -->
+                  <div id="masterpage" style=""><!-- MASTER PAGE -->
+              <div id="header">          </div><!-- END HEADER -->
+          
+  <div id="ebar" class="">        <div id="ebar_set">
+                <div id="user_icon">
+
+                            <div id="user_detail">
+                    <div id="user_arrow_tag"></div>
+                    <div id="user_content_tag">
+                        <div id="user_content_tag_bg">
+                            <a href="/74op4gt7/e-login/" class="elink user_login_text">
+                               Přihlášení                            </a>
+                            <a href="/74op4gt7/e-register/" class="elink user-logout user_register_text">
+                               Nová registrace                            </a>
+                        </div>
+                    </div>
+                </div>
+            
+        </div>
+        
+                <div id="basket_icon">
+            <div id="basket_detail">
+                <div id="basket_arrow_tag"></div>
+                <div id="basket_content_tag">
+                    <a id="quantity_tag" href="/74op4gt7/e-basket" rel="nofollow" class="elink">0 ks / 0&nbsp;Kč</a>
+                                    </div>
+            </div>
+        </div>
+                <a id="basket_tag" href="74op4gt7/e-basket" rel="nofollow" class="elink">
+            <span id="basket_tag_left">&nbsp;</span>
+            <span id="basket_tag_right">
+                0 ks            </span>
+        </a>
+                </div></div>    <!--[if IE 6]>
+    <style>
+    #main-menu ul ul{visibility:visible;}
+    </style>
+    <![endif]-->
+
+    
+    <div id="topmenu"><!-- TOPMENU -->
+            <div id="main-menu" class="">
+                 <ul>
+            <li class="eshop-menu-home">
+              <a href="//www.antikvariatchrudim.cz" class="top_parent_act" aria-label="Homepage">
+                              </a>
+            </li>
+          </ul>
+          
+<ul><li class="eshop-menu-1 eshop-menu-order-1 eshop-menu-odd"><a href="/O-nas-a1_0.htm" class="top_parent">O nás</a>
+</li></ul>
+<ul><li class="eshop-menu-4 eshop-menu-order-2 eshop-menu-even"><a href="/Jak-nakupovat-a4_0.htm" class="top_parent">Jak nakupovat</a>
+</li></ul>
+<ul><li class="eshop-menu-3 eshop-menu-order-3 eshop-menu-odd"><a href="/Obchodni-podminky-a3_0.htm" class="top_parent">Obchodní podmínky</a>
+</li></ul>
+<ul><li class="eshop-menu-5 eshop-menu-order-4 eshop-menu-even"><a href="/Osobni-udaje-a5_0.htm" class="top_parent">Osobní údaje</a>
+</li></ul>
+<ul><li class="eshop-menu-2 eshop-menu-order-5 eshop-menu-odd"><a href="/Kontakty-a2_0.htm" class="top_parent">Kontakty</a>
+</li></ul>      </div>
+    </div><!-- END TOPMENU -->
+              <div id="aroundpage"><!-- AROUND PAGE -->
+            
+      <!-- LEFT BOX -->
+      <div id="left-box">
+              <div class="menu-typ-1" id="left_eshop">
+                <p class="title_left_eshop">E-shop</p>
+          
+        <div id="inleft_eshop">
+          <div class="leftmenu2">
+                <ul class="root-eshop-menu">
+              <li class="leftmenuDef category-menu-84 category-menu-order-1 category-menu-odd">
+          <a href="/18-stoleti-c84_0_1.htm">18. století</a>        </li>
+
+                <li class="leftmenuDef category-menu-34 category-menu-order-2 category-menu-even">
+          <a href="/Antika-Starovek-c34_0_1.htm">Antika &amp; Starověk</a>        </li>
+
+                <li class="leftmenuDef category-menu-67 category-menu-order-3 category-menu-odd">
+          <a href="/Archeologie-c67_0_1.htm">Archeologie</a>        </li>
+
+                <li class="leftmenuDef category-menu-18 category-menu-order-4 category-menu-even">
+          <a href="/Architektura-c18_0_1.htm">Architektura</a>        </li>
+
+                <li class="leftmenuDef category-menu-76 category-menu-order-5 category-menu-odd">
+          <a href="/Artefakty-Kuriozity-c76_0_1.htm">Artefakty / Kuriozity</a>        </li>
+
+                <li class="leftmenuDef category-menu-79 category-menu-order-6 category-menu-even">
+          <a href="/Audiokazety-c79_0_1.htm">Audiokazety</a>        </li>
+
+                <li class="leftmenuDef category-menu-74 category-menu-order-7 category-menu-odd">
+          <a href="/Autogramy-S-podpisem-c74_0_1.htm">Autogramy / S podpisem</a>        </li>
+
+                <li class="leftmenuDef category-menu-27 category-menu-order-8 category-menu-even">
+          <a href="/Auto-Moto-c27_0_1.htm">Auto - Moto</a>        </li>
+
+                <li class="leftmenuDef category-menu-81 category-menu-order-9 category-menu-odd">
+          <a href="/Bankovky-Mince-c81_0_1.htm">Bankovky / Mince</a>        </li>
+
+                <li class="leftmenuDef category-menu-2 category-menu-order-10 category-menu-even">
+          <a href="/Beletrie-c2_0_1.htm">Beletrie</a>        </li>
+
+                <li class="leftmenuDef category-menu-36 category-menu-order-11 category-menu-odd">
+          <a href="/Bibliofilie-c36_0_1.htm">Bibliofilie</a>        </li>
+
+                <li class="leftmenuDef category-menu-14 category-menu-order-12 category-menu-even">
+          <a href="/Cestopisy-c14_0_1.htm">Cestopisy</a>        </li>
+
+                <li class="leftmenuDef category-menu-21 category-menu-order-13 category-menu-odd">
+          <a href="/Cizojazycne-c21_0_1.htm">Cizojazyčné</a>        </li>
+
+                <li class="leftmenuDef category-menu-65 category-menu-order-14 category-menu-even">
+          <a href="/Casopisy-c65_0_1.htm">Časopisy</a>        </li>
+
+                <li class="leftmenuDef category-menu-29 category-menu-order-15 category-menu-odd">
+          <a href="/Design-c29_0_1.htm">Design</a>        </li>
+
+                <li class="leftmenuDef category-menu-13 category-menu-order-16 category-menu-even">
+          <a href="/Detektivky-c13_0_1.htm">Detektivky</a>        </li>
+
+                <li class="leftmenuDef category-menu-7 category-menu-order-17 category-menu-odd">
+          <a href="/Detske-Pohadky-c7_0_1.htm">Dětské &amp; Pohádky</a>        </li>
+
+                <li class="leftmenuDef category-menu-31 category-menu-order-18 category-menu-even">
+          <a href="/Divadlo-c31_0_1.htm">Divadlo</a>        </li>
+
+                <li class="leftmenuDef category-menu-6 category-menu-order-19 category-menu-odd">
+          <a href="/Dobrodruzne-c6_0_1.htm">Dobrodružné</a>        </li>
+
+                <li class="leftmenuDef category-menu-33 category-menu-order-20 category-menu-even">
+          <a href="/Doklady-Dokumenty-c33_0_1.htm">Doklady &amp; Dokumenty</a>        </li>
+
+                <li class="leftmenuDef category-menu-32 category-menu-order-21 category-menu-odd">
+          <a href="/Doprava-c32_0_1.htm">Doprava</a>        </li>
+
+                <li class="leftmenuDef category-menu-25 category-menu-order-22 category-menu-even">
+          <a href="/Druha-svetova-valka-c25_0_1.htm">Druhá světová válka</a>        </li>
+
+                <li class="leftmenuDef category-menu-43 category-menu-order-23 category-menu-odd">
+          <a href="/Dum-Byt-c43_0_1.htm">Dům &amp; Byt</a>        </li>
+
+                <li class="leftmenuDef category-menu-54 category-menu-order-24 category-menu-even">
+          <a href="/Ekonomie-c54_0_1.htm">Ekonomie</a>        </li>
+
+                <li class="leftmenuDef category-menu-63 category-menu-order-25 category-menu-odd">
+          <a href="/Encyklopedie-c63_0_1.htm">Encyklopedie</a>        </li>
+
+                <li class="leftmenuDef category-menu-51 category-menu-order-26 category-menu-even">
+          <a href="/Erotika-c51_0_1.htm">Erotika</a>        </li>
+
+                <li class="leftmenuDef category-menu-42 category-menu-order-27 category-menu-odd">
+          <a href="/Esoterika-Zahady-c42_0_1.htm">Esoterika &amp; Záhady</a>        </li>
+
+                <li class="leftmenuDef category-menu-73 category-menu-order-28 category-menu-even">
+          <a href="/Film-c73_0_1.htm">Film </a>        </li>
+
+                <li class="leftmenuDef category-menu-44 category-menu-order-29 category-menu-odd">
+          <a href="/Filozofie-Nabozenstvi-c44_0_1.htm">Filozofie &amp; Náboženství</a>        </li>
+
+                <li class="leftmenuDef category-menu-77 category-menu-order-30 category-menu-even">
+          <a href="/Fotoaparaty-c77_0_1.htm">Fotoaparáty</a>        </li>
+
+                <li class="leftmenuDef category-menu-35 category-menu-order-31 category-menu-odd">
+          <a href="/Fotografie-c35_0_1.htm">Fotografie </a>        </li>
+
+                <li class="leftmenuDef category-menu-15 category-menu-order-32 category-menu-even">
+          <a href="/Fyzika-Chemie-c15_0_1.htm">Fyzika &amp; Chemie</a>        </li>
+
+                <li class="leftmenuDef category-menu-28 category-menu-order-33 category-menu-odd">
+          <a href="/Geografie-Geologie-c28_0_1.htm">Geografie &amp; Geologie</a>        </li>
+
+                <li class="leftmenuDef category-menu-60 category-menu-order-34 category-menu-even">
+          <a href="/Gramodesky-c60_0_1.htm">Gramodesky</a>        </li>
+
+                <li class="leftmenuDef category-menu-49 category-menu-order-35 category-menu-odd">
+          <a href="/Heraldika-c49_0_1.htm">Heraldika</a>        </li>
+
+                <li class="leftmenuDef category-menu-11 category-menu-order-36 category-menu-even">
+          <a href="/Historie-c11_0_1.htm">Historie</a>        </li>
+
+                <li class="leftmenuDef category-menu-41 category-menu-order-37 category-menu-odd">
+          <a href="/Hobby-c41_0_1.htm">Hobby</a>        </li>
+
+                <li class="leftmenuDef category-menu-82 category-menu-order-38 category-menu-even">
+          <a href="/Hodinky-c82_0_1.htm">Hodinky</a>        </li>
+
+                <li class="leftmenuDef category-menu-66 category-menu-order-39 category-menu-odd">
+          <a href="/Hracky-c66_0_1.htm">Hračky</a>        </li>
+
+                <li class="leftmenuDef category-menu-56 category-menu-order-40 category-menu-even">
+          <a href="/Hudba-Noty-c56_0_1.htm">Hudba &amp; Noty</a>        </li>
+
+                <li class="leftmenuDef category-menu-53 category-menu-order-41 category-menu-odd">
+          <a href="/Humoristicka-literatura-c53_0_1.htm">Humoristická literatura</a>        </li>
+
+                <li class="leftmenuDef category-menu-55 category-menu-order-42 category-menu-even">
+          <a href="/Jazykoveda-Literarni-veda-c55_0_1.htm">Jazykověda &amp; Literární věda</a>        </li>
+
+                <li class="leftmenuDef category-menu-71 category-menu-order-43 category-menu-odd">
+          <a href="/Kocka-c71_0_1.htm">Kočka</a>        </li>
+
+                <li class="leftmenuDef category-menu-23 category-menu-order-44 category-menu-even">
+          <a href="/Komiksy-c23_0_1.htm">Komiksy</a>        </li>
+
+                <li class="leftmenuDef category-menu-83 category-menu-order-45 category-menu-odd">
+          <a href="/Krychlic-c83_0_1.htm">Krychlič</a>        </li>
+
+                <li class="leftmenuDef category-menu-8 category-menu-order-46 category-menu-even">
+          <a href="/Kucharky-c8_0_1.htm">Kuchařky</a>        </li>
+
+                <li class="leftmenuDef category-menu-17 category-menu-order-47 category-menu-odd">
+          <a href="/Lekarstvi-Zdravi-c17_0_1.htm">Lékařství &amp; Zdraví</a>        </li>
+
+                <li class="leftmenuDef category-menu-59 category-menu-order-48 category-menu-even">
+          <a href="/Mapy-c59_0_1.htm">Mapy</a>        </li>
+
+                <li class="leftmenuDef category-menu-16 category-menu-order-49 category-menu-odd">
+          <a href="/Matematika-c16_0_1.htm">Matematika</a>        </li>
+
+                <li class="leftmenuDef category-menu-75 category-menu-order-50 category-menu-even">
+          <a href="/Mineralogie-c75_0_1.htm">Mineralogie</a>        </li>
+
+                <li class="leftmenuDef category-menu-24 category-menu-order-51 category-menu-odd">
+          <a href="/Mistopis-c24_0_1.htm">Místopis</a>        </li>
+
+                <li class="leftmenuDef category-menu-69 category-menu-order-52 category-menu-even">
+          <a href="/Myslivost-c69_0_1.htm">Myslivost</a>        </li>
+
+                <li class="leftmenuDef category-menu-80 category-menu-order-53 category-menu-odd">
+          <a href="/Numismatika-c80_0_1.htm">Numismatika</a>        </li>
+
+                <li class="leftmenuDef category-menu-61 category-menu-order-54 category-menu-even">
+          <a href="/Obrazy-Grafika-c61_0_1.htm">Obrazy / Grafika</a>        </li>
+
+                <li class="leftmenuDef category-menu-72 category-menu-order-55 category-menu-odd">
+          <a href="/Pes-Kynologie-c72_0_1.htm">Pes / Kynologie</a>        </li>
+
+                <li class="leftmenuDef category-menu-85 category-menu-order-56 category-menu-even">
+          <a href="/Pivo-c85_0_1.htm">Pivo</a>        </li>
+
+                <li class="leftmenuDef category-menu-57 category-menu-order-57 category-menu-odd">
+          <a href="/Plakaty-c57_0_1.htm">Plakáty</a>        </li>
+
+                <li class="leftmenuDef category-menu-78 category-menu-order-58 category-menu-even">
+          <a href="/Plnici-pera-c78_0_1.htm">Plnící pera</a>        </li>
+
+                <li class="leftmenuDef category-menu-4 category-menu-order-59 category-menu-odd">
+          <a href="/Poezie-c4_0_1.htm">Poezie</a>        </li>
+
+                <li class="leftmenuDef category-menu-58 category-menu-order-60 category-menu-even">
+          <a href="/Pohlednice-c58_0_1.htm">Pohlednice</a>        </li>
+
+                <li class="leftmenuDef category-menu-50 category-menu-order-61 category-menu-odd">
+          <a href="/Popularne-naucna-literatura-c50_0_1.htm">Populárně naučná literatura</a>        </li>
+
+                <li class="leftmenuDef category-menu-52 category-menu-order-62 category-menu-even">
+          <a href="/Pravnicka-literatura-c52_0_1.htm">Právnická literatura</a>        </li>
+
+                <li class="leftmenuDef category-menu-62 category-menu-order-63 category-menu-odd">
+          <a href="/Prospekty-Reklama-c62_0_1.htm">Prospekty / Reklama</a>        </li>
+
+                <li class="leftmenuDef category-menu-48 category-menu-order-64 category-menu-even">
+          <a href="/Pro-zeny-Romanticke-c48_0_1.htm">Pro ženy - Romantické</a>        </li>
+
+                <li class="leftmenuDef category-menu-46 category-menu-order-65 category-menu-odd">
+          <a href="/Priroda-c46_0_1.htm">Příroda</a>        </li>
+
+                <li class="leftmenuDef category-menu-30 category-menu-order-66 category-menu-even">
+          <a href="/Psychologie-Pedagogika-c30_0_1.htm">Psychologie &amp; Pedagogika </a>        </li>
+
+                <li class="leftmenuDef category-menu-22 category-menu-order-67 category-menu-odd">
+          <a href="/Sci-Fi-Fantasy-Horor-c22_0_1.htm">Sci-Fi - Fantasy - Horor</a>        </li>
+
+                <li class="leftmenuDef category-menu-64 category-menu-order-68 category-menu-even">
+          <a href="/Sklo-Porcelan-c64_0_1.htm">Sklo &amp; Porcelán</a>        </li>
+
+                <li class="leftmenuDef category-menu-40 category-menu-order-69 category-menu-odd">
+          <a href="/Slovniky-c40_0_1.htm">Slovníky </a>        </li>
+
+                <li class="leftmenuDef category-menu-10 category-menu-order-70 category-menu-even">
+          <a href="/Sport-c10_0_1.htm">Sport</a>        </li>
+
+                <li class="leftmenuDef category-menu-19 category-menu-order-71 category-menu-odd">
+          <a href="/Technicke-obory-c19_0_1.htm">Technické obory</a>        </li>
+
+                <li class="leftmenuDef category-menu-45 category-menu-order-72 category-menu-even">
+          <a href="/Ucebnice-c45_0_1.htm">Učebnice</a>        </li>
+
+                <li class="leftmenuDef category-menu-20 category-menu-order-73 category-menu-odd">
+          <a href="/Umeni-c20_0_1.htm">Umění</a>        </li>
+
+                <li class="leftmenuDef category-menu-70 category-menu-order-74 category-menu-even">
+          <a href="/Vcelarstvi-c70_0_1.htm">Včelařství</a>        </li>
+
+                <li class="leftmenuDef category-menu-12 category-menu-order-75 category-menu-odd">
+          <a href="/Vojenske-c12_0_1.htm">Vojenské</a>        </li>
+
+                <li class="leftmenuDef category-menu-47 category-menu-order-76 category-menu-even">
+          <a href="/Zemedelstvi-c47_0_1.htm">Zemědělství</a>        </li>
+
+                <li class="leftmenuDef category-menu-37 category-menu-order-77 category-menu-odd">
+          <a href="/Zivotopisy-c37_0_1.htm">Životopisy</a>        </li>
+
+            </ul>
+      <style>
+        #left-box .remove_point a::before
+        {
+          display: none;
+        }
+      </style>
+              </div>
+        </div>
+
+        
+        <div id="footleft1">
+                  </div>
+
+            </div>
+            <div class="responsive-menu-button eshop-menu-button"> E-shop<div class="mobile-menu-content" style="display: none;"><ul><li class="leftmenuDef category-menu-84 category-menu-order-1 category-menu-odd direct-link"><a href="/18-stoleti-c84_0_1.htm">18. století</a></li><li class="leftmenuDef category-menu-34 category-menu-order-2 category-menu-even direct-link"><a href="/Antika-Starovek-c34_0_1.htm">Antika &amp; Starověk</a></li><li class="leftmenuDef category-menu-67 category-menu-order-3 category-menu-odd direct-link"><a href="/Archeologie-c67_0_1.htm">Archeologie</a></li><li class="leftmenuDef category-menu-18 category-menu-order-4 category-menu-even direct-link"><a href="/Architektura-c18_0_1.htm">Architektura</a></li><li class="leftmenuDef category-menu-76 category-menu-order-5 category-menu-odd direct-link"><a href="/Artefakty-Kuriozity-c76_0_1.htm">Artefakty / Kuriozity</a></li><li class="leftmenuDef category-menu-79 category-menu-order-6 category-menu-even direct-link"><a href="/Audiokazety-c79_0_1.htm">Audiokazety</a></li><li class="leftmenuDef category-menu-74 category-menu-order-7 category-menu-odd direct-link"><a href="/Autogramy-S-podpisem-c74_0_1.htm">Autogramy / S podpisem</a></li><li class="leftmenuDef category-menu-27 category-menu-order-8 category-menu-even direct-link"><a href="/Auto-Moto-c27_0_1.htm">Auto - Moto</a></li><li class="leftmenuDef category-menu-81 category-menu-order-9 category-menu-odd direct-link"><a href="/Bankovky-Mince-c81_0_1.htm">Bankovky / Mince</a></li><li class="leftmenuDef category-menu-2 category-menu-order-10 category-menu-even direct-link"><a href="/Beletrie-c2_0_1.htm">Beletrie</a></li><li class="leftmenuDef category-menu-36 category-menu-order-11 category-menu-odd direct-link"><a href="/Bibliofilie-c36_0_1.htm">Bibliofilie</a></li><li class="leftmenuDef category-menu-14 category-menu-order-12 category-menu-even direct-link"><a href="/Cestopisy-c14_0_1.htm">Cestopisy</a></li><li class="leftmenuDef category-menu-21 category-menu-order-13 category-menu-odd direct-link"><a href="/Cizojazycne-c21_0_1.htm">Cizojazyčné</a></li><li class="leftmenuDef category-menu-65 category-menu-order-14 category-menu-even direct-link"><a href="/Casopisy-c65_0_1.htm">Časopisy</a></li><li class="leftmenuDef category-menu-29 category-menu-order-15 category-menu-odd direct-link"><a href="/Design-c29_0_1.htm">Design</a></li><li class="leftmenuDef category-menu-13 category-menu-order-16 category-menu-even direct-link"><a href="/Detektivky-c13_0_1.htm">Detektivky</a></li><li class="leftmenuDef category-menu-7 category-menu-order-17 category-menu-odd direct-link"><a href="/Detske-Pohadky-c7_0_1.htm">Dětské &amp; Pohádky</a></li><li class="leftmenuDef category-menu-31 category-menu-order-18 category-menu-even direct-link"><a href="/Divadlo-c31_0_1.htm">Divadlo</a></li><li class="leftmenuDef category-menu-6 category-menu-order-19 category-menu-odd direct-link"><a href="/Dobrodruzne-c6_0_1.htm">Dobrodružné</a></li><li class="leftmenuDef category-menu-33 category-menu-order-20 category-menu-even direct-link"><a href="/Doklady-Dokumenty-c33_0_1.htm">Doklady &amp; Dokumenty</a></li><li class="leftmenuDef category-menu-32 category-menu-order-21 category-menu-odd direct-link"><a href="/Doprava-c32_0_1.htm">Doprava</a></li><li class="leftmenuDef category-menu-25 category-menu-order-22 category-menu-even direct-link"><a href="/Druha-svetova-valka-c25_0_1.htm">Druhá světová válka</a></li><li class="leftmenuDef category-menu-43 category-menu-order-23 category-menu-odd direct-link"><a href="/Dum-Byt-c43_0_1.htm">Dům &amp; Byt</a></li><li class="leftmenuDef category-menu-54 category-menu-order-24 category-menu-even direct-link"><a href="/Ekonomie-c54_0_1.htm">Ekonomie</a></li><li class="leftmenuDef category-menu-63 category-menu-order-25 category-menu-odd direct-link"><a href="/Encyklopedie-c63_0_1.htm">Encyklopedie</a></li><li class="leftmenuDef category-menu-51 category-menu-order-26 category-menu-even direct-link"><a href="/Erotika-c51_0_1.htm">Erotika</a></li><li class="leftmenuDef category-menu-42 category-menu-order-27 category-menu-odd direct-link"><a href="/Esoterika-Zahady-c42_0_1.htm">Esoterika &amp; Záhady</a></li><li class="leftmenuDef category-menu-73 category-menu-order-28 category-menu-even direct-link"><a href="/Film-c73_0_1.htm">Film</a></li><li class="leftmenuDef category-menu-44 category-menu-order-29 category-menu-odd direct-link"><a href="/Filozofie-Nabozenstvi-c44_0_1.htm">Filozofie &amp; Náboženství</a></li><li class="leftmenuDef category-menu-77 category-menu-order-30 category-menu-even direct-link"><a href="/Fotoaparaty-c77_0_1.htm">Fotoaparáty</a></li><li class="leftmenuDef category-menu-35 category-menu-order-31 category-menu-odd direct-link"><a href="/Fotografie-c35_0_1.htm">Fotografie</a></li><li class="leftmenuDef category-menu-15 category-menu-order-32 category-menu-even direct-link"><a href="/Fyzika-Chemie-c15_0_1.htm">Fyzika &amp; Chemie</a></li><li class="leftmenuDef category-menu-28 category-menu-order-33 category-menu-odd direct-link"><a href="/Geografie-Geologie-c28_0_1.htm">Geografie &amp; Geologie</a></li><li class="leftmenuDef category-menu-60 category-menu-order-34 category-menu-even direct-link"><a href="/Gramodesky-c60_0_1.htm">Gramodesky</a></li><li class="leftmenuDef category-menu-49 category-menu-order-35 category-menu-odd direct-link"><a href="/Heraldika-c49_0_1.htm">Heraldika</a></li><li class="leftmenuDef category-menu-11 category-menu-order-36 category-menu-even direct-link"><a href="/Historie-c11_0_1.htm">Historie</a></li><li class="leftmenuDef category-menu-41 category-menu-order-37 category-menu-odd direct-link"><a href="/Hobby-c41_0_1.htm">Hobby</a></li><li class="leftmenuDef category-menu-82 category-menu-order-38 category-menu-even direct-link"><a href="/Hodinky-c82_0_1.htm">Hodinky</a></li><li class="leftmenuDef category-menu-66 category-menu-order-39 category-menu-odd direct-link"><a href="/Hracky-c66_0_1.htm">Hračky</a></li><li class="leftmenuDef category-menu-56 category-menu-order-40 category-menu-even direct-link"><a href="/Hudba-Noty-c56_0_1.htm">Hudba &amp; Noty</a></li><li class="leftmenuDef category-menu-53 category-menu-order-41 category-menu-odd direct-link"><a href="/Humoristicka-literatura-c53_0_1.htm">Humoristická literatura</a></li><li class="leftmenuDef category-menu-55 category-menu-order-42 category-menu-even direct-link"><a href="/Jazykoveda-Literarni-veda-c55_0_1.htm">Jazykověda &amp; Literární věda</a></li><li class="leftmenuDef category-menu-71 category-menu-order-43 category-menu-odd direct-link"><a href="/Kocka-c71_0_1.htm">Kočka</a></li><li class="leftmenuDef category-menu-23 category-menu-order-44 category-menu-even direct-link"><a href="/Komiksy-c23_0_1.htm">Komiksy</a></li><li class="leftmenuDef category-menu-83 category-menu-order-45 category-menu-odd direct-link"><a href="/Krychlic-c83_0_1.htm">Krychlič</a></li><li class="leftmenuDef category-menu-8 category-menu-order-46 category-menu-even direct-link"><a href="/Kucharky-c8_0_1.htm">Kuchařky</a></li><li class="leftmenuDef category-menu-17 category-menu-order-47 category-menu-odd direct-link"><a href="/Lekarstvi-Zdravi-c17_0_1.htm">Lékařství &amp; Zdraví</a></li><li class="leftmenuDef category-menu-59 category-menu-order-48 category-menu-even direct-link"><a href="/Mapy-c59_0_1.htm">Mapy</a></li><li class="leftmenuDef category-menu-16 category-menu-order-49 category-menu-odd direct-link"><a href="/Matematika-c16_0_1.htm">Matematika</a></li><li class="leftmenuDef category-menu-75 category-menu-order-50 category-menu-even direct-link"><a href="/Mineralogie-c75_0_1.htm">Mineralogie</a></li><li class="leftmenuDef category-menu-24 category-menu-order-51 category-menu-odd direct-link"><a href="/Mistopis-c24_0_1.htm">Místopis</a></li><li class="leftmenuDef category-menu-69 category-menu-order-52 category-menu-even direct-link"><a href="/Myslivost-c69_0_1.htm">Myslivost</a></li><li class="leftmenuDef category-menu-80 category-menu-order-53 category-menu-odd direct-link"><a href="/Numismatika-c80_0_1.htm">Numismatika</a></li><li class="leftmenuDef category-menu-61 category-menu-order-54 category-menu-even direct-link"><a href="/Obrazy-Grafika-c61_0_1.htm">Obrazy / Grafika</a></li><li class="leftmenuDef category-menu-72 category-menu-order-55 category-menu-odd direct-link"><a href="/Pes-Kynologie-c72_0_1.htm">Pes / Kynologie</a></li><li class="leftmenuDef category-menu-85 category-menu-order-56 category-menu-even direct-link"><a href="/Pivo-c85_0_1.htm">Pivo</a></li><li class="leftmenuDef category-menu-57 category-menu-order-57 category-menu-odd direct-link"><a href="/Plakaty-c57_0_1.htm">Plakáty</a></li><li class="leftmenuDef category-menu-78 category-menu-order-58 category-menu-even direct-link"><a href="/Plnici-pera-c78_0_1.htm">Plnící pera</a></li><li class="leftmenuDef category-menu-4 category-menu-order-59 category-menu-odd direct-link"><a href="/Poezie-c4_0_1.htm">Poezie</a></li><li class="leftmenuDef category-menu-58 category-menu-order-60 category-menu-even direct-link"><a href="/Pohlednice-c58_0_1.htm">Pohlednice</a></li><li class="leftmenuDef category-menu-50 category-menu-order-61 category-menu-odd direct-link"><a href="/Popularne-naucna-literatura-c50_0_1.htm">Populárně naučná literatura</a></li><li class="leftmenuDef category-menu-52 category-menu-order-62 category-menu-even direct-link"><a href="/Pravnicka-literatura-c52_0_1.htm">Právnická literatura</a></li><li class="leftmenuDef category-menu-62 category-menu-order-63 category-menu-odd direct-link"><a href="/Prospekty-Reklama-c62_0_1.htm">Prospekty / Reklama</a></li><li class="leftmenuDef category-menu-48 category-menu-order-64 category-menu-even direct-link"><a href="/Pro-zeny-Romanticke-c48_0_1.htm">Pro ženy - Romantické</a></li><li class="leftmenuDef category-menu-46 category-menu-order-65 category-menu-odd direct-link"><a href="/Priroda-c46_0_1.htm">Příroda</a></li><li class="leftmenuDef category-menu-30 category-menu-order-66 category-menu-even direct-link"><a href="/Psychologie-Pedagogika-c30_0_1.htm">Psychologie &amp; Pedagogika</a></li><li class="leftmenuDef category-menu-22 category-menu-order-67 category-menu-odd direct-link"><a href="/Sci-Fi-Fantasy-Horor-c22_0_1.htm">Sci-Fi - Fantasy - Horor</a></li><li class="leftmenuDef category-menu-64 category-menu-order-68 category-menu-even direct-link"><a href="/Sklo-Porcelan-c64_0_1.htm">Sklo &amp; Porcelán</a></li><li class="leftmenuDef category-menu-40 category-menu-order-69 category-menu-odd direct-link"><a href="/Slovniky-c40_0_1.htm">Slovníky</a></li><li class="leftmenuDef category-menu-10 category-menu-order-70 category-menu-even direct-link"><a href="/Sport-c10_0_1.htm">Sport</a></li><li class="leftmenuDef category-menu-19 category-menu-order-71 category-menu-odd direct-link"><a href="/Technicke-obory-c19_0_1.htm">Technické obory</a></li><li class="leftmenuDef category-menu-45 category-menu-order-72 category-menu-even direct-link"><a href="/Ucebnice-c45_0_1.htm">Učebnice</a></li><li class="leftmenuDef category-menu-20 category-menu-order-73 category-menu-odd direct-link"><a href="/Umeni-c20_0_1.htm">Umění</a></li><li class="leftmenuDef category-menu-70 category-menu-order-74 category-menu-even direct-link"><a href="/Vcelarstvi-c70_0_1.htm">Včelařství</a></li><li class="leftmenuDef category-menu-12 category-menu-order-75 category-menu-odd direct-link"><a href="/Vojenske-c12_0_1.htm">Vojenské</a></li><li class="leftmenuDef category-menu-47 category-menu-order-76 category-menu-even direct-link"><a href="/Zemedelstvi-c47_0_1.htm">Zemědělství</a></li><li class="leftmenuDef category-menu-37 category-menu-order-77 category-menu-odd direct-link"><a href="/Zivotopisy-c37_0_1.htm">Životopisy</a></li></ul></div><div class="fixed-parent-node"><span class="direct-link-text"></span><a href=""></a></div></div><div class="responsive-menu-button article-menu-button"> Menu<div class="mobile-menu-content" style="display: none;"><ul><li class="eshop-menu-home direct-link"><a href="//www.antikvariatchrudim.cz"></a></li><li class="eshop-menu-1 eshop-menu-order-1 eshop-menu-odd direct-link"><a href="/O-nas-a1_0.htm">O nás</a></li><li class="eshop-menu-4 eshop-menu-order-2 eshop-menu-even direct-link"><a href="/Jak-nakupovat-a4_0.htm">Jak nakupovat</a></li><li class="eshop-menu-3 eshop-menu-order-3 eshop-menu-odd direct-link"><a href="/Obchodni-podminky-a3_0.htm">Obchodní podmínky</a></li><li class="eshop-menu-5 eshop-menu-order-4 eshop-menu-even direct-link"><a href="/Osobni-udaje-a5_0.htm">Osobní údaje</a></li><li class="eshop-menu-2 eshop-menu-order-5 eshop-menu-odd direct-link"><a href="/Kontakty-a2_0.htm">Kontakty</a></li></ul></div><div class="fixed-parent-node"><span class="direct-link-text"></span><a href=""></a></div></div></div><!-- END LEFT BOX -->
+            <div id="right-box"><!-- RIGHT BOX2 -->
+        <!-- xxxx badRight xxxx -->    <div class="break"></div>
+    <div class="contact-box"><!-- CONTACT BOX -->
+            <p class="contact-box-title">KONTAKTY</p>
+      <div class="in-contact-box"><!-- in the contacts -->
+        <div class="contact" itemscope="" itemtype="http://schema.org/Organization">
+                      <span itemprop="legalName">Jiří Dobeš - Antikvariát </span><br>
+                        <span itemprop="address">
+              Štěpánkova 95<br>              Chrudim<br>            </span>
+            tel:            <span itemprop="telephone" class="contact-phone">+420 608263784 </span><br>
+            <a class="contact_mail_box" itemprop="email" href="mailto:jirkadobin@seznam.cz">jirkadobin@seznam.cz</a><br>Prodej / Výkup<br>Otevírací doba PO-PÁ: 10-13/14-17<br>        </div>
+      </div><!-- end in the contacts -->
+          </div><!-- END CONTACT -->
+    <div id="contact-foot"></div><!-- foot right box -->
+    <div class="break"></div>
+          </div><!-- END RIGHT BOX -->
+      
+
+            <hr class="hide">
+                        <div id="centerpage"><!-- CENTER PAGE -->
+              <div id="incenterpage"><!-- in the center -->
+                      <script type="text/javascript">
+      <!--
+      function ShowImage(name,width,height,domen) {window.open("/wa_script/image.php?soub="+name+"&domena="+domen,"","toolbar=no,scrollbars=no,location=no,status=no,width="+width+",height="+height+",resizable=0,screenX=20,screenY=20");};
+      // -->
+      </script>
+        <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="1000 KRONEN Unc" data-id="15781">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/1000-KRONEN-Unc-d15781.htm" data-id="15781" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="1000 KRONEN Unc" title="1000 KRONEN Unc" rel="15781" src="/fotky61664/fotos/_vyrn_15781IMG_20250908_124634.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="40" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/1000-KRONEN-Unc-d15781.htm" data-id="15781" data-location="category_page" data-variant-id="0" class="product-box-link">1000 KRONEN Unc</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">450&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=15781">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="15781" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="10000 KRONEN Unc" data-id="15782">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/10000-KRONEN-Unc-d15782.htm" data-id="15782" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="10000 KRONEN Unc" title="10000 KRONEN Unc" rel="15782" src="/fotky61664/fotos/_vyrn_15782IMG_20250908_124528.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="40" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/10000-KRONEN-Unc-d15782.htm" data-id="15782" data-location="category_page" data-variant-id="0" class="product-box-link">10000 KRONEN Unc</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">850&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=15782">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="15782" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="10000 RUBLŮ - JIŽNÍ RUSKO 1919 Unc" data-id="15783">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/10000-RUBLU-JIZNI-RUSKO-1919-Unc-d15783.htm" data-id="15783" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="10000 RUBLŮ - JIŽNÍ RUSKO 1919 Unc" title="10000 RUBLŮ - JIŽNÍ RUSKO 1919 Unc" rel="15783" src="/fotky61664/fotos/_vyrn_15783IMG_20250908_163612.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="40" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/10000-RUBLU-JIZNI-RUSKO-1919-Unc-d15783.htm" data-id="15783" data-location="category_page" data-variant-id="0" class="product-box-link">10000 RUBLŮ - JIŽNÍ RUSKO 1919 Unc</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">850&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=15783">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="15783" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">          <div class="break home_products_break"></div>
+                      <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="150 LET SEVERNÍ DRÁHY CÍSAŘE FERDINANDA" data-id="8026">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/150-LET-SEVERNI-DRAHY-CISARE-FERDINANDA-d8026.htm" data-id="8026" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="150 LET SEVERNÍ DRÁHY CÍSAŘE FERDINANDA" title="150 LET SEVERNÍ DRÁHY CÍSAŘE FERDINANDA" rel="8026" src="/fotky61664/fotos/_vyrn_8026IMGP3293.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/150-LET-SEVERNI-DRAHY-CISARE-FERDINANDA-d8026.htm" data-id="8026" data-location="category_page" data-variant-id="0" class="product-box-link">150 LET SEVERNÍ DRÁHY CÍSAŘE FERDINANDA</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">250&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=8026">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="8026" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="A FOREST OF SCULPTURES - SIMON SPIERER COLLECTION" data-id="14776">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/A-FOREST-OF-SCULPTURES-SIMON-SPIERER-COLLECTION-d14776.htm" data-id="14776" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="A FOREST OF SCULPTURES - SIMON SPIERER COLLECTION" title="A FOREST OF SCULPTURES - SIMON SPIERER COLLECTION" rel="14776" src="/fotky61664/fotos/_vyrn_14776IMGP0218.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/A-FOREST-OF-SCULPTURES-SIMON-SPIERER-COLLECTION-d14776.htm" data-id="14776" data-location="category_page" data-variant-id="0" class="product-box-link">A FOREST OF SCULPTURES - SIMON SPIERER COLLECTION</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">500&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=14776">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="14776" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Adam Williams CÍSAŘOVY KOSTI" data-id="1737">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Adam-Williams-CISAROVY-KOSTI-d1737.htm" data-id="1737" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Adam Williams CÍSAŘOVY KOSTI" title="Adam Williams CÍSAŘOVY KOSTI" rel="1737" src="/fotky61664/fotos/_vyrn_1737IMGP1396.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Adam-Williams-CISAROVY-KOSTI-d1737.htm" data-id="1737" data-location="category_page" data-variant-id="0" class="product-box-link">Adam Williams CÍSAŘOVY KOSTI</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">150&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=1737">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="1737" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">          <div class="break home_products_break"></div>
+                      <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Adrian Frutiger A BATONS ROMPUS" data-id="3262">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Adrian-Frutiger-A-BATONS-ROMPUS-d3262.htm" data-id="3262" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Adrian Frutiger A BATONS ROMPUS" title="Adrian Frutiger A BATONS ROMPUS" rel="3262" src="/fotky61664/fotos/_vyrn_3262IMGP4124.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Adrian-Frutiger-A-BATONS-ROMPUS-d3262.htm" data-id="3262" data-location="category_page" data-variant-id="0" class="product-box-link">Adrian Frutiger A BATONS ROMPUS</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">500&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=3262">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="3262" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Aleš Kalina EMOČNÍ ROVNICE " data-id="7066">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Ales-Kalina-EMOCNI-ROVNICE-d7066.htm" data-id="7066" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Aleš Kalina EMOČNÍ ROVNICE " title="Aleš Kalina EMOČNÍ ROVNICE " rel="7066" src="/fotky61664/fotos/_vyrn_7066IMGP1694.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="40" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Ales-Kalina-EMOCNI-ROVNICE-d7066.htm" data-id="7066" data-location="category_page" data-variant-id="0" class="product-box-link">Aleš Kalina EMOČNÍ ROVNICE </a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">240&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=7066">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="7066" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Alois Jilemnický Karel Vik KRAJ SLAVNÝ KAMENEM" data-id="486">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Alois-Jilemnicky-Karel-Vik-KRAJ-SLAVNY-KAMENEM-d486.htm" data-id="486" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Alois Jilemnický Karel Vik KRAJ SLAVNÝ KAMENEM" title="Alois Jilemnický Karel Vik KRAJ SLAVNÝ KAMENEM" rel="486" src="/fotky61664/fotos/_vyrn_486IMGP0923.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Alois-Jilemnicky-Karel-Vik-KRAJ-SLAVNY-KAMENEM-d486.htm" data-id="486" data-location="category_page" data-variant-id="0" class="product-box-link">Alois Jilemnický Karel Vik KRAJ SLAVNÝ KAMENEM</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">230&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=486">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="486" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">          <div class="break home_products_break"></div>
+                      <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="ALVA HAJN - HORIZONT" data-id="13940">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/ALVA-HAJN-HORIZONT-d13940.htm" data-id="13940" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="ALVA HAJN - HORIZONT" title="ALVA HAJN - HORIZONT" rel="13940" src="/fotky61664/fotos/_vyrn_13940IMGP0223.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="43" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/ALVA-HAJN-HORIZONT-d13940.htm" data-id="13940" data-location="category_page" data-variant-id="0" class="product-box-link">ALVA HAJN - HORIZONT</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall"><s></s></div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">5&nbsp;500&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=13940">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="13940" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="ANNUAIRE STATISTIQUE DE LA SOCIÉTÉ DES NATIONS 1937/38" data-id="184">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/ANNUAIRE-STATISTIQUE-DE-LA-SOCIETE-DES-NATIONS-1937-38-d184.htm" data-id="184" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="ANNUAIRE STATISTIQUE DE LA SOCIÉTÉ DES NATIONS 1937/38" title="ANNUAIRE STATISTIQUE DE LA SOCIÉTÉ DES NATIONS 1937/38" rel="184" src="/fotky61664/fotos/_vyrn_184IMGP0565.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/ANNUAIRE-STATISTIQUE-DE-LA-SOCIETE-DES-NATIONS-1937-38-d184.htm" data-id="184" data-location="category_page" data-variant-id="0" class="product-box-link">ANNUAIRE STATISTIQUE DE LA SOCIÉTÉ DES NATIONS 1937/38</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall"><s></s></div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">900&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=184">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="184" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Antonín Fassmann KOSTNÍ TKÁŇOVÉ INŽENÝRSTVÍ V OROFACIÁLNÍ OBLASTI" data-id="13801">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Antonin-Fassmann-KOSTNI-TKANOVE-INZENYRSTVI-V-OROFACIALNI-OBLASTI-d13801.htm" data-id="13801" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Antonín Fassmann KOSTNÍ TKÁŇOVÉ INŽENÝRSTVÍ V OROFACIÁLNÍ OBLASTI" title="Antonín Fassmann KOSTNÍ TKÁŇOVÉ INŽENÝRSTVÍ V OROFACIÁLNÍ OBLASTI" rel="13801" src="/fotky61664/fotos/_vyrn_13801IMGP0720.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Antonin-Fassmann-KOSTNI-TKANOVE-INZENYRSTVI-V-OROFACIALNI-OBLASTI-d13801.htm" data-id="13801" data-location="category_page" data-variant-id="0" class="product-box-link">Antonín Fassmann KOSTNÍ TKÁŇOVÉ INŽENÝRSTVÍ V OROFACIÁLNÍ OBLASTI</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">300&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=13801">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="13801" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">          <div class="break home_products_break"></div>
+                      <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="BRUNO BRUNI FARBLITHOGRAPHIEN" data-id="15921">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/BRUNO-BRUNI-FARBLITHOGRAPHIEN-d15921.htm" data-id="15921" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="BRUNO BRUNI FARBLITHOGRAPHIEN" title="BRUNO BRUNI FARBLITHOGRAPHIEN" rel="15921" src="/fotky61664/fotos/_vyrn_15921IMG_20251021_113347.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/BRUNO-BRUNI-FARBLITHOGRAPHIEN-d15921.htm" data-id="15921" data-location="category_page" data-variant-id="0" class="product-box-link">BRUNO BRUNI FARBLITHOGRAPHIEN</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">500&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=15921">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="15921" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="CENTROPEN 10011 EBONITOVÉ PLNÍCÍ PERO ORIGINÁLNÍ BOX" data-id="10879">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/CENTROPEN-10011-EBONITOVE-PLNICI-PERO-ORIGINALNI-BOX-d10879.htm" data-id="10879" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="CENTROPEN 10011 EBONITOVÉ PLNÍCÍ PERO ORIGINÁLNÍ BOX" title="CENTROPEN 10011 EBONITOVÉ PLNÍCÍ PERO ORIGINÁLNÍ BOX" rel="10879" src="/fotky61664/fotos/_vyrn_10879krabicka4.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="40" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/CENTROPEN-10011-EBONITOVE-PLNICI-PERO-ORIGINALNI-BOX-d10879.htm" data-id="10879" data-location="category_page" data-variant-id="0" class="product-box-link">CENTROPEN 10011 EBONITOVÉ PLNÍCÍ PERO ORIGINÁLNÍ BOX</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">6&nbsp;000&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=10879">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="10879" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="CENTROPEN 1358 STUDENT PŮVODNÍ KRABIČKA" data-id="9606">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/CENTROPEN-1358-STUDENT-PUVODNI-KRABICKA-d9606.htm" data-id="9606" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="CENTROPEN 1358 STUDENT PŮVODNÍ KRABIČKA" title="CENTROPEN 1358 STUDENT PŮVODNÍ KRABIČKA" rel="9606" src="/fotky61664/fotos/_vyrn_9606IMGP2446.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="64" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/CENTROPEN-1358-STUDENT-PUVODNI-KRABICKA-d9606.htm" data-id="9606" data-location="category_page" data-variant-id="0" class="product-box-link">CENTROPEN 1358 STUDENT PŮVODNÍ KRABIČKA</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">1&nbsp;200&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=9606">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="9606" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">          <div class="break home_products_break"></div>
+                      <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Ceridwen Doveyová JEN ZVÍŘATA" data-id="5655">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Ceridwen-Doveyova-JEN-ZVIRATA-d5655.htm" data-id="5655" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Ceridwen Doveyová JEN ZVÍŘATA" title="Ceridwen Doveyová JEN ZVÍŘATA" rel="5655" src="/fotky61664/fotos/_vyrn_5655IMGP8239.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Ceridwen-Doveyova-JEN-ZVIRATA-d5655.htm" data-id="5655" data-location="category_page" data-variant-id="0" class="product-box-link">Ceridwen Doveyová JEN ZVÍŘATA</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">150&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=5655">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="5655" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="ČEŠI A NĚMCI HISTORICKÁ TABU" data-id="5919">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/CESI-A-NEMCI-HISTORICKA-TABU-d5919.htm" data-id="5919" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="ČEŠI A NĚMCI HISTORICKÁ TABU" title="ČEŠI A NĚMCI HISTORICKÁ TABU" rel="5919" src="/fotky61664/fotos/_vyrn_5919IMGP8939.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/CESI-A-NEMCI-HISTORICKA-TABU-d5919.htm" data-id="5919" data-location="category_page" data-variant-id="0" class="product-box-link">ČEŠI A NĚMCI HISTORICKÁ TABU</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">250&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=5919">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="5919" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="ČESKÁ ARCHITEKTURA 1945 - 1995" data-id="14772">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/CESKA-ARCHITEKTURA-1945-1995-d14772.htm" data-id="14772" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="ČESKÁ ARCHITEKTURA 1945 - 1995" title="ČESKÁ ARCHITEKTURA 1945 - 1995" rel="14772" src="/fotky61664/fotos/_vyrn_14772IMGP0002.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/CESKA-ARCHITEKTURA-1945-1995-d14772.htm" data-id="14772" data-location="category_page" data-variant-id="0" class="product-box-link">ČESKÁ ARCHITEKTURA 1945 - 1995</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">1&nbsp;000&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=14772">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="14772" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">          <div class="break home_products_break"></div>
+                      <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="ČESKOSLOVENSKO A NORIMBERSKÝ PROCES" data-id="12427">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/CESKOSLOVENSKO-A-NORIMBERSKY-PROCES-d12427.htm" data-id="12427" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="ČESKOSLOVENSKO A NORIMBERSKÝ PROCES" title="ČESKOSLOVENSKO A NORIMBERSKÝ PROCES" rel="12427" src="/fotky61664/fotos/_vyrn_12427IMGP0436.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/CESKOSLOVENSKO-A-NORIMBERSKY-PROCES-d12427.htm" data-id="12427" data-location="category_page" data-variant-id="0" class="product-box-link">ČESKOSLOVENSKO A NORIMBERSKÝ PROCES</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">1&nbsp;000&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=12427">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="12427" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="ČSLA ZNAK ČSSR ARMÁDA" data-id="12750">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/CSLA-ZNAK-CSSR-ARMADA-d12750.htm" data-id="12750" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="ČSLA ZNAK ČSSR ARMÁDA" title="ČSLA ZNAK ČSSR ARMÁDA" rel="12750" src="/fotky61664/fotos/_vyrn_12750IMGP0938.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="40" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/CSLA-ZNAK-CSSR-ARMADA-d12750.htm" data-id="12750" data-location="category_page" data-variant-id="0" class="product-box-link">ČSLA ZNAK ČSSR ARMÁDA</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">490&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=12750">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="12750" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Danny Sugermann THE DOORS" data-id="15051">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Danny-Sugermann-THE-DOORS-d15051.htm" data-id="15051" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Danny Sugermann THE DOORS" title="Danny Sugermann THE DOORS" rel="15051" src="/fotky61664/fotos/_vyrn_15051IMGP0195.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Danny-Sugermann-THE-DOORS-d15051.htm" data-id="15051" data-location="category_page" data-variant-id="0" class="product-box-link">Danny Sugermann THE DOORS</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">900&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=15051">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="15051" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">          <div class="break home_products_break"></div>
+                      <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Desiderius PORTRÉTNÍ KRESBY" data-id="8827">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Desiderius-PORTRETNI-KRESBY-d8827.htm" data-id="8827" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Desiderius PORTRÉTNÍ KRESBY" title="Desiderius PORTRÉTNÍ KRESBY" rel="8827" src="/fotky61664/fotos/_vyrn_8827IMGP4801.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Desiderius-PORTRETNI-KRESBY-d8827.htm" data-id="8827" data-location="category_page" data-variant-id="0" class="product-box-link">Desiderius PORTRÉTNÍ KRESBY</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">200&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=8827">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="8827" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="FIAT 125P PROSPEKT MOTOTECHNA" data-id="14245">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/FIAT-125P-PROSPEKT-MOTOTECHNA-d14245.htm" data-id="14245" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="FIAT 125P PROSPEKT MOTOTECHNA" title="FIAT 125P PROSPEKT MOTOTECHNA" rel="14245" src="/fotky61664/fotos/_vyrn_14245IMGP1779.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="40" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/FIAT-125P-PROSPEKT-MOTOTECHNA-d14245.htm" data-id="14245" data-location="category_page" data-variant-id="0" class="product-box-link">FIAT 125P PROSPEKT MOTOTECHNA</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">300&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=14245">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="14245" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Frank Schätzing MOTÝLÍ TYRANIE" data-id="14194">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Frank-Schatzing-MOTYLI-TYRANIE-d14194.htm" data-id="14194" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Frank Schätzing MOTÝLÍ TYRANIE" title="Frank Schätzing MOTÝLÍ TYRANIE" rel="14194" src="/fotky61664/fotos/_vyrn_14194IMGP1678.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Frank-Schatzing-MOTYLI-TYRANIE-d14194.htm" data-id="14194" data-location="category_page" data-variant-id="0" class="product-box-link">Frank Schätzing MOTÝLÍ TYRANIE</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">160&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=14194">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="14194" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">          <div class="break home_products_break"></div>
+                      <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="František Krampota UGANDA ZNOVUOBJEVENÁ PERLA" data-id="2426">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Frantisek-Krampota-UGANDA-ZNOVUOBJEVENA-PERLA-d2426.htm" data-id="2426" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="František Krampota UGANDA ZNOVUOBJEVENÁ PERLA" title="František Krampota UGANDA ZNOVUOBJEVENÁ PERLA" rel="2426" src="/fotky61664/fotos/_vyrn_2426IMGP2875.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Frantisek-Krampota-UGANDA-ZNOVUOBJEVENA-PERLA-d2426.htm" data-id="2426" data-location="category_page" data-variant-id="0" class="product-box-link">František Krampota UGANDA ZNOVUOBJEVENÁ PERLA</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">200&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=2426">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="2426" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="František Rosůlek PARDUBICKO HOLICKO PŘELOUČSKO I II III" data-id="15963">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Frantisek-Rosulek-PARDUBICKO-HOLICKO-PRELOUCSKO-I-II-III-d15963.htm" data-id="15963" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="František Rosůlek PARDUBICKO HOLICKO PŘELOUČSKO I II III" title="František Rosůlek PARDUBICKO HOLICKO PŘELOUČSKO I II III" rel="15963" src="/fotky61664/fotos/_vyrn_15963IMG_20251110_133355.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Frantisek-Rosulek-PARDUBICKO-HOLICKO-PRELOUCSKO-I-II-III-d15963.htm" data-id="15963" data-location="category_page" data-variant-id="0" class="product-box-link">František Rosůlek PARDUBICKO HOLICKO PŘELOUČSKO I II III</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">8&nbsp;500&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=15963">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="15963" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Gustav Weiss ULLSTEIN PORZELLANBUCH" data-id="3020">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Gustav-Weiss-ULLSTEIN-PORZELLANBUCH-d3020.htm" data-id="3020" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Gustav Weiss ULLSTEIN PORZELLANBUCH" title="Gustav Weiss ULLSTEIN PORZELLANBUCH" rel="3020" src="/fotky61664/fotos/_vyrn_3020IMGP3771.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Gustav-Weiss-ULLSTEIN-PORZELLANBUCH-d3020.htm" data-id="3020" data-location="category_page" data-variant-id="0" class="product-box-link">Gustav Weiss ULLSTEIN PORZELLANBUCH</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">220&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=3020">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="3020" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">          <div class="break home_products_break"></div>
+                      <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Hanausek NÁSLEDKY VÁLKY JAK JE POZOROVAL LÉKAŘ" data-id="13778">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Hanausek-NASLEDKY-VALKY-JAK-JE-POZOROVAL-LEKAR-d13778.htm" data-id="13778" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Hanausek NÁSLEDKY VÁLKY JAK JE POZOROVAL LÉKAŘ" title="Hanausek NÁSLEDKY VÁLKY JAK JE POZOROVAL LÉKAŘ" rel="13778" src="/fotky61664/fotos/_vyrn_13778IMGP0590.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Hanausek-NASLEDKY-VALKY-JAK-JE-POZOROVAL-LEKAR-d13778.htm" data-id="13778" data-location="category_page" data-variant-id="0" class="product-box-link">Hanausek NÁSLEDKY VÁLKY JAK JE POZOROVAL LÉKAŘ</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">700&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=13778">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="13778" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Hanzlíček PRÁCE Z LEPENKY A VAZBA KNIH" data-id="11376">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Hanzlicek-PRACE-Z-LEPENKY-A-VAZBA-KNIH-d11376.htm" data-id="11376" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Hanzlíček PRÁCE Z LEPENKY A VAZBA KNIH" title="Hanzlíček PRÁCE Z LEPENKY A VAZBA KNIH" rel="11376" src="/fotky61664/fotos/_vyrn_11376IMGP7122.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Hanzlicek-PRACE-Z-LEPENKY-A-VAZBA-KNIH-d11376.htm" data-id="11376" data-location="category_page" data-variant-id="0" class="product-box-link">Hanzlíček PRÁCE Z LEPENKY A VAZBA KNIH</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">350&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=11376">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="11376" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Jan Václav Rosůlek STŘECHA SVĚTA" data-id="6199">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Jan-Vaclav-Rosulek-STRECHA-SVETA-d6199.htm" data-id="6199" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Jan Václav Rosůlek STŘECHA SVĚTA" title="Jan Václav Rosůlek STŘECHA SVĚTA" rel="6199" src="/fotky61664/fotos/_vyrn_6199IMGP0316.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Jan-Vaclav-Rosulek-STRECHA-SVETA-d6199.htm" data-id="6199" data-location="category_page" data-variant-id="0" class="product-box-link">Jan Václav Rosůlek STŘECHA SVĚTA</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall"><s></s></div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">5&nbsp;000&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=6199">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="6199" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">          <div class="break home_products_break"></div>
+                      <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="JAROSLAV OTČENÁŠEK KRAJINA S RYBNÍKEM" data-id="10496">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/JAROSLAV-OTCENASEK-KRAJINA-S-RYBNIKEM-d10496.htm" data-id="10496" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="JAROSLAV OTČENÁŠEK KRAJINA S RYBNÍKEM" title="JAROSLAV OTČENÁŠEK KRAJINA S RYBNÍKEM" rel="10496" src="/fotky61664/fotos/_vyrn_10496DSCF3014.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="75" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/JAROSLAV-OTCENASEK-KRAJINA-S-RYBNIKEM-d10496.htm" data-id="10496" data-location="category_page" data-variant-id="0" class="product-box-link">JAROSLAV OTČENÁŠEK KRAJINA S RYBNÍKEM</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall"><s></s></div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">6&nbsp;000&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=10496">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="10496" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Jiří Hrůza SVĚT ARCHITEKTURY" data-id="5642">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Jiri-Hruza-SVET-ARCHITEKTURY-d5642.htm" data-id="5642" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Jiří Hrůza SVĚT ARCHITEKTURY" title="Jiří Hrůza SVĚT ARCHITEKTURY" rel="5642" src="/fotky61664/fotos/_vyrn_5642IMGP8210.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Jiri-Hruza-SVET-ARCHITEKTURY-d5642.htm" data-id="5642" data-location="category_page" data-variant-id="0" class="product-box-link">Jiří Hrůza SVĚT ARCHITEKTURY</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">570&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=5642">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="5642" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Jiří Pajer RADĚJOV MINULOST A SOUČASNOST OBCE" data-id="4391">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Jiri-Pajer-RADEJOV-MINULOST-A-SOUCASNOST-OBCE-d4391.htm" data-id="4391" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Jiří Pajer RADĚJOV MINULOST A SOUČASNOST OBCE" title="Jiří Pajer RADĚJOV MINULOST A SOUČASNOST OBCE" rel="4391" src="/fotky61664/fotos/_vyrn_4391IMGP6026.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Jiri-Pajer-RADEJOV-MINULOST-A-SOUCASNOST-OBCE-d4391.htm" data-id="4391" data-location="category_page" data-variant-id="0" class="product-box-link">Jiří Pajer RADĚJOV MINULOST A SOUČASNOST OBCE</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">500&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=4391">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="4391" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">          <div class="break home_products_break"></div>
+                      <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Johannes Butzbach U KACÍŘŮ V ČESKÉ ZEMI" data-id="15974">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Johannes-Butzbach-U-KACIRU-V-CESKE-ZEMI-d15974.htm" data-id="15974" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Johannes Butzbach U KACÍŘŮ V ČESKÉ ZEMI" title="Johannes Butzbach U KACÍŘŮ V ČESKÉ ZEMI" rel="15974" src="/fotky61664/fotos/_vyrn_15974IMGP0040.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Johannes-Butzbach-U-KACIRU-V-CESKE-ZEMI-d15974.htm" data-id="15974" data-location="category_page" data-variant-id="0" class="product-box-link">Johannes Butzbach U KACÍŘŮ V ČESKÉ ZEMI</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">600&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=15974">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="15974" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="JOSEF LIESLER - POCTA SALVADORU DALÍMU LITOGRAFIE" data-id="14957">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/JOSEF-LIESLER-POCTA-SALVADORU-DALIMU-LITOGRAFIE-d14957.htm" data-id="14957" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="JOSEF LIESLER - POCTA SALVADORU DALÍMU LITOGRAFIE" title="JOSEF LIESLER - POCTA SALVADORU DALÍMU LITOGRAFIE" rel="14957" src="/fotky61664/fotos/_vyrn_14957IMGP0146.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="20" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/JOSEF-LIESLER-POCTA-SALVADORU-DALIMU-LITOGRAFIE-d14957.htm" data-id="14957" data-location="category_page" data-variant-id="0" class="product-box-link">JOSEF LIESLER - POCTA SALVADORU DALÍMU LITOGRAFIE</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall"><s></s></div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">8&nbsp;000&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=14957">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="14957" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Karel Šípek VZPOMÍNKY NA PROZATÍMNÍ" data-id="4688">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Karel-Sipek-VZPOMINKY-NA-PROZATIMNI-d4688.htm" data-id="4688" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Karel Šípek VZPOMÍNKY NA PROZATÍMNÍ" title="Karel Šípek VZPOMÍNKY NA PROZATÍMNÍ" rel="4688" src="/fotky61664/fotos/_vyrn_4688IMGP6463.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Karel-Sipek-VZPOMINKY-NA-PROZATIMNI-d4688.htm" data-id="4688" data-location="category_page" data-variant-id="0" class="product-box-link">Karel Šípek VZPOMÍNKY NA PROZATÍMNÍ</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">95&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=4688">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="4688" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">          <div class="break home_products_break"></div>
+                      <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Ladislav Hruška BRAMBORY" data-id="2973">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Ladislav-Hruska-BRAMBORY-d2973.htm" data-id="2973" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Ladislav Hruška BRAMBORY" title="Ladislav Hruška BRAMBORY" rel="2973" src="/fotky61664/fotos/_vyrn_2973IMGP3758.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Ladislav-Hruska-BRAMBORY-d2973.htm" data-id="2973" data-location="category_page" data-variant-id="0" class="product-box-link">Ladislav Hruška BRAMBORY</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">300&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=2973">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="2973" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="MEDAILE ČSTV ZA CELOŽIVOTNÍ PRÁCI A VÝJIMEČNÝ PŘÍNOS PRO ROZVOJ TĚLOVÝCHOVY A SPORTU" data-id="15271">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/MEDAILE-CSTV-ZA-CELOZIVOTNI-PRACI-A-VYJIMECNY-PRINOS-PRO-ROZVOJ-TELOVYCHOVY-A-SPORTU-d15271.htm" data-id="15271" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="MEDAILE ČSTV ZA CELOŽIVOTNÍ PRÁCI A VÝJIMEČNÝ PŘÍNOS PRO ROZVOJ TĚLOVÝCHOVY A SPORTU" title="MEDAILE ČSTV ZA CELOŽIVOTNÍ PRÁCI A VÝJIMEČNÝ PŘÍNOS PRO ROZVOJ TĚLOVÝCHOVY A SPORTU" rel="15271" src="/fotky61664/fotos/_vyrn_15271IMGP0235.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/MEDAILE-CSTV-ZA-CELOZIVOTNI-PRACI-A-VYJIMECNY-PRINOS-PRO-ROZVOJ-TELOVYCHOVY-A-SPORTU-d15271.htm" data-id="15271" data-location="category_page" data-variant-id="0" class="product-box-link">MEDAILE ČSTV ZA CELOŽIVOTNÍ PRÁCI A VÝJIMEČNÝ PŘÍNOS PRO ROZVOJ TĚLOVÝCHOVY A SPORTU</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">600&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=15271">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="15271" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Michael Moran KORÁLOVÉ MOŘE" data-id="3400">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Michael-Moran-KORALOVE-MORE-d3400.htm" data-id="3400" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Michael Moran KORÁLOVÉ MOŘE" title="Michael Moran KORÁLOVÉ MOŘE" rel="3400" src="/fotky61664/fotos/_vyrn_3400IMGP4449.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Michael-Moran-KORALOVE-MORE-d3400.htm" data-id="3400" data-location="category_page" data-variant-id="0" class="product-box-link">Michael Moran KORÁLOVÉ MOŘE</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">150&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=3400">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="3400" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">          <div class="break home_products_break"></div>
+                      <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Mikowec ALTERTHÜMER UND DENKWÜRDIGKEITEN BÖHMENS" data-id="14294">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Mikowec-ALTERTHUMER-UND-DENKWURDIGKEITEN-BOHMENS-d14294.htm" data-id="14294" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Mikowec ALTERTHÜMER UND DENKWÜRDIGKEITEN BÖHMENS" title="Mikowec ALTERTHÜMER UND DENKWÜRDIGKEITEN BÖHMENS" rel="14294" src="/fotky61664/fotos/_vyrn_14294IMGP1799.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="40" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Mikowec-ALTERTHUMER-UND-DENKWURDIGKEITEN-BOHMENS-d14294.htm" data-id="14294" data-location="category_page" data-variant-id="0" class="product-box-link">Mikowec ALTERTHÜMER UND DENKWÜRDIGKEITEN BÖHMENS</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall"><s></s></div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">3&nbsp;900&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=14294">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="14294" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Miloslav Kučera MLUVÍ PÍSMO" data-id="2390">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Miloslav-Kucera-MLUVI-PISMO-d2390.htm" data-id="2390" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Miloslav Kučera MLUVÍ PÍSMO" title="Miloslav Kučera MLUVÍ PÍSMO" rel="2390" src="/fotky61664/fotos/_vyrn_2390IMGP2828.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Miloslav-Kucera-MLUVI-PISMO-d2390.htm" data-id="2390" data-location="category_page" data-variant-id="0" class="product-box-link">Miloslav Kučera MLUVÍ PÍSMO</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">100&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=2390">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="2390" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Nicholas Barnard VELKÝ PRŮVODCE ÚTULNÝM DOMOVEM" data-id="4397">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Nicholas-Barnard-VELKY-PRUVODCE-UTULNYM-DOMOVEM-d4397.htm" data-id="4397" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Nicholas Barnard VELKÝ PRŮVODCE ÚTULNÝM DOMOVEM" title="Nicholas Barnard VELKÝ PRŮVODCE ÚTULNÝM DOMOVEM" rel="4397" src="/fotky61664/fotos/_vyrn_4397IMGP6013.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Nicholas-Barnard-VELKY-PRUVODCE-UTULNYM-DOMOVEM-d4397.htm" data-id="4397" data-location="category_page" data-variant-id="0" class="product-box-link">Nicholas Barnard VELKÝ PRŮVODCE ÚTULNÝM DOMOVEM</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">80&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=4397">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="4397" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">          <div class="break home_products_break"></div>
+                      <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="PLAKÁT GRAND VARIETÉ DRAHŇOVSKÝ PRAHA 1942" data-id="3137">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/PLAKAT-GRAND-VARIETE-DRAHNOVSKY-PRAHA-1942-d3137.htm" data-id="3137" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="PLAKÁT GRAND VARIETÉ DRAHŇOVSKÝ PRAHA 1942" title="PLAKÁT GRAND VARIETÉ DRAHŇOVSKÝ PRAHA 1942" rel="3137" src="/fotky61664/fotos/_vyrn_3137IMGP3966.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/PLAKAT-GRAND-VARIETE-DRAHNOVSKY-PRAHA-1942-d3137.htm" data-id="3137" data-location="category_page" data-variant-id="0" class="product-box-link">PLAKÁT GRAND VARIETÉ DRAHŇOVSKÝ PRAHA 1942</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">2&nbsp;500&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=3137">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="3137" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                        <div class="there_are_status_icons"></div>
+            <div class="icons_width_hack">
+                              <div class="ico_new">novinka</div>
+                            </div>
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Stéphane Bourcet ŠIKANA VE ŠKOLE, NA ULICI, DOMA" data-id="13995">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Stephane-Bourcet-SIKANA-VE-SKOLE-NA-ULICI-DOMA-d13995.htm" data-id="13995" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Stéphane Bourcet ŠIKANA VE ŠKOLE, NA ULICI, DOMA" title="Stéphane Bourcet ŠIKANA VE ŠKOLE, NA ULICI, DOMA" rel="13995" src="/fotky61664/fotos/_vyrn_13995IMGP1141.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Stephane-Bourcet-SIKANA-VE-SKOLE-NA-ULICI-DOMA-d13995.htm" data-id="13995" data-location="category_page" data-variant-id="0" class="product-box-link">Stéphane Bourcet ŠIKANA VE ŠKOLE, NA ULICI, DOMA</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">120&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=13995">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="13995" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="SVĚTOVÉ EVERGREENY S TEXTY JOSEFA KAINARA LP" data-id="15288">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/SVETOVE-EVERGREENY-S-TEXTY-JOSEFA-KAINARA-LP-d15288.htm" data-id="15288" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="SVĚTOVÉ EVERGREENY S TEXTY JOSEFA KAINARA LP" title="SVĚTOVÉ EVERGREENY S TEXTY JOSEFA KAINARA LP" rel="15288" src="/fotky61664/fotos/_vyrn_15288IMGP0292.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="40" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/SVETOVE-EVERGREENY-S-TEXTY-JOSEFA-KAINARA-LP-d15288.htm" data-id="15288" data-location="category_page" data-variant-id="0" class="product-box-link">SVĚTOVÉ EVERGREENY S TEXTY JOSEFA KAINARA LP</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">200&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=15288">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="15288" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">          <div class="break home_products_break"></div>
+                      <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="TEPLICE ŠANOV - MAPA 3751 VOJENSKÝ ZEMĚPISNÝ ÚSTAV V PRAZE" data-id="14899">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/TEPLICE-SANOV-MAPA-3751-VOJENSKY-ZEMEPISNY-USTAV-V-PRAZE-d14899.htm" data-id="14899" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="TEPLICE ŠANOV - MAPA 3751 VOJENSKÝ ZEMĚPISNÝ ÚSTAV V PRAZE" title="TEPLICE ŠANOV - MAPA 3751 VOJENSKÝ ZEMĚPISNÝ ÚSTAV V PRAZE" rel="14899" src="/fotky61664/fotos/_vyrn_14899IMGP0056.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="40" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/TEPLICE-SANOV-MAPA-3751-VOJENSKY-ZEMEPISNY-USTAV-V-PRAZE-d14899.htm" data-id="14899" data-location="category_page" data-variant-id="0" class="product-box-link">TEPLICE ŠANOV - MAPA 3751 VOJENSKÝ ZEMĚPISNÝ ÚSTAV V PRAZE</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">130&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=14899">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="14899" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">            <hr class="hide">
+          <div class="product tab_img160 image_first one-preview-image in-stock-y" data-name="Vladimír Megre STVOŘENÍ" data-id="15771">
+            <!-- PRODUCT BOX -->
+      <div class="productBody">
+                  <div class="img_box">
+            <a href="/Vladimir-Megre-STVORENI-d15771.htm" data-id="15771" data-location="category_page" data-variant-id="0" class="product-box-link">
+              <img alt="Vladimír Megre STVOŘENÍ" title="Vladimír Megre STVOŘENÍ" rel="15771" src="/fotky61664/fotos/_vyrn_15771IMG_20250822_113356.jpg" class="">
+                            <img src="/images/empty.gif" width="130" height="0" alt="empty"></a>
+                      </div>
+                      <div class="productTitle">
+              <div class="productTitleContent">
+                <a href="/Vladimir-Megre-STVORENI-d15771.htm" data-id="15771" data-location="category_page" data-variant-id="0" class="product-box-link">Vladimír Megre STVOŘENÍ</a>
+              </div>
+                          </div>
+                    <div class="break"></div>
+                        <div class="productPriceBox">
+                    <div class="productPriceSmall">&nbsp;</div><br>
+          <div class="productPrice">
+                        <span class="our_price_text">naše cena</span> <span class="product_price_text">150&nbsp;Kč</span>          </div><br>
+                          <form method="post" action="/buy-product.htm?pid=15771">
+                                    <input type="submit" class="buy_btn buy-button-action buy-button-action-12" data-id="15771" data-variant-id="0" name="" value="Koupit" data-similar-popup="0" data-product-info="{&quot;count_type&quot;:0,&quot;multiples&quot;:0}">
+                                    <div class="clear"></div>
+                </form>
+                <div class="stock_yes">skladem</div>        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="productFooter">
+        <div class="productFooterContent">
+                    </div>
+              </div>
+          </div>
+    <hr class="hide">      <div class="clear"></div>
+<div class="clear"></div>
+        <script language="javascript" src="/assets/javascripts/slider_public.js?_=2025-12-09-10-19" type="text/javascript"></script>
+	              </div><!-- end in the center -->
+              <div class="clear"></div>
+                         </div><!-- END CENTER PAGE -->
+            <div class="clear"></div>
+
+            
+                      </div><!-- END AROUND PAGE -->
+
+          <div id="footer"><!-- FOOTER -->
+
+                          <div id="footer_left">
+              Vytvořeno systémem <a href="http://www.webareal.cz" target="_blank">www.webareal.cz</a>            </div>
+            <div id="footer_center">
+                              <a id="footer_ico_home" href="/74op4gt7" class="footer_icons">&nbsp;</a>
+                <a id="footer_ico_map" href="/74op4gt7/web-map" class="footer_icons">&nbsp;</a>
+                <a id="footer_ico_print" href="#" class="print-button footer_icons" target="_blank" rel="nofollow">&nbsp;</a>
+                <a id="footer_ico_topweb" href="#topweb" rel="nofollow" class="footer_icons">&nbsp;</a>
+                            </div>
+            <div id="footer_right" class="foot_created_by_res">
+              Vytvořeno systémem <a href="http://www.webareal.cz" target="_blank">www.webareal.cz</a>            </div>
+                        </div><!-- END FOOTER -->
+                      </div><!-- END PAGE -->
+        </div><!-- END HACK BOX -->
+          </div>          <div id="und_footer" align="center">
+        Antikvariát Chrudim      </div>
+      </div>
+  
+  <script language="JavaScript" type="text/javascript">
+$(window).ready(function() {
+//	$(".loader").fadeOut("slow");
+});
+      function init_lupa_images()
+    {
+      if(jQuery('img.lupa').length)
+      {
+        jQuery('img.lupa, .productFooterContent').qtip(
+        {
+          onContentUpdate: function() { this.updateWidth(); },
+          onContentLoad: function() { this.updateWidth(); },
+          prerender: true,
+          content: {
+            text: function() {
+
+              var $pID = '';
+
+              if($(this).attr('rel'))
+              {
+                $pID = $(this).attr('rel');
+              }
+              else
+              {
+                $pID = $(this).parent().parent().find('img.lupa').attr('rel');
+              }
+
+              var $lupa_img = jQuery(".bLupa"+$pID+":first");
+
+              if(!$lupa_img.length)
+              { // pokud neni obrazek pro lupu, dame obrazek produktu
+                $product_img = $(this).parent().parent().find('img.lupa:first');
+                if($product_img.length)
+                {
+                  $lupa_img = $product_img.clone();
+                }
+              }
+              else
+              {
+                $lupa_img = $lupa_img.clone()
+              }
+
+              return($lupa_img);
+            }
+
+          },
+          position: {
+            my: 'top left',
+            target: 'mouse',
+            viewport: $(window),
+            adjust: {
+              x: 15,  y: 15
+            }
+          },
+          style: {
+            classes: 'ui-tooltip-white ui-tooltip-shadow ui-tooltip-rounded',
+            tip: {
+               corner: false
+            }
+          },
+          show: {
+            solo: true,
+            delay: 200
+          },
+          hide: {
+            fixed: true
+          }
+        });
+      }
+    }
+    $(document).ready(function() {
+  $("#listaA a").click(function(){changeList();});
+  $("#listaB a").click(function(){changeList();});
+  if(typeof(init_lupa_images) === 'function')
+  {
+    init_lupa_images();
+  }
+
+  function changeList()
+  {
+    var className = $("#listaA").attr('class');
+    if(className == 'selected')
+    {
+      $("#listaA").removeClass('selected');
+      $("#listaB").addClass('selected');
+      $("#boxMojeID, #mojeid_tab").show();
+      $("#boxNorm").hide();
+    }
+    else
+    {
+      $("#listaA").addClass('selected');
+      $("#listaB").removeClass('selected');
+      $("#boxNorm").show();
+      $("#boxMojeID, #mojeid_tab").hide();
+   }
+  }
+  $(".print-button").click(function(e)
+  {
+    window.print();
+    e.preventDefault();
+    return false;
+  })
+});
+</script>
+  <span class="hide">YTQzY</span><script src="/wa_script/js/wa_url_translator.js?d=1" type="text/javascript"></script><script type="text/javascript"> WA.Url_translator.enabled = true; WA.Url_translator.display_host = "/"; </script>    <script>
+      var cart_local = {
+        notInStock: "Požadované množství bohužel není na skladě.",
+        notBoughtMin: " Tento produkt je nutné objednat v minimálním množství:",
+        quantity: " Mn.",
+        removeItem: " Odstranit"
+      };
+    </script>
+    <script src="/wa_script/js/add_basket_fce.js?d=9&amp;_= 2025-12-09-10-19" type="text/javascript"></script>    <script type="text/javascript">
+        variant_general = 1;
+    </script>
+	    <script type="text/javascript">
+      WA.Google_analytics = {
+        activated: false
+      };
+    </script>
+      <div id="top_loading_container" class="top_loading_containers" style="z-index: 99998;position: fixed; top: 0px; left: 0px; width: 100%;">
+      <div id="top_loading_bar" class="top_loading_bars" style="height: 100%; width: 0;"></div>
+    </div>
+        <script type="text/javascript" charset="utf-8" src="/js/responsiveMenu.js?_=2025-12-09-10-19"></script>
+    <script type="text/javascript">
+    var responsive_articlemenu_name = ' Menu';
+    $(document).ready(function(){
+            var isFirst = false;
+            var menu = new WA.ResponsiveMenu('#left-box');
+      menu.setArticleSelector('#main-menu');
+      menu.setEshopSelector('#left_eshop');
+      menu.render();
+            if($(".slider_available").is('body') || $(document.body).hasClass("slider-available")) {
+        (function(form, $) {
+          'use strict';
+          var $form = $(form),
+              expanded = false,
+              $body = $(document.body),
+              $input;
+          var expandInput = function() {
+            if(!expanded) {
+              $form.addClass("expand");
+              $body.addClass("search_act");
+              expanded = true;
+            }
+          };
+          var hideInput = function() {
+            if(expanded) {
+              $form.removeClass("expand");
+              $body.removeClass("search_act");
+              expanded = false;
+            }
+          };
+          var getInputValue = function() {
+            return $input.val().trim();
+          };
+          var setInputValue = function(val) {
+            $input.val(val);
+          };
+          if($form.length) {
+            $input = $form.find("input.inputBox");
+            $form.on("submit", function(e) {
+              if(!getInputValue()) {
+                e.preventDefault();
+                $input.focus();
+              }
+            });
+            $input.on("focus", function(e) {
+              expandInput();
+            });
+            $(document).on("click", function(e) {
+              if(!$form[0].contains(e.target)) {
+                hideInput();
+                setInputValue("");
+              }
+            });
+          }
+        })("#searchForm", jQuery);
+      }
+          });
+  </script>
+  
+
+<div id="qtip-rcontainer"></div><div id="cboxOverlay" style="display: none;"></div><div id="colorbox" class="" role="dialog" tabindex="-1" style="display: none;"><div id="cboxWrapper"><div><div id="cboxTopLeft" style="float: left;"></div><div id="cboxTopCenter" style="float: left;"></div><div id="cboxTopRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxMiddleLeft" style="float: left;"></div><div id="cboxContent" style="float: left;"><div id="cboxTitle" style="float: left;"></div><div id="cboxCurrent" style="float: left;"></div><button type="button" id="cboxPrevious"></button><button type="button" id="cboxNext"></button><button id="cboxSlideshow"></button><div id="cboxLoadingOverlay" style="float: left;"></div><div id="cboxLoadingGraphic" style="float: left;"></div></div><div id="cboxMiddleRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxBottomLeft" style="float: left;"></div><div id="cboxBottomCenter" style="float: left;"></div><div id="cboxBottomRight" style="float: left;"></div></div></div><div style="position: absolute; width: 9999px; visibility: hidden; display: none;"></div></div><ul id="ui-id-1" tabindex="0" class="ui-menu ui-widget ui-widget-content ui-autocomplete ui-front" style="display: none;"></ul><div role="status" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div></body></html>

@@ -4,15 +4,13 @@ import regex as re
 import logging
 import sys
 from pathlib import Path
-from typing import Dict, Any, List, Optional
-
-
+from typing import Dict, Any, List, Optional, Tuple
 import lxml.html
 import pandas as pd
 import textstat
 import yaml
 
-UNWANTED_TAGS = ['script', 'style', 'meta', 'link', 'noscript', 'iframe', 'head', 'input']
+UNWANTED_TAGS = {'script', 'style', 'noscript', 'form', 'iframe', 'header', 'footer', 'nav'}
 
 OTHER_CATEGORY = 'other'
 
@@ -93,14 +91,17 @@ def _extract_element_features(
         return {}
     
 
-def get_main_html_content_tag(html_content: str) -> Optional[lxml.html.HtmlElement]:
-    """
-    Identify the specific element that wraps the main content in the HTML document.
-    Calculates score based on:
-        (total_text_length + total_img_tags * IMG_IMPORTANCE) / total_tags
-    """
-    IMG_IMPORTANCE = 50
-    
+
+def get_main_html_content_tag(
+    html_content,
+    IMG_IMPORTANCE=150,
+    MIN_TAG_TEXT_LENGTH=0,
+    MIN_IMAGE_COUNT=0,
+    LINK_DENSITY_WEIGHT=0.4,
+    DEPTH_SCORE_COEFFICIENT=30,
+    PARENT_IMPROVEMENT_THRESHOLD=5
+    ) -> Optional[lxml.html.HtmlElement]:
+
     if not html_content:
         return None
 
@@ -110,36 +111,91 @@ def get_main_html_content_tag(html_content: str) -> Optional[lxml.html.HtmlEleme
         logger.error(f"Failed to parse HTML: {e}")
         return None
 
-    best_elem = None
-    best_score = -1.0
+    # Track: [Best Element, Best Score]
+    best_candidate = [tree, -1.0]
 
-    # Iterate over every element in the tree
-    for elem in tree.iter():
-        # Skip comments and processing instructions
-        if not isinstance(elem.tag, str):
-            continue
+    def process_node(elem: lxml.html.HtmlElement, current_depth: int, is_in_link: bool) -> Tuple[int, int, int]:
+        """
+        Returns: (total_text_len, total_img_count, total_link_text_len)
+        """
+        tag = normalize_tag(elem.tag)
         
-        # Calculate Text Length
-        text_content = elem.text_content()
-        if not text_content:
-            continue
-        text_len = len(text_content.strip())
+        # 1. Invalid Tag Check
+        if not isinstance(elem.tag, str) or tag in UNWANTED_TAGS:
+            return (0, 0, 0)
 
-        # Efficiently count images
-        img_count = sum(1 for _ in elem.iter('img'))
+        # 2. Link Status
+        current_is_link = is_in_link or (tag == 'a')
 
-        # Count Total Tags (Descendants + Self)
-        total_tags = sum(1 for _ in elem.iterdescendants()) + 1
+        # 3. Local Stats
+        own_text = (elem.text or "").strip() + (elem.tail or "").strip()
+        local_text_len = len(own_text)
+        local_img_count = 1 if tag == 'img' else 0
+        local_link_text_len = local_text_len if current_is_link else 0
 
-        # Calculate Score
-        score = (text_len + (img_count * IMG_IMPORTANCE)) / total_tags
+        # 4. Recursion
+        child_text_len = 0
+        child_img_count = 0
+        child_link_text_len = 0
 
-        # Update Best Candidate
-        if score > best_score:
-            best_score = score
-            best_elem = elem
+        for child in elem:
+            c_text, c_img, c_link_len = process_node(child, current_depth + 1, current_is_link)
+            child_text_len += c_text
+            child_img_count += c_img
+            child_link_text_len += c_link_len
 
-    return best_elem
+        # 5. Aggregation
+        total_text = local_text_len + child_text_len
+        total_imgs = local_img_count + child_img_count
+        total_link_text = local_link_text_len + child_link_text_len
+
+        # 6. Scoring
+        if total_text == 0:
+            link_density = 1.0 
+        else:
+            link_density = total_link_text / total_text
+
+        base_score = total_text + (total_imgs * IMG_IMPORTANCE)
+        
+        # --- FIX 1: Gallery Exception ---
+        # If an element has many images (e.g., > 5), it is likely a product grid or gallery.
+        # We should IGNORE or reduce link density penalty for these, because product grids are usually 100% links.
+        if total_imgs > 5:
+            effective_link_weight = 0.1  # Very low penalty for galleries
+        else:
+            effective_link_weight = LINK_DENSITY_WEIGHT
+
+        penalty_factor = 1.0 - (link_density * effective_link_weight)
+        
+        # --- FIX 2: Depth Bonus (Additive) ---
+        # We want to favor the specific container (depth 5) over the body (depth 1)
+        depth_score = current_depth * DEPTH_SCORE_COEFFICIENT
+        
+        final_score = (base_score * max(0.01, penalty_factor)) + depth_score
+
+        # --- FIX 3: Hard Body Penalty ---
+        # The body tag accumulates everything. Unless the page is very flat, 
+        # we almost never want to return 'body' as the specific main content.
+        if tag == 'body' or tag == 'html':
+            final_score *= 0.1 # Nuke the body score
+
+        # 7. Update Candidate
+        if total_text > MIN_TAG_TEXT_LENGTH or total_imgs >= MIN_IMAGE_COUNT:
+            current_best_score = best_candidate[1]
+            
+            if current_best_score == -1.0:
+                best_candidate[0] = elem
+                best_candidate[1] = final_score
+            
+            # Parent vs Child Threshold Check
+            elif final_score > (current_best_score * PARENT_IMPROVEMENT_THRESHOLD):
+                best_candidate[0] = elem
+                best_candidate[1] = final_score
+
+        return (total_text, total_imgs, total_link_text)
+
+    process_node(tree, 0, False)
+    return best_candidate[0]
 
 
 def html_to_dataframe(
@@ -206,7 +262,7 @@ def html_to_dataframe(
         return df
 
     # Fill NAs for text columns with empty strings
-    text_cols = ['class_str', 'id_str']
+    text_cols = ['class_str', 'id_str', 'tag', 'parent_tag', 'gparent_tag', 'ggparent_tag']
     for col in text_cols:
         if col in df.columns:
             df[col] = df[col].fillna("")

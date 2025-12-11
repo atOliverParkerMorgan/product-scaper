@@ -114,6 +114,7 @@ def run(project_root: Optional[Path] = None):
         'text_word_count', 'text_digit_count', 'text_density', 'reading_ease',
         'has_currency_symbol', 'is_price_format', 'has_href', 'is_image'
     ]
+    
     categorical_features = ['tag', 'parent_tag']
     text_features = ['class_str', 'id_str'] 
     

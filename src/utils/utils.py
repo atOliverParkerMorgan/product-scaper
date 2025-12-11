@@ -10,6 +10,11 @@ def normalize_tag(tag_name) -> str:
     return str(tag_name).lower()
 
 
+def get_unique_xpath(element) -> str:
+    tree = element.getroottree()
+    return tree.getpath(element)
+ 
+
 def count_unique_tags(tag_list: List[str]) -> int:
     """Count unique tags."""
     return len(set(tag_list)) if tag_list else 0

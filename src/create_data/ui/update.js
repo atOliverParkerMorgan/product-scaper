@@ -9,8 +9,6 @@
     const btnPrev = document.getElementById('pw-btn-prev');
     const btnNext = document.getElementById('pw-btn-next');
     const btnDone = document.getElementById('pw-btn-done');
-    const btnSelectPredicted = document.getElementById('pw-btn-select-predicted');
-    const predictedRow = document.getElementById('pw-predicted-row');
     const predictedBadge = document.getElementById('pw-predicted-badge');
     
     if (data.idx === 0) btnPrev.classList.add('pw-hidden');
@@ -24,14 +22,7 @@
         btnDone.classList.add('pw-hidden');
     }
     
-    // Show/hide select predicted button and count based on whether there are predicted elements
+    // Update predicted count
     const predictedCount = document.querySelectorAll('.pw-predicted').length;
-    if (predictedCount > 0) {
-        btnSelectPredicted.classList.remove('pw-hidden');
-        predictedRow.style.display = 'flex';
-        predictedBadge.innerText = `${predictedCount} found`;
-    } else {
-        btnSelectPredicted.classList.add('pw-hidden');
-        predictedRow.style.display = 'none';
-    }
+    predictedBadge.innerText = `${predictedCount} found`;
 }
