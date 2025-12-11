@@ -1,10 +1,8 @@
 """Advanced Model Training Pipeline."""
 
-import logging
 import warnings
 from typing import List
 
-from rich.console import Console
 from rich.panel import Panel
 
 from sklearn.compose import ColumnTransformer
@@ -14,14 +12,10 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
+from utils.console import CONSOLE, log_info, log_error
 
 # Constants
 RANDOM_STATE = 42
-CONSOLE = Console()
-
-# Setup logging
-logging.basicConfig(level=logging.INFO, format="%(message)s")
-logger = logging.getLogger(__name__)
 warnings.filterwarnings('ignore')
 
 
@@ -65,7 +59,7 @@ def build_pipeline(num_cols: List[str], cat_cols: List[str], text_cols: List[str
 
 def train_model(df, pipeline: Pipeline = None):
     
-    CONSOLE.print(Panel("[bold cyan]Starting Training Pipeline (Random Forest)[/bold cyan]"))
+    log_info("Starting Training Pipeline (Random Forest)")
     
     target_col = 'Category'
     
@@ -84,7 +78,7 @@ def train_model(df, pipeline: Pipeline = None):
     numeric_features = [c for c in numeric_features if c in df.columns]
     
     if target_col not in df.columns:
-        logger.error(f"Target column '{target_col}' not found in data.")
+        log_error(f"Target column '{target_col}' not found in data")
         return
 
     X = df.drop(columns=[target_col])
@@ -100,18 +94,18 @@ def train_model(df, pipeline: Pipeline = None):
             X, y_encoded, test_size=0.2, random_state=RANDOM_STATE, stratify=y_encoded
         )
     except ValueError as e:
-        logger.error(f"Error during train-test split: {e}")
+        log_error(f"Error during train-test split: {e}")
         return
     
     if pipeline is None:
         pipeline = build_pipeline(numeric_features, categorical_features, text_features)
     
-    CONSOLE.print(f"Training on {len(X_train)} samples using Random Forest...")
+    log_info(f"Training on {len(X_train)} samples using Random Forest")
     
     # Random Forest uses class_weight='balanced' in init, so we don't need to pass weights here
     pipeline.fit(X_train, y_train)
     
-    CONSOLE.print("[bold]Evaluating...[/bold]")
+    log_info("Evaluating")
     y_pred = pipeline.predict(X_test)
     y_test_decoded = label_encoder.inverse_transform(y_test)
     y_pred_decoded = label_encoder.inverse_transform(y_pred)

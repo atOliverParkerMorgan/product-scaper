@@ -8,7 +8,6 @@ This script:
 """
 
 import sys
-import logging
 from pathlib import Path
 from typing import Dict, Tuple, Optional, Any
 from itertools import product
@@ -18,9 +17,7 @@ import lxml.html
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from src.train_model.process_data import get_main_html_content_tag
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from src.utils.console import CONSOLE, log_info
 
 
 # Ground truth: Expected main content tag identifiers for each test page
@@ -233,47 +230,46 @@ def grid_search(pages: Dict[str, str]) -> Tuple[Dict[str, Any], float, Dict[str,
 
 def print_results(best_params: Dict[str, Any], best_accuracy: float, best_matches: Dict[str, bool]):
     """Print optimization results in a formatted way."""
-    print("\n" + "="*80)
-    print("PARAMETER OPTIMIZATION RESULTS")
-    print("="*80)
+    CONSOLE.print("\n" + "="*80)
+    CONSOLE.print("PARAMETER OPTIMIZATION RESULTS")
+    CONSOLE.print("="*80)
     
-    print(f"\nBest Accuracy: {best_accuracy:.2%}")
+    log_info(f"Best Accuracy: {best_accuracy:.2%}")
     
-    print("\nBest Parameters:")
-    print("-" * 80)
+    CONSOLE.print("\nBest Parameters:")
+    CONSOLE.print("-" * 80)
     for param_name, param_value in best_params.items():
-        print(f"  {param_name:<35} = {param_value}")
+        CONSOLE.print(f"  {param_name:<35} = {param_value}")
     
-    print("\nMatches per page:")
-    print("-" * 80)
+    CONSOLE.print("\nMatches per page:")
+    CONSOLE.print("-" * 80)
     for page_name, matched in best_matches.items():
-        status = "✓ PASS" if matched else "✗ FAIL"
-        print(f"  {page_name:<35} {status}")
+        status = "PASS" if matched else "FAIL"
+        CONSOLE.print(f"  {page_name:<35} {status}")
     
-    print("\nFunction call template:")
-    print("-" * 80)
-    print("get_main_html_content_tag(")
-    print("    html_content,")
+    CONSOLE.print("\nFunction call template:")
+    CONSOLE.print("-" * 80)
+    CONSOLE.print("get_main_html_content_tag(")
+    CONSOLE.print("    html_content,")
     for param_name, param_value in best_params.items():
         if isinstance(param_value, float):
-            print(f"    {param_name}={param_value},")
+            CONSOLE.print(f"    {param_name}={param_value},")
         else:
-            print(f"    {param_name}={param_value},")
-    print(")")
+            CONSOLE.print(f"    {param_name}={param_value},")
+    CONSOLE.print(")")
     
-    print("="*80 + "\n")
+    CONSOLE.print("="*80 + "\n")
 
 
 def main():
     """Main entry point."""
-    logger.info("Loading test pages...")
+    
     pages = load_test_pages()
     
     if not pages:
-        logger.error("No test pages found!")
         return
     
-    logger.info(f"Loaded {len(pages)} test pages")
+    CONSOLE.print(f"Loaded {len(pages)} test pages")
     
     # Run grid search
     best_params, best_accuracy, best_matches = grid_search(pages)

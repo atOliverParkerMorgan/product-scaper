@@ -1,12 +1,11 @@
-import logging
 import time
 import copy
 from typing import Dict, List
 from pathlib import Path
 from playwright.sync_api import sync_playwright, Error as PlaywrightError
 from train_model.predict_data import predict_selectors
+from utils.console import log_info, log_warning, log_error, log_success
 # --- CONFIGURATION ---
-logging.basicConfig(level=logging.INFO, format='%(message)s')
 
 UI_PATH = Path(__file__).parent / 'ui'
 
@@ -78,7 +77,7 @@ def inject_ui_scripts(page):
         """)
         return True
     except PlaywrightError:
-        print("⚠️ Could not inject scripts (page might be loading).")
+        log_warning("Could not inject scripts (page might be loading)")
         return False
 
 
@@ -138,10 +137,10 @@ def handle_toggle_action(selector, category, selections, undo_stack, redo_stack,
     
     if selector in selections[category]:
         selections[category].remove(selector)
-        print(f"[-] Removed: {selector}")
+        log_info(f"Removed: {selector}")
     else:
         selections[category].append(selector)
-        print(f"[+] Added: {selector}")
+        log_success(f"Added: {selector}")
 
 
 def handle_navigate_action(direction, current_idx, categories, undo_stack, redo_stack, page):
@@ -152,7 +151,7 @@ def handle_navigate_action(direction, current_idx, categories, undo_stack, redo_
         # Clear predictions when navigating
         try:
             page.evaluate("document.querySelectorAll('.pw-predicted').forEach(el => el.classList.remove('pw-predicted'))")
-        except:
+        except Exception:
             pass
         return current_idx + 1, False
     elif direction == 'prev' and current_idx > 0:
@@ -161,7 +160,7 @@ def handle_navigate_action(direction, current_idx, categories, undo_stack, redo_
         # Clear predictions when navigating
         try:
             page.evaluate("document.querySelectorAll('.pw-predicted').forEach(el => el.classList.remove('pw-predicted'))")
-        except:
+        except Exception:
             pass
         return current_idx - 1, False
     elif direction == 'done':
@@ -177,17 +176,17 @@ def handle_history_action(cmd, current_idx, selections, undo_stack, redo_stack):
         prev_idx, prev_selections = undo_stack.pop()
         # Only allow undo if we are on the same category step (optional UX choice)
         if prev_idx == current_idx:
-            print("↺ Undo")
+            log_info("Undo")
             return prev_selections
         # If undoing takes us back a step, we put it back (simple history implementation)
         undo_stack.append((prev_idx, prev_selections))
-        print("⚠️ Cannot undo across category changes (navigation clears history)")
+        log_warning("Cannot undo across category changes (navigation clears history)")
         
     elif cmd == 'redo' and redo_stack:
         undo_stack.append((current_idx, copy.deepcopy(selections)))
         next_idx, next_selections = redo_stack.pop()
         if next_idx == current_idx:
-            print("↻ Redo")
+            log_info("Redo")
             return next_selections
         redo_stack.append((next_idx, next_selections))
     
@@ -196,12 +195,12 @@ def handle_history_action(cmd, current_idx, selections, undo_stack, redo_stack):
 
 def navigate_to_url(page, url):
     """Navigate to the target URL."""
-    print(f"\n🌐 Navigating to {url}...")
+    log_info(f"Navigating to {url}")
     try:
         # 'domcontentloaded' is faster than 'networkidle'
         page.goto(url, wait_until='domcontentloaded', timeout=60000)
     except Exception as e:
-        print(f"⚠️ Navigation warning: {e}")
+        log_warning(f"Navigation warning: {e}")
 
 
 def select_data(url: str, categories: List[str], model=None)-> Dict[str, List[str]]:
@@ -228,14 +227,14 @@ def select_data(url: str, categories: List[str], model=None)-> Dict[str, List[st
 
                 # 1. Auto-run predictions for this category (when category changes)
                 if category != last_category:
-                    print(f"\n🔮 Auto-predicting for '{category}'...")
+                    log_info(f"Auto-predicting for '{category}'")
                     html_content = page.content()
                     if model is None:
-                        print("⚠️ No model provided for predictions.")
+                        log_warning("No model provided for predictions")
                         last_category = category
                         continue
                     
-                    predicted = predict_selectors(html_content, model, category)
+                    predicted = predict_selectors(model, html_content, category)
                     
                     if predicted:
                         page.evaluate("document.querySelectorAll('.pw-predicted').forEach(el => el.classList.remove('pw-predicted'))")
@@ -275,11 +274,11 @@ def select_data(url: str, categories: List[str], model=None)-> Dict[str, List[st
                                     highlighted_count += result
 
                             except Exception as e:
-                                print(f"   ⚠️ Error highlighting candidate: {e}")
+                                log_warning(f"Error highlighting candidate: {e}")
 
-                        print(f"💡 Highlighted {highlighted_count} predicted elements.")
+                        log_success(f"Highlighted {highlighted_count} predicted elements")
                     else:
-                        print("⚠️ No predictions found for this category.")
+                        log_warning("No predictions found for this category")
                     
                     last_category = category
 
@@ -293,7 +292,7 @@ def select_data(url: str, categories: List[str], model=None)-> Dict[str, List[st
                     if inject_ui_scripts(page):
                         continue
                     # If injection fails repeatedly, break loop
-                    print("❌ Lost connection to page UI.")
+                    log_error("Lost connection to page UI")
                     break
                 
                 # 3. Highlight selections (only if changed)
@@ -313,7 +312,7 @@ def select_data(url: str, categories: List[str], model=None)-> Dict[str, List[st
                 elif action_type == 'navigate':
                     if action_payload == 'select_predicted':
                         # --- SELECT ALL PREDICTED ---
-                        print("\n✨ Selecting all predicted elements...")
+                        log_info("Selecting all predicted elements")
                         try:
                             selectors_added = page.evaluate("""
                                 (() => {
@@ -342,13 +341,13 @@ def select_data(url: str, categories: List[str], model=None)-> Dict[str, List[st
                                     if selector not in selections[category]:
                                         selections[category].append(selector)
                                 
-                                print(f"[+] Added {len(selectors_added)} elements.")
+                                log_success(f"Added {len(selectors_added)} elements")
                                 last_selections_hash = None
                             else:
-                                print("⚠️ No highlighted predictions to select.")
+                                log_warning("No highlighted predictions to select")
                                 
                         except Exception as e:
-                            print(f"❌ Error selecting predicted: {e}")
+                            log_error(f"Error selecting predicted: {e}")
                     
                     else:
                         # Normal Navigation (Next/Prev/Done)
@@ -363,13 +362,13 @@ def select_data(url: str, categories: List[str], model=None)-> Dict[str, List[st
 
         except PlaywrightError as e:
             if "Target closed" in str(e):
-                print("\n⚠️ Window closed.")
+                log_warning("Window closed")
             else:
-                print(f"\n❌ Playwright Error: {e}")
+                log_error(f"Playwright Error: {e}")
         except KeyboardInterrupt:
-            print("\n🛑 Interrupted.")
+            log_warning("Interrupted")
         except Exception as e:
-            print(f"\n❌ Error: {e}")
+            log_error(f"Error: {e}")
         finally:
             try:
                 browser.close()

@@ -6,10 +6,7 @@ import requests
 import pandas as pd
 import pickle
 from train_model.evaluate_model import evaluate_model
-from rich.console import Console
-
-
-CONSOLE = Console()
+from utils.console import CONSOLE, log_info, log_warning, log_error, log_debug
 
 class ProductScraper:
     """
@@ -53,10 +50,10 @@ class ProductScraper:
         """Automatically save state when object is destroyed."""
         try:
             if self.model is not None:
-                CONSOLE.print("[dim]Auto-saving ProductScraper state...[/dim]")
+                log_debug("Auto-saving ProductScraper state")
                 self.save()
         except Exception as e:
-            CONSOLE.print(f"[yellow]Warning: Could not auto-save: {e}[/yellow]")
+            log_warning(f"Could not auto-save: {e}")
     
     def __iter__(self):
         """Make ProductScraper iterable over websites."""
@@ -77,7 +74,7 @@ class ProductScraper:
             try:
                 predictions[category] = self.predict(url, category)
             except Exception as e:
-                CONSOLE.print(f"[yellow]Warning: Failed to predict {category} for {url}: {e}[/yellow]")
+                log_warning(f"Failed to predict {category} for {url}: {e}")
                 predictions[category] = []
         
         return (url, predictions)
@@ -96,6 +93,9 @@ class ProductScraper:
             
         Returns:
             HTML content as string
+            
+        Raises:
+            requests.RequestException: If unable to fetch the URL
         """
         # If we have cached content, check if it's still valid
         if website_url in self.website_html_cache:
@@ -119,21 +119,35 @@ class ProductScraper:
                 
             except requests.RequestException:
                 # If HEAD request fails, use cached version anyway
+                log_debug(f"Using cached version for {website_url}")
                 return self.website_html_cache[website_url]
         
-        # Fetch fresh content
-        response = requests.get(website_url, timeout=10)
-        response.raise_for_status()
-        html_content = response.text
-        
-        # Cache the content and metadata
-        self.website_html_cache[website_url] = html_content
-        self.website_cache_metadata[website_url] = {
-            'etag': response.headers.get('ETag'),
-            'last_modified': response.headers.get('Last-Modified')
-        }
-        
-        return html_content
+        # Fetch fresh content with error handling
+        try:
+            response = requests.get(website_url, timeout=10)
+            response.raise_for_status()
+            html_content = response.text
+            
+            # Cache the content and metadata
+            self.website_html_cache[website_url] = html_content
+            self.website_cache_metadata[website_url] = {
+                'etag': response.headers.get('ETag'),
+                'last_modified': response.headers.get('Last-Modified')
+            }
+            
+            return html_content
+        except requests.exceptions.ConnectionError as e:
+            log_error(f"Connection error for {website_url}: {str(e).split(':')[0]}")
+            raise
+        except requests.exceptions.Timeout:
+            log_error(f"Timeout error for {website_url}")
+            raise
+        except requests.exceptions.HTTPError as e:
+            log_error(f"HTTP error for {website_url}: {e.response.status_code}")
+            raise
+        except requests.RequestException as e:
+            log_error(f"Request error for {website_url}: {e}")
+            raise
     
     def set_pipeline(self, pipeline):
         """
@@ -160,13 +174,11 @@ class ProductScraper:
         if website_url in self.selectors:
             return self.selectors[website_url]
         
-        if self.model is None:
-            self.train(create_data=False)
-        
         data = select_data(website_url, self.categories, self.model)
         self.selectors[website_url] = data
-        
+
         self.create_dataframe([website_url])
+        self.train_model(create_data=False)
 
         return data
     
@@ -202,28 +214,49 @@ class ProductScraper:
                 continue
 
             if url not in self.websites_urls:
-                CONSOLE.print(f"[bold yellow]WARNING:[/bold yellow] URL {url} not in configured websites. Skipping.")
+                log_warning(f"URL {url} not in configured websites. Skipping")
                 continue
 
-            html_content = self.get_html(url)
+            try:
+                html_content = self.get_html(url)
+            except requests.RequestException as e:
+                log_warning(f"Skipping {url} due to network error")
+                continue
 
             # Ensure we have selectors for this URL
             if url not in self.selectors:
-                self.create_selectors(url)
+                try:
+                    self.create_selectors(url)
+                except Exception as e:
+                    log_warning(f"Failed to create selectors for {url}: {e}")
+                    continue
 
             selectors = self.selectors.get(url, {})
-            df = html_to_dataframe(html_content, selectors)
-            all_data.append(df)
-            self.url_in_training_data.add(url)
+            if not selectors:
+                log_warning(f"No selectors found for {url}, skipping")
+                continue
+                
+            try:
+                df = html_to_dataframe(html_content, selectors)
+                if not df.empty:
+                    all_data.append(df)
+                    self.url_in_training_data.add(url)
+                else:
+                    log_warning(f"No data extracted from {url}")
+            except Exception as e:
+                log_warning(f"Error processing {url}: {e}")
+                continue
         
         if all_data:
-            if self.training_data is not None:
+            if self.training_data is not None and not self.training_data.empty:
                 all_data.insert(0, self.training_data)
             self.training_data = pd.concat(all_data, ignore_index=True)
+        elif self.training_data is None:
+            log_warning("No data was successfully extracted from any URL")
         
         return self.training_data
 
-    def train(self, create_data=True):
+    def train_model(self, create_data=True):
         """
         Train the machine learning model on collected data.
         Automatically creates dataframe if not already created.
@@ -233,13 +266,18 @@ class ProductScraper:
         
         The trained model can then be used to predict element selectors on new pages.
         """
-        if create_data and self.training_data is None:
+        if create_data and (self.training_data is None or self.training_data.empty):
+            log_info("Creating training dataframe from selectors")
             self.create_dataframe()
 
         if self.training_data is None or self.training_data.empty:
-            CONSOLE.print("[bold yellow]WARNING:[/bold yellow] Training data is empty. Cannot train model.")
+            log_error("No training data available. Please:")
+            CONSOLE.print("  1. Call create_all_selectors() to collect data interactively, or")
+            CONSOLE.print("  2. Load existing selectors with load_selectors(), or")
+            CONSOLE.print("  3. Load existing training data with load_dataframe()")
             return
         
+        log_info(f"Training model on {len(self.training_data)} samples")
         self.model = train_model(self.training_data, self.pipeline)
 
     def evaluate(self):
