@@ -13,7 +13,8 @@ logger = logging.getLogger(__name__)
 # Constants for feature extraction
 UNWANTED_TAGS = {'script', 'style', 'noscript', 'form', 'iframe', 'header', 'footer', 'nav'}
 OTHER_CATEGORY = 'other'
-CURRENCY_HINTS = r'(?:\p{Sc}|(?:USD|EUR|GBP|JPY|CNY|CZK|CHF|Chf|Kč|kr|zł|Rs)\b)'
+# Comprehensive currency list: symbols (\p{Sc}) + major currency codes and their variations
+CURRENCY_HINTS = r'(?:\p{Sc}|(?:USD|EUR|GBP|JPY|CNY|CZK|CHF|Chf|AUD|CAD|NZD|SEK|NOK|DKK|PLN|HUF|RON|BGN|HRK|RSD|TRY|INR|BRL|MXN|ARS|ZAR|KRW|THB|MYR|SGD|IDR|PHP|VND|Kč|kr|zł|Rs|Ft|lei|kn|din|руб|₹|R\$|R)\b)'
 NUMBER_PATTERN = r'(?:\d{1,3}(?:[., ]\d{3})+|\d+)(?:[.,]\d{1,2})?'
 PRICE_REGEX = re.compile(
     fr'(?:{CURRENCY_HINTS}\s*{NUMBER_PATTERN}|{NUMBER_PATTERN}\s*{CURRENCY_HINTS})',
