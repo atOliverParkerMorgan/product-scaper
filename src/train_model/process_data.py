@@ -112,7 +112,7 @@ def get_main_html_content_tag(
         return None
 
     # Track: [Best Element, Best Score]
-    best_candidate = [tree, -1.0]
+    best_candidate = [None, -1.0]
 
     def process_node(elem: lxml.html.HtmlElement, current_depth: int, is_in_link: bool) -> Tuple[int, int, int]:
         """
@@ -195,6 +195,17 @@ def get_main_html_content_tag(
         return (total_text, total_imgs, total_link_text)
 
     process_node(tree, 0, False)
+    
+    # Fallback: if nothing was selected or only head was selected, try to find body, then html, then tree
+    if best_candidate[0] is None or normalize_tag(best_candidate[0].tag) == 'head':
+        body = tree.find('.//body')
+        if body is not None:
+            return body
+        html = tree.find('.//html')
+        if html is not None:
+            return html
+        return tree
+    
     return best_candidate[0]
 
 
