@@ -158,21 +158,28 @@ def html_to_dataframe(
     all_data = []
     labeled_elements = set()
 
-    # Extract Positive Labels (scoped to root_node)
+    # Extract Positive Labels using XPath
     if selectors:
-        for category, css_selectors in selectors.items():
-            for selector in css_selectors:
+        for category, xpath_selectors in selectors.items():
+            logger.info(f"Processing category '{category}' with {len(xpath_selectors)} XPath selectors")
+            for xpath in xpath_selectors:
                 try:
-                    # cssselect will search within the full document root
-                    elements = root.cssselect(selector)
+                    # Use XPath to find elements
+                    elements = root.xpath(xpath)
+                    logger.debug(f"XPath '{xpath}' matched {len(elements)} elements")
+                    
                     for elem in elements:
+                        # Make sure it's an Element, not text or comment
+                        if not isinstance(elem, lxml.html.HtmlElement):
+                            continue
+                            
                         if elem not in labeled_elements:
                             data = extract_element_features(elem, category=category)
                             if data:
                                 all_data.append(data)
                                 labeled_elements.add(elem)
                 except Exception as e:
-                    logger.warning(f"Invalid selector {selector}: {e}")
+                    logger.warning(f"Invalid XPath '{xpath}': {e}")
 
     # Extract Negative Samples (Only from main_content to avoid noise)
     for elem in main_content.iter():

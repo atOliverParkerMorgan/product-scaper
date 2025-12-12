@@ -13,8 +13,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 from utils.console import CONSOLE, log_info, log_error
-from utils.features import NUMERIC_FEATURES, CATEGORICAL_FEATURES, TEXT_FEATURES
-
+from utils.features import NUMERIC_FEATURES, CATEGORICAL_FEATURES, TEXT_FEATURES, NON_TRAINIG_FEATURES, TARGET_FEATURE
 # Constants
 RANDOM_STATE = 42
 warnings.filterwarnings('ignore')
@@ -44,13 +43,14 @@ def build_pipeline(num_cols: List[str], cat_cols: List[str], text_cols: List[str
     
     # 2. Add TF-IDF transformers for text features
     # Text features like class_str and id_str often contain 'title', 'price', etc.
+    # min_df=1 allows single document vocabularies (for small datasets)
     if 'class_str' in text_cols:
         transformers.append(
-            ('txt_class', TfidfVectorizer(analyzer='char_wb', ngram_range=(3, 5), max_features=1000), 'class_str')
+            ('txt_class', TfidfVectorizer(analyzer='char_wb', ngram_range=(3, 5), max_features=1000, min_df=1), 'class_str')
         )
     if 'id_str' in text_cols:
         transformers.append(
-            ('txt_id', TfidfVectorizer(analyzer='char_wb', ngram_range=(3, 5), max_features=1000), 'id_str')
+            ('txt_id', TfidfVectorizer(analyzer='char_wb', ngram_range=(3, 5), max_features=1000, min_df=1), 'id_str')
         )
     
     preprocessor = ColumnTransformer(
@@ -78,9 +78,7 @@ def build_pipeline(num_cols: List[str], cat_cols: List[str], text_cols: List[str
 def train_model(df, pipeline: Pipeline = None, test: bool = False):
     
     log_info("Starting Training Pipeline (Random Forest)")
-    
-    target_col = 'Category'
-    
+        
     # Use feature definitions from unified features module
     numeric_features = NUMERIC_FEATURES.copy()
     categorical_features = CATEGORICAL_FEATURES.copy()
@@ -91,12 +89,12 @@ def train_model(df, pipeline: Pipeline = None, test: bool = False):
     categorical_features = [c for c in categorical_features if c in df.columns]
     text_features = [c for c in text_features if c in df.columns]
     
-    if target_col not in df.columns:
-        log_error(f"Target column '{target_col}' not found in data")
+    if TARGET_FEATURE not in df.columns:
+        log_error(f"Target column '{TARGET_FEATURE}' not found in data")
         return
 
-    X = df.drop(columns=[target_col])
-    y = df[target_col]
+    X = df.drop(columns=NON_TRAINIG_FEATURES)
+    y = df[TARGET_FEATURE]
     
     # Label Encoding Target
     label_encoder = LabelEncoder()

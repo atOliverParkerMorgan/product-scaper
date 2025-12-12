@@ -1,9 +1,10 @@
 from train_model.process_data import html_to_dataframe, get_main_html_content_tag
-from utils.features import UNWANTED_TAGS
+from utils.features import UNWANTED_TAGS, NON_TRAINIG_FEATURES, TARGET_FEATURE
 from utils.utils import get_unique_xpath, normalize_tag
 import lxml.html
 import numpy as np
 from typing import Any, Dict, List
+
 
 def predict_selectors(model: Dict[str, Any], html_content: str, category: str) -> List[Dict[str, Any]]:
         
@@ -34,8 +35,8 @@ def predict_selectors(model: Dict[str, Any], html_content: str, category: str) -
             continue
         elements.append(elem)
     
-    if 'Category' in X.columns:
-        X = X.drop(columns=['Category'])
+    if TARGET_FEATURE in X.columns:
+        X = X.drop(columns=NON_TRAINIG_FEATURES)
     
     predictions = pipeline.predict(X)
     match_indices = np.where(predictions == target_class_idx)[0]

@@ -21,6 +21,8 @@ PRICE_REGEX = re.compile(
     re.UNICODE | re.IGNORECASE
 )
 
+TARGET_FEATURE = 'Category'
+
 # Feature column definitions - must match what train_model expects
 NUMERIC_FEATURES = [
     'num_children',
@@ -41,6 +43,11 @@ NUMERIC_FEATURES = [
     'has_dimensions',
     'parent_is_link',
     'sibling_image_count'
+]
+
+NON_TRAINIG_FEATURES = [
+    'Category',
+    'SourceURL'
 ]
 
 CATEGORICAL_FEATURES = [

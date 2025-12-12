@@ -13,40 +13,48 @@
         }
     }, false);
 
-    // --- 2. SELECTOR GENERATION (FULL PATH) ---
+    // --- 2. XPATH GENERATION (FULL PATH) ---
     window._generateSelector = (el) => {
         if (!el || el.nodeType !== Node.ELEMENT_NODE) return '';
         
-        const getPath = (element) => {
-            if (!element || element.nodeType !== Node.ELEMENT_NODE) return '';
-            let selector = element.nodeName.toLowerCase();
+        const getElementIndex = (element) => {
+            let index = 1;
             let sibling = element;
-            let nth = 1;
-            while (sibling = sibling.previousElementSibling) {
-                if (sibling.nodeName.toLowerCase() === selector) nth++;
+            // Count backwards to find position from start
+            while (sibling.previousElementSibling) {
+                sibling = sibling.previousElementSibling;
+                if (sibling.nodeType === Node.ELEMENT_NODE && sibling.nodeName === element.nodeName) {
+                    index++;
+                }
             }
-            if (nth > 1) {
-                selector += `:nth-of-type(${nth})`;
-            } else {
-                let hasSameTypeSibling = false;
-                sibling = element;
-                while (sibling = sibling.nextElementSibling) {
-                    if (sibling.nodeName.toLowerCase() === selector) {
-                        hasSameTypeSibling = true; break;
+            // Now count forward from the first element
+            sibling = element.parentNode ? element.parentNode.firstElementChild : null;
+            let position = 0;
+            while (sibling) {
+                if (sibling.nodeName === element.nodeName) {
+                    position++;
+                    if (sibling === element) {
+                        return position;
                     }
                 }
-                if (hasSameTypeSibling) selector += `:nth-of-type(1)`;
+                sibling = sibling.nextElementSibling;
             }
-            return selector;
+            return 1;
         };
 
         const parts = [];
         let current = el;
-        while (current && current.nodeType === Node.ELEMENT_NODE && current.nodeName.toLowerCase() !== 'html') {
-            parts.unshift(getPath(current));
+        while (current && current.nodeType === Node.ELEMENT_NODE) {
+            const tagName = current.nodeName.toLowerCase();
+            if (tagName === 'html') {
+                parts.unshift('html[1]');
+                break;
+            }
+            const index = getElementIndex(current);
+            parts.unshift(`${tagName}[${index}]`);
             current = current.parentNode;
         }
-        return parts.join(' > ');
+        return '/' + parts.join('/');
     };
 
     // --- 3. INITIALIZE UI (ONE TIME RENDER) ---
@@ -55,7 +63,7 @@
         ui.id = 'pw-ui';
         ui.innerHTML = `
             <div id="pw-ui-header">
-                <h2>Select <span id="pw-category-name">...</span></h2>
+                <h2>Select Category: <span id="pw-category-name">...</span></h2>
                 <div style="opacity:0.5">::</div>
             </div>
             <div id="pw-ui-body">

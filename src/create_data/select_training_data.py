@@ -28,21 +28,22 @@ def highlight_selectors(page, selectors: List[str], force_update=False):
         if force_update:
             page.evaluate("document.querySelectorAll('.pw-selected').forEach(el => el.classList.remove('pw-selected'))")
         
-        # 2. Apply new selections
+        # 2. Apply new selections using XPath
         # We process in batches to avoid one bad selector crashing the whole operation
-        for sel in selectors:
-            safe_sel = sel.replace('"', '\\"').replace('\n', ' ')
+        for xpath in selectors:
+            safe_xpath = xpath.replace('"', '\\"').replace('\n', ' ')
             page.evaluate(f"""
                 (() => {{
                     try {{
-                        const els = document.querySelectorAll("{safe_sel}");
-                        els.forEach(el => {{
+                        const result = document.evaluate("{safe_xpath}", document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+                        for (let i = 0; i < result.snapshotLength; i++) {{
+                            const el = result.snapshotItem(i);
                             el.classList.add('pw-selected');
                             // If it was predicted, remove the purple prediction style
                             el.classList.remove('pw-predicted'); 
-                        }});
+                        }}
                     }} catch(e) {{
-                        console.log("Invalid selector skipped:", "{safe_sel}");
+                        console.log("Invalid XPath skipped:", "{safe_xpath}");
                     }}
                 }})()
             """)
