@@ -78,14 +78,9 @@ class ProductScraper:
         self._iterator_index += 1
         
         # Predict all categories for this URL
-        predictions = {}
-        for category in self.categories:
-            try:
-                predictions[category] = self.predict(url, category)
-            except Exception as e:
-                log_warning(f"Failed to predict '{category}' for {url}: {e}")
-                predictions[category] = []
-        
+       
+        predictions = self.get_selectors(url)
+            
         return (url, predictions)
     
     def __len__(self):
@@ -180,7 +175,7 @@ class ProductScraper:
             self.websites_urls.append(website_url)
         else:
             log_warning(f"Website URL {website_url} already in configured list")
-            
+
 
     def remove_website(self, website_url):
         """
@@ -330,8 +325,7 @@ class ProductScraper:
             log_debug(f"Processing {url} with selectors: {selectors}")
                 
             try:
-                df = html_to_dataframe(html_content, selectors)
-                df['SourceURL'] = url 
+                df = html_to_dataframe(html_content, selectors, url=url)
                 if not df.empty:
                     all_data.append(df)
                     self.url_in_training_data.add(url)
@@ -440,6 +434,24 @@ class ProductScraper:
 
         return predict_selectors(self.model, self.get_html(website_url), category)
     
+
+    def get_selectors(self, website_url):
+        """
+        Get the currently stored selectors for a specific website URL.
+        
+        Args:
+            website_url (str): URL to get selectors for.
+        Returns:
+            dict: Dictionary of selectors for the URL.
+        """
+        if website_url not in self.selectors:
+            log_warning(f"No selectors found for {website_url}. Predicting instead.")
+            result = {}
+            for category in self.categories:
+                result[category] = self.predict(website_url, category)
+            return result
+        return self.selectors.get(website_url, {})
+    
     def save_model(self, path='model.pkl'):
         """
         Save the trained model to disk.
@@ -460,8 +472,11 @@ class ProductScraper:
         Args:
             path (str): Filename to load model data from.
         """
-        with open(PRODUCT_SCRAPER_SAVE_DIR / path, 'rb') as f:
-            self.model = pickle.load(f)
+        try:
+            with open(PRODUCT_SCRAPER_SAVE_DIR / path, 'rb') as f:
+                self.model = pickle.load(f)
+        except Exception as e:
+            log_error(f"Failed to load model from {path}: {e}")
     
     def save_dataframe(self, path='training_data.csv'):
         """
@@ -482,7 +497,10 @@ class ProductScraper:
         Args:
             path (str): Filename to load training data from.
         """
-        self.training_data = pd.read_csv(PRODUCT_SCRAPER_SAVE_DIR / path)
+        try:
+            self.training_data = pd.read_csv(PRODUCT_SCRAPER_SAVE_DIR / path)
+        except Exception as e:
+            log_error(f"Failed to load training data from {path}: {e}")
 
     def save_selectors(self, path='selectors.pkl'):
         """
@@ -501,8 +519,11 @@ class ProductScraper:
         Args:
             path (str): Filename to load selectors from.
         """
-        with open(PRODUCT_SCRAPER_SAVE_DIR / path, 'rb') as f:
-            self.selectors = pickle.load(f)
+        try:
+            with open(PRODUCT_SCRAPER_SAVE_DIR / path, 'rb') as f:
+                self.selectors = pickle.load(f)
+        except Exception as e:
+            log_error(f"Failed to load selectors from {path}: {e}")
 
     def save(self, path='product_scraper.pkl'):
         """

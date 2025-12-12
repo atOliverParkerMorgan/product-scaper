@@ -1,5 +1,5 @@
 from train_model.process_data import html_to_dataframe, get_main_html_content_tag
-from utils.features import UNWANTED_TAGS, NON_TRAINIG_FEATURES, TARGET_FEATURE
+from utils.features import UNWANTED_TAGS, NON_TRAINING_FEATURES, TARGET_FEATURE
 from utils.utils import get_unique_xpath, normalize_tag
 import lxml.html
 import numpy as np
@@ -36,7 +36,9 @@ def predict_selectors(model: Dict[str, Any], html_content: str, category: str) -
         elements.append(elem)
     
     if TARGET_FEATURE in X.columns:
-        X = X.drop(columns=NON_TRAINIG_FEATURES)
+        # Only drop columns that actually exist in the dataframe
+        cols_to_drop = [col for col in NON_TRAINING_FEATURES if col in X.columns]
+        X = X.drop(columns=cols_to_drop)
     
     predictions = pipeline.predict(X)
     match_indices = np.where(predictions == target_class_idx)[0]
@@ -58,3 +60,17 @@ def predict_selectors(model: Dict[str, Any], html_content: str, category: str) -
         })
     
     return candidates
+
+
+def predict_products(model: Dict[str, Any], html_content: str, category: str) -> List[Dict[str, Any]]:
+    """
+    Group selectors by Url SourceURL and return a list of products with their associated selectors.
+    Args:
+        model (Dict[str, Any]): The trained model containing the pipeline and label encoder.
+        html_content (str): The HTML content to predict selectors from.
+        category (str): The target category for prediction.
+    Returns:
+        List[Dict[str, Any]]: A list of products with their associated selectors.
+    """
+
+    pass

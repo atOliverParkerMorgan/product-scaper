@@ -139,11 +139,17 @@ def get_main_html_content_tag(
 
 def html_to_dataframe(
     html_content: str, 
-    selectors: Optional[Dict[str, List[str]]] = None
+    selectors: Optional[Dict[str, List[str]]] = None,
+    url: str = None
 ) -> pd.DataFrame:
     """
     Parse HTML and extract features into a DataFrame.
     Uses get_main_html_content_tag to narrow scope to relevant content.
+    
+    Args:
+        html_content: HTML string to parse.
+        selectors: Dictionary mapping categories to XPath selectors.
+        url: Source URL to track origin of training data (for removal if needed).
     """
     main_content = get_main_html_content_tag(html_content)
     
@@ -206,6 +212,10 @@ def html_to_dataframe(
     
     if df.empty:
         return df
+
+    # Add source URL column for tracking and removal
+    if url is not None:
+        df['SourceURL'] = url
 
     # Fill NAs for text columns with empty strings
     text_cols = ['class_str', 'id_str', 'tag', 'parent_tag', 'gparent_tag', 'ggparent_tag']

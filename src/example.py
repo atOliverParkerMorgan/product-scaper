@@ -72,6 +72,7 @@ CATEGORIES = [
 if __name__ == "__main__":
     product_scraper = ProductScraper(categories=CATEGORIES, websites_urls=WEBSITES)
     
+    product_scraper.load_model()
     # Step 1: Collect training data by manually selecting elements
     # This will open a browser for each website
     log_info("Step 1: Collecting selectors from websites")

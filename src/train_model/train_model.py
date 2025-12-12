@@ -13,7 +13,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 from utils.console import CONSOLE, log_info, log_error
-from utils.features import NUMERIC_FEATURES, CATEGORICAL_FEATURES, TEXT_FEATURES, NON_TRAINIG_FEATURES, TARGET_FEATURE
+from utils.features import NUMERIC_FEATURES, CATEGORICAL_FEATURES, TEXT_FEATURES, NON_TRAINING_FEATURES, TARGET_FEATURE
 # Constants
 RANDOM_STATE = 42
 warnings.filterwarnings('ignore')
@@ -93,7 +93,9 @@ def train_model(df, pipeline: Pipeline = None, test: bool = False):
         log_error(f"Target column '{TARGET_FEATURE}' not found in data")
         return
 
-    X = df.drop(columns=NON_TRAINIG_FEATURES)
+    # Only drop columns that actually exist in the dataframe
+    cols_to_drop = [col for col in NON_TRAINING_FEATURES if col in df.columns]
+    X = df.drop(columns=cols_to_drop)
     y = df[TARGET_FEATURE]
     
     # Label Encoding Target
