@@ -250,6 +250,39 @@ DATE_REGEX = re.compile(
     re.IGNORECASE
 )
 
+# 4. Product Identification Codes
+# ISBN-10: 10 digits with optional hyphens (e.g., 0-306-40615-2)
+# ISBN-13: 13 digits with optional hyphens (e.g., 978-0-306-40615-7)
+ISBN_REGEX = re.compile(
+    r'\b(?:ISBN(?:[:-]?1[03])?[:-]?)?(?=[0-9X]{10}$|(?=(?:[0-9]+[-\ ]){3})[-\ 0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[-\ ]){4})[-\ 0-9]{17}$)(?:97[89][-\ ]?)?[0-9]{1,5}[-\ ]?[0-9]+[-\ ]?[0-9]+[-\ ]?[0-9X]\b',
+    re.IGNORECASE
+)
+
+# UPC (Universal Product Code): 12 digits
+# EAN (European Article Number): 13 digits
+UPC_EAN_REGEX = re.compile(
+    r'\b(?:UPC|EAN|GTIN)[:-]?\s*([0-9]{12,14})\b|\b([0-9]{12,14})\b(?=.*(?:barcode|product code))',
+    re.IGNORECASE
+)
+
+# ASIN (Amazon Standard Identification Number): B followed by 9 alphanumeric characters
+ASIN_REGEX = re.compile(
+    r'\b(?:ASIN[:-]?\s*)?B[0-9A-Z]{9}\b',
+    re.IGNORECASE
+)
+
+# SKU patterns: Common formats like SKU-123456, product-abc123, etc.
+SKU_REGEX = re.compile(
+    r'\b(?:SKU|Product[\s-]?(?:ID|Code|Number)|Item[\s-]?(?:Number|Code))[:-]?\s*([A-Z0-9-]+)\b',
+    re.IGNORECASE
+)
+
+# Model Number patterns: Often alphanumeric with hyphens
+MODEL_REGEX = re.compile(
+    r'\b(?:Model[\s-]?(?:Number|No\.?|#)?)[:-]?\s*([A-Z0-9][A-Z0-9-]{2,20})\b',
+    re.IGNORECASE
+)
+
 TARGET_FEATURE = 'Category'
 
 # Feature column definitions
@@ -278,6 +311,13 @@ NUMERIC_FEATURES = [
     'has_cta_keyword',    # New
     'has_author_keyword', # New
     'has_date_pattern',   # New
+    
+    # Product Identification Codes
+    'has_isbn',           # New
+    'has_upc_ean',        # New
+    'has_asin',           # New
+    'has_sku',            # New
+    'has_model_number',   # New
     
     # Attribute / Visual
     'has_href',
@@ -375,6 +415,13 @@ def extract_element_features(
         features['has_author_keyword'] = 1 if AUTHOR_REGEX.search(text) else 0
         features['has_date_pattern'] = 1 if DATE_REGEX.search(text) else 0
         
+        # Product Code Detection
+        features['has_isbn'] = 1 if ISBN_REGEX.search(text) else 0
+        features['has_upc_ean'] = 1 if UPC_EAN_REGEX.search(text) else 0
+        features['has_asin'] = 1 if ASIN_REGEX.search(text) else 0
+        features['has_sku'] = 1 if SKU_REGEX.search(text) else 0
+        features['has_model_number'] = 1 if MODEL_REGEX.search(text) else 0
+        
         # --- 4. Density & Readability ---
         num_descendants = len(list(element.iterdescendants())) + 1
         features['text_density'] = len(text) / num_descendants
@@ -406,6 +453,18 @@ def extract_element_features(
         try:
             width = element.get('width', '')
             height = element.get('height', '')
+            
+            # If no width/height attributes, try to extract from style attribute
+            if not width or not height:
+                style = element.get('style', '')
+                if style:
+                    # Look for width in style (e.g., "width:45px" or "width: 45px")
+                    width_match = re.search(r'width\s*:\s*(\d+)(?:px)?', style, re.IGNORECASE)
+                    height_match = re.search(r'height\s*:\s*(\d+)(?:px)?', style, re.IGNORECASE)
+                    if width_match and not width:
+                        width = width_match.group(1)
+                    if height_match and not height:
+                        height = height_match.group(1)
             
             # Try to extract numeric values
             if width and height:

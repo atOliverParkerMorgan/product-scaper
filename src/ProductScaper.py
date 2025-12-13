@@ -534,7 +534,7 @@ class ProductScraper:
         except Exception as e:
             log_error(f"Failed to load training data from {path}: {e}")
 
-    def save_selectors(self, path='selectors.pkl'):
+    def save_selectors(self, path='selectors.yaml'):
         """
         Save collected selectors to disk.
         
@@ -542,10 +542,10 @@ class ProductScraper:
             path (str): Filename to save selectors.
         """
         PRODUCT_SCRAPER_SAVE_DIR.mkdir(parents=True, exist_ok=True)
-        with open(PRODUCT_SCRAPER_SAVE_DIR / path, 'wb') as f:
-            pickle.dump(self.selectors, f)
+        with open(PRODUCT_SCRAPER_SAVE_DIR / path, 'w') as f:
+            yaml.dump(self.selectors, f, default_flow_style=False, allow_unicode=True)
 
-    def load_selectors(self, path='selectors.pkl'):
+    def load_selectors(self, path='selectors.yaml'):
         """
         Load previously collected selectors from disk.
         
@@ -553,8 +553,8 @@ class ProductScraper:
             path (str): Filename to load selectors from.
         """
         try:
-            with open(PRODUCT_SCRAPER_SAVE_DIR / path, 'rb') as f:
-                self.selectors = pickle.load(f)
+            with open(PRODUCT_SCRAPER_SAVE_DIR / path, 'r') as f:
+                self.selectors = yaml.safe_load(f)
         except Exception as e:
             log_error(f"Failed to load selectors from {path}: {e}")
 
