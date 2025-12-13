@@ -217,22 +217,23 @@ AUTHOR_KEYWORDS = [
     'نویسنده', 'اثر' # Persian
 ]
 
-# Custom/Local symbols and variations
+# Custom/Local symbols and variations (literal strings to match)
 CUSTOM_SYMBOLS = [
-    r'\p{Sc}', 'Chf', 'Kč', 'kr', 'zł', 'Rs', 'Ft', 'lei', 'kn', 'din', 'руб', '₹', r'R\$', 'R'
+    'Chf', 'Kč', 'kr', 'zł', 'Rs', 'Ft', 'lei', 'kn', 'din', 'руб', '₹', r'R\$', 'R'
 ]
 
 # --- Compiled Regex Patterns ---
 
 # 1. Currency & Price
-ALL_CURRENCIES = CUSTOM_SYMBOLS + sorted(ISO_CURRENCIES)
-CURRENCY_PATTERN_STR = "|".join(map(re.escape, ALL_CURRENCIES)) # Escape to be safe
+# Combine Unicode currency symbols (\p{Sc}) with custom symbols and ISO codes
+CURRENCY_PATTERN_STR = r'\p{Sc}|' + '|'.join(re.escape(sym) for sym in CUSTOM_SYMBOLS + sorted(ISO_CURRENCIES))
 CURRENCY_HINTS_REGEX = re.compile(fr'(?:{CURRENCY_PATTERN_STR})\b', re.UNICODE | re.IGNORECASE)
 
 NUMBER_PATTERN = r'(?:\d{1,3}(?:[., ]\d{3})+|\d+)(?:[.,]\d{1,2})?'
 
+# Fixed: Use the pattern string, not the compiled regex object
 PRICE_REGEX = re.compile(
-    fr'(?:{CURRENCY_HINTS_REGEX}\s*{NUMBER_PATTERN}|{NUMBER_PATTERN}\s*{CURRENCY_HINTS_REGEX})',
+    fr'(?:(?:{CURRENCY_PATTERN_STR})\s*{NUMBER_PATTERN}|{NUMBER_PATTERN}\s*(?:{CURRENCY_PATTERN_STR}))',
     re.UNICODE | re.IGNORECASE
 )
 
@@ -284,7 +285,7 @@ NUMERIC_FEATURES = [
     'has_src',
     'has_alt',
     'alt_len',
-    'has_dimensions',
+    'image_area',        # Surface area (width * height) - better than binary flag
     'parent_is_link',
     'sibling_image_count',
     
@@ -401,13 +402,21 @@ def extract_element_features(
         features['has_alt'] = 1 if element.get('alt') else 0
         features['alt_len'] = len(element.get('alt', ''))
         
-        # Image dimension hints
+        # Image surface area (width * height) - useful for distinguishing product images from icons/thumbnails
         try:
             width = element.get('width', '')
             height = element.get('height', '')
-            features['has_dimensions'] = 1 if (width or height) else 0
+            
+            # Try to extract numeric values
+            if width and height:
+                # Remove 'px' suffix if present and convert to int
+                width_val = int(re.search(r'\d+', str(width)).group()) if re.search(r'\d+', str(width)) else 0
+                height_val = int(re.search(r'\d+', str(height)).group()) if re.search(r'\d+', str(height)) else 0
+                features['image_area'] = width_val * height_val
+            else:
+                features['image_area'] = 0
         except Exception:
-            features['has_dimensions'] = 0
+            features['image_area'] = 0
         
         # Parent context for images
         features['parent_is_link'] = 1 if (parent is not None and normalize_tag(parent.tag) == 'a') else 0

@@ -122,6 +122,7 @@ def get_main_html_content_tag(
 
         return (total_text, total_imgs, total_link_text)
 
+    # Process the tree to find the best content container
     process_node(tree, 0, False)
     
     # Fallback: if nothing was selected or only head was selected, try to find body, then html, then tree
@@ -172,18 +173,22 @@ def html_to_dataframe(
                 try:
                     # Use XPath to find elements
                     elements = root.xpath(xpath)
-                    logger.debug(f"XPath '{xpath}' matched {len(elements)} elements")
+                    logger.info(f"XPath '{xpath[:50]}...' matched {len(elements)} elements")
                     
                     for elem in elements:
                         # Make sure it's an Element, not text or comment
                         if not isinstance(elem, lxml.html.HtmlElement):
+                            logger.debug(f"Skipping non-element: {type(elem)}")
                             continue
                             
                         if elem not in labeled_elements:
                             data = extract_element_features(elem, category=category)
                             if data:
+                                logger.info(f"Added element with category='{category}', tag='{data.get('tag')}'")
                                 all_data.append(data)
                                 labeled_elements.add(elem)
+                        else:
+                            logger.debug(f"Element already labeled, skipping")
                 except Exception as e:
                     logger.warning(f"Invalid XPath '{xpath}': {e}")
 

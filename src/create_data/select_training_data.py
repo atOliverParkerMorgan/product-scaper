@@ -1,10 +1,13 @@
 import time
 import copy
-from typing import Dict, List
+from typing import Dict, List, TYPE_CHECKING
 from pathlib import Path
 from playwright.sync_api import sync_playwright, Error as PlaywrightError
 from train_model.predict_data import predict_selectors
 from utils.console import log_info, log_warning, log_error, log_success
+
+if TYPE_CHECKING:
+    from ProductScaper import ProductScraper
 # --- CONFIGURATION ---
 
 UI_PATH = Path(__file__).parent / 'ui'
@@ -144,7 +147,7 @@ def handle_toggle_action(selector, category, selections, undo_stack, redo_stack,
         log_success(f"Added: {selector}")
 
 
-def handle_navigate_action(direction, current_idx, categories, undo_stack, redo_stack, page):
+def handle_navigate_action(direction, current_idx, undo_stack, redo_stack, page):
     """Handle navigation action (next, prev, done)."""
     if direction == 'next':
         undo_stack.clear()
@@ -204,7 +207,7 @@ def navigate_to_url(page, url):
         log_warning(f"Navigation warning: {e}")
 
 
-def select_data(url: str, categories: List[str], model=None)-> Dict[str, List[str]]:
+def select_data(product_scraper: 'ProductScraper', url: str)-> Dict[str, List[str]]:
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=False, args=['--start-maximized'])
         context = browser.new_context(no_viewport=True)
@@ -222,70 +225,68 @@ def select_data(url: str, categories: List[str], model=None)-> Dict[str, List[st
         
         try:
             should_exit = False
-            while current_idx < len(categories) and not should_exit:
-                category = categories[current_idx]
+            while current_idx < len(product_scraper.categories) and not should_exit:
+                category = product_scraper.categories[current_idx]
                 current_selection_list = selections.get(category, [])
 
                 # 1. Auto-run predictions for this category (when category changes)
                 if category != last_category:
                     log_info(f"Auto-predicting for '{category}'")
                     html_content = page.content()
-                    if model is None:
+                    if product_scraper.model is None:
                         log_warning("No model provided for predictions")
-                        last_category = category
-                        continue
-                    
-                    predicted = predict_selectors(model, html_content, category)
-                    
-                    if predicted:
-                        page.evaluate("document.querySelectorAll('.pw-predicted').forEach(el => el.classList.remove('pw-predicted'))")
-                        highlighted_count = 0
-                        
-                        for candidate in predicted:
-                            try:
-                                xpath = candidate.get('xpath')
-                                idx = candidate.get('index')
-                                
-                                js_highlight_script = ""
-                                
-                                if xpath:
-                                    escaped_xpath = xpath.replace("'", "\\'")
-                                    js_highlight_script = f"""
-                                        const iterator = document.evaluate('{escaped_xpath}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
-                                        const el = iterator.singleNodeValue;
-                                        if (el && !el.classList.contains('pw-selected')) {{
-                                            el.classList.add('pw-predicted');
-                                            return 1;
-                                        }}
-                                        return 0;
-                                    """
-                                elif idx is not None:
-                                    js_highlight_script = f"""
-                                        const allElements = document.querySelectorAll('*');
-                                        const el = allElements[{idx}];
-                                        if (el && !el.classList.contains('pw-selected')) {{
-                                            el.classList.add('pw-predicted');
-                                            return 1;
-                                        }}
-                                        return 0;
-                                    """
-
-                                if js_highlight_script:
-                                    result = page.evaluate(f"(() => {{ try {{ {js_highlight_script} }} catch(e) {{ return 0; }} }})()")
-                                    highlighted_count += result
-
-                            except Exception as e:
-                                log_warning(f"Error highlighting candidate: {e}")
-
-                        log_success(f"Highlighted {highlighted_count} predicted elements")
                     else:
-                        log_warning("No predictions found for this category")
+                        predicted = predict_selectors(product_scraper.model, html_content, category)
+                        
+                        if predicted:
+                            page.evaluate("document.querySelectorAll('.pw-predicted').forEach(el => el.classList.remove('pw-predicted'))")
+                            highlighted_count = 0
+                            
+                            for candidate in predicted:
+                                try:
+                                    xpath = candidate.get('xpath')
+                                    idx = candidate.get('index')
+                                    
+                                    js_highlight_script = ""
+                                    
+                                    if xpath:
+                                        escaped_xpath = xpath.replace("'", "\\'")
+                                        js_highlight_script = f"""
+                                            const iterator = document.evaluate('{escaped_xpath}', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null);
+                                            const el = iterator.singleNodeValue;
+                                            if (el && !el.classList.contains('pw-selected')) {{
+                                                el.classList.add('pw-predicted');
+                                                return 1;
+                                            }}
+                                            return 0;
+                                        """
+                                    elif idx is not None:
+                                        js_highlight_script = f"""
+                                            const allElements = document.querySelectorAll('*');
+                                            const el = allElements[{idx}];
+                                            if (el && !el.classList.contains('pw-selected')) {{
+                                                el.classList.add('pw-predicted');
+                                                return 1;
+                                            }}
+                                            return 0;
+                                        """
+
+                                    if js_highlight_script:
+                                        result = page.evaluate(f"(() => {{ try {{ {js_highlight_script} }} catch(e) {{ return 0; }} }})()")
+                                        highlighted_count += result
+
+                                except Exception as e:
+                                    log_warning(f"Error highlighting candidate: {e}")
+
+                            log_success(f"Highlighted {highlighted_count} predicted elements")
+                        else:
+                            log_warning("No predictions found for this category")
                     
                     last_category = category
 
                 # 2. Update UI Overlay
                 ui_updated = update_ui_state(page, category, len(current_selection_list), 
-                                            current_idx, len(categories))
+                                            current_idx, len(product_scraper.categories))
                 
                 # If UI failed to update (page refresh/navigation), reinject
                 if not ui_updated:
@@ -352,8 +353,7 @@ def select_data(url: str, categories: List[str], model=None)-> Dict[str, List[st
                     
                     else:
                         # Normal Navigation (Next/Prev/Done)
-                        current_idx, should_exit = handle_navigate_action(
-                            action_payload, current_idx, categories, undo_stack, redo_stack, page)
+                        current_idx, should_exit = handle_navigate_action(action_payload, current_idx, undo_stack, redo_stack, page)
                         last_selections_hash = None
 
                 elif action_type == 'history':
