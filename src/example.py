@@ -1,5 +1,6 @@
 from ProductScaper import ProductScraper
 from utils.console import log_info
+import random
 
 WEBSITES = [
     # "https://trigon-knihy.cz/antikvariat/",
@@ -63,10 +64,13 @@ WEBSITES = [
     "http://www.ztichlaklika.cz/antikvariat?page=1",
 ]
 
+random.shuffle(WEBSITES)
+
 CATEGORIES = [
     "title",
+    "description",
     "price",
-    "image",
+    "image"
 ]
 
 if __name__ == "__main__":
@@ -75,28 +79,6 @@ if __name__ == "__main__":
         log_info("Loaded existing ProductScraper state.")
     except FileNotFoundError:
         product_scraper = ProductScraper(categories=CATEGORIES, websites_urls=WEBSITES)
-    
-    product_scraper.load_model()
-    # Step 1: Collect training data by manually selecting elements
-    # This will open a browser for each website
-    log_info("Step 1: Collecting selectors from websites")
+
     product_scraper.create_all_selectors()
-    product_scraper.save_selectors()  # Save selectors for future use
     
-    # Step 2: Create dataframe from collected selectors
-    log_info("Step 2: Creating training dataframe")
-    product_scraper.create_training_data()
-    product_scraper.save_training_data()  # Save dataframe for future use
-    
-    # Step 3: Train the model
-    log_info("Step 3: Training model")
-    product_scraper.train_model()
-    
-    # Step 4: Evaluate the model
-    log_info("Step 4: Evaluating model")
-    product_scraper.evaluate()
-    
-    # Step 5: Save everything
-    log_info("Step 5: Saving model and state")
-    product_scraper.save()
-        

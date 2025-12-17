@@ -1,10 +1,9 @@
 (() => {
-    // Flag to prevent selection loop when we simulate clicks
+    // Flag to avoid selection loop during simulated clicks
     window._isSimulatingClick = false;
 
-    // --- 1. PREVENT ALL NAVIGATION ---
-    // This captures ALL clicks on 'a' tags (links) and kills the navigation event
-    // while still allowing the event to exist for Javascript listeners (modals)
+    // --- 1. PREVENT NAVIGATION ---
+    // Capture clicks on 'a' tags and prevent navigation while allowing JS handlers to run
     document.addEventListener('click', (e) => {
         const link = e.target.closest('a');
         if (link) {
@@ -142,7 +141,7 @@
     document.addEventListener('click', (e) => {
         if (e.target.closest('#pw-ui')) return;
 
-        // If this is a simulated interaction click (from Right Click), ignore it
+        // Ignore simulated interaction clicks
         if (window._isSimulatingClick) return;
 
         // Standard Left Click -> SELECT
@@ -162,9 +161,8 @@
         // Simulate a "Real" click on the element to close modals/click buttons
         window._isSimulatingClick = true;
         try {
-            // We dispatch a manual click. 
-            // NOTE: The 'prevent navigation' listener at the top will still catch this
-            // if it's a link, preventing URL change, but firing onClick handlers.
+            // Dispatch a manual click to trigger element handlers.
+            // The top-level navigation-prevention listener will still prevent URL changes for links.
             e.target.click(); 
         } catch(err) {
             console.log("Interaction failed", err);

@@ -3,7 +3,6 @@
 import regex as re
 import logging
 import lxml.html
-import textstat
 from typing import Dict, Any
 from utils.utils import normalize_tag
 
@@ -176,47 +175,6 @@ CTA_KEYWORDS = [
     'προσθήκη στο καλάθι', 'αγορά', 'ταμείο', 'παραγγελία' # Greek
 ]
 
-# --- 4. AUTHORSHIP KEYWORDS ---
-# Concepts: By, Author, Written by, Posted by
-AUTHOR_KEYWORDS = [
-    # English
-    'by', 'author', 'written by', 'posted by', 'published by', 'creator',
-    
-    # Western European
-    'par', 'auteur', 'écrit par', 'publié par', # French
-    'von', 'autor', 'verfasst von', 'geschrieben von', 'urheber', # German
-    'por', 'autor', 'escrito por', 'publicado por', # Spanish/Portuguese
-    'di', 'autore', 'scritto da', 'pubblicato da', # Italian
-    'door', 'auteur', 'geschreven door', 'geplaatst door', # Dutch
-    
-    # Northern European
-    'av', 'författare', 'skriven av', # Swedish/Norwegian
-    'af', 'forfatter', # Danish
-    'kirjoittanut', 'tekijä', 'julkaissut', # Finnish
-    
-    # Eastern European
-    'автор', 'написал', 'опубликовал', # Russian
-    'autor', 'napisane przez', 'opublikowane przez', # Polish
-    'napsal', 'autor', # Czech
-    'szerző', 'írta', # Hungarian
-    'de', 'scris de', # Romanian
-    
-    # Asian
-    '作者', '编辑', '撰稿', # Chinese
-    '著者', '作者', '執筆', '作成者', # Japanese
-    '저자', '글쓴이', '작성자', # Korean
-    'tác giả', 'viết bởi', 'đăng bởi', # Vietnamese
-    'ผู้เขียน', 'โดย', # Thai
-    'penulis', 'oleh', 'dibuat oleh', # Indonesian
-    
-    # Middle Eastern / South Asian
-    'بقلم', 'الكاتب', 'المؤلف', 'نشر بواسطة', # Arabic
-    'מאת', 'מחבר', 'נכתב על ידי', # Hebrew
-    'yazar', 'tarafından', 'yazan', # Turkish
-    'लेखक', 'द्वारा', 'रचयिता', # Hindi
-    'نویسنده', 'اثر' # Persian
-]
-
 # Custom/Local symbols and variations (literal strings to match)
 CUSTOM_SYMBOLS = [
     'Chf', 'Kč', 'kr', 'zł', 'Rs', 'Ft', 'lei', 'kn', 'din', 'руб', '₹', r'R\$', 'R'
@@ -231,7 +189,6 @@ CURRENCY_HINTS_REGEX = re.compile(fr'(?:{CURRENCY_PATTERN_STR})\b', re.UNICODE |
 
 NUMBER_PATTERN = r'(?:\d{1,3}(?:[., ]\d{3})+|\d+)(?:[.,]\d{1,2})?'
 
-# Fixed: Use the pattern string, not the compiled regex object
 PRICE_REGEX = re.compile(
     fr'(?:(?:{CURRENCY_PATTERN_STR})\s*{NUMBER_PATTERN}|{NUMBER_PATTERN}\s*(?:{CURRENCY_PATTERN_STR}))',
     re.UNICODE | re.IGNORECASE
@@ -241,16 +198,8 @@ PRICE_REGEX = re.compile(
 SOLD_REGEX = re.compile(r'\b(?:' + '|'.join(SOLD_WORD_VARIATIONS) + r')\b', re.IGNORECASE)
 REVIEW_REGEX = re.compile(r'\b(?:' + '|'.join(REVIEW_KEYWORDS) + r')\b', re.IGNORECASE)
 CTA_REGEX = re.compile(r'\b(?:' + '|'.join(CTA_KEYWORDS) + r')\b', re.IGNORECASE)
-AUTHOR_REGEX = re.compile(r'\b(?:' + '|'.join(AUTHOR_KEYWORDS) + r')\s+\w+', re.IGNORECASE)
 
-# 3. Dates (Simple heuristics for YYYY-MM-DD, DD.MM.YYYY, Month DD, YYYY)
-DATE_REGEX = re.compile(
-    r'(?:\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4})|'  # 12-12-2024
-    r'(?:(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{1,2},? \d{4})', # Dec 12, 2024
-    re.IGNORECASE
-)
-
-# 4. Product Identification Codes
+# 3. Product Identification Codes
 # ISBN-10: 10 digits with optional hyphens (e.g., 0-306-40615-2)
 # ISBN-13: 13 digits with optional hyphens (e.g., 978-0-306-40615-7)
 ISBN_REGEX = re.compile(
@@ -291,33 +240,40 @@ NUMERIC_FEATURES = [
     'num_children',
     'num_siblings',
     'dom_depth',
-    'is_header',         # New
-    'is_formatting',     # New (bold/italic)
+    'is_header',
+    'is_formatting',
+    'is_list_item',
     
     # Text Metrics
     'text_len',
     'text_word_count',
     'text_digit_count',
     'text_density',
-    'link_density',      # New
-    'capitalization_ratio', # New
-    'reading_ease',
+    'link_density',
+    'capitalization_ratio',
+    'avg_word_length',
+    
+    # Visual/Style Features
+    'font_size',
+    'font_weight',
+    'is_bold',
+    'is_italic',
+    'is_hidden',
+    'is_block_element',
     
     # Semantic / Regex
     'has_currency_symbol',
     'is_price_format',
-    'has_sold_keyword',  # New
-    'has_review_keyword', # New
-    'has_cta_keyword',    # New
-    'has_author_keyword', # New
-    'has_date_pattern',   # New
+    'has_sold_keyword',
+    'has_review_keyword',
+    'has_cta_keyword',
     
     # Product Identification Codes
-    'has_isbn',           # New
-    'has_upc_ean',        # New
-    'has_asin',           # New
-    'has_sku',            # New
-    'has_model_number',   # New
+    'has_isbn',
+    'has_upc_ean',
+    'has_asin',
+    'has_sku',
+    'has_model_number',
     
     # Attribute / Visual
     'has_href',
@@ -325,13 +281,15 @@ NUMERIC_FEATURES = [
     'has_src',
     'has_alt',
     'alt_len',
-    'image_area',        # Surface area (width * height) - better than binary flag
+    'image_area',
     'parent_is_link',
     'sibling_image_count',
     
-    # Class heuristics
-    'class_indicates_price', # New
-    'class_indicates_title'  # New
+    # Class/ID heuristics
+    'class_indicates_price',
+    'class_indicates_title',
+    'class_indicates_description',
+    'class_indicates_image'
 ]
 
 NON_TRAINING_FEATURES = [
@@ -342,8 +300,7 @@ NON_TRAINING_FEATURES = [
 CATEGORICAL_FEATURES = [
     'tag',
     'parent_tag',
-    'gparent_tag',
-    'ggparent_tag'
+    'gparent_tag'
 ]
 
 TEXT_FEATURES = [
@@ -369,7 +326,6 @@ def extract_element_features(
         # Get hierarchy
         parent = element.getparent()
         gparent = parent.getparent() if parent is not None else None
-        ggparent = gparent.getparent() if gparent is not None else None
         
         # --- 1. Base Structural Features ---
         features = {
@@ -377,7 +333,6 @@ def extract_element_features(
             'tag': normalize_tag(element.tag),
             'parent_tag': normalize_tag(parent.tag) if parent is not None else 'root',
             'gparent_tag': normalize_tag(gparent.tag) if gparent is not None else 'root',
-            'ggparent_tag': normalize_tag(ggparent.tag) if ggparent is not None else 'root',
             'num_children': len(element),
             'num_siblings': len(parent) - 1 if parent is not None else 0,
             'dom_depth': len(list(element.iterancestors())),
@@ -387,21 +342,72 @@ def extract_element_features(
         tag = features['tag']
         features['is_header'] = 1 if tag in {'h1', 'h2', 'h3', 'h4', 'h5', 'h6'} else 0
         features['is_formatting'] = 1 if tag in {'b', 'strong', 'i', 'em', 'u'} else 0
+        features['is_list_item'] = 1 if tag in {'li', 'dt', 'dd'} else 0
+        features['is_block_element'] = 1 if tag in {'div', 'p', 'section', 'article', 'main', 'aside', 'header', 'footer'} else 0
 
-        # --- 2. Attribute Semantic Features ---
+        # --- 2. Visual/Style Features ---
+        style = element.get('style', '')
+        
+        # Extract font-size (default to 16px if not specified)
+        font_size = 16.0
+        font_size_match = re.search(r'font-size\s*:\s*(\d+(?:\.\d+)?)(?:px|pt|em|rem)?', style, re.IGNORECASE)
+        if font_size_match:
+            font_size = float(font_size_match.group(1))
+            # Normalize em/rem to approximate px (assuming 1em = 16px)
+            if 'em' in style.lower() or 'rem' in style.lower():
+                font_size *= 16
+        features['font_size'] = font_size
+        
+        # Extract font-weight (default to 400 = normal)
+        font_weight = 400
+        font_weight_match = re.search(r'font-weight\s*:\s*(\d+|bold|normal|lighter|bolder)', style, re.IGNORECASE)
+        if font_weight_match:
+            weight_str = font_weight_match.group(1).lower()
+            if weight_str == 'bold' or weight_str == 'bolder':
+                font_weight = 700
+            elif weight_str == 'normal':
+                font_weight = 400
+            elif weight_str == 'lighter':
+                font_weight = 300
+            elif weight_str.isdigit():
+                font_weight = int(weight_str)
+        features['font_weight'] = font_weight
+        
+        # Check if element is bold/italic based on tag or style
+        features['is_bold'] = 1 if tag in {'b', 'strong'} or font_weight >= 600 or 'font-weight:bold' in style.lower() else 0
+        features['is_italic'] = 1 if tag in {'i', 'em'} or 'font-style:italic' in style.lower() else 0
+        
+        # Check if element is hidden
+        features['is_hidden'] = 1 if (
+            'display:none' in style.lower() or 
+            'display: none' in style.lower() or
+            'visibility:hidden' in style.lower() or
+            'visibility: hidden' in style.lower()
+        ) else 0
+        
+        # --- 3. Attribute Semantic Features ---
         class_str = " ".join(element.get('class', '').split()) if element.get('class') else ""
         features['class_str'] = class_str
         features['id_str'] = element.get('id', '')
         
         # Heuristics on class names (common in frameworks like Bootstrap/Tailwind)
         class_lower = class_str.lower()
-        features['class_indicates_price'] = 1 if any(x in class_lower for x in ['price', 'cost', 'amount', 'currency']) else 0
-        features['class_indicates_title'] = 1 if any(x in class_lower for x in ['title', 'header', 'heading', 'name']) else 0
+        id_lower = features['id_str'].lower()
+        class_id_combined = class_lower + ' ' + id_lower
+        
+        features['class_indicates_price'] = 1 if any(x in class_id_combined for x in ['price', 'cost', 'amount', 'currency']) else 0
+        features['class_indicates_title'] = 1 if any(x in class_id_combined for x in ['title', 'header', 'heading', 'name', 'product-name']) else 0
+        features['class_indicates_description'] = 1 if any(x in class_id_combined for x in ['description', 'desc', 'detail', 'summary']) else 0
+        features['class_indicates_image'] = 1 if any(x in class_id_combined for x in ['image', 'img', 'photo', 'picture', 'thumbnail']) else 0
 
-        # --- 3. Text Content Features ---
+        # --- 4. Text Content Features ---
         features['text_len'] = len(text)
-        features['text_word_count'] = len(text.split())
+        words = text.split()
+        features['text_word_count'] = len(words)
         features['text_digit_count'] = sum(c.isdigit() for c in text)
+        
+        # Average word length (useful for distinguishing descriptive text from codes/IDs)
+        features['avg_word_length'] = sum(len(word) for word in words) / len(words) if words else 0.0
         
         # Capitalization (Useful for Titles vs Descriptions)
         features['capitalization_ratio'] = sum(1 for c in text if c.isupper()) / len(text) if text else 0.0
@@ -412,8 +418,6 @@ def extract_element_features(
         features['has_sold_keyword'] = 1 if SOLD_REGEX.search(text) else 0
         features['has_review_keyword'] = 1 if REVIEW_REGEX.search(text) else 0
         features['has_cta_keyword'] = 1 if CTA_REGEX.search(text) else 0
-        features['has_author_keyword'] = 1 if AUTHOR_REGEX.search(text) else 0
-        features['has_date_pattern'] = 1 if DATE_REGEX.search(text) else 0
         
         # Product Code Detection
         features['has_isbn'] = 1 if ISBN_REGEX.search(text) else 0
@@ -422,7 +426,7 @@ def extract_element_features(
         features['has_sku'] = 1 if SKU_REGEX.search(text) else 0
         features['has_model_number'] = 1 if MODEL_REGEX.search(text) else 0
         
-        # --- 4. Density & Readability ---
+        # --- 5. Density Metrics ---
         num_descendants = len(list(element.iterdescendants())) + 1
         features['text_density'] = len(text) / num_descendants
         
@@ -430,17 +434,8 @@ def extract_element_features(
         # This helps separate navigation/lists from actual article content
         links_text_len = sum(len(a.text_content() or "") for a in element.findall('.//a'))
         features['link_density'] = links_text_len / len(text) if len(text) > 0 else 0.0
-        
-        try:
-            # Check text length to avoid overhead on tiny fragments
-            if len(text) > 20:
-                features['reading_ease'] = textstat.flesch_reading_ease(text)
-            else:
-                features['reading_ease'] = 0
-        except Exception:
-            features['reading_ease'] = 0
 
-        # --- 5. Image & Hyperlink Context ---
+        # --- 6. Image & Hyperlink Context ---
         features['has_href'] = 1 if element.get('href') else 0
         features['is_image'] = 1 if tag == 'img' else 0
         

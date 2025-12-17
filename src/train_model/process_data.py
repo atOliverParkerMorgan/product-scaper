@@ -12,7 +12,11 @@ from utils.features import (
     UNWANTED_TAGS,
     OTHER_CATEGORY
 )
+import random
+from train_model.process_data import RANDOM_SEED
 from utils.utils import normalize_tag
+
+OTHER_TO_CATEGORY_RATIO = 10
 
 
 # Configure logging
@@ -85,27 +89,26 @@ def get_main_html_content_tag(
 
         base_score = total_text + (total_imgs * IMG_IMPORTANCE)
         
-        # --- Gallery Exception ---
-        # If an element has many images (e.g., > 5), it is likely a product grid or gallery.
-        # We should IGNORE or reduce link density penalty for these, because product grids are usually 100% links.
+        # --- Gallery handling ---
+        # Elements with many images are often product grids. Reduce the
+        # link-density penalty for these so galleries aren't unfairly down-weighted.
         if total_imgs > 5:
-            effective_link_weight = 0.1  # Very low penalty for galleries
+            effective_link_weight = 0.1  # lower penalty for gallery-like containers
         else:
             effective_link_weight = LINK_DENSITY_WEIGHT
 
         penalty_factor = 1.0 - (link_density * effective_link_weight)
         
-        # --- Depth Bonus (Additive) ---
-        # We want to favor the specific container (depth 5) over the body (depth 1)
+        # --- Depth bonus (additive) ---
+        # Favor deeper, more specific containers over very shallow ones.
         depth_score = current_depth * DEPTH_SCORE_COEFFICIENT
         
         final_score = (base_score * max(0.01, penalty_factor)) + depth_score
 
-        # --- Hard Body Penalty ---
-        # The body tag accumulates everything. Unless the page is very flat, 
-        # we almost never want to return 'body' as the specific main content.
+        # --- Reduce score for document-level tags ---
+        # Deprioritize 'body' and 'html' so more specific containers are preferred.
         if tag == 'body' or tag == 'html':
-            final_score *= 0.1 # Nuke the body score
+            final_score *= 0.1  # reduce body/html score
 
         # 7. Update Candidate
         if total_text > MIN_TAG_TEXT_LENGTH or total_imgs >= MIN_IMAGE_COUNT:
@@ -162,18 +165,16 @@ def html_to_dataframe(
     if main_content is None:
         main_content = root
 
-    all_data = []
     labeled_elements = set()
+    positive_data = []
 
     # Extract Positive Labels using XPath
     if selectors:
         for category, xpath_selectors in selectors.items():
-            logger.info(f"Processing category '{category}' with {len(xpath_selectors)} XPath selectors")
             for xpath in xpath_selectors:
                 try:
                     # Use XPath to find elements
                     elements = root.xpath(xpath)
-                    logger.info(f"XPath '{xpath[:50]}...' matched {len(elements)} elements")
                     
                     for elem in elements:
                         # Make sure it's an Element, not text or comment
@@ -185,14 +186,13 @@ def html_to_dataframe(
                             data = extract_element_features(elem, category=category)
                             if data:
                                 logger.info(f"Added element with category='{category}', tag='{data.get('tag')}'")
-                                all_data.append(data)
+                                positive_data.append(data)
                                 labeled_elements.add(elem)
-                        else:
-                            logger.debug(f"Element already labeled, skipping")
                 except Exception as e:
                     logger.warning(f"Invalid XPath '{xpath}': {e}")
 
     # Extract Negative Samples (Only from main_content to avoid noise)
+    negative_data = []
     for elem in main_content.iter():
         # Skip comments
         if not isinstance(elem.tag, str) or normalize_tag(elem.tag) in UNWANTED_TAGS:
@@ -211,7 +211,17 @@ def html_to_dataframe(
         # Treat as 'other'
         data = extract_element_features(elem, category=OTHER_CATEGORY)
         if data:
-            all_data.append(data)
+            negative_data.append(data)
+
+    if positive_data:
+        max_negatives = len(positive_data) * OTHER_TO_CATEGORY_RATIO
+        
+        if len(negative_data) > max_negatives:
+            # Randomly sample to reduce the count
+            random.seed(RANDOM_SEED) # Ensure reproducibility
+            negative_data = random.sample(negative_data, max_negatives)
+
+    all_data = positive_data + negative_data
 
     df = pd.DataFrame(all_data)
     

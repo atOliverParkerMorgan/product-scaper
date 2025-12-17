@@ -32,7 +32,7 @@ def highlight_selectors(page, selectors: List[str], force_update=False):
             page.evaluate("document.querySelectorAll('.pw-selected').forEach(el => el.classList.remove('pw-selected'))")
         
         # 2. Apply new selections using XPath
-        # We process in batches to avoid one bad selector crashing the whole operation
+        # Process selectors in small batches so one invalid selector doesn't abort the whole operation
         for xpath in selectors:
             safe_xpath = xpath.replace('"', '\\"').replace('\n', ' ')
             page.evaluate(f"""
@@ -178,11 +178,11 @@ def handle_history_action(cmd, current_idx, selections, undo_stack, redo_stack):
     if cmd == 'undo' and undo_stack:
         redo_stack.append((current_idx, copy.deepcopy(selections)))
         prev_idx, prev_selections = undo_stack.pop()
-        # Only allow undo if we are on the same category step (optional UX choice)
+        # Allow undo only if we're still on the same category step (UX choice)
         if prev_idx == current_idx:
             log_info("Undo")
             return prev_selections
-        # If undoing takes us back a step, we put it back (simple history implementation)
+        # If undo would change the category step, restore state and warn (simple history behavior)
         undo_stack.append((prev_idx, prev_selections))
         log_warning("Cannot undo across category changes (navigation clears history)")
         
@@ -236,7 +236,11 @@ def select_data(product_scraper: 'ProductScraper', url: str)-> Dict[str, List[st
                     if product_scraper.model is None:
                         log_warning("No model provided for predictions")
                     else:
-                        predicted = predict_selectors(product_scraper.model, html_content, category)
+                        try:
+                            predicted = predict_selectors(product_scraper.model, html_content, category)
+                        except ValueError as ve:
+                            log_warning(str(ve))
+                            predicted = []
                         
                         if predicted:
                             page.evaluate("document.querySelectorAll('.pw-predicted').forEach(el => el.classList.remove('pw-predicted'))")

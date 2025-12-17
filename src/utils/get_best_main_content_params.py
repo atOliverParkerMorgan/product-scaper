@@ -1,10 +1,7 @@
-"""
-Parameter optimization script for get_main_html_content_tag function.
+"""Grid-search utility for tuning get_main_html_content_tag parameters.
 
-This script:
-1. Extracts ground truth main content identifiers from test data
-2. Performs grid search over parameter combinations
-3. Finds the best parameter set that maximizes matching accuracy
+Loads a set of test pages with known main-content targets, evaluates
+different parameter combinations, and reports the best-performing set.
 """
 
 import sys
@@ -53,12 +50,12 @@ def element_matches_expectation(
     
     Args:
         element: The HTML element to check
-        expected_tag: Expected tag name (must match exactly)
-        expected_class: Expected class (must be in element.classes if provided)
-        expected_id: Expected id attribute (must match exactly if provided)
-    
+        expected_tag: Expected tag name (exact match)
+        expected_class: Expected class (should be present in element.classes if provided)
+        expected_id: Expected id attribute (exact match if provided)
+
     Returns:
-        True if element matches all provided criteria
+        True if the element meets all supplied criteria
     """
     if element is None:
         return False

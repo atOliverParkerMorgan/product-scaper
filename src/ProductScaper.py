@@ -107,7 +107,7 @@ class ProductScraper:
             requests.RequestException: If unable to fetch the URL.
             PlaywrightError: If browser automation fails.
         """
-        # If we have cached content, return it
+        # Return cached content if available
         if website_url in self.website_html_cache:
             log_debug(f"Using cached HTML for {website_url}")
             return self.website_html_cache[website_url]
@@ -320,7 +320,7 @@ class ProductScraper:
                 log_warning(f"Skipping {url} due to network error.")
                 continue
 
-            # Ensure we have selectors for this URL
+            # Ensure selectors exist for this URL
             if url not in self.selectors:
                 try:
                     self.create_selectors(url)
@@ -332,9 +332,7 @@ class ProductScraper:
             if not selectors:
                 log_warning(f"No selectors found for {url}, skipping.")
                 continue
-            
-            log_debug(f"Processing {url} with selectors: {selectors}")
-                
+                            
             try:
                 df = html_to_dataframe(html_content, selectors, url=url)
                 if not df.empty:

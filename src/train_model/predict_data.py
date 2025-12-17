@@ -20,7 +20,7 @@ def predict_selectors(model: Dict[str, Any], html_content: str, category: str) -
     tree = lxml.html.fromstring(html_content)
     main_content = get_main_html_content_tag(html_content) or tree
     
-    # Build elements list (MUST match html_to_dataframe iteration order)
+    # Build elements list (should match html_to_dataframe iteration order)
     elements = []
     for elem in main_content.iter():
         if not isinstance(elem.tag, str) or normalize_tag(elem.tag) in UNWANTED_TAGS:
