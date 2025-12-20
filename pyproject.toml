@@ -36,7 +36,7 @@ Homepage = "https://github.com/atOliverParkerMorgan/product-scraper"
 Repository = "https://github.com/atOliverParkerMorgan/product-scraper.git"
 Documentation = "https://github.com/atOliverParkerMorgan/product-scraper#readme"
 [tool.ruff]
-line-length = 100
+line-length = 130
 select = ["E", "F", "W", "I"]
 ignore = []
 exclude = ["__pycache__", "build", "dist"]
