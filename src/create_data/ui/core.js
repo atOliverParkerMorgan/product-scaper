@@ -61,29 +61,29 @@
         const ui = document.createElement('div');
         ui.id = 'pw-ui';
         ui.innerHTML = `
-            <div id="pw-ui-header">
-                <h2>Select Category: <span id="pw-category-name">...</span></h2>
+            <div id="pw-ui-header" data-testid="pw-ui-header">
+                <h2>Select Category: <span id="pw-category-name" data-testid="pw-category-name">...</span></h2>
                 <div style="opacity:0.5">::</div>
             </div>
-            <div id="pw-ui-body">
+            <div id="pw-ui-body" data-testid="pw-ui-body">
                 <div class="pw-stat-row">
-                    <span id="pw-step-counter">Step 1/1</span>
-                    <span id="pw-count-badge">0 selected</span>
+                    <span id="pw-step-counter" data-testid="pw-step-counter">Step 1/1</span>
+                    <span id="pw-count-badge" data-testid="pw-count-badge">0 selected</span>
                 </div>
-                <div class="pw-stat-row" id="pw-predicted-row">
+                <div class="pw-stat-row" id="pw-predicted-row" data-testid="pw-predicted-row">
                     <span style="color: #888;">Predicted:</span>
-                    <span id="pw-predicted-badge">0 found</span>
+                    <span id="pw-predicted-badge" data-testid="pw-predicted-badge">0 found</span>
                 </div>
-                <div id="pw-selector-box">Hover an element...</div>
+                <div id="pw-selector-box" data-testid="pw-selector-box">Hover an element...</div>
                 <div class="pw-btn-group-top">
-                    <button id="pw-btn-select-predicted" class="pw-btn pw-btn-select-predicted">Select Predictions</button>
+                    <button id="pw-btn-select-predicted" class="pw-btn pw-btn-select-predicted" data-testid="pw-btn-select-predicted">Select Predictions</button>
                 </div>
                 <div class="pw-btn-group">
-                    <button id="pw-btn-prev" class="pw-btn pw-btn-secondary">Back</button>
-                    <button id="pw-btn-next" class="pw-btn pw-btn-primary">Next Category</button>
-                    <button id="pw-btn-done" class="pw-btn pw-btn-success pw-hidden">Finish & Save</button>
+                    <button id="pw-btn-prev" class="pw-btn pw-btn-secondary" data-testid="pw-btn-prev">Back</button>
+                    <button id="pw-btn-next" class="pw-btn pw-btn-primary" data-testid="pw-btn-next">Next Category</button>
+                    <button id="pw-btn-done" class="pw-btn pw-btn-success pw-hidden" data-testid="pw-btn-done">Finish & Save</button>
                 </div>
-                <div class="pw-hint">Right-Click to interact (close modals)<br>Ctrl+Shift+Z to Redo</div>
+                <div class="pw-hint" data-testid="pw-hint">Right-Click to interact (close modals)<br>Ctrl+Shift+Z to Redo</div>
             </div>
         `;
         document.body.appendChild(ui);

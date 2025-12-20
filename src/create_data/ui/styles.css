@@ -1,3 +1,7 @@
+/* --- HIDDEN UTILITY --- */
+.pw-hidden {
+    display: none !important;
+}
 /* --- SELECTION HIGHLIGHTS --- */
 .pw-hover {
     outline: 2px dashed #4da6ff !important;
