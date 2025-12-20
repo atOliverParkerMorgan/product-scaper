@@ -13,9 +13,9 @@ from utils.features import (
     OTHER_CATEGORY
 )
 import random
-from train_model.process_data import RANDOM_SEED
 from utils.utils import normalize_tag
 
+RANDOM_SEED = 42
 OTHER_TO_CATEGORY_RATIO = 10
 
 
@@ -52,20 +52,16 @@ def get_main_html_content_tag(
         """
         tag = normalize_tag(elem.tag)
         
-        # 1. Invalid Tag Check
         if not isinstance(elem.tag, str) or tag in UNWANTED_TAGS:
             return (0, 0, 0)
 
-        # 2. Link Status
         current_is_link = is_in_link or (tag == 'a')
 
-        # 3. Local Stats
         own_text = (elem.text or "").strip() + (elem.tail or "").strip()
         local_text_len = len(own_text)
         local_img_count = 1 if tag == 'img' else 0
         local_link_text_len = local_text_len if current_is_link else 0
 
-        # 4. Recursion
         child_text_len = 0
         child_img_count = 0
         child_link_text_len = 0
@@ -76,12 +72,10 @@ def get_main_html_content_tag(
             child_img_count += c_img
             child_link_text_len += c_link_len
 
-        # 5. Aggregation
         total_text = local_text_len + child_text_len
         total_imgs = local_img_count + child_img_count
         total_link_text = local_link_text_len + child_link_text_len
 
-        # 6. Scoring
         if total_text == 0:
             link_density = 1.0 
         else:
@@ -89,7 +83,6 @@ def get_main_html_content_tag(
 
         base_score = total_text + (total_imgs * IMG_IMPORTANCE)
         
-        # --- Gallery handling ---
         # Elements with many images are often product grids. Reduce the
         # link-density penalty for these so galleries aren't unfairly down-weighted.
         if total_imgs > 5:
@@ -99,18 +92,15 @@ def get_main_html_content_tag(
 
         penalty_factor = 1.0 - (link_density * effective_link_weight)
         
-        # --- Depth bonus (additive) ---
         # Favor deeper, more specific containers over very shallow ones.
         depth_score = current_depth * DEPTH_SCORE_COEFFICIENT
         
         final_score = (base_score * max(0.01, penalty_factor)) + depth_score
 
-        # --- Reduce score for document-level tags ---
         # Deprioritize 'body' and 'html' so more specific containers are preferred.
         if tag == 'body' or tag == 'html':
             final_score *= 0.1  # reduce body/html score
 
-        # 7. Update Candidate
         if total_text > MIN_TAG_TEXT_LENGTH or total_imgs >= MIN_IMAGE_COUNT:
             current_best_score = best_candidate[1]
             
@@ -125,7 +115,6 @@ def get_main_html_content_tag(
 
         return (total_text, total_imgs, total_link_text)
 
-    # Process the tree to find the best content container
     process_node(tree, 0, False)
     
     # Fallback: if nothing was selected or only head was selected, try to find body, then html, then tree
@@ -168,12 +157,11 @@ def html_to_dataframe(
     labeled_elements = set()
     positive_data = []
 
-    # Extract Positive Labels using XPath
+    # Extract Positive Labels
     if selectors:
         for category, xpath_selectors in selectors.items():
             for xpath in xpath_selectors:
                 try:
-                    # Use XPath to find elements
                     elements = root.xpath(xpath)
                     
                     for elem in elements:
@@ -191,7 +179,7 @@ def html_to_dataframe(
                 except Exception as e:
                     logger.warning(f"Invalid XPath '{xpath}': {e}")
 
-    # Extract Negative Samples (Only from main_content to avoid noise)
+    # Extract Negative Samples
     negative_data = []
     for elem in main_content.iter():
         # Skip comments

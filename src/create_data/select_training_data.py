@@ -8,16 +8,8 @@ from utils.console import log_info, log_warning, log_error, log_success
 
 if TYPE_CHECKING:
     from ProductScaper import ProductScraper
-# --- CONFIGURATION ---
 
 UI_PATH = Path(__file__).parent / 'ui'
-
-# Create UI directory/files if they don't exist to prevent immediate crash
-if not UI_PATH.exists():
-    UI_PATH.mkdir(parents=True, exist_ok=True)
-    (UI_PATH / 'styles.css').touch()
-    (UI_PATH / 'core.js').touch()
-    (UI_PATH / 'update.js').touch()
 
 CSS_CONTENT = (UI_PATH / 'styles.css').read_text(encoding='utf-8')
 JS_CORE_LOGIC = (UI_PATH / 'core.js').read_text(encoding='utf-8')
@@ -27,11 +19,11 @@ JS_UPDATE_UI = (UI_PATH / 'update.js').read_text(encoding='utf-8')
 def highlight_selectors(page, selectors: List[str], force_update=False):
     """Helper to re-apply green outlines securely and remove predicted highlights."""
     try:
-        # 1. Clean up old 'selected' classes if forcing update
+        # Clean up old 'selected' classes if forcing update
         if force_update:
             page.evaluate("document.querySelectorAll('.pw-selected').forEach(el => el.classList.remove('pw-selected'))")
         
-        # 2. Apply new selections using XPath
+        # Apply new selections using XPath
         # Process selectors in small batches so one invalid selector doesn't abort the whole operation
         for xpath in selectors:
             safe_xpath = xpath.replace('"', '\\"').replace('\n', ' ')
@@ -111,13 +103,13 @@ def poll_for_action(page, timeout=0.2):
                 page.evaluate("window._clickedSelector = null")
                 return 'toggle', clicked
             
-            # Check for UI buttons (Next, Prev, Done, Predict, Select All)
+            # Check for UI buttons: Next, Prev, Done, Predict, Select All
             ui_btn = page.evaluate("window._action")
             if ui_btn:
                 page.evaluate("window._action = null")
                 return 'navigate', ui_btn
             
-            # Check for keyboard shortcuts (Undo/Redo)
+            # Check for keyboard shortcuts: Undo/Redo (ctrl+z / ctrl+shift+z)
             key_act = page.evaluate("window._keyAction")
             if key_act:
                 page.evaluate("window._keyAction = null")
@@ -178,11 +170,11 @@ def handle_history_action(cmd, current_idx, selections, undo_stack, redo_stack):
     if cmd == 'undo' and undo_stack:
         redo_stack.append((current_idx, copy.deepcopy(selections)))
         prev_idx, prev_selections = undo_stack.pop()
-        # Allow undo only if we're still on the same category step (UX choice)
+        # Allow undo only if we're still on the same category step
         if prev_idx == current_idx:
             log_info("Undo")
             return prev_selections
-        # If undo would change the category step, restore state and warn (simple history behavior)
+        # If undo would change the category step, restore state and warn
         undo_stack.append((prev_idx, prev_selections))
         log_warning("Cannot undo across category changes (navigation clears history)")
         
@@ -221,7 +213,7 @@ def select_data(product_scraper: 'ProductScraper', url: str)-> Dict[str, List[st
         redo_stack = []
         current_idx = 0
         last_selections_hash = None
-        last_category = None  # Track category changes to re-run predictions
+        last_category = None  # Category changes to re-run predictions
         
         try:
             should_exit = False
@@ -229,7 +221,7 @@ def select_data(product_scraper: 'ProductScraper', url: str)-> Dict[str, List[st
                 category = product_scraper.categories[current_idx]
                 current_selection_list = selections.get(category, [])
 
-                # 1. Auto-run predictions for this category (when category changes)
+                # When category changes: Auto-run predictions for this category
                 if category != last_category:
                     log_info(f"Auto-predicting for '{category}'")
                     html_content = page.content()
@@ -288,11 +280,10 @@ def select_data(product_scraper: 'ProductScraper', url: str)-> Dict[str, List[st
                     
                     last_category = category
 
-                # 2. Update UI Overlay
                 ui_updated = update_ui_state(page, category, len(current_selection_list), 
                                             current_idx, len(product_scraper.categories))
                 
-                # If UI failed to update (page refresh/navigation), reinject
+                # If UI failed to update reinject
                 if not ui_updated:
                     time.sleep(1)
                     if inject_ui_scripts(page):
@@ -301,13 +292,13 @@ def select_data(product_scraper: 'ProductScraper', url: str)-> Dict[str, List[st
                     log_error("Lost connection to page UI")
                     break
                 
-                # 3. Highlight selections (only if changed)
+                # Highlight selections only if changed
                 current_hash = hash(tuple(current_selection_list))
                 if current_hash != last_selections_hash:
                     highlight_selectors(page, current_selection_list, force_update=True)
                     last_selections_hash = current_hash
 
-                # 4. Poll for interactions
+                # Poll for interactions
                 action_type, action_payload = poll_for_action(page)
 
                 if action_type == 'toggle':
@@ -317,7 +308,7 @@ def select_data(product_scraper: 'ProductScraper', url: str)-> Dict[str, List[st
 
                 elif action_type == 'navigate':
                     if action_payload == 'select_predicted':
-                        # --- SELECT ALL PREDICTED ---
+                        #  select all predicted elements
                         log_info("Selecting all predicted elements")
                         try:
                             selectors_added = page.evaluate("""

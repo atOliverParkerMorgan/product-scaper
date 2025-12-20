@@ -7,7 +7,15 @@ from typing import Any, Dict, List
 import re
 
 def predict_selectors(model: Dict[str, Any], html_content: str, category: str) -> List[Dict[str, Any]]:
-        
+    """
+    Predicts selectors of the `category` from the html_content 
+    
+    Args:
+        model:
+        html_content: str
+        category
+    """
+
     pipeline = model['pipeline']
     label_encoder = model['label_encoder']
     
@@ -16,11 +24,9 @@ def predict_selectors(model: Dict[str, Any], html_content: str, category: str) -
     except ValueError:
         raise ValueError(f"Category '{category}' was not seen during training. Available: {label_encoder.classes_}")
     
-    # Get the main content area
     tree = lxml.html.fromstring(html_content)
     main_content = get_main_html_content_tag(html_content) or tree
     
-    # Build elements list (should match html_to_dataframe iteration order)
     elements = []
     for elem in main_content.iter():
         if not isinstance(elem.tag, str) or normalize_tag(elem.tag) in UNWANTED_TAGS:
@@ -32,14 +38,12 @@ def predict_selectors(model: Dict[str, Any], html_content: str, category: str) -
             continue
         elements.append(elem)
     
-    # Get features DataFrame (uses same iteration logic)
-    # Pass the original html_content string, not the element object
     X = html_to_dataframe(html_content, selectors=None)
     
     if X.empty:
         return []
     
-    # Verify alignment: DataFrame should have same number of rows as elements
+    # DataFrame should have same number of rows as elements
     if len(X) != len(elements):
         raise ValueError(f"Mismatch: DataFrame has {len(X)} rows but elements list has {len(elements)} items")
     
@@ -89,25 +93,23 @@ def calculate_proximity_score(xpath1: str, xpath2: str) -> tuple:
     min_len = min(len(path1), len(path2))
     divergence_index = 0
     
-    # 1. Find the Lowest Common Ancestor (LCA)
+    # Find the Lowest Common Ancestor
     for i in range(min_len):
         if path1[i] == path2[i]:
             divergence_index += 1
         else:
             break
             
-    # 2. Calculate Tree Distance (Hops)
+    # Calculate Tree Distance
     # Steps up from xpath1 to LCA + Steps down from LCA to xpath2
     dist_up = len(path1) - divergence_index
     dist_down = len(path2) - divergence_index
     tree_distance = dist_up + dist_down
     
-    # 3. Calculate Index Delta (Tie-Breaker)
-    # If they diverge, look at the indices of the diverging segments
+    # Tie-Breaker: Calculate Index Delta (Tie-Breaker)
     index_delta = 0
     if divergence_index < len(path1) and divergence_index < len(path2):
         # Extract indices from the segments where they diverge
-        # e.g., 'li[2]' vs 'li[5]' -> abs(2 - 5) = 3
         idx1 = extract_index(path1[divergence_index])
         idx2 = extract_index(path2[divergence_index])
         index_delta = abs(idx1 - idx2)
@@ -115,9 +117,7 @@ def calculate_proximity_score(xpath1: str, xpath2: str) -> tuple:
     return (tree_distance, index_delta)
 
 def group_prediction_to_products(html_content: str, selectors: Dict[str, List[Dict[str, Any]]], categories: List[str]) -> List[Dict[str, Any]]:
-    # ... (Preceding code same as before) ...
     
-    # 1. Determine Anchor Category
     if not categories or not selectors:
         return []
         
@@ -139,8 +139,7 @@ def group_prediction_to_products(html_content: str, selectors: Dict[str, List[Di
             if not candidates:
                 continue
             
-            # 2. Find Best Match using the Proximity Tuple
-            # This sorts by Tree Distance first, then by Index Delta
+            # Find Best Match using the Proximity Tuple
             best_candidate = min(
                 candidates, 
                 key=lambda x: calculate_proximity_score(anchor_xpath, x['xpath'])

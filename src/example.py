@@ -68,7 +68,6 @@ random.shuffle(WEBSITES)
 
 CATEGORIES = [
     "title",
-    "description",
     "price",
     "image"
 ]

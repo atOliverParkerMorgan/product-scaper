@@ -1,4 +1,4 @@
-"""Advanced Model Training Pipeline."""
+"""Model Training Pipeline."""
 
 import warnings
 from typing import List
@@ -15,7 +15,7 @@ from sklearn.metrics import classification_report
 from utils.console import CONSOLE, log_info, log_error
 from utils.features import NUMERIC_FEATURES, CATEGORICAL_FEATURES, TEXT_FEATURES, NON_TRAINING_FEATURES, TARGET_FEATURE
 # Constants
-RANDOM_STATE = 42
+from train_model.process_data import RANDOM_SEED
 warnings.filterwarnings('ignore')
 
 
@@ -64,7 +64,7 @@ def build_pipeline(num_cols: List[str], cat_cols: List[str], text_cols: List[str
         max_depth=None,     # Let trees grow deep to catch specific HTML patterns
         min_samples_leaf=2, # Prevent overfitting
         n_jobs=-1,          # Use all CPU cores
-        random_state=RANDOM_STATE,
+        random_state=RANDOM_SEED,
         class_weight='balanced' # Crucial for handling class imbalance
     )
     
@@ -110,7 +110,7 @@ def train_model(df, pipeline: Pipeline = None, test: bool = False):
         # Split
         try:
             X_train, X_test, y_train, y_test = train_test_split(
-                X, y_encoded, test_size=0.2, random_state=RANDOM_STATE, stratify=y_encoded
+                X, y_encoded, test_size=0.2, random_state=RANDOM_SEED, stratify=y_encoded
             )
         except ValueError as e:
             log_error(f"Error during train-test split: {e}")

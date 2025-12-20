@@ -170,7 +170,6 @@ def evaluate_model(
     # Calculate metrics on meaningful categories only
     acc_meaningful, f1_meaningful, per_class_metrics = calculate_meaningful_metrics(y, pred)
     
-    # Display results if requested
     if display_results:
         display_performance_table(split_name, acc_all, f1_all, acc_meaningful, f1_meaningful)
         
@@ -179,7 +178,6 @@ def evaluate_model(
         
         console.print()
     
-    # Return comprehensive results
     return {
         'accuracy_all': acc_all,
         'f1_all': f1_all,
