@@ -1,5 +1,5 @@
-import pytest
 from ProductScraper import ProductScraper
+
 
 def test_remove_website_cleans_all():
     categories = ['title']

@@ -180,7 +180,6 @@ def html_to_dataframe(
                         if elem not in labeled_elements:
                             data = extract_element_features(elem, category=category)
                             if data:
-                                logger.info(f"Added element with category='{category}', tag='{data.get('tag')}'")
                                 positive_data.append(data)
                                 labeled_elements.add(elem)
                 except Exception as e:

@@ -1,4 +1,5 @@
-from utils.console import log_info, log_success, log_warning, log_error, log_debug
+from utils.console import log_debug, log_error, log_info, log_success, log_warning
+
 
 def test_log_info(capsys):
     log_info("info message")

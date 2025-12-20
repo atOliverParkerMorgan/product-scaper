@@ -1,5 +1,7 @@
 import pytest
+
 from create_data import select_training_data
+
 
 def test_inject_ui_scripts_runs(monkeypatch):
     class DummyPage:

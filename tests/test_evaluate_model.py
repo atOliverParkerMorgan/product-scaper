@@ -1,5 +1,7 @@
 import numpy as np
+
 from train_model.evaluate_model import calculate_meaningful_metrics
+
 
 def test_calculate_meaningful_metrics_basic():
     y_true = np.array(['a', 'b', 'other', 'a'])

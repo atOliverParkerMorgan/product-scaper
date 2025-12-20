@@ -1,5 +1,7 @@
-from utils.utils import normalize_tag, get_unique_xpath, count_unique_tags, generate_selector_for_element
 import lxml.html
+
+from utils.utils import count_unique_tags, generate_selector_for_element, get_unique_xpath, normalize_tag
+
 
 def test_normalize_tag():
     assert normalize_tag('DIV') == 'div'

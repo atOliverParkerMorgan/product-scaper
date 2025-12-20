@@ -1,6 +1,5 @@
-import pytest
-import pandas as pd
 from ProductScraper import ProductScraper
+
 
 def test_product_scraper_basic_usage():
     categories = ['title', 'price']

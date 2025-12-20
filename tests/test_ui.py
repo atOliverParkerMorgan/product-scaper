@@ -2,8 +2,10 @@
 # Playwright-based UI tests for the real browser UI in select_training_data
 
 import os
+
 import pytest
 from playwright.sync_api import sync_playwright
+
 
 def get_corejs_path():
     here = os.path.dirname(__file__)

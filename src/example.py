@@ -3,7 +3,6 @@
 Example script for running ProductScraper on a set of websites and categories.
 """
 
-import random
 
 from ProductScraper import ProductScraper
 from utils.console import log_info
@@ -11,10 +10,10 @@ from utils.console import log_info
 WEBSITES = [
     # "https://www.valentinska.cz/home",
     # "https://trigon-knihy.cz/antikvariat/",
-    "https://www.artonpaper.ch/new",
+    # "https://www.artonpaper.ch/new",
     "http://antik-stafl.cz/",
     "http://antikvariat-bohemia.cz/",
-    "http://antikvariat-cypris.cz/novinky.php",
+    # "http://antikvariat-cypris.cz/novinky.php",
     "http://antikvariat-malyctenar.cz/",
     "http://antikvariat-pce.cz/",
     "http://antikvariat-prelouc.cz/",

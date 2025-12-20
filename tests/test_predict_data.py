@@ -1,4 +1,5 @@
-from train_model.predict_data import get_xpath_segments, extract_index, calculate_proximity_score, group_prediction_to_products
+from train_model.predict_data import calculate_proximity_score, extract_index, get_xpath_segments, group_prediction_to_products
+
 
 def test_get_xpath_segments():
     xpath = '/html/body/div[2]/span'

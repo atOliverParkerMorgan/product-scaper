@@ -1,6 +1,7 @@
-import lxml.html
 import pandas as pd
+
 from train_model.process_data import get_main_html_content_tag, html_to_dataframe
+
 
 def test_get_main_html_content_tag_basic():
     html = '<html><body><div><h1>Title</h1><p>Some text</p></div></body></html>'
