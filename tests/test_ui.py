@@ -1,4 +1,7 @@
+"""Tests for the UI injection and interaction logic in create_data/select_training_data.py."""
+
 import pytest
+
 from create_data.select_training_data import inject_ui_scripts
 
 

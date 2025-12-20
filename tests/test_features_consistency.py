@@ -1,16 +1,19 @@
-import pytest
-import lxml.html
-from train_model.process_data import html_to_dataframe
+"""Tests for feature extraction and consistency in utils/features.py."""
 
+import lxml.html
+import pytest
+
+from train_model.process_data import html_to_dataframe
 from utils.features import (
-    extract_element_features, 
-    ALL_FEATURES, 
-    NUMERIC_FEATURES, 
-    CATEGORICAL_FEATURES, 
-    TEXT_FEATURES,
+    ALL_FEATURES,
+    CATEGORICAL_FEATURES,
+    NUMERIC_FEATURES,
     TARGET_FEATURE,
-    validate_features
+    TEXT_FEATURES,
+    extract_element_features,
+    validate_features,
 )
+
 
 @pytest.fixture
 def sample_html():
@@ -31,16 +34,16 @@ def test_feature_extraction_completeness():
     html = '<div class="test-class" id="test-id">Content</div>'
     elem = lxml.html.fromstring(html)
     features = extract_element_features(elem)
-    
+
     extracted_keys = {k for k in features.keys() if k != TARGET_FEATURE}
     expected_keys = set(ALL_FEATURES)
-    
+
     assert extracted_keys == expected_keys, f"Missing: {expected_keys - extracted_keys}"
 
 def test_dataframe_structure(sample_html):
     """Ensure html_to_dataframe generates a valid schema."""
     df = html_to_dataframe(sample_html)
-    
+
     assert not df.empty
     assert TARGET_FEATURE in df.columns
     for feature in ALL_FEATURES:
@@ -56,6 +59,6 @@ def test_validation_logic(sample_html):
     """Test the validate_features utility."""
     df = html_to_dataframe(sample_html)
     assert validate_features(df) is True
-    
+
     invalid_df = df.drop(columns=[NUMERIC_FEATURES[0]])
     assert validate_features(invalid_df) is False

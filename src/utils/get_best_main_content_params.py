@@ -47,7 +47,7 @@ def element_matches_expectation(
 ) -> bool:
     """
     Check if element matches the expected criteria.
-    
+
     Args:
         element: The HTML element to check
         expected_tag: Expected tag name (exact match)
@@ -109,7 +109,6 @@ def evaluate_params(
 ) -> Tuple[float, Dict[str, bool]]:
     """
     Evaluate a parameter set against all test pages.
-    
     Returns:
         (accuracy_score, {page_name: matched})
     """

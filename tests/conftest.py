@@ -1,9 +1,9 @@
 """Pytest configuration for test suite."""
 import sys
 from pathlib import Path
+
 import pytest
 from pylint import lint, reporters
-
 
 # Add src directory to Python path
 src_path = Path(__file__).parent.parent / 'src'
@@ -14,7 +14,7 @@ sys.path.insert(0, str(src_path))
 def fixture_linter() -> None:
     """ Use pylint to test codestyle for src file. """
     python_files = (Path(__file__).parent.parent / 'src').rglob('*.py')
-    rep = reporters.CollectingReporter() 
+    rep = reporters.CollectingReporter()
     # disabled warnings:
     # C0301 line too long
     # C0103 variables name (does not like shorter than 2 chars)

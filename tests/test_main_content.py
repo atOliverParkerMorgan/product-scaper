@@ -1,6 +1,8 @@
-import pytest
-from train_model import process_data
+"""Tests for extracting main content from HTML pages."""
 
+import pytest
+
+from train_model import process_data
 
 # -----------------------------
 # Fixtures
@@ -23,7 +25,7 @@ def html_with_main():
                 <div class="product">Product 2 <p>Some log decription of some random product bla bla</p><img></div>
                 <div class="product">Product 3 <p>Some log decription of some random product bla bla</p><img></div>
                 <div class="product">Product 4<p>Some log decription of some random product bla bla</p><img></div>
-                <div class="product">Product 5<p>Some log decription of some random product bla bla bla bla</p><img></div>       
+                <div class="product">Product 5<p>Some log decription of some random product bla bla bla bla</p><img></div>
                 <div class="product">Product 6 <p>Some log decription of some random product bla bla bla bla</p><img></div>
             </main>
             <footer>This is footer</footer>
