@@ -15,7 +15,7 @@ from train_model.predict_data import predict_selectors
 from utils.console import log_error, log_info, log_success, log_warning
 
 if TYPE_CHECKING:
-    from ProductScaper import ProductScraper
+    from ProductScraper import ProductScraper
 
 UI_PATH = Path(__file__).parent / 'ui'
 
@@ -57,7 +57,7 @@ def highlight_selectors(page, selectors: List[str], force_update: bool = False) 
                     }}
                 }})()
             """)
-    except PlaywrightError:
+    except Exception:
         pass
 
 

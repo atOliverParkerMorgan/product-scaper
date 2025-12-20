@@ -269,19 +269,13 @@ NUMERIC_FEATURES = [
     'is_hidden',
     'is_block_element',
 
+
     # Semantic / Regex
     'has_currency_symbol',
     'is_price_format',
     'has_sold_keyword',
     'has_review_keyword',
     'has_cta_keyword',
-
-    # Product Identification Codes
-    'has_isbn',
-    'has_upc_ean',
-    'has_asin',
-    'has_sku',
-    'has_model_number',
 
     # Attribute / Visual
     'has_href',
@@ -426,19 +420,12 @@ def extract_element_features(
         # Capitalization (Useful for Titles vs Descriptions)
         features['capitalization_ratio'] = sum(1 for c in text if c.isupper()) / len(text) if text else 0.0
 
-        # Regex Matches
+        # Regex Matches (keep only important ones)
         features['has_currency_symbol'] = 1 if CURRENCY_HINTS_REGEX.search(text) else 0
         features['is_price_format'] = 1 if PRICE_REGEX.search(text) else 0
         features['has_sold_keyword'] = 1 if SOLD_REGEX.search(text) else 0
         features['has_review_keyword'] = 1 if REVIEW_REGEX.search(text) else 0
         features['has_cta_keyword'] = 1 if CTA_REGEX.search(text) else 0
-
-        # Product Code Detection
-        features['has_isbn'] = 1 if ISBN_REGEX.search(text) else 0
-        features['has_upc_ean'] = 1 if UPC_EAN_REGEX.search(text) else 0
-        features['has_asin'] = 1 if ASIN_REGEX.search(text) else 0
-        features['has_sku'] = 1 if SKU_REGEX.search(text) else 0
-        features['has_model_number'] = 1 if MODEL_REGEX.search(text) else 0
 
         # --- 5. Density Metrics ---
         num_descendants = len(list(element.iterdescendants())) + 1

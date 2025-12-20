@@ -5,7 +5,7 @@ Example script for running ProductScraper on a set of websites and categories.
 
 import random
 
-from ProductScaper import ProductScraper
+from ProductScraper import ProductScraper
 from utils.console import log_info
 
 WEBSITES = [
