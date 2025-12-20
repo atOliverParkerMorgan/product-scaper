@@ -35,7 +35,7 @@ class ProductScraper:
     - Train a model to automatically detect product information.
     - Predict element selectors on new pages.
     
-    The class is iterable and will yield (url, predictions_dict) for each configured website.
+The class is iterable and will yield (url, predictions_dict) for each configured website.
     Automatically saves state on destruction.
     """
 
