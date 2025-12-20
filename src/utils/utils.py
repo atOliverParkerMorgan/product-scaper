@@ -6,7 +6,7 @@ This module provides helpers for tag normalization, xpath generation, unique tag
 and CSS selector generation for lxml elements.
 """
 
-from typing import List, Any
+from typing import Any, List
 
 
 def normalize_tag(tag_name: Any) -> str:
@@ -34,7 +34,7 @@ def get_unique_xpath(element: Any) -> str:
     """
     tree = element.getroottree()
     return tree.getpath(element)
- 
+
 
 def count_unique_tags(tag_list: List[str]) -> int:
     """

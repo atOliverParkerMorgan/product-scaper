@@ -3,13 +3,16 @@
 Interactive UI and browser automation for selecting training data for ProductScraper.
 """
 
-import time
 import copy
-from typing import Dict, List, TYPE_CHECKING
+import time
 from pathlib import Path
-from playwright.sync_api import sync_playwright, Error as PlaywrightError
+from typing import TYPE_CHECKING, Dict, List
+
+from playwright.sync_api import Error as PlaywrightError
+from playwright.sync_api import sync_playwright
+
 from train_model.predict_data import predict_selectors
-from utils.console import log_info, log_warning, log_error, log_success
+from utils.console import log_error, log_info, log_success, log_warning
 
 if TYPE_CHECKING:
     from ProductScaper import ProductScraper
@@ -34,7 +37,7 @@ def highlight_selectors(page, selectors: List[str], force_update: bool = False) 
         # Clean up old 'selected' classes if forcing update
         if force_update:
             page.evaluate("document.querySelectorAll('.pw-selected').forEach(el => el.classList.remove('pw-selected'))")
-        
+
         # Apply new selections using XPath
         # Process selectors in small batches so one invalid selector doesn't abort the whole operation
         for xpath in selectors:
@@ -71,11 +74,11 @@ def inject_ui_scripts(page) -> bool:
         # Add styles
         if CSS_CONTENT.strip():
             page.add_style_tag(content=CSS_CONTENT)
-        
+
         # Add Core Logic (listener, selector generation)
         if JS_CORE_LOGIC.strip():
             page.evaluate(JS_CORE_LOGIC)
-        
+
         # Inject a fallback selector generator if core.js didn't provide it
         # This ensures 'Select Predicted' works even if core.js is missing logic
         page.evaluate("""
@@ -132,7 +135,7 @@ def poll_for_action(page, timeout: float = 0.2) -> tuple:
         tuple: (action_type, action_payload)
     """
     start_time = time.time()
-    
+
     while time.time() - start_time < timeout:
         try:
             # Check for element clicks
@@ -140,13 +143,13 @@ def poll_for_action(page, timeout: float = 0.2) -> tuple:
             if clicked:
                 page.evaluate("window._clickedSelector = null")
                 return 'toggle', clicked
-            
+
             # Check for UI buttons: Next, Prev, Done, Predict, Select All
             ui_btn = page.evaluate("window._action")
             if ui_btn:
                 page.evaluate("window._action = null")
                 return 'navigate', ui_btn
-            
+
             # Check for keyboard shortcuts: Undo/Redo (ctrl+z / ctrl+shift+z)
             key_act = page.evaluate("window._keyAction")
             if key_act:
@@ -154,9 +157,9 @@ def poll_for_action(page, timeout: float = 0.2) -> tuple:
                 return 'history', key_act
         except PlaywrightError:
             break
-        
+
         time.sleep(0.05)
-    
+
     return None, None
 
 
@@ -175,10 +178,10 @@ def handle_toggle_action(selector: str, category: str, selections: Dict[str, Lis
     # Push state to undo stack
     undo_stack.append((current_idx, copy.deepcopy(selections)))
     redo_stack.clear()
-    
+
     if category not in selections:
         selections[category] = []
-    
+
     if selector in selections[category]:
         selections[category].remove(selector)
         log_info(f"Removed: {selector}")
@@ -247,7 +250,7 @@ def handle_history_action(cmd: str, current_idx: int, selections: Dict[str, List
         # If undo would change the category step, restore state and warn
         undo_stack.append((prev_idx, prev_selections))
         log_warning("Cannot undo across category changes (navigation clears history)")
-        
+
     elif cmd == 'redo' and redo_stack:
         undo_stack.append((current_idx, copy.deepcopy(selections)))
         next_idx, next_selections = redo_stack.pop()
@@ -255,7 +258,7 @@ def handle_history_action(cmd: str, current_idx: int, selections: Dict[str, List
             log_info("Redo")
             return next_selections
         redo_stack.append((next_idx, next_selections))
-    
+
     return selections
 
 
@@ -285,12 +288,12 @@ def select_data(product_scraper: 'ProductScraper', url: str) -> Dict[str, List[s
         inject_ui_scripts(page)
 
         selections: Dict[str, List[str]] = {}
-        undo_stack = [] 
+        undo_stack = []
         redo_stack = []
         current_idx = 0
         last_selections_hash = None
         last_category = None  # Category changes to re-run predictions
-        
+
         try:
             should_exit = False
             while current_idx < len(product_scraper.categories) and not should_exit:
@@ -309,18 +312,18 @@ def select_data(product_scraper: 'ProductScraper', url: str) -> Dict[str, List[s
                         except ValueError as ve:
                             log_warning(str(ve))
                             predicted = []
-                        
+
                         if predicted:
                             page.evaluate("document.querySelectorAll('.pw-predicted').forEach(el => el.classList.remove('pw-predicted'))")
                             highlighted_count = 0
-                            
+
                             for candidate in predicted:
                                 try:
                                     xpath = candidate.get('xpath')
                                     idx = candidate.get('index')
-                                    
+
                                     js_highlight_script = ""
-                                    
+
                                     if xpath:
                                         escaped_xpath = xpath.replace("'", "\\'")
                                         js_highlight_script = f"""
@@ -353,12 +356,12 @@ def select_data(product_scraper: 'ProductScraper', url: str) -> Dict[str, List[s
                             log_success(f"Highlighted {highlighted_count} predicted elements")
                         else:
                             log_warning("No predictions found for this category")
-                    
+
                     last_category = category
 
-                ui_updated = update_ui_state(page, category, len(current_selection_list), 
+                ui_updated = update_ui_state(page, category, len(current_selection_list),
                                             current_idx, len(product_scraper.categories))
-                
+
                 # If UI failed to update reinject
                 if not ui_updated:
                     time.sleep(1)
@@ -367,7 +370,7 @@ def select_data(product_scraper: 'ProductScraper', url: str) -> Dict[str, List[s
                     # If injection fails repeatedly, break loop
                     log_error("Lost connection to page UI")
                     break
-                
+
                 # Highlight selections only if changed
                 current_hash = hash(tuple(current_selection_list))
                 if current_hash != last_selections_hash:
@@ -378,7 +381,7 @@ def select_data(product_scraper: 'ProductScraper', url: str) -> Dict[str, List[s
                 action_type, action_payload = poll_for_action(page)
 
                 if action_type == 'toggle':
-                    handle_toggle_action(action_payload, category, selections, 
+                    handle_toggle_action(action_payload, category, selections,
                                        undo_stack, redo_stack, current_idx)
                     last_selections_hash = None
 
@@ -402,26 +405,26 @@ def select_data(product_scraper: 'ProductScraper', url: str) -> Dict[str, List[s
                                     return selectors;
                                 })()
                             """)
-                            
+
                             if selectors_added:
                                 undo_stack.append((current_idx, copy.deepcopy(selections)))
                                 redo_stack.clear()
-                                
+
                                 if category not in selections:
                                     selections[category] = []
-                                
+
                                 for selector in selectors_added:
                                     if selector not in selections[category]:
                                         selections[category].append(selector)
-                                
+
                                 log_success(f"Added {len(selectors_added)} elements")
                                 last_selections_hash = None
                             else:
                                 log_warning("No highlighted predictions to select")
-                                
+
                         except Exception as e:
                             log_error(f"Error selecting predicted: {e}")
-                    
+
                     else:
                         # Normal Navigation (Next/Prev/Done)
                         current_idx, should_exit = handle_navigate_action(action_payload, current_idx, undo_stack, redo_stack, page)

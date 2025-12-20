@@ -6,21 +6,22 @@ This module provides the ProductScraper class, which allows for collecting train
 training models, predicting selectors, and managing scraping state for product websites.
 """
 
-from pathlib import Path
 import pickle
-import requests
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
 import pandas as pd
+import requests
 import yaml
-from playwright.sync_api import sync_playwright, Error as PlaywrightError
-from typing import Dict, Any, List, Optional
+from playwright.sync_api import Error as PlaywrightError
+from playwright.sync_api import sync_playwright
 
 from create_data import select_data
+from train_model.evaluate_model import evaluate_model
+from train_model.predict_data import group_prediction_to_products, predict_selectors
 from train_model.process_data import html_to_dataframe
 from train_model.train_model import train_model
-from train_model.predict_data import predict_selectors
-from train_model.evaluate_model import evaluate_model
-from utils.console import CONSOLE, log_info, log_warning, log_error, log_debug
-from train_model.predict_data import group_prediction_to_products
+from utils.console import CONSOLE, log_debug, log_error, log_info, log_warning
 
 # Configuration for save directory
 PRODUCT_SCRAPER_SAVE_DIR = Path('product_scraper_data')
@@ -37,7 +38,7 @@ class ProductScraper:
     The class is iterable and will yield (url, predictions_dict) for each configured website.
     Automatically saves state on destruction.
     """
-    
+
     def __init__(self, categories: List[str], websites_urls: List[str], selectors: Optional[Dict[str, Dict[str, List[str]]]] = None, training_data: Optional[pd.DataFrame] = None, model: Optional[Dict[str, Any]] = None, pipeline: Optional[Any] = None):
         """
         Initialize the ProductScraper.
@@ -52,7 +53,7 @@ class ProductScraper:
         """
         self.website_html_cache = {}
         self.website_cache_metadata = {}  # Store ETag and Last-Modified headers
-        
+
         self.categories: List[str] = categories
         self.websites_urls: List[str] = websites_urls
 
@@ -63,9 +64,9 @@ class ProductScraper:
         self.training_data = training_data
         self.model = model
         self.pipeline = pipeline
-        
+
         self._iterator_index = 0  # For iterator support
-    
+
     def __del__(self) -> None:
         """
         Automatically save state when object is destroyed.
@@ -77,14 +78,14 @@ class ProductScraper:
         except Exception as e:
             # Catching broadly here to prevent errors during interpreter shutdown
             log_warning(f"Could not auto-save: {e}")
-    
+
     def __iter__(self) -> 'ProductScraper':
         """
         Make ProductScraper iterable over websites.
         """
         self._iterator_index = 0
         return self
-    
+
     def __next__(self) -> tuple:
         """
         Iterate over websites, yielding (url, predictions) for each category.
@@ -95,7 +96,7 @@ class ProductScraper:
         self._iterator_index += 1
         predictions = self.get_selectors(url)
         return (url, predictions)
-    
+
     def __len__(self) -> int:
         """
         Return number of websites.
@@ -122,7 +123,7 @@ class ProductScraper:
         if website_url in self.website_html_cache:
             log_debug(f"Using cached HTML for {website_url}")
             return self.website_html_cache[website_url]
-        
+
         # Use Playwright to get JavaScript-rendered HTML (same as selector creation)
         if use_browser:
             try:
@@ -132,31 +133,31 @@ class ProductScraper:
                     page.goto(website_url, wait_until='networkidle', timeout=30000)
                     html_content = page.content()
                     browser.close()
-                    
+
                     # Cache the content
                     self.website_html_cache[website_url] = html_content
                     log_debug(f"Fetched and cached JavaScript-rendered HTML for {website_url}")
                     return html_content
-                    
+
             except PlaywrightError as e:
                 log_warning(f"Playwright error for {website_url}: {e}. Falling back to requests.")
                 use_browser = False
             except Exception as e:
                 log_warning(f"Unexpected error with Playwright for {website_url}: {e}. Falling back to requests.")
                 use_browser = False
-        
+
         # Fallback to requests (no JavaScript rendering)
         if not use_browser:
             try:
                 response = requests.get(website_url, timeout=10)
                 response.raise_for_status()
                 html_content = response.text
-                
+
                 # Cache the content
                 self.website_html_cache[website_url] = html_content
                 log_debug(f"Fetched and cached static HTML for {website_url}")
                 return html_content
-                
+
             except requests.exceptions.ConnectionError as e:
                 log_error(f"Connection error for {website_url}: {str(e).split(':')[0]}")
                 raise
@@ -169,7 +170,7 @@ class ProductScraper:
             except requests.RequestException as e:
                 log_error(f"Request error for {website_url}: {e}")
                 raise
-    
+
     def set_pipeline(self, pipeline: Any) -> None:
         """
         Set a custom sklearn pipeline for preprocessing and model training.
@@ -179,7 +180,7 @@ class ProductScraper:
         """
         self.pipeline = pipeline
 
-    
+
     def add_website(self, website_url: str) -> None:
         """
         Add a new website URL to the configured list.
@@ -203,11 +204,11 @@ class ProductScraper:
         if website_url in self.websites_urls:
             # 1. Remove from configuration list
             self.websites_urls.remove(website_url)
-            
+
             # 2. Remove associated selectors
             if website_url in self.selectors:
                 del self.selectors[website_url]
-            
+
             # 3. Remove from tracking set
             if website_url in self.url_in_training_data:
                 self.url_in_training_data.remove(website_url)
@@ -223,10 +224,10 @@ class ProductScraper:
                 if 'SourceURL' in self.training_data.columns:
                     initial_count = len(self.training_data)
                     self.training_data = self.training_data[self.training_data['SourceURL'] != website_url]
-                    
+
                     # Reset index to maintain data integrity
                     self.training_data.reset_index(drop=True, inplace=True)
-                    
+
                     removed_count = initial_count - len(self.training_data)
                     log_info(f"Removed {website_url} and {removed_count} associated training samples.")
                 else:
@@ -273,7 +274,7 @@ class ProductScraper:
         """
         if website_url in self.selectors:
             return self.selectors[website_url]
-        
+
         # Interactive selection - pass self (ProductScraper instance) and url
         data = select_data(self, website_url)
         self.selectors[website_url] = data
@@ -288,7 +289,7 @@ class ProductScraper:
             self.save_training_data()
 
         return data
-    
+
     def create_all_selectors(self) -> Dict[str, Dict[str, List[str]]]:
         """
         Interactively collect selectors for all configured websites.
@@ -343,7 +344,7 @@ class ProductScraper:
             if not selectors:
                 log_warning(f"No selectors found for {url}, skipping.")
                 continue
-                            
+
             try:
                 df = html_to_dataframe(html_content, selectors, url=url)
                 if not df.empty:
@@ -355,14 +356,14 @@ class ProductScraper:
             except Exception as e:
                 log_warning(f"Error processing {url}: {e}")
                 continue
-        
+
         if all_data:
             if self.training_data is not None and not self.training_data.empty:
                 all_data.insert(0, self.training_data)
             self.training_data = pd.concat(all_data, ignore_index=True)
         elif self.training_data is None:
             log_warning("No data was successfully extracted from any URL")
-        
+
         return self.training_data
 
     def train_model(self, create_data: bool = False, min_samples: int = 5) -> None:
@@ -384,7 +385,7 @@ class ProductScraper:
             CONSOLE.print("  2. Load existing selectors with load_selectors(), or")
             CONSOLE.print("  3. Load existing training data with load_dataframe()")
             return
-        
+
         # Check minimum sample requirement
         sample_count = len(self.training_data)
         if sample_count < min_samples:
@@ -394,10 +395,10 @@ class ProductScraper:
             self.training_data.info()
             CONSOLE.print("\n[bold]Training Data Sample:[/bold]")
             # Reduced head count for readability
-            CONSOLE.print(self.training_data.head(10)) 
+            CONSOLE.print(self.training_data.head(10))
             CONSOLE.print(self.training_data.describe(include='all'))
             return
-        
+
         log_info(f"Training model on {sample_count} samples...")
         self.model = train_model(self.training_data, self.pipeline)
 
@@ -408,18 +409,18 @@ class ProductScraper:
         """
         if self.model is None:
             raise ValueError("Model is not trained. Please train the model before evaluation.")
-        
+
         if self.training_data is None:
             raise ValueError("Training data is not available. Please train the model or load training data.")
-                
+
         # Extract model components
         pipeline = self.model['pipeline']
         label_encoder = self.model['label_encoder']
-        
+
         # Prepare features and labels
         X = self.training_data.drop(columns=['Category'])
         y = self.training_data['Category']
-        
+
         # evaluate_model handles the display of results
         metrics = evaluate_model(
             model=pipeline,
@@ -452,7 +453,7 @@ class ProductScraper:
             raise ValueError(f"Category '{category}' is not in configured categories: {self.categories}")
 
         return predict_selectors(self.model, self.get_html(website_url), category)
-    
+
     def predict_product(self, website_url: str) -> List[Dict[str, Any]]:
         """
         Predict element selectors for all configured categories on a page and group them into products.
@@ -468,11 +469,11 @@ class ProductScraper:
         html_content = self.get_html(website_url)
 
         products = group_prediction_to_products(html_content, raw_predictions, self.categories)
-        
+
         log_info(f"Found {len(products)} products on {website_url}")
         return products
 
-    
+
 
     def get_selectors(self, website_url: str) -> Dict[str, Any]:
         """
@@ -490,7 +491,7 @@ class ProductScraper:
                 result[category] = self.predict_category(website_url, category)
             return result
         return self.selectors.get(website_url, {})
-    
+
     def save_model(self, path: str = 'model.pkl') -> None:
         """
         Save the trained model to disk.
@@ -504,7 +505,7 @@ class ProductScraper:
                 pickle.dump(self.model, f)
         else:
             raise ValueError("Model is not trained. Cannot save.")
-        
+
     def load_model(self, path: str = 'model.pkl') -> None:
         """
         Load a trained model from disk.
@@ -517,7 +518,7 @@ class ProductScraper:
                 self.model = pickle.load(f)
         except Exception as e:
             log_error(f"Failed to load model from {path}: {e}")
-    
+
     def save_training_data(self, path: str = 'training_data.csv') -> None:
         """
         Save the training dataframe to a CSV file.
@@ -530,7 +531,7 @@ class ProductScraper:
             self.training_data.to_csv(PRODUCT_SCRAPER_SAVE_DIR / path, index=False)
         else:
             raise ValueError("Dataframe is empty. Cannot save.")
-        
+
     def load_dataframe(self, path: str = 'training_data.csv') -> None:
         """
         Load training dataframe from a CSV file.
@@ -592,4 +593,3 @@ class ProductScraper:
 
         with open(PRODUCT_SCRAPER_SAVE_DIR / path, 'rb') as f:
             return pickle.load(f)
-    

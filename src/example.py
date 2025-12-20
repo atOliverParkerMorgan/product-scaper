@@ -3,9 +3,10 @@
 Example script for running ProductScraper on a set of websites and categories.
 """
 
+import random
+
 from ProductScaper import ProductScraper
 from utils.console import log_info
-import random
 
 WEBSITES = [
     # "https://trigon-knihy.cz/antikvariat/",
@@ -85,4 +86,3 @@ if __name__ == "__main__":
         product_scraper = ProductScraper(categories=CATEGORIES, websites_urls=WEBSITES)
 
     product_scraper.create_all_selectors()
-    

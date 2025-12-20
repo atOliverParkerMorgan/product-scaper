@@ -35,3 +35,14 @@ dependencies = [
 Homepage = "https://github.com/atOliverParkerMorgan/product-scraper"
 Repository = "https://github.com/atOliverParkerMorgan/product-scraper.git"
 Documentation = "https://github.com/atOliverParkerMorgan/product-scraper#readme"
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "W", "I"]
+ignore = []
+exclude = ["__pycache__", "build", "dist"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+
+[tool.ruff.lint]

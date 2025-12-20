@@ -1,10 +1,13 @@
-from train_model.process_data import html_to_dataframe, get_main_html_content_tag
-from utils.features import UNWANTED_TAGS, NON_TRAINING_FEATURES, TARGET_FEATURE
-from utils.utils import get_unique_xpath, normalize_tag
+import re
+from typing import Any, Dict, List
+
 import lxml.html
 import numpy as np
-from typing import Any, Dict, List
-import re
+
+from train_model.process_data import get_main_html_content_tag, html_to_dataframe
+from utils.features import NON_TRAINING_FEATURES, TARGET_FEATURE, UNWANTED_TAGS
+from utils.utils import get_unique_xpath, normalize_tag
+
 
 def predict_selectors(model: Dict[str, Any], html_content: str, category: str) -> List[Dict[str, Any]]:
     """
@@ -20,15 +23,15 @@ def predict_selectors(model: Dict[str, Any], html_content: str, category: str) -
 
     pipeline = model['pipeline']
     label_encoder = model['label_encoder']
-    
+
     try:
         target_class_idx = label_encoder.transform([category])[0]
     except ValueError:
         raise ValueError(f"Category '{category}' was not seen during training. Available: {label_encoder.classes_}")
-    
+
     tree = lxml.html.fromstring(html_content)
     main_content = get_main_html_content_tag(html_content) or tree
-    
+
     elements = []
     for elem in main_content.iter():
         if not isinstance(elem.tag, str) or normalize_tag(elem.tag) in UNWANTED_TAGS:
@@ -39,31 +42,31 @@ def predict_selectors(model: Dict[str, Any], html_content: str, category: str) -
         except Exception:
             continue
         elements.append(elem)
-    
+
     X = html_to_dataframe(html_content, selectors=None)
-    
+
     if X.empty:
         return []
-    
+
     # DataFrame should have same number of rows as elements
     if len(X) != len(elements):
         raise ValueError(f"Mismatch: DataFrame has {len(X)} rows but elements list has {len(elements)} items")
-    
+
     if TARGET_FEATURE in X.columns:
         # Only drop columns that actually exist in the dataframe
         cols_to_drop = [col for col in NON_TRAINING_FEATURES if col in X.columns]
         X = X.drop(columns=cols_to_drop)
-    
+
     predictions = pipeline.predict(X)
     match_indices = np.where(predictions == target_class_idx)[0]
-    
+
     candidates = []
     for i in match_indices:
         element = elements[i]
         text_content = element.text_content().strip()
         preview = text_content[:50] + "..." if len(text_content) > 50 else text_content
         xpath = get_unique_xpath(element)
-        
+
         candidates.append({
             'index': i,
             'xpath': xpath,
@@ -72,7 +75,7 @@ def predict_selectors(model: Dict[str, Any], html_content: str, category: str) -
             'class': element.get('class', ''),
             'id': element.get('id', '')
         })
-    
+
     return candidates
 
 def get_xpath_segments(xpath: str) -> List[str]:
@@ -111,23 +114,23 @@ def calculate_proximity_score(xpath1: str, xpath2: str) -> tuple:
     """
     path1 = get_xpath_segments(xpath1)
     path2 = get_xpath_segments(xpath2)
-    
+
     min_len = min(len(path1), len(path2))
     divergence_index = 0
-    
+
     # Find the Lowest Common Ancestor
     for i in range(min_len):
         if path1[i] == path2[i]:
             divergence_index += 1
         else:
             break
-            
+
     # Calculate Tree Distance
     # Steps up from xpath1 to LCA + Steps down from LCA to xpath2
     dist_up = len(path1) - divergence_index
     dist_down = len(path2) - divergence_index
     tree_distance = dist_up + dist_down
-    
+
     # Tie-Breaker: Calculate Index Delta (Tie-Breaker)
     index_delta = 0
     if divergence_index < len(path1) and divergence_index < len(path2):
@@ -135,7 +138,7 @@ def calculate_proximity_score(xpath1: str, xpath2: str) -> tuple:
         idx1 = extract_index(path1[divergence_index])
         idx2 = extract_index(path2[divergence_index])
         index_delta = abs(idx1 - idx2)
-        
+
     return (tree_distance, index_delta)
 
 def group_prediction_to_products(

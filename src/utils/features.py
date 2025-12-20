@@ -6,10 +6,12 @@ This module provides feature extraction, validation, and column definitions for 
 used in product scraping and machine learning models.
 """
 
-import regex as re
 import logging
+from typing import Any, Dict
+
 import lxml.html
-from typing import Dict, Any
+import regex as re
+
 from utils.utils import normalize_tag
 
 # Configure logging
@@ -21,21 +23,21 @@ OTHER_CATEGORY = 'other'
 
 # --- Currency Configuration ---
 ISO_CURRENCIES = [
-    'AED', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN', 
-    'BAM', 'BBD', 'BDT', 'BGN', 'BHD', 'BIF', 'BMD', 'BND', 'BOB', 'BRL', 
-    'BSD', 'BTN', 'BWP', 'BYN', 'BZD', 'CAD', 'CDF', 'CHF', 'CLP', 'CNY', 
-    'COP', 'CRC', 'CUP', 'CVE', 'CZK', 'DJF', 'DKK', 'DOP', 'DZD', 'EGP', 
-    'ERN', 'ETB', 'EUR', 'FJD', 'FKP', 'GBP', 'GEL', 'GHS', 'GIP', 'GMD', 
-    'GNF', 'GTQ', 'GYD', 'HKD', 'HNL', 'HRK', 'HTG', 'HUF', 'IDR', 'ILS', 
-    'INR', 'IQD', 'IRR', 'ISK', 'JMD', 'JOD', 'JPY', 'KES', 'KGS', 'KHR', 
-    'KMF', 'KPW', 'KRW', 'KWD', 'KYD', 'KZT', 'LAK', 'LBP', 'LKR', 'LRD', 
-    'LSL', 'LYD', 'MAD', 'MDL', "MGA", "MKD", "MMK", "MNT", "MOP", "MRU", 
-    'MUR', 'MVR', 'MWK', 'MXN', 'MYR', 'MZN', 'NAD', 'NGN', 'NIO', 'NOK', 
-    'NPR', 'NZD', 'OMR', 'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG', 
-    'QAR', 'RON', 'RSD', 'RUB', 'RWF', 'SAR', 'SBD', 'SCR', 'SDG', 'SEK', 
-    'SGD', 'SHP', 'SLE', 'SLL', 'SOS', 'SRD', 'SSP', 'STN', 'SVC', 'SYP', 
-    'SZL', 'THB', 'TJS', 'TMT', 'TND', 'TOP', 'TRY', 'TTD', 'TWD', 'TZS', 
-    'UAH', 'UGX', 'USD', 'UYU', 'UZS', 'VES', 'VND', 'VUV', 'WST', 'XAF', 
+    'AED', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN',
+    'BAM', 'BBD', 'BDT', 'BGN', 'BHD', 'BIF', 'BMD', 'BND', 'BOB', 'BRL',
+    'BSD', 'BTN', 'BWP', 'BYN', 'BZD', 'CAD', 'CDF', 'CHF', 'CLP', 'CNY',
+    'COP', 'CRC', 'CUP', 'CVE', 'CZK', 'DJF', 'DKK', 'DOP', 'DZD', 'EGP',
+    'ERN', 'ETB', 'EUR', 'FJD', 'FKP', 'GBP', 'GEL', 'GHS', 'GIP', 'GMD',
+    'GNF', 'GTQ', 'GYD', 'HKD', 'HNL', 'HRK', 'HTG', 'HUF', 'IDR', 'ILS',
+    'INR', 'IQD', 'IRR', 'ISK', 'JMD', 'JOD', 'JPY', 'KES', 'KGS', 'KHR',
+    'KMF', 'KPW', 'KRW', 'KWD', 'KYD', 'KZT', 'LAK', 'LBP', 'LKR', 'LRD',
+    'LSL', 'LYD', 'MAD', 'MDL', "MGA", "MKD", "MMK", "MNT", "MOP", "MRU",
+    'MUR', 'MVR', 'MWK', 'MXN', 'MYR', 'MZN', 'NAD', 'NGN', 'NIO', 'NOK',
+    'NPR', 'NZD', 'OMR', 'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG',
+    'QAR', 'RON', 'RSD', 'RUB', 'RWF', 'SAR', 'SBD', 'SCR', 'SDG', 'SEK',
+    'SGD', 'SHP', 'SLE', 'SLL', 'SOS', 'SRD', 'SSP', 'STN', 'SVC', 'SYP',
+    'SZL', 'THB', 'TJS', 'TMT', 'TND', 'TOP', 'TRY', 'TTD', 'TWD', 'TZS',
+    'UAH', 'UGX', 'USD', 'UYU', 'UZS', 'VES', 'VND', 'VUV', 'WST', 'XAF',
     'XCD', 'XOF', 'XPF', 'YER', 'ZAR', 'ZMW', 'ZWL'
 ]
 
@@ -44,7 +46,7 @@ ISO_CURRENCIES = [
 SOLD_WORD_VARIATIONS = [
     # English
     'sold', 'sold out', 'out of stock', 'unavailable', 'discontinued',
-    
+
     # Western European (Fr, De, Es, It, Pt, Nl)
     'vendu', 'épuisé', 'indisponible', ' rupture de stock', # French
     'verkauft', 'ausverkauft', 'nicht vorrätig', 'nicht lieferbar', # German
@@ -52,12 +54,12 @@ SOLD_WORD_VARIATIONS = [
     'venduto', 'esaurito', 'non disponibile', # Italian
     'vendido', 'esgotado', 'indisponível', # Portuguese
     'verkocht', 'niet op voorraad', 'uitverkocht', # Dutch
-    
+
     # Northern European (Sv, Da, No, Fi)
     'såld', 'slutsåld', 'slut i lager', 'ej i lager', # Swedish
     'solgt', 'udsolgt', 'ikke på lager', # Danish/Norwegian
     'myyty', 'loppu', 'ei varastossa', # Finnish
-    
+
     # Eastern European (Ru, Pl, Cz, Hu, Ro, Uk, Hr/Sr)
     'продано', 'нет в наличии', 'раскуплено', 'закончился', # Russian/Ukranian
     'sprzedane', 'brak w magazynie', 'wyprzedane', 'niedostępny', # Polish
@@ -65,7 +67,7 @@ SOLD_WORD_VARIATIONS = [
     'eladva', 'elfogyott', 'nincs raktáron', # Hungarian
     'vândut', 'stoc epuizat', 'indisponibil', # Romanian
     'prodano', 'rasprodano', 'nema na zalihi', # Croatian/Serbian
-    
+
     # Asian (Zh, Ja, Ko, Vi, Th, Id)
     '售出', '已售出', '缺货', '暂时缺货', '售罄', # Chinese (Simplified/Traditional)
     '売り切れ', '在庫切れ', '完売', '品切れ', # Japanese
@@ -73,14 +75,14 @@ SOLD_WORD_VARIATIONS = [
     'đã bán', 'hết hàng', 'bán hết', # Vietnamese
     'ขายแล้ว', 'สินค้าหมด', 'หมด', # Thai
     'terjual', 'habis', 'stok habis', 'kosong', # Indonesian/Malay
-    
+
     # Middle Eastern / South Asian (Ar, He, Tr, Hi)
     'مباع', 'نفذ', 'نفذت الكمية', 'غير متوفر', # Arabic
     'נמכר', 'אזל במלאי', 'לא זמין', # Hebrew
     'satıldı', 'tükendi', 'stokta yok', 'temin edilemiyor', # Turkish
     'बिका हुआ', 'स्टॉक में नहीं', 'उपलब्ध नहीं', # Hindi
     'ناموجود', 'فروخته شد', # Persian
-    
+
     # Others (Gr, Is, Et, Lt, Lv)
     'εξαντλήθηκε', 'μη διαθέσιμο', 'κατόπιν παραγγελίας', # Greek
     'uppselt', 'ekki til', # Icelandic
@@ -92,9 +94,9 @@ SOLD_WORD_VARIATIONS = [
 # Concepts: Review, Rating, Stars, Feedback, Comment, Opinion
 REVIEW_KEYWORDS = [
     # English
-    'review', 'reviews', 'rating', 'ratings', 'stars', 'feedback', 
+    'review', 'reviews', 'rating', 'ratings', 'stars', 'feedback',
     'testimonial', 'testimonials', 'comment', 'comments', 'opinion',
-    
+
     # Western European
     'avis', 'commentaire', 'notations', 'témoignage', # French
     'bewertung', 'rezension', 'kundenmeinung', 'erfahrungsbericht', # German
@@ -102,19 +104,19 @@ REVIEW_KEYWORDS = [
     'recensione', 'recensioni', 'opinioni', 'giudizi', # Italian
     'avaliação', 'opiniões', 'comentários', 'classificação', # Portuguese
     'beoordeling', 'recensie', 'klantbeoordeling', 'ervaringen', # Dutch
-    
+
     # Northern European
     'recension', 'betyg', 'omdöme', 'kommentarer', # Swedish
     'anmeldelse', 'vurdering', # Danish/Norwegian
     'arvostelu', 'arviot', 'kommentit', # Finnish
-    
+
     # Eastern European
     'обзор', 'отзыв', 'рейтинг', 'комментарии', 'оценка', # Russian
     'recenzja', 'opinia', 'ocena', 'komentarze', # Polish
     'recenze', 'hodnocení', 'názor', # Czech
     'vélemény', 'értékelés', 'hozzászólás', # Hungarian
     'recenzie', 'păreri', 'calificativ', # Romanian
-    
+
     # Asian
     '评价', '评论', '评分', '晒单', # Chinese
     'レビュー', '口コミ', '評価', '評判', 'コメント', # Japanese
@@ -122,14 +124,14 @@ REVIEW_KEYWORDS = [
     'đánh giá', 'nhận xét', 'bình luận', # Vietnamese
     'รีวิว', 'ความเห็น', 'ให้คะแนน', # Thai
     'ulasan', 'penilaian', 'komentar', 'testimoni', # Indonesian
-    
+
     # Middle Eastern / South Asian
     'مراجعة', 'تقييم', 'آراء', 'تعليقات', # Arabic
     'ביקורת', 'חוות דעת', 'דירוג', # Hebrew
     'inceleme', 'değerlendirme', 'yorum', 'puan', # Turkish
     'समीक्षा', 'रेटिंग', 'टिप्पणी', # Hindi
     'نقد', 'بررسی', 'نظر' # Persian
-    
+
     # Greek
     'κριτική', 'αξιολόγηση', 'σχόλια' # Greek
 ]
@@ -138,9 +140,9 @@ REVIEW_KEYWORDS = [
 # Concepts: Buy, Add to Cart, Checkout, Purchase, Order, Basket
 CTA_KEYWORDS = [
     # English
-    'add to cart', 'add to bag', 'add to basket', 'buy', 'buy now', 
+    'add to cart', 'add to bag', 'add to basket', 'buy', 'buy now',
     'checkout', 'purchase', 'order', 'shop now', 'get it now',
-    
+
     # Western European
     'ajouter au panier', 'acheter', 'commander', 'panier', # French
     'in den warenkorb', 'kaufen', 'jetzt kaufen', 'zur kasse', 'bestellen', # German
@@ -148,20 +150,20 @@ CTA_KEYWORDS = [
     'aggiungi al carrello', 'compra', 'acquista', 'ordina', 'cassa', # Italian
     'adicionar ao carrinho', 'comprar', 'finalizar compra', 'cesto', # Portuguese
     'in winkelwagen', 'kopen', 'bestellen', 'afrekenen', # Dutch
-    
+
     # Northern European
     'lägg i varukorgen', 'köp', 'till kassan', # Swedish
     'læg i kurv', 'køb', 'bestil', # Danish
     'legg i handlekurven', 'kjøp', # Norwegian
     'lisää ostoskoriin', 'osta', 'tilaa', 'kassalle', # Finnish
-    
+
     # Eastern European
     'купить', 'в корзину', 'оформить заказ', 'заказать', # Russian
     'dodaj do koszyka', 'kup', 'zamów', 'do kasy', # Polish
     'vložit do košíku', 'koupit', 'objednat', 'pokladna', # Czech
     'kosárba', 'megrendelés', 'vásárlás', # Hungarian
     'adaugă în coș', 'cumpără', 'comandă', # Romanian
-    
+
     # Asian
     '加入购物车', '购买', '立即购买', '结算', '下单', # Chinese
     'カートに入れる', '購入', '注文する', 'レジに進む', # Japanese
@@ -169,14 +171,14 @@ CTA_KEYWORDS = [
     'thêm vào giỏ', 'mua ngay', 'thanh toán', 'đặt hàng', # Vietnamese
     'หยิบใส่ตะกร้า', 'ซื้อเลย', 'ชำระเงิน', 'สั่งซื้อ', # Thai
     'tambah ke keranjang', 'beli', 'bayar', 'pesan', # Indonesian
-    
+
     # Middle Eastern / South Asian
     'أضف إلى السلة', 'شراء', 'إتمام الشراء', 'اطلب الآن', # Arabic
     'הוסף לסל', 'קנה', 'תשלום', 'הזמן', # Hebrew
     'sepete ekle', 'satın al', 'sipariş ver', 'öde', # Turkish
     'कार्ट में डालें', 'खरीदें', 'अभी खरीदें', 'ऑर्डर करें', # Hindi
     'افزودن به سبد', 'خرید', 'سفارش' # Persian
-    
+
     # Greek
     'προσθήκη στο καλάθι', 'αγορά', 'ταμείο', 'παραγγελία' # Greek
 ]
@@ -249,7 +251,7 @@ NUMERIC_FEATURES = [
     'is_header',
     'is_formatting',
     'is_list_item',
-    
+
     # Text Metrics
     'text_len',
     'text_word_count',
@@ -258,7 +260,7 @@ NUMERIC_FEATURES = [
     'link_density',
     'capitalization_ratio',
     'avg_word_length',
-    
+
     # Visual/Style Features
     'font_size',
     'font_weight',
@@ -266,21 +268,21 @@ NUMERIC_FEATURES = [
     'is_italic',
     'is_hidden',
     'is_block_element',
-    
+
     # Semantic / Regex
     'has_currency_symbol',
     'is_price_format',
     'has_sold_keyword',
     'has_review_keyword',
     'has_cta_keyword',
-    
+
     # Product Identification Codes
     'has_isbn',
     'has_upc_ean',
     'has_asin',
     'has_sku',
     'has_model_number',
-    
+
     # Attribute / Visual
     'has_href',
     'is_image',
@@ -290,7 +292,7 @@ NUMERIC_FEATURES = [
     'image_area',
     'parent_is_link',
     'sibling_image_count',
-    
+
     # Class/ID heuristics
     'class_indicates_price',
     'class_indicates_title',
@@ -334,11 +336,11 @@ def extract_element_features(
         # Normalize text
         raw_text = element.text_content()
         text = raw_text.strip()
-        
+
         # Get hierarchy
         parent = element.getparent()
         gparent = parent.getparent() if parent is not None else None
-        
+
         # --- 1. Base Structural Features ---
         features = {
             'Category': category,
@@ -349,7 +351,7 @@ def extract_element_features(
             'num_siblings': len(parent) - 1 if parent is not None else 0,
             'dom_depth': len(list(element.iterancestors())),
         }
-        
+
         # Specific tag checks
         tag = features['tag']
         features['is_header'] = 1 if tag in {'h1', 'h2', 'h3', 'h4', 'h5', 'h6'} else 0
@@ -359,7 +361,7 @@ def extract_element_features(
 
         # --- 2. Visual/Style Features ---
         style = element.get('style', '')
-        
+
         # Extract font-size (default to 16px if not specified)
         font_size = 16.0
         font_size_match = re.search(r'font-size\s*:\s*(\d+(?:\.\d+)?)(?:px|pt|em|rem)?', style, re.IGNORECASE)
@@ -369,7 +371,7 @@ def extract_element_features(
             if 'em' in style.lower() or 'rem' in style.lower():
                 font_size *= 16
         features['font_size'] = font_size
-        
+
         # Extract font-weight (default to 400 = normal)
         font_weight = 400
         font_weight_match = re.search(r'font-weight\s*:\s*(\d+|bold|normal|lighter|bolder)', style, re.IGNORECASE)
@@ -384,29 +386,29 @@ def extract_element_features(
             elif weight_str.isdigit():
                 font_weight = int(weight_str)
         features['font_weight'] = font_weight
-        
+
         # Check if element is bold/italic based on tag or style
         features['is_bold'] = 1 if tag in {'b', 'strong'} or font_weight >= 600 or 'font-weight:bold' in style.lower() else 0
         features['is_italic'] = 1 if tag in {'i', 'em'} or 'font-style:italic' in style.lower() else 0
-        
+
         # Check if element is hidden
         features['is_hidden'] = 1 if (
-            'display:none' in style.lower() or 
+            'display:none' in style.lower() or
             'display: none' in style.lower() or
             'visibility:hidden' in style.lower() or
             'visibility: hidden' in style.lower()
         ) else 0
-        
+
         # --- 3. Attribute Semantic Features ---
         class_str = " ".join(element.get('class', '').split()) if element.get('class') else ""
         features['class_str'] = class_str
         features['id_str'] = element.get('id', '')
-        
+
         # Heuristics on class names (common in frameworks like Bootstrap/Tailwind)
         class_lower = class_str.lower()
         id_lower = features['id_str'].lower()
         class_id_combined = class_lower + ' ' + id_lower
-        
+
         features['class_indicates_price'] = 1 if any(x in class_id_combined for x in ['price', 'cost', 'amount', 'currency']) else 0
         features['class_indicates_title'] = 1 if any(x in class_id_combined for x in ['title', 'header', 'heading', 'name', 'product-name']) else 0
         features['class_indicates_description'] = 1 if any(x in class_id_combined for x in ['description', 'desc', 'detail', 'summary']) else 0
@@ -417,10 +419,10 @@ def extract_element_features(
         words = text.split()
         features['text_word_count'] = len(words)
         features['text_digit_count'] = sum(c.isdigit() for c in text)
-        
+
         # Average word length (useful for distinguishing descriptive text from codes/IDs)
         features['avg_word_length'] = sum(len(word) for word in words) / len(words) if words else 0.0
-        
+
         # Capitalization (Useful for Titles vs Descriptions)
         features['capitalization_ratio'] = sum(1 for c in text if c.isupper()) / len(text) if text else 0.0
 
@@ -430,18 +432,18 @@ def extract_element_features(
         features['has_sold_keyword'] = 1 if SOLD_REGEX.search(text) else 0
         features['has_review_keyword'] = 1 if REVIEW_REGEX.search(text) else 0
         features['has_cta_keyword'] = 1 if CTA_REGEX.search(text) else 0
-        
+
         # Product Code Detection
         features['has_isbn'] = 1 if ISBN_REGEX.search(text) else 0
         features['has_upc_ean'] = 1 if UPC_EAN_REGEX.search(text) else 0
         features['has_asin'] = 1 if ASIN_REGEX.search(text) else 0
         features['has_sku'] = 1 if SKU_REGEX.search(text) else 0
         features['has_model_number'] = 1 if MODEL_REGEX.search(text) else 0
-        
+
         # --- 5. Density Metrics ---
         num_descendants = len(list(element.iterdescendants())) + 1
         features['text_density'] = len(text) / num_descendants
-        
+
         # Link Density (Text inside <a> tags / Total Text)
         # This helps separate navigation/lists from actual article content
         links_text_len = sum(len(a.text_content() or "") for a in element.findall('.//a'))
@@ -450,17 +452,17 @@ def extract_element_features(
         # --- 6. Image & Hyperlink Context ---
         features['has_href'] = 1 if element.get('href') else 0
         features['is_image'] = 1 if tag == 'img' else 0
-        
+
         # Image-specific features
         features['has_src'] = 1 if element.get('src') else 0
         features['has_alt'] = 1 if element.get('alt') else 0
         features['alt_len'] = len(element.get('alt', ''))
-        
+
         # Image surface area (width * height) - useful for distinguishing product images from icons/thumbnails
         try:
             width = element.get('width', '')
             height = element.get('height', '')
-            
+
             # If no width/height attributes, try to extract from style attribute
             if not width or not height:
                 style = element.get('style', '')
@@ -472,7 +474,7 @@ def extract_element_features(
                         width = width_match.group(1)
                     if height_match and not height:
                         height = height_match.group(1)
-            
+
             # Try to extract numeric values
             if width and height:
                 # Remove 'px' suffix if present and convert to int
@@ -483,10 +485,10 @@ def extract_element_features(
                 features['image_area'] = 0
         except Exception:
             features['image_area'] = 0
-        
+
         # Parent context for images
         features['parent_is_link'] = 1 if (parent is not None and normalize_tag(parent.tag) == 'a') else 0
-        
+
         # Count nearby images
         if parent is not None:
             # Using getattr to safely handle comments or processing instructions in siblings

@@ -1,18 +1,16 @@
 """Data processing utilities for HTML element feature extraction."""
 
 import logging
+import random
 import sys
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
+
 import lxml.html
 import pandas as pd
 import yaml
-from utils.features import (
-    extract_element_features,
-    UNWANTED_TAGS,
-    OTHER_CATEGORY
-)
-import random
+
+from utils.features import OTHER_CATEGORY, UNWANTED_TAGS, extract_element_features
 from utils.utils import normalize_tag
 
 RANDOM_SEED = 42
@@ -84,12 +82,12 @@ def get_main_html_content_tag(
         total_link_text = local_link_text_len + child_link_text_len
 
         if total_text == 0:
-            link_density = 1.0 
+            link_density = 1.0
         else:
             link_density = total_link_text / total_text
 
         base_score = total_text + (total_imgs * IMG_IMPORTANCE)
-        
+
         # Elements with many images are often product grids. Reduce the
         # link-density penalty for these so galleries aren't unfairly down-weighted.
         if total_imgs > 5:
@@ -98,10 +96,10 @@ def get_main_html_content_tag(
             effective_link_weight = LINK_DENSITY_WEIGHT
 
         penalty_factor = 1.0 - (link_density * effective_link_weight)
-        
+
         # Favor deeper, more specific containers over very shallow ones.
         depth_score = current_depth * DEPTH_SCORE_COEFFICIENT
-        
+
         final_score = (base_score * max(0.01, penalty_factor)) + depth_score
 
         # Deprioritize 'body' and 'html' so more specific containers are preferred.
@@ -110,11 +108,11 @@ def get_main_html_content_tag(
 
         if total_text > MIN_TAG_TEXT_LENGTH or total_imgs >= MIN_IMAGE_COUNT:
             current_best_score = best_candidate[1]
-            
+
             if current_best_score == -1.0:
                 best_candidate[0] = elem
                 best_candidate[1] = final_score
-            
+
             # Parent vs Child Threshold Check
             elif final_score > (current_best_score * PARENT_IMPROVEMENT_THRESHOLD):
                 best_candidate[0] = elem
@@ -123,7 +121,7 @@ def get_main_html_content_tag(
         return (total_text, total_imgs, total_link_text)
 
     process_node(tree, 0, False)
-    
+
     # Fallback: if nothing was selected or only head was selected, try to find body, then html, then tree
     if best_candidate[0] is None or normalize_tag(best_candidate[0].tag) == 'head':
         body = tree.find('.//body')
@@ -133,7 +131,7 @@ def get_main_html_content_tag(
         if html is not None:
             return html
         return tree
-    
+
     return best_candidate[0]
 
 
@@ -154,12 +152,12 @@ def html_to_dataframe(
         pd.DataFrame: DataFrame with extracted features.
     """
     main_content = get_main_html_content_tag(html_content)
-    
+
     try:
         root = lxml.html.fromstring(html_content)
     except Exception:
         return pd.DataFrame()
-    
+
     if main_content is None:
         main_content = root
 
@@ -172,13 +170,13 @@ def html_to_dataframe(
             for xpath in xpath_selectors:
                 try:
                     elements = root.xpath(xpath)
-                    
+
                     for elem in elements:
                         # Make sure it's an Element, not text or comment
                         if not isinstance(elem, lxml.html.HtmlElement):
                             logger.debug(f"Skipping non-element: {type(elem)}")
                             continue
-                            
+
                         if elem not in labeled_elements:
                             data = extract_element_features(elem, category=category)
                             if data:
@@ -197,14 +195,14 @@ def html_to_dataframe(
 
         if elem in labeled_elements:
             continue
-        
+
         # Skip empty structural tags that have no attributes
         try:
             if not elem.text_content().strip() and not elem.attrib:
                 continue
         except Exception:
             continue
-            
+
         # Treat as 'other'
         data = extract_element_features(elem, category=OTHER_CATEGORY)
         if data:
@@ -212,7 +210,7 @@ def html_to_dataframe(
 
     if positive_data:
         max_negatives = len(positive_data) * OTHER_TO_CATEGORY_RATIO
-        
+
         if len(negative_data) > max_negatives:
             # Randomly sample to reduce the count
             random.seed(RANDOM_SEED) # Ensure reproducibility
@@ -221,7 +219,7 @@ def html_to_dataframe(
     all_data = positive_data + negative_data
 
     df = pd.DataFrame(all_data)
-    
+
     if df.empty:
         return df
 
@@ -234,7 +232,7 @@ def html_to_dataframe(
     for col in text_cols:
         if col in df.columns:
             df[col] = df[col].fillna("")
-            
+
     return df.fillna(0)
 
 def selector_data_to_csv(data_domain_dir: Path) -> None:
