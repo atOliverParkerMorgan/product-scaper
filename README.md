@@ -11,9 +11,9 @@ pip install product-scraper
 ## Basic Usage
 
 ```python
-import productscaper
+import productscraper
     
-ps = productscaper(categories=["title", "price", "image"], websites_urls=["https://www.morganbooks.eu/"])
+ps = productscraper(categories=["title", "price", "image"], websites_urls=["https://www.morganbooks.eu/"])
 ps.predict()
 
 
