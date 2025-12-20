@@ -1,3 +1,8 @@
+
+"""
+Console logging utilities for styled output using Rich.
+"""
+
 from rich.console import Console
 from rich.theme import Theme
 

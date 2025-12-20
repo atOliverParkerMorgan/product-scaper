@@ -1,3 +1,11 @@
+
+"""
+ProductScraper: Main interface for web scraping and machine learning-based element detection.
+
+This module provides the ProductScraper class, which allows for collecting training data,
+training models, predicting selectors, and managing scraping state for product websites.
+"""
+
 from pathlib import Path
 import pickle
 import requests
@@ -58,8 +66,10 @@ class ProductScraper:
         
         self._iterator_index = 0  # For iterator support
     
-    def __del__(self):
-        """Automatically save state when object is destroyed."""
+    def __del__(self) -> None:
+        """
+        Automatically save state when object is destroyed.
+        """
         try:
             if self.model is not None:
                 log_debug("Auto-saving ProductScraper state...")
@@ -68,27 +78,28 @@ class ProductScraper:
             # Catching broadly here to prevent errors during interpreter shutdown
             log_warning(f"Could not auto-save: {e}")
     
-    def __iter__(self):
-        """Make ProductScraper iterable over websites."""
+    def __iter__(self) -> 'ProductScraper':
+        """
+        Make ProductScraper iterable over websites.
+        """
         self._iterator_index = 0
         return self
     
-    def __next__(self):
-        """Iterate over websites, yielding (url, predictions) for each category."""
+    def __next__(self) -> tuple:
+        """
+        Iterate over websites, yielding (url, predictions) for each category.
+        """
         if self._iterator_index >= len(self.websites_urls):
             raise StopIteration
-        
         url = self.websites_urls[self._iterator_index]
         self._iterator_index += 1
-        
-        # Predict all categories for this URL
-       
         predictions = self.get_selectors(url)
-            
         return (url, predictions)
     
-    def __len__(self):
-        """Return number of websites."""
+    def __len__(self) -> int:
+        """
+        Return number of websites.
+        """
         return len(self.websites_urls)
 
     def get_html(self, website_url: str, use_browser: bool = True) -> str:
@@ -290,7 +301,7 @@ class ProductScraper:
             self.create_selectors(url)
         return self.selectors
 
-    def create_training_data(self, urls=None):
+    def create_training_data(self, urls: Optional[List[str]] = None) -> Optional[pd.DataFrame]:
         """
         Convert collected selectors into training dataframe.
         Automatically creates selectors for URLs that don't have them yet.
@@ -354,7 +365,7 @@ class ProductScraper:
         
         return self.training_data
 
-    def train_model(self, create_data=False, min_samples=5):
+    def train_model(self, create_data: bool = False, min_samples: int = 5) -> None:
         """
         Train the machine learning model on collected data.
         Automatically creates dataframe if not already created.
@@ -390,7 +401,7 @@ class ProductScraper:
         log_info(f"Training model on {sample_count} samples...")
         self.model = train_model(self.training_data, self.pipeline)
 
-    def evaluate(self):
+    def evaluate(self) -> Any:
         """
         Evaluate the trained model on the training data and display results.
         Returns performance metrics.
@@ -421,7 +432,7 @@ class ProductScraper:
 
         return metrics
 
-    def predict_category(self, website_url, category):
+    def predict_category(self, website_url: str, category: str) -> List[Dict[str, Any]]:
         """
         Predict element selectors for a specific category on a page.
         
@@ -442,7 +453,7 @@ class ProductScraper:
 
         return predict_selectors(self.model, self.get_html(website_url), category)
     
-    def predict_product(self, website_url):
+    def predict_product(self, website_url: str) -> List[Dict[str, Any]]:
         """
         Predict element selectors for all configured categories on a page and group them into products.
         
@@ -463,7 +474,7 @@ class ProductScraper:
 
     
 
-    def get_selectors(self, website_url):
+    def get_selectors(self, website_url: str) -> Dict[str, Any]:
         """
         Get the currently stored selectors for a specific website URL.
         
@@ -480,7 +491,7 @@ class ProductScraper:
             return result
         return self.selectors.get(website_url, {})
     
-    def save_model(self, path='model.pkl'):
+    def save_model(self, path: str = 'model.pkl') -> None:
         """
         Save the trained model to disk.
         
@@ -494,7 +505,7 @@ class ProductScraper:
         else:
             raise ValueError("Model is not trained. Cannot save.")
         
-    def load_model(self, path='model.pkl'):
+    def load_model(self, path: str = 'model.pkl') -> None:
         """
         Load a trained model from disk.
         
@@ -507,7 +518,7 @@ class ProductScraper:
         except Exception as e:
             log_error(f"Failed to load model from {path}: {e}")
     
-    def save_training_data(self, path='training_data.csv'):
+    def save_training_data(self, path: str = 'training_data.csv') -> None:
         """
         Save the training dataframe to a CSV file.
         
@@ -520,7 +531,7 @@ class ProductScraper:
         else:
             raise ValueError("Dataframe is empty. Cannot save.")
         
-    def load_dataframe(self, path='training_data.csv'):
+    def load_dataframe(self, path: str = 'training_data.csv') -> None:
         """
         Load training dataframe from a CSV file.
         
@@ -532,7 +543,7 @@ class ProductScraper:
         except Exception as e:
             log_error(f"Failed to load training data from {path}: {e}")
 
-    def save_selectors(self, path='selectors.yaml'):
+    def save_selectors(self, path: str = 'selectors.yaml') -> None:
         """
         Save collected selectors to disk.
         
@@ -543,7 +554,7 @@ class ProductScraper:
         with open(PRODUCT_SCRAPER_SAVE_DIR / path, 'w') as f:
             yaml.dump(self.selectors, f, default_flow_style=False, allow_unicode=True)
 
-    def load_selectors(self, path='selectors.yaml'):
+    def load_selectors(self, path: str = 'selectors.yaml') -> None:
         """
         Load previously collected selectors from disk.
         
@@ -556,7 +567,7 @@ class ProductScraper:
         except Exception as e:
             log_error(f"Failed to load selectors from {path}: {e}")
 
-    def save(self, path='product_scraper.pkl'):
+    def save(self, path: str = 'product_scraper.pkl') -> None:
         """
         Save the entire ProductScraper instance including model and data.
         
@@ -568,7 +579,7 @@ class ProductScraper:
             pickle.dump(self, f)
 
     @staticmethod
-    def load(path='product_scraper.pkl'):
+    def load(path: str = 'product_scraper.pkl') -> 'ProductScraper':
         """
         Load a previously saved ProductScraper instance.
         

@@ -8,12 +8,14 @@ import re
 
 def predict_selectors(model: Dict[str, Any], html_content: str, category: str) -> List[Dict[str, Any]]:
     """
-    Predicts selectors of the `category` from the html_content 
-    
+    Predict selectors for a given category from HTML content using a trained model.
+
     Args:
-        model:
-        html_content: str
-        category
+        model (Dict[str, Any]): Trained model dictionary.
+        html_content (str): HTML content to predict from.
+        category (str): Category to predict selectors for.
+    Returns:
+        List[Dict[str, Any]]: List of predicted selector dictionaries.
     """
 
     pipeline = model['pipeline']
@@ -74,18 +76,38 @@ def predict_selectors(model: Dict[str, Any], html_content: str, category: str) -
     return candidates
 
 def get_xpath_segments(xpath: str) -> List[str]:
-    """Helper to split xpath into clean segments."""
+    """
+    Split an XPath string into clean segments.
+
+    Args:
+        xpath (str): XPath string.
+    Returns:
+        List[str]: List of segments.
+    """
     return [s for s in xpath.split('/') if s]
 
 def extract_index(segment: str) -> int:
-    """Extracts the integer index from a segment like 'div[3]', default to 1."""
+    """
+    Extract the integer index from a segment like 'div[3]'.
+
+    Args:
+        segment (str): XPath segment.
+    Returns:
+        int: Extracted index, defaults to 1 if not found.
+    """
     match = re.search(r'\[(\d+)\]', segment)
     return int(match.group(1)) if match else 1
 
 def calculate_proximity_score(xpath1: str, xpath2: str) -> tuple:
     """
-    Calculates a proximity score tuple: (Tree Distance, Index Delta).
+    Calculate a proximity score tuple (Tree Distance, Index Delta) between two XPaths.
     Lower values for both mean 'closer'.
+
+    Args:
+        xpath1 (str): First XPath.
+        xpath2 (str): Second XPath.
+    Returns:
+        tuple: (tree_distance, index_delta)
     """
     path1 = get_xpath_segments(xpath1)
     path2 = get_xpath_segments(xpath2)
@@ -116,37 +138,40 @@ def calculate_proximity_score(xpath1: str, xpath2: str) -> tuple:
         
     return (tree_distance, index_delta)
 
-def group_prediction_to_products(html_content: str, selectors: Dict[str, List[Dict[str, Any]]], categories: List[str]) -> List[Dict[str, Any]]:
-    
+def group_prediction_to_products(
+    html_content: str,
+    selectors: Dict[str, List[Dict[str, Any]]],
+    categories: List[str]
+) -> List[Dict[str, Any]]:
+    """
+    Group predicted selectors into product dictionaries by proximity.
+
+    Args:
+        html_content (str): HTML content.
+        selectors (Dict[str, List[Dict[str, Any]]]): Predicted selectors by category.
+        categories (List[str]): List of categories.
+    Returns:
+        List[Dict[str, Any]]: List of product dictionaries.
+    """
     if not categories or not selectors:
         return []
-        
     anchor_category = max(categories, key=lambda c: len(selectors.get(c, [])))
     anchor_items = selectors.get(anchor_category, [])
-    
     products = []
-
     for anchor_item in anchor_items:
         product = {}
         product[anchor_category] = anchor_item
         anchor_xpath = anchor_item['xpath']
-        
         for cat in categories:
             if cat == anchor_category:
                 continue
-            
             candidates = selectors.get(cat, [])
             if not candidates:
                 continue
-            
-            # Find Best Match using the Proximity Tuple
             best_candidate = min(
-                candidates, 
+                candidates,
                 key=lambda x: calculate_proximity_score(anchor_xpath, x['xpath'])
             )
-            
             product[cat] = best_candidate
-            
         products.append(product)
-
     return products

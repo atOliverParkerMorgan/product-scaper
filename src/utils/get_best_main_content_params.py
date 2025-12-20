@@ -78,7 +78,12 @@ def element_matches_expectation(
 
 
 def load_test_pages() -> Dict[str, str]:
-    """Load all test HTML pages from test_data directory."""
+    """
+    Load all test HTML pages from test_data directory.
+
+    Returns:
+        Dict[str, str]: Mapping of page names to HTML content.
+    """
     test_data_dir = Path(__file__).parent.parent.parent / 'tests' / 'test_data'
     pages = {}
     
@@ -145,9 +150,11 @@ def evaluate_params(
 def grid_search(pages: Dict[str, str]) -> Tuple[Dict[str, Any], float, Dict[str, bool]]:
     """
     Perform grid search over parameter combinations.
-    
+
+    Args:
+        pages (Dict[str, str]): Mapping of page names to HTML content.
     Returns:
-        (best_params, best_accuracy, best_matches)
+        Tuple[Dict[str, Any], float, Dict[str, bool]]: Best parameters, accuracy, and matches.
     """
     # Define parameter grids
     # Adjust ranges based on your expected parameter space
@@ -225,8 +232,15 @@ def grid_search(pages: Dict[str, str]) -> Tuple[Dict[str, Any], float, Dict[str,
     return best_params, best_accuracy, best_matches
 
 
-def print_results(best_params: Dict[str, Any], best_accuracy: float, best_matches: Dict[str, bool]):
-    """Print optimization results in a formatted way."""
+def print_results(best_params: Dict[str, Any], best_accuracy: float, best_matches: Dict[str, bool]) -> None:
+    """
+    Print optimization results in a formatted way.
+
+    Args:
+        best_params (Dict[str, Any]): Best parameter set.
+        best_accuracy (float): Best accuracy score.
+        best_matches (Dict[str, bool]): Match results per page.
+    """
     CONSOLE.print("\n" + "="*80)
     CONSOLE.print("PARAMETER OPTIMIZATION RESULTS")
     CONSOLE.print("="*80)
@@ -258,8 +272,13 @@ def print_results(best_params: Dict[str, Any], best_accuracy: float, best_matche
     CONSOLE.print("="*80 + "\n")
 
 
-def main():
-    """Main entry point."""
+def main() -> Tuple[Dict[str, Any], float]:
+    """
+    Main entry point for grid search parameter optimization.
+
+    Returns:
+        Tuple[Dict[str, Any], float]: Best parameters and accuracy.
+    """
     
     pages = load_test_pages()
     

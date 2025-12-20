@@ -1,4 +1,10 @@
-"""Unified feature definitions and extraction for HTML element analysis."""
+
+"""
+Unified feature definitions and extraction for HTML element analysis.
+
+This module provides feature extraction, validation, and column definitions for HTML elements
+used in product scraping and machine learning models.
+"""
 
 import regex as re
 import logging
@@ -312,11 +318,17 @@ ALL_FEATURES = NUMERIC_FEATURES + CATEGORICAL_FEATURES + TEXT_FEATURES
 
 
 def extract_element_features(
-    element: lxml.html.HtmlElement, 
+    element: lxml.html.HtmlElement,
     category: str = OTHER_CATEGORY
 ) -> Dict[str, Any]:
     """
     Extract comprehensive features from a single HTML element.
+
+    Args:
+        element (lxml.html.HtmlElement): The HTML element to extract features from.
+        category (str): The category label for the element.
+    Returns:
+        Dict[str, Any]: Dictionary of extracted features.
     """
     try:
         # Normalize text
@@ -493,6 +505,9 @@ def extract_element_features(
 def get_feature_columns() -> Dict[str, list]:
     """
     Get the complete list of feature columns by type.
+
+    Returns:
+        Dict[str, list]: Dictionary with keys 'numeric', 'categorical', 'text', 'all'.
     """
     return {
         'numeric': NUMERIC_FEATURES,
@@ -502,20 +517,22 @@ def get_feature_columns() -> Dict[str, list]:
     }
 
 
-def validate_features(df) -> bool:
+def validate_features(df: Any) -> bool:
     """
     Validate that a DataFrame contains all required features.
+
+    Args:
+        df: DataFrame to validate.
+    Returns:
+        bool: True if all features are present, False otherwise.
     """
     if df.empty:
         return False
-        
     missing_features = []
     for feature in ALL_FEATURES:
         if feature not in df.columns:
             missing_features.append(feature)
-    
     if missing_features:
         logger.warning(f"Missing features in DataFrame: {missing_features}")
         return False
-    
     return True

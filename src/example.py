@@ -1,3 +1,8 @@
+
+"""
+Example script for running ProductScraper on a set of websites and categories.
+"""
+
 from ProductScaper import ProductScraper
 from utils.console import log_info
 import random

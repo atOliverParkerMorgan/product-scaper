@@ -1,3 +1,8 @@
+
+"""
+Interactive UI and browser automation for selecting training data for ProductScraper.
+"""
+
 import time
 import copy
 from typing import Dict, List, TYPE_CHECKING
@@ -16,8 +21,15 @@ JS_CORE_LOGIC = (UI_PATH / 'core.js').read_text(encoding='utf-8')
 JS_UPDATE_UI = (UI_PATH / 'update.js').read_text(encoding='utf-8')
 
 
-def highlight_selectors(page, selectors: List[str], force_update=False):
-    """Helper to re-apply green outlines securely and remove predicted highlights."""
+def highlight_selectors(page, selectors: List[str], force_update: bool = False) -> None:
+    """
+    Helper to re-apply green outlines securely and remove predicted highlights.
+
+    Args:
+        page: Playwright page object.
+        selectors (List[str]): List of XPath selectors.
+        force_update (bool): Whether to force update selection highlights.
+    """
     try:
         # Clean up old 'selected' classes if forcing update
         if force_update:
@@ -46,8 +58,15 @@ def highlight_selectors(page, selectors: List[str], force_update=False):
         pass
 
 
-def inject_ui_scripts(page):
-    """Inject CSS and JavaScript into the page."""
+def inject_ui_scripts(page) -> bool:
+    """
+    Inject CSS and JavaScript into the page.
+
+    Args:
+        page: Playwright page object.
+    Returns:
+        bool: True if successful, False otherwise.
+    """
     try:
         # Add styles
         if CSS_CONTENT.strip():
@@ -77,8 +96,19 @@ def inject_ui_scripts(page):
         return False
 
 
-def update_ui_state(page, category, selection_count, current_idx, total_categories):
-    """Update the UI with current category and progress."""
+def update_ui_state(page, category: str, selection_count: int, current_idx: int, total_categories: int) -> bool:
+    """
+    Update the UI with current category and progress.
+
+    Args:
+        page: Playwright page object.
+        category (str): Current category.
+        selection_count (int): Number of selections.
+        current_idx (int): Current category index.
+        total_categories (int): Total number of categories.
+    Returns:
+        bool: True if successful, False otherwise.
+    """
     try:
         page.evaluate(JS_UPDATE_UI, {
             'category': category,
@@ -91,8 +121,16 @@ def update_ui_state(page, category, selection_count, current_idx, total_categori
         return False
 
 
-def poll_for_action(page, timeout=0.2):
-    """Poll for user actions (click, button, keyboard) within timeout."""
+def poll_for_action(page, timeout: float = 0.2) -> tuple:
+    """
+    Poll for user actions (click, button, keyboard) within timeout.
+
+    Args:
+        page: Playwright page object.
+        timeout (float): Timeout in seconds.
+    Returns:
+        tuple: (action_type, action_payload)
+    """
     start_time = time.time()
     
     while time.time() - start_time < timeout:
@@ -122,8 +160,18 @@ def poll_for_action(page, timeout=0.2):
     return None, None
 
 
-def handle_toggle_action(selector, category, selections, undo_stack, redo_stack, current_idx):
-    """Handle selector toggle action."""
+def handle_toggle_action(selector: str, category: str, selections: Dict[str, List[str]], undo_stack: list, redo_stack: list, current_idx: int) -> None:
+    """
+    Handle selector toggle action.
+
+    Args:
+        selector (str): Selector to toggle.
+        category (str): Current category.
+        selections (Dict[str, List[str]]): Current selections.
+        undo_stack (list): Undo stack.
+        redo_stack (list): Redo stack.
+        current_idx (int): Current category index.
+    """
     # Push state to undo stack
     undo_stack.append((current_idx, copy.deepcopy(selections)))
     redo_stack.clear()
@@ -139,8 +187,19 @@ def handle_toggle_action(selector, category, selections, undo_stack, redo_stack,
         log_success(f"Added: {selector}")
 
 
-def handle_navigate_action(direction, current_idx, undo_stack, redo_stack, page):
-    """Handle navigation action (next, prev, done)."""
+def handle_navigate_action(direction: str, current_idx: int, undo_stack: list, redo_stack: list, page) -> tuple:
+    """
+    Handle navigation action (next, prev, done).
+
+    Args:
+        direction (str): Navigation direction.
+        current_idx (int): Current category index.
+        undo_stack (list): Undo stack.
+        redo_stack (list): Redo stack.
+        page: Playwright page object.
+    Returns:
+        tuple: (new_idx, should_exit)
+    """
     if direction == 'next':
         undo_stack.clear()
         redo_stack.clear()
@@ -165,8 +224,19 @@ def handle_navigate_action(direction, current_idx, undo_stack, redo_stack, page)
     return current_idx, False
 
 
-def handle_history_action(cmd, current_idx, selections, undo_stack, redo_stack):
-    """Handle undo/redo action."""
+def handle_history_action(cmd: str, current_idx: int, selections: Dict[str, List[str]], undo_stack: list, redo_stack: list) -> Dict[str, List[str]]:
+    """
+    Handle undo/redo action.
+
+    Args:
+        cmd (str): Command ('undo' or 'redo').
+        current_idx (int): Current category index.
+        selections (Dict[str, List[str]]): Current selections.
+        undo_stack (list): Undo stack.
+        redo_stack (list): Redo stack.
+    Returns:
+        Dict[str, List[str]]: Updated selections.
+    """
     if cmd == 'undo' and undo_stack:
         redo_stack.append((current_idx, copy.deepcopy(selections)))
         prev_idx, prev_selections = undo_stack.pop()
@@ -189,8 +259,14 @@ def handle_history_action(cmd, current_idx, selections, undo_stack, redo_stack):
     return selections
 
 
-def navigate_to_url(page, url):
-    """Navigate to the target URL."""
+def navigate_to_url(page, url: str) -> None:
+    """
+    Navigate to the target URL.
+
+    Args:
+        page: Playwright page object.
+        url (str): URL to navigate to.
+    """
     log_info(f"Navigating to {url}")
     try:
         # 'domcontentloaded' is faster than 'networkidle'
@@ -199,7 +275,7 @@ def navigate_to_url(page, url):
         log_warning(f"Navigation warning: {e}")
 
 
-def select_data(product_scraper: 'ProductScraper', url: str)-> Dict[str, List[str]]:
+def select_data(product_scraper: 'ProductScraper', url: str) -> Dict[str, List[str]]:
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=False, args=['--start-maximized'])
         context = browser.new_context(no_viewport=True)

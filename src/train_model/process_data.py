@@ -25,38 +25,45 @@ logger = logging.getLogger(__name__)
 
 
 def get_main_html_content_tag(
-    html_content,
-    IMG_IMPORTANCE=150,
-    MIN_TAG_TEXT_LENGTH=0,
-    MIN_IMAGE_COUNT=0,
-    LINK_DENSITY_WEIGHT=0.4,
-    DEPTH_SCORE_COEFFICIENT=30,
-    PARENT_IMPROVEMENT_THRESHOLD=5
-    ) -> Optional[lxml.html.HtmlElement]:
+    html_content: str,
+    IMG_IMPORTANCE: int = 150,
+    MIN_TAG_TEXT_LENGTH: int = 0,
+    MIN_IMAGE_COUNT: int = 0,
+    LINK_DENSITY_WEIGHT: float = 0.4,
+    DEPTH_SCORE_COEFFICIENT: int = 30,
+    PARENT_IMPROVEMENT_THRESHOLD: int = 5
+) -> Optional[lxml.html.HtmlElement]:
+    """
+    Identify the main content tag in HTML by scoring elements based on text, images, and structure.
 
+    Args:
+        html_content (str): HTML string to parse.
+        IMG_IMPORTANCE (int): Weight for image elements.
+        MIN_TAG_TEXT_LENGTH (int): Minimum text length for tag consideration.
+        MIN_IMAGE_COUNT (int): Minimum image count for tag consideration.
+        LINK_DENSITY_WEIGHT (float): Penalty for link density.
+        DEPTH_SCORE_COEFFICIENT (int): Score boost for deeper elements.
+        PARENT_IMPROVEMENT_THRESHOLD (int): Threshold for parent vs child selection.
+    Returns:
+        Optional[lxml.html.HtmlElement]: Main content element or None.
+    """
     if not html_content:
         return None
-
     try:
         tree = lxml.html.fromstring(html_content)
     except Exception as e:
         logger.error(f"Failed to parse HTML: {e}")
         return None
-
-    # Track: [Best Element, Best Score]
     best_candidate = [None, -1.0]
-
     def process_node(elem: lxml.html.HtmlElement, current_depth: int, is_in_link: bool) -> Tuple[int, int, int]:
         """
+        Recursively process nodes to score and select main content.
         Returns: (total_text_len, total_img_count, total_link_text_len)
         """
         tag = normalize_tag(elem.tag)
-        
         if not isinstance(elem.tag, str) or tag in UNWANTED_TAGS:
             return (0, 0, 0)
-
         current_is_link = is_in_link or (tag == 'a')
-
         own_text = (elem.text or "").strip() + (elem.tail or "").strip()
         local_text_len = len(own_text)
         local_img_count = 1 if tag == 'img' else 0
@@ -131,18 +138,20 @@ def get_main_html_content_tag(
 
 
 def html_to_dataframe(
-    html_content: str, 
+    html_content: str,
     selectors: Optional[Dict[str, List[str]]] = None,
-    url: str = None
+    url: Optional[str] = None
 ) -> pd.DataFrame:
     """
     Parse HTML and extract features into a DataFrame.
     Uses get_main_html_content_tag to narrow scope to relevant content.
-    
+
     Args:
-        html_content: HTML string to parse.
-        selectors: Dictionary mapping categories to XPath selectors.
-        url: Source URL to track origin of training data (for removal if needed).
+        html_content (str): HTML string to parse.
+        selectors (Optional[Dict[str, List[str]]]): Mapping categories to XPath selectors.
+        url (Optional[str]): Source URL for tracking.
+    Returns:
+        pd.DataFrame: DataFrame with extracted features.
     """
     main_content = get_main_html_content_tag(html_content)
     
@@ -229,7 +238,12 @@ def html_to_dataframe(
     return df.fillna(0)
 
 def selector_data_to_csv(data_domain_dir: Path) -> None:
-    """Convert YAML/HTML pair to CSV."""
+    """
+    Convert YAML/HTML pair to CSV for a given domain directory.
+
+    Args:
+        data_domain_dir (Path): Directory containing selectors.yaml and page.html.
+    """
     yaml_path = data_domain_dir / 'selectors.yaml'
     html_path = data_domain_dir / 'page.html'
     csv_path = data_domain_dir / 'data.csv'
@@ -251,7 +265,12 @@ def selector_data_to_csv(data_domain_dir: Path) -> None:
         logger.error(f"Failed to process {data_domain_dir}: {e}")
 
 def data_to_csv(project_root: Path = Path.cwd()) -> None:
-    """Batch process all data."""
+    """
+    Batch process all data directories to convert selector/HTML pairs to CSV.
+
+    Args:
+        project_root (Path): Root directory containing data folders.
+    """
     data_dir = project_root / 'src' / 'data'
     if not data_dir.exists():
         logger.error(f"Data directory not found: {data_dir}")
