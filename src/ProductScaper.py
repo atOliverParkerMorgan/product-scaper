@@ -276,7 +276,12 @@ class ProductScraper:
             return self.selectors[website_url]
 
         # Interactive selection - pass self (ProductScraper instance) and url
-        data = select_data(self, website_url)
+        try:
+            data = select_data(self, website_url)
+        except Exception as e:
+            log_error(f"Failed to create selectors for {website_url}: {e}. Skipping.")
+            return {}
+
         self.selectors[website_url] = data
 
         # Immediately update dataframe and retrain model with new data

@@ -369,7 +369,7 @@ def select_data(product_scraper: 'ProductScraper', url: str) -> Dict[str, List[s
                         continue
                     # If injection fails repeatedly, break loop
                     log_error("Lost connection to page UI")
-                    break
+                    raise RuntimeError("UI Injection Failed")
 
                 # Highlight selections only if changed
                 current_hash = hash(tuple(current_selection_list))
@@ -440,8 +440,6 @@ def select_data(product_scraper: 'ProductScraper', url: str) -> Dict[str, List[s
                 log_warning("Window closed")
             else:
                 log_error(f"Playwright Error: {e}")
-        except KeyboardInterrupt:
-            log_warning("Interrupted")
         except Exception as e:
             log_error(f"Error: {e}")
         finally:

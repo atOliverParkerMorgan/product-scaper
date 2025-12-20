@@ -9,6 +9,7 @@ from ProductScaper import ProductScraper
 from utils.console import log_info
 
 WEBSITES = [
+    # "https://www.valentinska.cz/home",
     # "https://trigon-knihy.cz/antikvariat/",
     "https://www.artonpaper.ch/new",
     "http://antik-stafl.cz/",
@@ -66,11 +67,11 @@ WEBSITES = [
     "http://www.galerie-ilonka.cz/galerie-ilonka/eshop/9-1-Antikvariat",
     "http://www.knizky.com/index.php?Akce=Prove%EF&CenterFrame=hledej.php&LeftFrame=prohlmenu.php&order_id=7&order_dir=1",
     "http://www.levnyantikvariat.cz/czech/",
-    "https://www.valentinska.cz/home",
+    # "https://www.valentinska.cz/home",
     "http://www.ztichlaklika.cz/antikvariat?page=1",
 ]
 
-random.shuffle(WEBSITES)
+# random.shuffle(WEBSITES)
 
 CATEGORIES = [
     "title",

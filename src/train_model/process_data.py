@@ -14,7 +14,7 @@ from utils.features import OTHER_CATEGORY, UNWANTED_TAGS, extract_element_featur
 from utils.utils import normalize_tag
 
 RANDOM_SEED = 42
-OTHER_TO_CATEGORY_RATIO = 10
+OTHER_TO_CATEGORY_RATIO = 5
 
 
 # Configure logging
