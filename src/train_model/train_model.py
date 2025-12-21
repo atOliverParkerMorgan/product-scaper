@@ -8,7 +8,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import classification_report
-from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.model_selection import GridSearchCV, ParameterGrid, train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder, StandardScaler
 
@@ -33,16 +33,11 @@ def build_pipeline(num_cols: List[str], cat_cols: List[str], text_cols: List[str
 
     # 1. Preprocessing Steps
     transformers = [
-        # Numeric: Standard Scaling is important for features like 'text_len' vs 'is_bold'
         ('num', StandardScaler(), num_cols),
-
-        # Categorical: One Hot Encoding
-        # handle_unknown='ignore' is crucial for web data where new tags might appear
         ('cat', OneHotEncoder(handle_unknown='ignore', min_frequency=5), cat_cols),
     ]
 
-    # 2. Add TF-IDF transformers for text features
-    # max_features=500 is enough for class names; 1000 adds too much noise.
+    # 2. Add TF-IDF transformers
     if 'class_str' in text_cols:
         transformers.append(
             ('txt_class', TfidfVectorizer(
@@ -70,8 +65,8 @@ def build_pipeline(num_cols: List[str], cat_cols: List[str], text_cols: List[str
     # 3. Classifier
     clf = RandomForestClassifier(
         n_estimators=200,
-        max_depth=25,       # Deep enough for DOM, but prevents memorization
-        min_samples_leaf=2, # Requires at least 2 samples to make a decision rule
+        max_depth=25,
+        min_samples_leaf=2,
         n_jobs=-1,
         random_state=RANDOM_SEED,
         class_weight='balanced'
@@ -97,7 +92,7 @@ def train_model(
     grid_search_cv: int = 3
 ):
     """
-    Main training execution function with expanded Hyperparameter tuning.
+    Main training execution function with expanded Hyperparameter tuning and Progress Logs.
     """
     log_info("Starting Training Pipeline (Random Forest)")
 
@@ -115,7 +110,7 @@ def train_model(
     X = df.drop(columns=cols_to_drop)
     y = df[TARGET_FEATURE]
 
-    # Clean text columns (NaN -> 'empty')
+    # Clean text columns
     for col in text_features:
         if col in X.columns:
             X[col] = X[col].fillna('empty')
@@ -125,15 +120,14 @@ def train_model(
     label_encoder = LabelEncoder()
     y_encoded = label_encoder.fit_transform(y)
 
-    # Build Pipeline if not provided
+    # Build Pipeline
     if pipeline is None:
         pipeline = build_pipeline(numeric_features, categorical_features, text_features)
 
-    # --- 2. Splitting Logic (Robust) ---
+    # --- 2. Splitting Logic ---
     X_train, y_train = X, y_encoded
     X_val, y_val, X_test, y_test = None, None, None, None
 
-    # (Split logic remains the same as your original code...)
     if test or validation:
         test_size = 0.2 if test else 0.0
         val_size = validation_size if validation and len(X) >= min_samples_for_validation else 0.0
@@ -158,33 +152,40 @@ def train_model(
                 X_test, y_test = X_temp, y_temp
 
     # --- 3. Training & Grid Search ---
-    log_info(f"Training on {len(X_train)} samples")
+    log_info(f"Training on {len(X_train)} samples | Features: {X_train.shape[1]}")
 
     if param_search:
         if param_grid is None:
-            # --- IMPROVED PARAMETER GRID ---
-            # We tune the Model AND the Text Extraction simultaneously
+            # Optimized Grid (Removed redundant high estimators to speed up training)
             param_grid = {
-                # Random Forest Regularization
-                'classifier__n_estimators': [100, 200, 400, 600, 800, 1000, 1800],
-                'classifier__max_depth': [8, 15, 25, 30,],
+                'classifier__n_estimators': [200, 400, 800],
+                'classifier__max_depth': [15, 25, None],
                 'classifier__min_samples_split': [2, 5],
                 'classifier__min_samples_leaf': [1, 2],
-                'classifier__max_features': ['sqrt', 'log2'], # Critical for high-dim data
-
-                # TF-IDF Tuning (Accessing via the step name 'preprocessor' -> transformer name 'txt_class')
-                # NOTE: Only include these if 'class_str' is actually in text_features
+                'classifier__max_features': ['sqrt', 'log2'],
             }
 
-            # Dynamically add text tuning if features exist
             if 'class_str' in text_features:
                 param_grid.update({
                     'preprocessor__txt_class__ngram_range': [(2, 4), (3, 5)],
                     'preprocessor__txt_class__max_features': [500, 1000],
                 })
 
-            # Optional: Tune numeric scaling (rarely changes much for RF, but good for completeness)
-            # param_grid['preprocessor__num__with_mean'] = [True, False]
+        # --- PROGRESS LOGGING ---
+        # Calculate total workload before starting
+        combinations = list(ParameterGrid(param_grid))
+        n_candidates = len(combinations)
+        n_fits = n_candidates * grid_search_cv
+        
+        CONSOLE.print(Panel(
+            f"Candidates: [bold cyan]{n_candidates}[/]\n"
+            f"Folds: [bold cyan]{grid_search_cv}[/]\n"
+            f"Total Fits: [bold red]{n_fits}[/]",
+            title="Grid Search Workload"
+        ))
+
+        if n_fits > 1000:
+            log_info("⚠️ High workload detected. This may take a while.")
 
         log_info("Starting GridSearchCV...")
         search = GridSearchCV(
@@ -192,15 +193,15 @@ def train_model(
             param_grid,
             cv=grid_search_cv,
             n_jobs=-1,
-            verbose=1,
-            scoring='f1_weighted' # optimizing for F1 is usually better than accuracy for scraping
+            verbose=2, # Increased verbosity to see progress bars/batches
+            scoring='f1_weighted'
         )
         search.fit(X_train, y_train)
         pipeline = search.best_estimator_
 
-        # Pretty print best params
         CONSOLE.print(Panel(str(search.best_params_), title="Best Hyperparameters"))
     else:
+        log_info("Skipping GridSearch, training default model...")
         pipeline.fit(X_train, y_train)
 
     # --- 4. Evaluation ---
