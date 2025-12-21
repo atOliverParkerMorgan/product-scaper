@@ -3,7 +3,6 @@ Unified feature definitions and extraction for HTML element analysis.
 Refactored for modularity, readability, and robustness.
 """
 
-import logging
 from functools import lru_cache
 from typing import Any, Dict, List, Tuple
 
@@ -13,9 +12,10 @@ import regex as re
 import requests
 from PIL import Image
 
-from utils.utils import get_unique_xpath, normalize_tag
-from utils.console import log_warning
+from utils.console import log_error, log_warning
 
+# Imported get_unique_xpath so it can be used inside extraction
+from utils.utils import get_unique_xpath, normalize_tag
 
 # --- Configuration ---
 TIMEOUT_SECONDS = 3
@@ -243,7 +243,8 @@ NUMERIC_FEATURES = [
 
 NON_TRAINING_FEATURES = [
     'Category',
-    'SourceURL'
+    'SourceURL',
+    'xpath' # IMPORTANT: Add xpath to non-training features so it's dropped before training
 ]
 
 CATEGORICAL_FEATURES = [
@@ -578,6 +579,11 @@ def extract_element_features(
             'tag_count_global': 0
         }
 
+        # 8. Metadata
+        metadata_feats = {
+            'xpath': get_unique_xpath(element)
+        }
+
         # Combine all features
         return {
             **struct_feats,
@@ -587,13 +593,16 @@ def extract_element_features(
             **image_feats,
             **interact_feats,
             **attr_feats,
-            **context_feats
+            **context_feats,
+            **metadata_feats
         }
 
     except Exception as e:
+        log_error(f"Error extracting features for element: {e}")
         fallback = {k: 0 for k in NUMERIC_FEATURES}
         fallback.update({k: '' for k in CATEGORICAL_FEATURES + TEXT_FEATURES})
         fallback['Category'] = category
+        fallback['xpath'] = ''
         return fallback
 
 # --- Post Processing ---
@@ -667,7 +676,13 @@ def get_feature_columns() -> Dict[str, list]:
 
 def validate_features(df: Any) -> bool:
     if df.empty: return False
+    # Check regular features
     missing = [f for f in ALL_FEATURES if f not in df.columns]
+
+    # Check xpath explicitly since it's a non-training but critical feature
+    if 'xpath' not in df.columns:
+        missing.append('xpath')
+
     if missing:
         log_warning(f"Missing features: {missing}")
         return False

@@ -6,12 +6,9 @@ from .evaluate_model import (
     display_performance_table,
     evaluate_model,
 )
-from .process_data import data_to_csv
 from .train_model import train_model
 
 __all__ = [
-    # Data processing
-    'data_to_csv',
     # Model training
     'train_model',
     # Model evaluation

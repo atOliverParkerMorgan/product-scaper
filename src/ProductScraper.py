@@ -21,7 +21,7 @@ from train_model.evaluate_model import evaluate_model
 from train_model.predict_data import group_prediction_to_products, predict_category_selectors
 from train_model.process_data import html_to_dataframe
 from train_model.train_model import train_model
-from utils.console import CONSOLE, log_debug, log_error, log_info, log_warning
+from utils.console import CONSOLE, log_error, log_info, log_warning
 
 # Configuration for save directory
 PRODUCT_SCRAPER_SAVE_DIR = Path('product_scraper_data')
@@ -66,17 +66,6 @@ The class is iterable and will yield (url, predictions_dict) for each configured
         self.pipeline = pipeline
 
         self._iterator_index = 0  # For iterator support
-
-    def __del__(self) -> None:
-        """
-        Automatically save state when object is destroyed.
-        """
-        try:
-            if self.model is not None:
-                self.save()
-        except Exception as e:
-            # Catching broadly here to prevent errors during interpreter shutdown
-            log_warning(f"Could not auto-save: {e}")
 
     def __iter__(self) -> 'ProductScraper':
         """
@@ -276,6 +265,10 @@ The class is iterable and will yield (url, predictions_dict) for each configured
             data = select_data(self, website_url)
         except Exception as e:
             log_error(f"Failed to create selectors for {website_url}: {e}. Skipping.")
+            return {}
+
+        if len(data) == 0:
+            log_warning(f"No selectors were created for {website_url}.")
             return {}
 
         self.selectors[website_url] = data
@@ -478,6 +471,9 @@ The class is iterable and will yield (url, predictions_dict) for each configured
             products = group_prediction_to_products(html_content, raw_predictions, self.categories)
 
             log_info(f"Found {len(products)} products on {website_url}")
+            if len(products) == 0:
+                log_warning(f"No products found on {website_url}. Consider refining selectors or retraining the model.")
+
             all_products[website_url] = products
 
         return all_products
@@ -575,7 +571,6 @@ The class is iterable and will yield (url, predictions_dict) for each configured
                 self.selectors = yaml.safe_load(f)
         except Exception as e:
             log_error(f"Failed to load selectors from {path}: {e}")
-
         for url in self.selectors.keys():
             if url not in self.websites_urls:
                 self.websites_urls.append(url)

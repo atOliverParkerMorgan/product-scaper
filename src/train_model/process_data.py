@@ -1,27 +1,19 @@
 """Data processing utilities for HTML element feature extraction."""
 
-import logging
 import random
-from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import lxml.html
 import pandas as pd
-import yaml
+
+from utils.console import log_error
 
 # Assuming these are available from your previous file
 from utils.features import OTHER_CATEGORY, UNWANTED_TAGS, extract_element_features, process_page_features
-from utils.utils import normalize_tag
+from utils.utils import get_unique_xpath, normalize_tag  # Added get_unique_xpath
 
 RANDOM_SEED = 42
-OTHER_TO_CATEGORY_RATIO = 10 # not too high to avoid the model being overwhelmed by negatives
-
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-
+OTHER_TO_CATEGORY_RATIO = 10
 
 
 def get_main_html_content_tag(
@@ -41,7 +33,7 @@ def get_main_html_content_tag(
     try:
         tree = lxml.html.fromstring(html_content)
     except Exception as e:
-        logger.error(f"Failed to parse HTML: {e}")
+        log_error(f"Failed to parse HTML: {e}")
         return None
 
     best_candidate = [None, -1.0]
@@ -120,6 +112,7 @@ def html_to_dataframe(
 ) -> pd.DataFrame:
     """
     Parse HTML and extract features into a DataFrame.
+    Includes explicit XPath extraction to ensure data alignment during prediction.
     """
     main_content = get_main_html_content_tag(html_content)
 
@@ -145,13 +138,14 @@ def html_to_dataframe(
                             continue
 
                         if elem not in labeled_elements:
-                            # Pass selectors here so positive elements get distance context
                             data = extract_element_features(elem, category=category, selectors=selectors)
                             if data:
+                                # CRITICAL: Add XPath here to ensure it exists for prediction mapping
+                                data['xpath'] = get_unique_xpath(elem)
                                 positive_data.append(data)
                                 labeled_elements.add(elem)
                 except Exception as e:
-                    logger.warning(f"Invalid XPath '{xpath}': {e}")
+                    log_error(f"Invalid XPath '{xpath}': {e}")
 
     # --- 2. Extract Negative Samples ---
     negative_data = []
@@ -162,16 +156,16 @@ def html_to_dataframe(
         if elem in labeled_elements:
             continue
 
-        # Skip empty structural tags
         try:
             if not elem.text_content().strip() and not elem.attrib:
                 continue
         except Exception:
             continue
 
-        # Pass selectors to negative samples too!
         data = extract_element_features(elem, category=OTHER_CATEGORY, selectors=selectors)
         if data:
+            # CRITICAL: Add XPath here to ensure it exists for prediction mapping
+            data['xpath'] = get_unique_xpath(elem)
             negative_data.append(data)
 
     # --- Balancing & Sampling ---
@@ -186,7 +180,7 @@ def html_to_dataframe(
     if not all_data:
         return pd.DataFrame()
 
-    # This calculates ranks and scores based on the full page context
+    # Process relative features
     processed_data = process_page_features(all_data)
 
     df = pd.DataFrame(processed_data)
@@ -201,37 +195,3 @@ def html_to_dataframe(
             df[col] = df[col].fillna("")
 
     return df.fillna(0)
-
-
-def selector_data_to_csv(data_domain_dir: Path) -> None:
-    """Convert YAML/HTML pair to CSV for a given domain directory."""
-    yaml_path = data_domain_dir / 'selectors.yaml'
-    html_path = data_domain_dir / 'page.html'
-    csv_path = data_domain_dir / 'data.csv'
-
-    if not yaml_path.exists() or not html_path.exists():
-        return
-
-    try:
-        with open(yaml_path, 'r') as f:
-            selectors = yaml.safe_load(f)
-        with open(html_path, 'r') as f:
-            html = f.read()
-
-        df = html_to_dataframe(html, selectors)
-        if not df.empty:
-            df.to_csv(csv_path, index=False)
-            logger.info(f"Saved {len(df)} rows to {csv_path}")
-    except Exception as e:
-        logger.error(f"Failed to process {data_domain_dir}: {e}")
-
-def data_to_csv(project_root: Path = Path.cwd()) -> None:
-    """Batch process all data directories."""
-    data_dir = project_root / 'src' / 'data'
-    if not data_dir.exists():
-        logger.error(f"Data directory not found: {data_dir}")
-        return
-
-    for site_dir in data_dir.iterdir():
-        if site_dir.is_dir():
-            selector_data_to_csv(site_dir)

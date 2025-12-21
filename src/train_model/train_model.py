@@ -29,6 +29,7 @@ warnings.filterwarnings('ignore')
 def build_pipeline(num_cols: List[str], cat_cols: List[str], text_cols: List[str]) -> Pipeline:
     """
     Constructs a robust preprocessing and training pipeline.
+    Updated with best hyperparameters from optimization.
     """
 
     # 1. Preprocessing Steps
@@ -37,12 +38,13 @@ def build_pipeline(num_cols: List[str], cat_cols: List[str], text_cols: List[str
         ('cat', OneHotEncoder(handle_unknown='ignore', min_frequency=5), cat_cols),
     ]
 
-    # 2. Add TF-IDF transformers
+    # 2. Add TF-IDF transformers with OPTIMIZED parameters
+    # Params: ngram_range=(2, 4), max_features=500
     if 'class_str' in text_cols:
         transformers.append(
             ('txt_class', TfidfVectorizer(
                 analyzer='char_wb',
-                ngram_range=(3, 5),
+                ngram_range=(2, 4),
                 max_features=500,
                 min_df=2
             ), 'class_str')
@@ -51,7 +53,7 @@ def build_pipeline(num_cols: List[str], cat_cols: List[str], text_cols: List[str
         transformers.append(
             ('txt_id', TfidfVectorizer(
                 analyzer='char_wb',
-                ngram_range=(3, 5),
+                ngram_range=(2, 4),
                 max_features=500,
                 min_df=2
             ), 'id_str')
@@ -62,12 +64,13 @@ def build_pipeline(num_cols: List[str], cat_cols: List[str], text_cols: List[str
         remainder='drop'
     )
 
-    # 3. Classifier
+    # 3. Classifier with OPTIMIZED parameters
     clf = RandomForestClassifier(
-        n_estimators=200,
+        n_estimators=400,
         max_depth=25,
-        min_samples_leaf=2,
-        n_jobs=-1,
+        min_samples_leaf=1,
+        min_samples_split=5,
+        max_features='sqrt',
         random_state=RANDOM_SEED,
         class_weight='balanced'
     )
@@ -92,7 +95,7 @@ def train_model(
     grid_search_cv: int = 3
 ):
     """
-    Main training execution function with expanded Hyperparameter tuning and Progress Logs.
+    Main training execution function.
     """
     log_info("Starting Training Pipeline (Random Forest)")
 
@@ -105,22 +108,19 @@ def train_model(
         log_error(f"Target column '{TARGET_FEATURE}' not found in data")
         return None
 
-    # Drop non-training columns
     cols_to_drop = [col for col in NON_TRAINING_FEATURES if col in df.columns]
     X = df.drop(columns=cols_to_drop)
     y = df[TARGET_FEATURE]
 
-    # Clean text columns
     for col in text_features:
         if col in X.columns:
             X[col] = X[col].fillna('empty')
             X[col] = X[col].replace(r'^\s*$', 'empty', regex=True)
 
-    # Encode Labels
     label_encoder = LabelEncoder()
     y_encoded = label_encoder.fit_transform(y)
 
-    # Build Pipeline
+    # Build Pipeline (This now uses your BEST parameters by default)
     if pipeline is None:
         pipeline = build_pipeline(numeric_features, categorical_features, text_features)
 
@@ -156,27 +156,26 @@ def train_model(
 
     if param_search:
         if param_grid is None:
-            # Optimized Grid (Removed redundant high estimators to speed up training)
+            # We already applied your best params to the default pipeline,
+            # but we keep a small grid here for fine-tuning if needed.
             param_grid = {
-                'classifier__n_estimators': [200, 400, 800],
-                'classifier__max_depth': [15, 25, None],
-                'classifier__min_samples_split': [2, 5],
-                'classifier__min_samples_leaf': [1, 2],
-                'classifier__max_features': ['sqrt', 'log2'],
+                'classifier__n_estimators': [400], # Fixed to optimal
+                'classifier__max_depth': [25],
+                'classifier__min_samples_split': [5],
+                'classifier__min_samples_leaf': [1],
+                'classifier__max_features': ['sqrt'],
             }
-
+            # Only add text params if columns exist
             if 'class_str' in text_features:
-                param_grid.update({
-                    'preprocessor__txt_class__ngram_range': [(2, 4), (3, 5)],
-                    'preprocessor__txt_class__max_features': [500, 1000],
+                 param_grid.update({
+                    'preprocessor__txt_class__ngram_range': [(2, 4)],
+                    'preprocessor__txt_class__max_features': [500]
                 })
 
-        # --- PROGRESS LOGGING ---
-        # Calculate total workload before starting
         combinations = list(ParameterGrid(param_grid))
         n_candidates = len(combinations)
         n_fits = n_candidates * grid_search_cv
-        
+
         CONSOLE.print(Panel(
             f"Candidates: [bold cyan]{n_candidates}[/]\n"
             f"Folds: [bold cyan]{grid_search_cv}[/]\n"
@@ -184,24 +183,19 @@ def train_model(
             title="Grid Search Workload"
         ))
 
-        if n_fits > 1000:
-            log_info("⚠️ High workload detected. This may take a while.")
-
         log_info("Starting GridSearchCV...")
         search = GridSearchCV(
             pipeline,
             param_grid,
             cv=grid_search_cv,
-            n_jobs=-1,
-            verbose=2, # Increased verbosity to see progress bars/batches
+            verbose=2,
             scoring='f1_weighted'
         )
         search.fit(X_train, y_train)
         pipeline = search.best_estimator_
-
         CONSOLE.print(Panel(str(search.best_params_), title="Best Hyperparameters"))
     else:
-        log_info("Skipping GridSearch, training default model...")
+        log_info("Skipping GridSearch, training default model (using optimized params)...")
         pipeline.fit(X_train, y_train)
 
     # --- 4. Evaluation ---
