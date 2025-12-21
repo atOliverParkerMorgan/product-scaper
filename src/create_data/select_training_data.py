@@ -308,7 +308,7 @@ def select_data(product_scraper: 'ProductScraper', url: str) -> Dict[str, List[s
                         log_warning("No model provided for predictions")
                     else:
                         try:
-                            predicted = predict_selectors(product_scraper.model, html_content, category)
+                            predicted = predict_selectors(product_scraper.model, html_content, category, selectors=selections)
                         except ValueError as ve:
                             log_warning(str(ve))
                             predicted = []

@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import lxml.html
 import numpy as np
@@ -8,7 +8,8 @@ from utils.features import NON_TRAINING_FEATURES, TARGET_FEATURE, UNWANTED_TAGS,
 from utils.utils import get_unique_xpath, normalize_tag
 
 
-def predict_selectors(model: Dict[str, Any], html_content: str, category: str) -> List[Dict[str, Any]]:
+def predict_selectors(model: Dict[str, Any], html_content: str, category: str, selectors: Optional[Dict[str, List[str]]] = None,
+) -> List[Dict[str, Any]]:
     """
     Predict selectors for a given category from HTML content using a trained model.
 
@@ -42,7 +43,7 @@ def predict_selectors(model: Dict[str, Any], html_content: str, category: str) -
             continue
         elements.append(elem)
 
-    X = html_to_dataframe(html_content, selectors=None)
+    X = html_to_dataframe(html_content, selectors=selectors)
 
     if X.empty:
         return []

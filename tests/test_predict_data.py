@@ -1,4 +1,5 @@
-from train_model.predict_data import calculate_proximity_score, extract_index, get_xpath_segments, group_prediction_to_products
+from train_model.predict_data import calculate_proximity_score, group_prediction_to_products
+from utils.features import extract_index, get_xpath_segments
 
 
 def test_get_xpath_segments():

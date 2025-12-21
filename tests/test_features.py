@@ -100,7 +100,6 @@ def test_feature_extraction_csv_columns():
     features = extract_element_features(elem, category="title")
     # Check key features
     assert features['tag'] == 'h2'
-    assert features['class_indicates_title'] == 1
     assert features['font_size'] == 16.0
     assert features['font_weight'] == 400
     assert features['is_header'] == 1

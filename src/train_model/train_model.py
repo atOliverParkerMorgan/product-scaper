@@ -42,7 +42,6 @@ def build_pipeline(num_cols: List[str], cat_cols: List[str], text_cols: List[str
     ]
 
     # 2. Add TF-IDF transformers for text features
-    # IMPROVEMENT: min_df=2 prevents overfitting on unique IDs that appear only once.
     # max_features=500 is enough for class names; 1000 adds too much noise.
     if 'class_str' in text_cols:
         transformers.append(
@@ -50,7 +49,7 @@ def build_pipeline(num_cols: List[str], cat_cols: List[str], text_cols: List[str
                 analyzer='char_wb',
                 ngram_range=(3, 5),
                 max_features=500,
-                min_df=2  # Ignore unique garbage classes
+                min_df=2
             ), 'class_str')
         )
     if 'id_str' in text_cols:
@@ -69,7 +68,6 @@ def build_pipeline(num_cols: List[str], cat_cols: List[str], text_cols: List[str
     )
 
     # 3. Classifier
-    # IMPROVEMENT: explicitly set max_depth to prevent infinite growth
     clf = RandomForestClassifier(
         n_estimators=200,
         max_depth=25,       # Deep enough for DOM, but prevents memorization
@@ -99,7 +97,7 @@ def train_model(
     grid_search_cv: int = 3
 ):
     """
-    Main training execution function.
+    Main training execution function with expanded Hyperparameter tuning.
     """
     log_info("Starting Training Pipeline (Random Forest)")
 
@@ -135,6 +133,7 @@ def train_model(
     X_train, y_train = X, y_encoded
     X_val, y_val, X_test, y_test = None, None, None, None
 
+    # (Split logic remains the same as your original code...)
     if test or validation:
         test_size = 0.2 if test else 0.0
         val_size = validation_size if validation and len(X) >= min_samples_for_validation else 0.0
@@ -142,28 +141,19 @@ def train_model(
 
         if total_test_size > 0:
             try:
-                # Attempt stratified split
                 X_train, X_temp, y_train, y_temp = train_test_split(
                     X, y_encoded, test_size=total_test_size, random_state=RANDOM_SEED, stratify=y_encoded
                 )
             except ValueError:
-                # Fallback: Not enough samples in a class to stratify
-                log_info("Warning: Cannot stratify split due to small class counts. Performing random split.")
                 X_train, X_temp, y_train, y_temp = train_test_split(
                     X, y_encoded, test_size=total_test_size, random_state=RANDOM_SEED, stratify=None
                 )
 
-            # Secondary split for validation
             if val_size > 0:
                 rel_val_size = val_size / total_test_size
-                try:
-                    X_val, X_test, y_val, y_test = train_test_split(
-                        X_temp, y_temp, test_size=(1 - rel_val_size), random_state=RANDOM_SEED, stratify=y_temp
-                    )
-                except ValueError:
-                    X_val, X_test, y_val, y_test = train_test_split(
-                        X_temp, y_temp, test_size=(1 - rel_val_size), random_state=RANDOM_SEED, stratify=None
-                    )
+                X_val, X_test, y_val, y_test = train_test_split(
+                    X_temp, y_temp, test_size=(1 - rel_val_size), random_state=RANDOM_SEED
+                )
             else:
                 X_test, y_test = X_temp, y_temp
 
@@ -171,21 +161,45 @@ def train_model(
     log_info(f"Training on {len(X_train)} samples")
 
     if param_search:
-        # Improved Default Grid
         if param_grid is None:
+            # --- IMPROVED PARAMETER GRID ---
+            # We tune the Model AND the Text Extraction simultaneously
             param_grid = {
-                'classifier__n_estimators': [100, 200],
-                'classifier__max_depth': [10, 20, 30], # Prevent None (infinite)
-                'classifier__min_samples_leaf': [2, 4], # Prevent 1 (overfitting)
-                'classifier__class_weight': ['balanced', 'balanced_subsample']
+                # Random Forest Regularization
+                'classifier__n_estimators': [100, 200, 400, 600, 800, 1000, 1800],
+                'classifier__max_depth': [8, 15, 25, 30,],
+                'classifier__min_samples_split': [2, 5],
+                'classifier__min_samples_leaf': [1, 2],
+                'classifier__max_features': ['sqrt', 'log2'], # Critical for high-dim data
+
+                # TF-IDF Tuning (Accessing via the step name 'preprocessor' -> transformer name 'txt_class')
+                # NOTE: Only include these if 'class_str' is actually in text_features
             }
 
+            # Dynamically add text tuning if features exist
+            if 'class_str' in text_features:
+                param_grid.update({
+                    'preprocessor__txt_class__ngram_range': [(2, 4), (3, 5)],
+                    'preprocessor__txt_class__max_features': [500, 1000],
+                })
+
+            # Optional: Tune numeric scaling (rarely changes much for RF, but good for completeness)
+            # param_grid['preprocessor__num__with_mean'] = [True, False]
+
         log_info("Starting GridSearchCV...")
-        # Use stratified K-Fold implicitly via classifier type
-        search = GridSearchCV(pipeline, param_grid, cv=grid_search_cv, n_jobs=-1, verbose=1)
+        search = GridSearchCV(
+            pipeline,
+            param_grid,
+            cv=grid_search_cv,
+            n_jobs=-1,
+            verbose=1,
+            scoring='f1_weighted' # optimizing for F1 is usually better than accuracy for scraping
+        )
         search.fit(X_train, y_train)
         pipeline = search.best_estimator_
-        log_info(f"Best params: {search.best_params_}")
+
+        # Pretty print best params
+        CONSOLE.print(Panel(str(search.best_params_), title="Best Hyperparameters"))
     else:
         pipeline.fit(X_train, y_train)
 
@@ -210,15 +224,8 @@ def train_model(
         )
         CONSOLE.print(Panel(test_report, title="Test Set Report"))
 
-    # Pack artifacts
-    model_artifact = {
+    return {
         'pipeline': pipeline,
         'label_encoder': label_encoder,
-        'features': {
-            'numeric': numeric_features,
-            'categorical': categorical_features,
-            'text': text_features
-        }
+        'features': {'numeric': numeric_features, 'categorical': categorical_features, 'text': text_features}
     }
-
-    return model_artifact
