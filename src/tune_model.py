@@ -1,6 +1,7 @@
 from ProductScraper import ProductScraper
+from utils.console import log_info
 
-WEBSITE = [
+WEBSITES = [
    "https://www.valentinska.cz/home",
    "https://www.antikvariatchrudim.cz/",
    "http://antikvariat-cypris.cz/novinky.php",
@@ -14,9 +15,15 @@ CATEGORIES = [
     "price",
     "image"
 ]
-
-Pscraper = ProductScraper(CATEGORIES, WEBSITE)
+try:
+    Pscraper = ProductScraper.load()
+    log_info("Loaded existing ProductScraper state.")
+except FileNotFoundError:
+    Pscraper = ProductScraper(categories=CATEGORIES)
 
 Pscraper.load_selectors()
 
 Pscraper.train_model(create_data=True)
+
+Pscraper.save()
+print(Pscraper.predict(WEBSITES))

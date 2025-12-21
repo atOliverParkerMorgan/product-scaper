@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Dict, List
 from playwright.sync_api import Error as PlaywrightError
 from playwright.sync_api import sync_playwright
 
-from train_model.predict_data import predict_selectors
+from train_model.predict_data import predict_category_selectors
 from utils.console import log_error, log_info, log_success, log_warning
 
 if TYPE_CHECKING:
@@ -308,7 +308,7 @@ def select_data(product_scraper: 'ProductScraper', url: str) -> Dict[str, List[s
                         log_warning("No model provided for predictions")
                     else:
                         try:
-                            predicted = predict_selectors(product_scraper.model, html_content, category, selectors=selections)
+                            predicted = predict_category_selectors(product_scraper.model, html_content, category, existing_selectors=selections)
                         except ValueError as ve:
                             log_warning(str(ve))
                             predicted = []

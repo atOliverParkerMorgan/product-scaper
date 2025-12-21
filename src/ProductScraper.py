@@ -18,7 +18,7 @@ from playwright.sync_api import sync_playwright
 
 from create_data import select_data
 from train_model.evaluate_model import evaluate_model
-from train_model.predict_data import group_prediction_to_products, predict_selectors
+from train_model.predict_data import group_prediction_to_products, predict_category_selectors
 from train_model.process_data import html_to_dataframe
 from train_model.train_model import train_model
 from utils.console import CONSOLE, log_debug, log_error, log_info, log_warning
@@ -39,7 +39,7 @@ The class is iterable and will yield (url, predictions_dict) for each configured
     Automatically saves state on destruction.
     """
 
-    def __init__(self, categories: List[str], websites_urls: List[str], selectors: Optional[Dict[str, Dict[str, List[str]]]] = None, training_data: Optional[pd.DataFrame] = None, model: Optional[Dict[str, Any]] = None, pipeline: Optional[Any] = None):
+    def __init__(self, categories: List[str], websites_urls: Optional[List[str]] = [], selectors: Optional[Dict[str, Dict[str, List[str]]]] = None, training_data: Optional[pd.DataFrame] = None, model: Optional[Dict[str, Any]] = None, pipeline: Optional[Any] = None):
         """
         Initialize the ProductScraper.
         
@@ -73,7 +73,6 @@ The class is iterable and will yield (url, predictions_dict) for each configured
         """
         try:
             if self.model is not None:
-                log_debug("Auto-saving ProductScraper state...")
                 self.save()
         except Exception as e:
             # Catching broadly here to prevent errors during interpreter shutdown
@@ -121,7 +120,6 @@ The class is iterable and will yield (url, predictions_dict) for each configured
         """
         # Return cached content if available
         if website_url in self.website_html_cache:
-            log_debug(f"Using cached HTML for {website_url}")
             return self.website_html_cache[website_url]
 
         # Use Playwright to get JavaScript-rendered HTML (same as selector creation)
@@ -136,7 +134,6 @@ The class is iterable and will yield (url, predictions_dict) for each configured
 
                     # Cache the content
                     self.website_html_cache[website_url] = html_content
-                    log_debug(f"Fetched and cached JavaScript-rendered HTML for {website_url}")
                     return html_content
 
             except PlaywrightError as e:
@@ -155,7 +152,6 @@ The class is iterable and will yield (url, predictions_dict) for each configured
 
                 # Cache the content
                 self.website_html_cache[website_url] = html_content
-                log_debug(f"Fetched and cached static HTML for {website_url}")
                 return html_content
 
             except requests.exceptions.ConnectionError as e:
@@ -380,7 +376,7 @@ The class is iterable and will yield (url, predictions_dict) for each configured
             create_data (bool): If True, creates training dataframe if not present.
             min_samples (int): Minimum number of samples required for training (default: 5).
         """
-        if create_data and (self.training_data is None or self.training_data.empty):
+        if create_data:
             log_info("Creating training dataframe from selectors...")
             self.create_training_data()
 
@@ -457,9 +453,9 @@ The class is iterable and will yield (url, predictions_dict) for each configured
         if category not in self.categories:
             raise ValueError(f"Category '{category}' is not in configured categories: {self.categories}")
 
-        return predict_selectors(self.model, self.get_html(website_url), category)
+        return predict_category_selectors(self.model, self.get_html(website_url), category, existing_selectors=self.selectors.get(website_url, None))
 
-    def predict_product(self, website_url: str) -> List[Dict[str, Any]]:
+    def predict(self, website_urls: List[str]) -> List[Dict[str, Dict[str, Any]]]:
         """
         Predict element selectors for all configured categories on a page and group them into products.
         
@@ -469,15 +465,22 @@ The class is iterable and will yield (url, predictions_dict) for each configured
             list: List of dictionaries, where each dictionary represents a product 
                   containing the predicted elements for each category.
         """
+        if website_urls is None or len(website_urls) == 0:
+            raise ValueError("Please provide a list of website URLs to predict.")
 
-        raw_predictions = self.get_selectors(website_url)
-        html_content = self.get_html(website_url)
 
-        products = group_prediction_to_products(html_content, raw_predictions, self.categories)
+        all_websites = website_urls
+        all_products = {}
+        for website_url in all_websites:
+            raw_predictions = self.get_selectors(website_url)
+            html_content = self.get_html(website_url)
 
-        log_info(f"Found {len(products)} products on {website_url}")
-        return products
+            products = group_prediction_to_products(html_content, raw_predictions, self.categories)
 
+            log_info(f"Found {len(products)} products on {website_url}")
+            all_products[website_url] = products
+
+        return all_products
 
 
     def get_selectors(self, website_url: str) -> Dict[str, Any]:
@@ -572,6 +575,10 @@ The class is iterable and will yield (url, predictions_dict) for each configured
                 self.selectors = yaml.safe_load(f)
         except Exception as e:
             log_error(f"Failed to load selectors from {path}: {e}")
+
+        for url in self.selectors.keys():
+            if url not in self.websites_urls:
+                self.websites_urls.append(url)
 
     def save(self, path: str = 'product_scraper.pkl') -> None:
         """

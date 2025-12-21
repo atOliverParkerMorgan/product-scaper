@@ -14,9 +14,8 @@ import requests
 from PIL import Image
 
 from utils.utils import get_unique_xpath, normalize_tag
+from utils.console import log_warning
 
-# Configure logging
-logger = logging.getLogger(__name__)
 
 # --- Configuration ---
 TIMEOUT_SECONDS = 3
@@ -592,7 +591,6 @@ def extract_element_features(
         }
 
     except Exception as e:
-        logger.debug(f"Extraction error: {e}")
         fallback = {k: 0 for k in NUMERIC_FEATURES}
         fallback.update({k: '' for k in CATEGORICAL_FEATURES + TEXT_FEATURES})
         fallback['Category'] = category
@@ -671,6 +669,6 @@ def validate_features(df: Any) -> bool:
     if df.empty: return False
     missing = [f for f in ALL_FEATURES if f not in df.columns]
     if missing:
-        logger.warning(f"Missing features: {missing}")
+        log_warning(f"Missing features: {missing}")
         return False
     return True
