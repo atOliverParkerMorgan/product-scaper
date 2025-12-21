@@ -1,11 +1,10 @@
-import re
 from typing import Any, Dict, List
 
 import lxml.html
 import numpy as np
 
 from train_model.process_data import get_main_html_content_tag, html_to_dataframe
-from utils.features import NON_TRAINING_FEATURES, TARGET_FEATURE, UNWANTED_TAGS
+from utils.features import NON_TRAINING_FEATURES, TARGET_FEATURE, UNWANTED_TAGS, calculate_proximity_score
 from utils.utils import get_unique_xpath, normalize_tag
 
 
@@ -78,68 +77,6 @@ def predict_selectors(model: Dict[str, Any], html_content: str, category: str) -
 
     return candidates
 
-def get_xpath_segments(xpath: str) -> List[str]:
-    """
-    Split an XPath string into clean segments.
-
-    Args:
-        xpath (str): XPath string.
-    Returns:
-        List[str]: List of segments.
-    """
-    return [s for s in xpath.split('/') if s]
-
-def extract_index(segment: str) -> int:
-    """
-    Extract the integer index from a segment like 'div[3]'.
-
-    Args:
-        segment (str): XPath segment.
-    Returns:
-        int: Extracted index, defaults to 1 if not found.
-    """
-    match = re.search(r'\[(\d+)\]', segment)
-    return int(match.group(1)) if match else 1
-
-def calculate_proximity_score(xpath1: str, xpath2: str) -> tuple:
-    """
-    Calculate a proximity score tuple (Tree Distance, Index Delta) between two XPaths.
-    Lower values for both mean 'closer'.
-
-    Args:
-        xpath1 (str): First XPath.
-        xpath2 (str): Second XPath.
-    Returns:
-        tuple: (tree_distance, index_delta)
-    """
-    path1 = get_xpath_segments(xpath1)
-    path2 = get_xpath_segments(xpath2)
-
-    min_len = min(len(path1), len(path2))
-    divergence_index = 0
-
-    # Find the Lowest Common Ancestor
-    for i in range(min_len):
-        if path1[i] == path2[i]:
-            divergence_index += 1
-        else:
-            break
-
-    # Calculate Tree Distance
-    # Steps up from xpath1 to LCA + Steps down from LCA to xpath2
-    dist_up = len(path1) - divergence_index
-    dist_down = len(path2) - divergence_index
-    tree_distance = dist_up + dist_down
-
-    # Tie-Breaker: Calculate Index Delta (Tie-Breaker)
-    index_delta = 0
-    if divergence_index < len(path1) and divergence_index < len(path2):
-        # Extract indices from the segments where they diverge
-        idx1 = extract_index(path1[divergence_index])
-        idx2 = extract_index(path2[divergence_index])
-        index_delta = abs(idx1 - idx2)
-
-    return (tree_distance, index_delta)
 
 def group_prediction_to_products(
     html_content: str,
