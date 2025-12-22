@@ -13,8 +13,6 @@ import requests
 from PIL import Image
 
 from utils.console import log_error, log_warning
-
-# Imported get_unique_xpath so it can be used inside extraction
 from utils.utils import get_unique_xpath, normalize_tag
 
 # --- Configuration ---
@@ -23,8 +21,26 @@ headers = {'User-Agent': 'Mozilla/5.0 (Bot)'}
 
 # Constants
 DEFAULT_DIST = 100.0
-UNWANTED_TAGS = {'script', 'style', 'noscript', 'form', 'iframe', 'header', 'footer', 'nav'}
+# We no longer filter strict tags here, but we use this set to identify "Layout Noise"
+UNWANTED_TAGS = {'script', 'style', 'noscript', 'form', 'iframe', 'meta', 'link', 'head'}
 OTHER_CATEGORY = 'other'
+
+# --- Visual Heuristics Constants ---
+TAG_DEFAULT_SIZES = {
+    'h1': 32.0, 'h2': 24.0, 'h3': 20.0, 'h4': 18.0, 'h5': 16.0, 'h6': 14.0,
+    'p': 16.0, 'div': 16.0, 'span': 16.0, 'li': 16.0, 'a': 16.0,
+    'small': 12.0, 'strong': 16.0, 'b': 16.0, 'button': 14.0,
+    'nav': 0.0, 'footer': 0.0, 'header': 0.0
+}
+
+# Hierarchy Scoring
+TAG_IMPORTANCE = {
+    'h1': 10, 'h2': 9, 'h3': 8, 'h4': 7, 'h5': 6,
+    'strong': 5, 'b': 5, 'em': 4,
+    'a': 2, 'button': 2, 'li': 2,
+    'p': 1, 'div': 1, 'span': 1,
+    'nav': -5, 'footer': -5, 'header': -2
+}
 
 # --- Currency & Keyword Configuration ---
 ISO_CURRENCIES = [
@@ -82,92 +98,41 @@ SOLD_WORD_VARIATIONS = [
 
 REVIEW_KEYWORDS = [
     'review', 'reviews', 'rating', 'ratings', 'stars', 'feedback',
-    'testimonial', 'testimonials', 'comment', 'comments', 'opinion',
-    'avis', 'commentaire', 'notations', 'témoignage',
-    'bewertung', 'rezension', 'kundenmeinung', 'erfahrungsbericht',
-    'opiniones', 'reseña', 'valoración', 'comentarios',
-    'recensione', 'recensioni', 'opinioni', 'giudizi',
-    'avaliação', 'opiniões', 'comentários', 'classificação',
-    'beoordeling', 'recensie', 'klantbeoordeling', 'ervaringen',
-    'recension', 'betyg', 'omdöme', 'kommentarer',
-    'anmeldelse', 'vurdering',
-    'arvostelu', 'arviot', 'kommentit',
-    'обзор', 'отзыв', 'рейтинг', 'комментарии', 'оценка',
-    'recenzja', 'opinia', 'ocena', 'komentarze',
-    'recenze', 'hodnocení', 'názor',
-    'vélemény', 'értékelés', 'hozzászólás',
-    'recenzie', 'păreri', 'calificativ',
-    '评价', '评论', '评分', '晒单',
-    'レビュー', '口コミ', '評価', '評判', 'コメント',
-    '리뷰', '평점', '후기', '댓글', '상품평',
-    'đánh giá', 'nhận xét', 'bình luận',
-    'รีวิว', 'ความเห็น', 'ให้คะแนน',
-    'ulasan', 'penilaian', 'komentar', 'testimoni',
-    'مراجعة', 'تقييم', 'آراء', 'تعليقات',
-    'ביקורת', 'חוות דעת', 'דירוג',
-    'inceleme', 'değerlendirme', 'yorum', 'puan',
-    'समीक्षा', 'रेटिंग', 'टिप्पणी',
-    'نقد', 'بررسی', 'نظر',
-    'κριτική', 'αξιολόγηση', 'σχόλια'
+    'testimonial', 'testimonials', 'comment', 'comments', 'opinion'
 ]
 
 CTA_KEYWORDS = [
-    'add to cart', 'add to bag', 'add to basket', 'buy', 'buy now',
-    'checkout', 'purchase', 'order', 'shop now', 'get it now',
-    'ajouter au panier', 'acheter', 'commander', 'panier',
-    'in den warenkorb', 'kaufen', 'jetzt kaufen', 'zur kasse', 'bestellen',
-    'añadir al carrito', 'comprar', 'pagar', 'cesta', 'ordenar',
-    'aggiungi al carrello', 'compra', 'acquista', 'ordina', 'cassa',
-    'adicionar ao carrinho', 'comprar', 'finalizar compra', 'cesto',
-    'in winkelwagen', 'kopen', 'bestellen', 'afrekenen',
-    'lägg i varukorgen', 'köp', 'till kassan',
-    'læg i kurv', 'køb', 'bestil',
-    'legg i handlekurven', 'kjøp',
-    'lisää ostoskoriin', 'osta', 'tilaa', 'kassalle',
-    'купить', 'в корзину', 'оформить заказ', 'заказать',
-    'dodaj do koszyka', 'kup', 'zamów', 'do kasy',
-    'vložit do košíku', 'koupit', 'objednat', 'pokladna',
-    'kosárba', 'megrendelés', 'vásárlás',
-    'adaugă în coș', 'cumpără', 'comandă',
-    '加入购物车', '购买', '立即购买', '结算', '下单',
-    'カートに入れる', '購入', '注文する', 'レジに進む',
-    '장바구니 담기', '구매', '주문하기', '결제',
-    'thêm vào giỏ', 'mua ngay', 'thanh toán', 'đặt hàng',
-    'หยิบใส่ตะกร้า', 'ซื้อเลย', 'ชำระเงิน', 'สั่งซื้อ',
-    'tambah ke keranjang', 'beli', 'bayar', 'pesan',
-    'أضف إلى السلة', 'شراء', 'إتمام الشراء', 'اطلب الآن',
-    'הוסף לסל', 'קנה', 'תשלום', 'הזמן',
-    'sepete ekle', 'satın al', 'sipariş ver', 'öde',
-    'कार्ट में डालें', 'खरीदें', 'अभी खरीदें', 'ऑर्डर करें',
-    'افزودن به سبد', 'خرید', 'سفارش',
-    'προσθήκη στο καλάθι', 'αγορά', 'ταμείο', 'παραγγελία'
+    'add to cart', 'add to bag', 'buy', 'buy now', 'checkout', 'purchase', 'order'
 ]
 
 CUSTOM_SYMBOLS = [
     'Chf', 'Kč', 'kr', 'zł', 'Rs', 'Ft', 'lei', 'kn', 'din', 'руб', '₹', r'R\$', 'R',
-    r',-', r'\.-'
+    r',-', r'\.-', '€', '$', '£', '¥'
 ]
 
-# --- Compiled Regex Patterns ---
-text_based_currencies = sorted(ISO_CURRENCIES + [s for s in CUSTOM_SYMBOLS if s.isalpha()])
+# --- REFACTORED REGEX LOGIC (Fixes 1500Kč) ---
+
+text_based_currencies = sorted(ISO_CURRENCIES + [s for s in CUSTOM_SYMBOLS if s.isalpha()], key=len, reverse=True)
 symbol_based_currencies = [s for s in CUSTOM_SYMBOLS if not s.isalpha()]
 
-# 1. Text codes: \b(USD|EUR|kr)\b
-text_pattern = r'\b(?:' + '|'.join(re.escape(s) for s in text_based_currencies) + r')\b'
-# 2. Symbols: (?:$|€|,-) -> No boundaries needed/wanted for things like ",-" or "$"
-symbol_pattern = r'(?:' + '|'.join(re.escape(s) for s in symbol_based_currencies) + r')'
-# 3. Unicode Symbols: \p{Sc}
-unicode_pattern = r'\p{Sc}'
+escaped_text = [re.escape(s) for s in text_based_currencies]
+escaped_symbols = [re.escape(s) for s in symbol_based_currencies]
+text_or = '|'.join(escaped_text)
+symbol_or = '|'.join(escaped_symbols)
 
-# Combine: Match Text OR Symbol OR Unicode
-FULL_CURRENCY_PATTERN = f"{text_pattern}|{symbol_pattern}|{unicode_pattern}"
-CURRENCY_HINTS_REGEX = re.compile(FULL_CURRENCY_PATTERN, re.UNICODE | re.IGNORECASE)
+# Smart Pattern: Matches currency if it is a standalone word OR if it touches a digit
+# Matches: "USD", "1500Kč", "100€", "USD100"
+# Avoids: "small" (contains 'all'), "ball"
+SMART_CURRENCY_PATTERN = fr'(?:\b(?:{text_or})\b|(?<=\d)(?:{text_or})|(?:{text_or})(?=\d)|(?:{symbol_or})|\p{{Sc}})'
 
-# Updated Number Pattern to allow dash decimals (e.g. 150,-)
-NUMBER_PATTERN = r'(?:\d{1,3}(?:[., ]\d{3})+|\d+)(?:[.,](?:\d{1,2}|-))?'
+CURRENCY_HINTS_REGEX = re.compile(SMART_CURRENCY_PATTERN, re.UNICODE | re.IGNORECASE)
 
+# Number pattern allowing dash decimals like "120,-"
+NUMBER_PATTERN = r'(?:\d{1,3}(?:[., ]\d{3})*|\d+)(?:[.,](?:\d{1,2}|-))?'
+
+# Combined Price Regex
 PRICE_REGEX = re.compile(
-    fr'(?:(?:{FULL_CURRENCY_PATTERN})\s*{NUMBER_PATTERN}|{NUMBER_PATTERN}\s*(?:{FULL_CURRENCY_PATTERN}))',
+    fr'(?:(?:{SMART_CURRENCY_PATTERN})\s*{NUMBER_PATTERN}|{NUMBER_PATTERN}\s*(?:{SMART_CURRENCY_PATTERN}))',
     re.UNICODE | re.IGNORECASE
 )
 
@@ -175,89 +140,26 @@ SOLD_REGEX = re.compile(r'\b(?:' + '|'.join(SOLD_WORD_VARIATIONS) + r')\b', re.I
 REVIEW_REGEX = re.compile(r'\b(?:' + '|'.join(REVIEW_KEYWORDS) + r')\b', re.IGNORECASE)
 CTA_REGEX = re.compile(r'\b(?:' + '|'.join(CTA_KEYWORDS) + r')\b', re.IGNORECASE)
 
+
 # --- Feature Definitions ---
 
 NUMERIC_FEATURES = [
-    # Structural
-    'num_children',
-    'num_siblings',
-    'dom_depth',
-    'sibling_tag_ratio',
-
-    # Flags
-    'is_header',
-    'is_block_element',
-    'is_clickable',
-    'is_formatting',
-    'is_list_item',
-    'is_bold',
-    'is_italic',
-    'is_hidden',
-
-    # Text Metrics
-    'text_len',
-    'text_word_count',
-    'text_digit_count',
-    'text_density',
-    'digit_density',
-    'link_density',
-    'capitalization_ratio',
-    'avg_word_length',
-
-    # Visual/Style
-    'font_size',
-    'font_weight',
-    'visual_weight',
-
-    # Visual/Style (Relative)
-    'visibility_score_local',
-    'visibility_score_global',
-
-    # Image Features
-    'img_width',
-    'img_height',
-    'img_area_raw',
-    'image_area',
-    'sibling_image_count',
-    'img_size_rank',
-
-    # Semantic
-    'has_currency_symbol',
-    'is_price_format',
-    'has_sold_keyword',
-    'has_review_keyword',
-    'has_cta_keyword',
-
-    # Attribute / Visual
-    'has_href',
-    'is_image',
-    'has_src',
-    'has_alt',
-    'alt_len',
-    'parent_is_link',
-
-    'is_strikethrough',
-    'tag_count_global',
-    'avg_distance_to_closest_categories'
+    'num_children', 'num_siblings', 'dom_depth', 'sibling_tag_ratio', 'sibling_link_ratio',
+    'is_header', 'is_block_element', 'is_clickable', 'is_formatting', 'is_list_item',
+    'is_bold', 'is_italic', 'is_hidden', 'has_nav_ancestor', 'has_footer_ancestor', 'has_header_ancestor',
+    'text_len', 'text_word_count', 'text_digit_count', 'text_density', 'digit_density',
+    'link_density', 'capitalization_ratio', 'avg_word_length',
+    'font_size', 'font_weight', 'visual_weight', 'tag_importance',
+    'visibility_score_local', 'visibility_score_global', 'text_len_score_local',
+    'img_width', 'img_height', 'img_area_raw', 'image_area', 'sibling_image_count', 'img_size_rank',
+    'has_currency_symbol', 'is_price_format', 'has_sold_keyword', 'has_review_keyword', 'has_cta_keyword',
+    'has_href', 'is_image', 'has_src', 'has_alt', 'alt_len', 'parent_is_link',
+    'is_strikethrough', 'tag_count_global', 'avg_distance_to_closest_categories'
 ]
 
-NON_TRAINING_FEATURES = [
-    'Category',
-    'SourceURL',
-    'xpath' # IMPORTANT: Add xpath to non-training features so it's dropped before training
-]
-
-CATEGORICAL_FEATURES = [
-    'tag',
-    'parent_tag',
-    'gparent_tag'
-]
-
-TEXT_FEATURES = [
-    'class_str',
-    'id_str'
-]
-
+NON_TRAINING_FEATURES = ['Category', 'SourceURL', 'xpath']
+CATEGORICAL_FEATURES = ['tag', 'parent_tag', 'gparent_tag']
+TEXT_FEATURES = ['class_str', 'id_str']
 ALL_FEATURES = NUMERIC_FEATURES + CATEGORICAL_FEATURES + TEXT_FEATURES
 TARGET_FEATURE = 'Category'
 
@@ -265,21 +167,20 @@ TARGET_FEATURE = 'Category'
 
 @lru_cache(maxsize=256)
 def get_remote_image_dims(url: str) -> Tuple[int, int]:
-    """Fetches image dimensions from a URL without downloading the full body."""
-    if not url or url.startswith('data:'):
-        return 0, 0
-
+    if not url or url.startswith('data:'): return 0, 0
     try:
-        response = requests.get(url, headers=headers, timeout=TIMEOUT_SECONDS, stream=True)
-        response.raise_for_status()
+        response = requests.get(url, headers=headers, timeout=1.5, stream=True)
+        if response.status_code != 200: return 0, 0
         p = Image.FileParser()
+        count = 0
         for chunk in response.iter_content(chunk_size=1024):
             if not chunk: break
             p.feed(chunk)
             if p.image: return p.image.size
+            count += 1
+            if count > 2: break
         return 0, 0
-    except Exception:
-        return 0, 0
+    except Exception: return 0, 0
 
 def get_xpath_segments(xpath: str) -> List[str]:
     return [s for s in xpath.split('/') if s]
@@ -289,48 +190,33 @@ def extract_index(segment: str) -> int:
     return int(match.group(1)) if match else 1
 
 def calculate_proximity_score(xpath1: str, xpath2: str) -> tuple:
-    """Calculate proximity (Tree Distance, Index Delta) between two XPaths."""
     path1 = get_xpath_segments(xpath1)
     path2 = get_xpath_segments(xpath2)
-
     min_len = min(len(path1), len(path2))
     divergence_index = 0
     for i in range(min_len):
         if path1[i] == path2[i]: divergence_index += 1
         else: break
-
     dist_up = len(path1) - divergence_index
     dist_down = len(path2) - divergence_index
     tree_distance = dist_up + dist_down
-
     index_delta = 0
     if divergence_index < len(path1) and divergence_index < len(path2):
         idx1 = extract_index(path1[divergence_index])
         idx2 = extract_index(path2[divergence_index])
         index_delta = abs(idx1 - idx2)
-
     return (tree_distance, index_delta)
 
-
-def get_avg_distance_to_closest_categories(
-    element: lxml.html.HtmlElement,
-    selectors: Dict[str, List[str]]
-) -> float:
-    """Calculates average tree distance to specific selectors."""
-    if not selectors:
-        return DEFAULT_DIST
-
+def get_avg_distance_to_closest_categories(element: lxml.html.HtmlElement, selectors: Dict[str, List[str]]) -> float:
+    if not selectors: return DEFAULT_DIST
     min_distances = []
     elem_xpath = get_unique_xpath(element)
-
     for _, xpaths in selectors.items():
         distances = []
         for xpath in xpaths:
             dist_tuple = calculate_proximity_score(elem_xpath, xpath)
             distances.append(dist_tuple[0])
-        if distances:
-            min_distances.append(min(distances))
-
+        if distances: min_distances.append(min(distances))
     return sum(min_distances) / len(min_distances) if min_distances else DEFAULT_DIST
 
 # --- Feature Extraction Helpers ---
@@ -338,58 +224,57 @@ def get_avg_distance_to_closest_categories(
 def _get_structure_features(element: lxml.html.HtmlElement, tag: str, category: str) -> Dict[str, Any]:
     parent = element.getparent()
     gparent = parent.getparent() if parent is not None else None
-
     parent_tag = normalize_tag(parent.tag) if parent is not None else 'root'
     gparent_tag = normalize_tag(gparent.tag) if gparent is not None else 'root'
-
-    sibling_count = 0
-    same_tag_count = 0
-    sibling_image_count = 0
-
+    sibling_count, same_tag_count, sibling_image_count, sibling_link_count = 0, 0, 0, 0
     if parent is not None:
         for child in parent:
             if child is element: continue
             child_tag = normalize_tag(getattr(child, 'tag', ''))
             if child_tag == tag: same_tag_count += 1
             if child_tag == 'img': sibling_image_count += 1
+            if child_tag == 'a': sibling_link_count += 1
             sibling_count += 1
 
+    # Check Ancestry for Noise Containers
+    has_nav, has_footer, has_header = 0, 0, 0
+    cursor = element
+    depth_check = 0
+    while cursor is not None and depth_check < 6:
+        ctag = normalize_tag(cursor.tag)
+        c_class = str(cursor.get('class', '')).lower()
+        if ctag == 'nav' or cursor.get('role') == 'navigation' or 'nav' in c_class or 'menu' in c_class: has_nav = 1
+        if ctag == 'footer' or cursor.get('role') == 'contentinfo' or 'footer' in c_class: has_footer = 1
+        if ctag == 'header' or cursor.get('role') == 'banner': has_header = 1
+        if has_nav and has_footer and has_header: break
+        cursor = cursor.getparent()
+        depth_check += 1
+
     return {
-        'Category': category,
-        'tag': tag,
-        'parent_tag': parent_tag,
-        'gparent_tag': gparent_tag,
-        'num_children': len(element),
-        'num_siblings': sibling_count,
-        'dom_depth': len(list(element.iterancestors())),
+        'Category': category, 'tag': tag, 'parent_tag': parent_tag, 'gparent_tag': gparent_tag,
+        'num_children': len(element), 'num_siblings': sibling_count, 'dom_depth': len(list(element.iterancestors())),
         'sibling_tag_ratio': (same_tag_count / sibling_count) if sibling_count > 0 else 0.0,
-        'sibling_image_count': sibling_image_count
+        'sibling_link_ratio': (sibling_link_count / sibling_count) if sibling_count > 0 else 0.0,
+        'sibling_image_count': sibling_image_count,
+        'has_nav_ancestor': has_nav, 'has_footer_ancestor': has_footer, 'has_header_ancestor': has_header
     }
 
 def _get_text_features(element: lxml.html.HtmlElement) -> Dict[str, Any]:
     raw_text = element.text_content() or ""
     text = " ".join(raw_text.split())
     text_len = len(text)
-
-    # Calculate density relative to HTML source size
     try:
         html_size = len(lxml.html.tostring(element, encoding='unicode'))
         text_density = (text_len / html_size) if html_size > 0 else 0.0
-    except Exception:
-        text_density = 0.0
-
+    except Exception: text_density = 0.0
     words = text.split()
     digit_count = sum(c.isdigit() for c in text)
-
     return {
-        'text_len': text_len,
-        'text_word_count': len(words),
-        'text_digit_count': digit_count,
-        'text_density': text_density,
-        'digit_density': (digit_count / text_len) if text_len > 0 else 0.0,
+        'text_len': text_len, 'text_word_count': len(words), 'text_digit_count': digit_count,
+        'text_density': text_density, 'digit_density': (digit_count / text_len) if text_len > 0 else 0.0,
         'capitalization_ratio': (sum(1 for c in text if c.isupper()) / text_len) if text_len > 0 else 0.0,
         'avg_word_length': (sum(len(w) for w in words) / len(words)) if words else 0.0,
-        '_text_content': text # Internal use for regex
+        '_text_content': text
     }
 
 def _get_regex_features(text: str) -> Dict[str, int]:
@@ -403,25 +288,26 @@ def _get_regex_features(text: str) -> Dict[str, int]:
 
 def _get_visual_features(element: lxml.html.HtmlElement, tag: str, parent_tag: str) -> Dict[str, Any]:
     style = element.get('style', '').lower()
-
-    # Flags
     is_header = 1 if tag in {'h1', 'h2', 'h3', 'h4', 'h5', 'h6'} else 0
     is_formatting = 1 if tag in {'b', 'strong', 'i', 'em', 'u', 'span', 'small', 'mark'} else 0
     is_block = 1 if tag in {'div', 'p', 'section', 'article', 'main', 'aside', 'header', 'footer', 'ul', 'ol', 'table', 'form'} else 0
     is_list_item = 1 if tag in {'li', 'dt', 'dd'} else 0
 
-    # Visual Styles
-    font_size = 16.0
+    font_size = 0.0
     fs_match = re.search(r'font-size\s*:\s*([\d.]+)(px|em|rem|pt|%)?', style)
     if fs_match:
         try:
             val = float(fs_match.group(1))
             unit = fs_match.group(2)
-            if unit in ('em', 'rem'): font_size = val * 16.0
+            if unit == 'em' or unit == 'rem': font_size = val * 16.0
             elif unit == '%': font_size = (val / 100.0) * 16.0
             elif unit == 'pt': font_size = val * 1.33
             else: font_size = val
         except ValueError: pass
+
+    if font_size == 0.0:
+        if parent_tag.startswith('h'): font_size = TAG_DEFAULT_SIZES.get(parent_tag, 16.0)
+        else: font_size = TAG_DEFAULT_SIZES.get(tag, 16.0)
 
     font_weight = 400
     fw_match = re.search(r'font-weight\s*:\s*(\w+)', style)
@@ -430,260 +316,127 @@ def _get_visual_features(element: lxml.html.HtmlElement, tag: str, parent_tag: s
         if w_str in {'bold', 'bolder'}: font_weight = 700
         elif w_str == 'lighter': font_weight = 300
         elif w_str.isdigit(): font_weight = int(w_str)
-    elif tag in {'h1', 'h2', 'h3', 'b', 'strong'}:
+    elif tag in {'h1', 'h2', 'h3', 'b', 'strong'} or parent_tag in {'h1', 'h2', 'h3'}:
         font_weight = 700
 
-    # Strikethrough
-    is_strikethrough = 0
-    if tag in {'s', 'strike', 'del'} or 'line-through' in style or parent_tag in {'s', 'strike', 'del'}:
-        is_strikethrough = 1
+    self_imp = TAG_IMPORTANCE.get(tag, 0)
+    parent_imp = TAG_IMPORTANCE.get(parent_tag, 0)
+    tag_importance = max(self_imp, parent_imp)
 
     return {
-        'is_header': is_header,
-        'is_formatting': is_formatting,
-        'is_block_element': is_block,
-        'is_list_item': is_list_item,
-        'font_size': font_size,
-        'font_weight': font_weight,
-        'visual_weight': font_size * (font_weight / 400.0),
-        'is_bold': 1 if (tag in {'b', 'strong', 'h1', 'h2', 'h3'} or font_weight >= 600 or 'font-weight:bold' in style) else 0,
+        'is_header': is_header, 'is_formatting': is_formatting, 'is_block_element': is_block, 'is_list_item': is_list_item,
+        'font_size': font_size, 'font_weight': font_weight, 'visual_weight': font_size * (font_weight / 400.0),
+        'tag_importance': tag_importance, 'is_bold': 1 if font_weight >= 600 else 0,
         'is_italic': 1 if (tag in {'i', 'em'} or 'font-style:italic' in style) else 0,
-        'is_hidden': 1 if ('display:none' in style or 'visibility:hidden' in style or 'opacity:0' in style.replace(' ', '')) else 0,
-        'is_strikethrough': is_strikethrough
+        'is_hidden': 1 if ('display:none' in style or 'visibility:hidden' in style) else 0,
+        'is_strikethrough': 1 if tag in {'s', 'strike', 'del'} or 'line-through' in style else 0
     }
 
 def _get_image_features(element: lxml.html.HtmlElement, tag: str) -> Dict[str, Any]:
-    features = {
-        'is_image': 1 if tag == 'img' else 0,
-        'has_src': 1 if element.get('src') or element.get('data-src') else 0,
-        'has_alt': 1 if element.get('alt') else 0,
-        'alt_len': len(element.get('alt', '')),
-        'img_width': 0, 'img_height': 0, 'img_area_raw': 0
-    }
-
-    if tag != 'img':
-        features['image_area'] = 0
-        return features
-
+    features = { 'is_image': 1 if tag == 'img' else 0, 'has_src': 0, 'has_alt': 0, 'alt_len': 0, 'img_width': 0, 'img_height': 0, 'img_area_raw': 0, 'image_area': 0 }
+    if tag != 'img': return features
+    features['has_src'] = 1 if element.get('src') or element.get('data-src') else 0
+    features['has_alt'] = 1 if element.get('alt') else 0
+    features['alt_len'] = len(element.get('alt', ''))
     img_w, img_h = 0, 0
     style = element.get('style', '').lower()
-
-    # 1. Attributes
     w_attr = element.get('width')
     h_attr = element.get('height')
     if w_attr and w_attr.isdigit(): img_w = int(w_attr)
     if h_attr and h_attr.isdigit(): img_h = int(h_attr)
-
-    # 2. Inline Style
-    if img_w == 0 or img_h == 0:
-        w_style = re.search(r'width\s*:\s*(\d+)(?:px)', style)
-        h_style = re.search(r'height\s*:\s*(\d+)(?:px)', style)
+    if img_w == 0:
+        w_style = re.search(r'width\s*:\s*(\d+)', style)
         if w_style: img_w = int(w_style.group(1))
+    if img_h == 0:
+        h_style = re.search(r'height\s*:\s*(\d+)', style)
         if h_style: img_h = int(h_style.group(1))
-
-    # 3. SRC Regex
     src = element.get('src') or element.get('data-src') or ""
     if (img_w == 0 or img_h == 0) and src:
         dim_match = re.search(r'[-_/=](\d{3,4})[xX](\d{3,4})', src)
-        if dim_match:
-            try:
-                img_w, img_h = int(dim_match.group(1)), int(dim_match.group(2))
-            except: pass
-
-    # 4. Network
+        if dim_match: img_w, img_h = int(dim_match.group(1)), int(dim_match.group(2))
     if (img_w == 0 or img_h == 0) and src.startswith('http'):
         img_w, img_h = get_remote_image_dims(src)
-
-    features['img_width'] = img_w
-    features['img_height'] = img_h
-    features['img_area_raw'] = img_w * img_h
-    features['image_area'] = features['img_area_raw']
+    features.update({'img_width': img_w, 'img_height': img_h, 'img_area_raw': img_w * img_h, 'image_area': img_w * img_h})
     return features
 
 def _get_interaction_features(element: lxml.html.HtmlElement, tag: str, text_len: int, parent_tag: str, gparent_tag: str) -> Dict[str, Any]:
     is_clickable = 0
     role = element.get('role', '').lower()
-
-    if tag in {'a', 'button'} or role == 'button':
-        is_clickable = 1
-    elif tag == 'input' and element.get('type', '').lower() in {'submit', 'button', 'reset'}:
-        is_clickable = 1
-
-    # Link Density
-    link_density = 0.0
-    parent_is_link = 0
-    if tag == 'a' or parent_tag == 'a' or gparent_tag == 'a':
-        link_density = 1.0
-        parent_is_link = 1
+    if tag in {'a', 'button'} or role == 'button': is_clickable = 1
+    elif tag == 'input' and element.get('type', '').lower() in {'submit', 'button', 'reset'}: is_clickable = 1
+    link_density, parent_is_link = 0.0, 0
+    if tag == 'a' or parent_tag == 'a' or gparent_tag == 'a': link_density, parent_is_link = 1.0, 1
     else:
         links_text = sum(len(a.text_content() or "") for a in element.findall('.//a'))
         link_density = links_text / text_len if text_len > 0 else 0.0
-
-    return {
-        'is_clickable': is_clickable,
-        'has_href': 1 if element.get('href') else 0,
-        'link_density': link_density,
-        'parent_is_link': parent_is_link
-    }
+    return { 'is_clickable': is_clickable, 'has_href': 1 if element.get('href') else 0, 'link_density': link_density, 'parent_is_link': parent_is_link }
 
 def _get_attribute_features(element: lxml.html.HtmlElement) -> Dict[str, str]:
     class_val = element.get('class')
-    return {
-        'class_str': " ".join(class_val.split()) if class_val else "",
-        'id_str': element.get('id', '')
-    }
+    return { 'class_str': " ".join(class_val.split()) if class_val else "", 'id_str': element.get('id', '') }
 
-# --- Main Extraction Function ---
-
-def extract_element_features(
-    element: lxml.html.HtmlElement,
-    selectors: Dict[str, List[str]] = {},
-    category: str = OTHER_CATEGORY
-) -> Dict[str, Any]:
-    """
-    Phase 1: Extraction. 
-    Modularized extraction of absolute feature values.
-    """
+def extract_element_features(element: lxml.html.HtmlElement, selectors: Dict[str, List[str]] = {}, category: str = OTHER_CATEGORY) -> Dict[str, Any]:
     try:
         tag = normalize_tag(element.tag)
-
-        # 1. Structure
         struct_feats = _get_structure_features(element, tag, category)
-
-        # 2. Text & Content
         text_feats = _get_text_features(element)
         regex_feats = _get_regex_features(text_feats.pop('_text_content'))
-
-        # 3. Visual & Style
         visual_feats = _get_visual_features(element, tag, struct_feats['parent_tag'])
-
-        # 4. Images
         image_feats = _get_image_features(element, tag)
-
-        # 5. Interaction / Links
-        interact_feats = _get_interaction_features(
-            element, tag, text_feats['text_len'],
-            struct_feats['parent_tag'], struct_feats['gparent_tag']
-        )
-
-        # 6. Attributes
+        interact_feats = _get_interaction_features(element, tag, text_feats['text_len'], struct_feats['parent_tag'], struct_feats['gparent_tag'])
         attr_feats = _get_attribute_features(element)
-
-        # 7. Context / Proximity
         context_feats = {
             'avg_distance_to_closest_categories': get_avg_distance_to_closest_categories(element, selectors),
-            # Init placeholders
-            'img_size_rank': 0,
-            'visibility_score_local': 0.0,
-            'visibility_score_global': 0.0,
-            'tag_count_global': 0
+            'img_size_rank': 0, 'visibility_score_local': 0.0, 'visibility_score_global': 0.0,
+            'text_len_score_local': 0.0, 'tag_count_global': 0
         }
-
-        # 8. Metadata
-        metadata_feats = {
-            'xpath': get_unique_xpath(element)
-        }
-
-        # Combine all features
-        return {
-            **struct_feats,
-            **text_feats,
-            **regex_feats,
-            **visual_feats,
-            **image_feats,
-            **interact_feats,
-            **attr_feats,
-            **context_feats,
-            **metadata_feats
-        }
-
+        metadata_feats = { 'xpath': get_unique_xpath(element) }
+        return { **struct_feats, **text_feats, **regex_feats, **visual_feats, **image_feats, **interact_feats, **attr_feats, **context_feats, **metadata_feats }
     except Exception as e:
         log_error(f"Error extracting features for element: {e}")
         fallback = {k: 0 for k in NUMERIC_FEATURES}
         fallback.update({k: '' for k in CATEGORICAL_FEATURES + TEXT_FEATURES})
-        fallback['Category'] = category
-        fallback['xpath'] = ''
+        fallback['Category'] = category; fallback['xpath'] = ''
         return fallback
 
-# --- Post Processing ---
-
 def process_page_features(element_feature_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """
-    Takes the list of features for ALL elements on a page and computes relative rankings
-    (Image Rank, Visibility Scores, Global Tag Counts).
-    """
-    if not element_feature_list:
-        return []
-
+    if not element_feature_list: return []
     df = pd.DataFrame(element_feature_list)
-
-    # Compute Image Rank 1-5
-    # We only rank elements that actually have an area > 0
     if 'img_area_raw' in df.columns:
         mask_imgs = df['img_area_raw'] > 0
         if mask_imgs.any():
             try:
-                # Create 5 buckets based on the distribution of images
-                df.loc[mask_imgs, 'img_size_rank'] = pd.qcut(
-                    df.loc[mask_imgs, 'img_area_raw'],
-                    q=5, labels=[1, 2, 3, 4, 5], duplicates='drop'
-                ).astype(int)
-                # Fill NaN dropped duplicates or 0 area with 1
+                df.loc[mask_imgs, 'img_size_rank'] = pd.qcut(df.loc[mask_imgs, 'img_area_raw'], q=10, labels=False, duplicates='drop').astype(int) + 1
                 df['img_size_rank'] = df['img_size_rank'].fillna(1)
-            except ValueError:
-                # Fallback if not enough unique values
-                df.loc[mask_imgs, 'img_size_rank'] = 1
-        else:
-             df['img_size_rank'] = 0
-    else:
-        df['img_size_rank'] = 0
+            except ValueError: df.loc[mask_imgs, 'img_size_rank'] = 1
+        else: df['img_size_rank'] = 0
+    else: df['img_size_rank'] = 0
 
-    # Compute Visibility Scores
     if 'visual_weight' in df.columns:
-        # Global Visibility (vs Page Average)
-        avg_visual_weight = df['visual_weight'].mean()
-        if avg_visual_weight > 0:
-            df['visibility_score_global'] = df['visual_weight'] / avg_visual_weight
-        else:
-            df['visibility_score_global'] = 0.0
+        avg_vis = df['visual_weight'].mean()
+        df['visibility_score_global'] = df['visual_weight'] / avg_vis if avg_vis > 0 else 0.0
+        rolling_vis = df['visual_weight'].rolling(window=5, center=True, min_periods=1).mean().replace(0, 1)
+        df['visibility_score_local'] = df['visual_weight'] / rolling_vis
+    else: df['visibility_score_global'] = 0.0; df['visibility_score_local'] = 0.0
 
-        # Local Visibility (vs Neighbors)
-        # Rolling average of 5 elements (2 before, self, 2 after)
-        rolling_avg = df['visual_weight'].rolling(window=5, center=True, min_periods=1).mean()
-        rolling_avg = rolling_avg.replace(0, 1) # Prevent divide by zero
-        df['visibility_score_local'] = df['visual_weight'] / rolling_avg
-    else:
-        df['visibility_score_global'] = 0.0
-        df['visibility_score_local'] = 0.0
+    if 'text_len' in df.columns:
+        rolling_len = df['text_len'].rolling(window=7, center=True, min_periods=1).mean().replace(0, 1)
+        df['text_len_score_local'] = df['text_len'] / rolling_len
+    else: df['text_len_score_local'] = 0.0
 
-    #  Compute Global Tag Counts
     if 'tag' in df.columns:
         tag_counts = df['tag'].value_counts()
         df['tag_count_global'] = df['tag'].map(tag_counts).fillna(0).astype(int)
-    else:
-        df['tag_count_global'] = 0
+    else: df['tag_count_global'] = 0
 
     return df.to_dict('records')
 
-
 def get_feature_columns() -> Dict[str, list]:
-    return {
-        'numeric': NUMERIC_FEATURES,
-        'categorical': CATEGORICAL_FEATURES,
-        'text': TEXT_FEATURES,
-        'all': ALL_FEATURES
-    }
+    return { 'numeric': NUMERIC_FEATURES, 'categorical': CATEGORICAL_FEATURES, 'text': TEXT_FEATURES, 'all': ALL_FEATURES }
 
 def validate_features(df: Any) -> bool:
     if df.empty: return False
-    # Check regular features
     missing = [f for f in ALL_FEATURES if f not in df.columns]
-
-    # Check xpath explicitly since it's a non-training but critical feature
-    if 'xpath' not in df.columns:
-        missing.append('xpath')
-
-    if missing:
-        log_warning(f"Missing features: {missing}")
-        return False
+    if 'xpath' not in df.columns: missing.append('xpath')
+    if missing: log_warning(f"Missing features: {missing}"); return False
     return True

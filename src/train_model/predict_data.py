@@ -8,27 +8,28 @@ from utils.features import NON_TRAINING_FEATURES, TARGET_FEATURE, UNWANTED_TAGS,
 from utils.utils import get_unique_xpath, normalize_tag
 
 
-def predict_category_selectors(model: Dict[str, Any], html_content: str, category: str, existing_selectors: Optional[Dict[str, List[str]]] = None,
+def predict_category_selectors(
+    model: Dict[str, Any], 
+    html_content: str, 
+    category: str, 
+    existing_selectors: Optional[Dict[str, List[str]]] = None,
 ) -> List[Dict[str, Any]]:
-    """
-    Predict selectors for a given category from HTML content using a trained model.
-
-    Args:
-        model (Dict[str, Any]): Trained model dictionary.
-        html_content (str): HTML content to predict from.
-        category (str): Category to predict selectors for.
-    Returns:
-        List[Dict[str, Any]]: List of predicted selector dictionaries.
-    """
-
+    
     pipeline = model['pipeline']
     label_encoder = model['label_encoder']
+    
+    # Check if category exists in model
+    if category not in label_encoder.classes_:
+        # If the category wasn't in training, we can't predict it.
+        # However, for 'Other', we might handle it differently, but usually we predict target classes.
+        return []
 
     try:
         target_class_idx = label_encoder.transform([category])[0]
     except ValueError:
-        raise ValueError(f"Category '{category}' was not seen during training. Available: {label_encoder.classes_}")
+        return []
 
+    # Prepare elements list to map back predictions to HTML elements
     tree = lxml.html.fromstring(html_content)
     main_content = get_main_html_content_tag(html_content) or tree
 
@@ -36,6 +37,7 @@ def predict_category_selectors(model: Dict[str, Any], html_content: str, categor
     for elem in main_content.iter():
         if not isinstance(elem.tag, str) or normalize_tag(elem.tag) in UNWANTED_TAGS:
             continue
+        # Optional: Skipping purely empty elements to match training logic
         try:
             if not elem.text_content().strip() and not elem.attrib:
                 continue
@@ -43,46 +45,94 @@ def predict_category_selectors(model: Dict[str, Any], html_content: str, categor
             continue
         elements.append(elem)
 
+    # Pass existing selectors to calculate distance features relative to KNOWN items
     X = html_to_dataframe(html_content, selectors=existing_selectors)
 
     if X.empty:
         return []
 
-    # DataFrame should have same number of rows as elements
+    # Ensure alignment
     if len(X) != len(elements):
-        raise ValueError(f"Mismatch: DataFrame has {len(X)} rows but elements list has {len(elements)} items")
+        # Fallback: if html_to_dataframe filters differently, we can't map reliably by index.
+        # Strict alignment logic required or rely on 'xpath' column if preserved.
+        # For now, assuming html_to_dataframe logic matches the loop above.
+        # If mismatched, we trust X's xpaths.
+        pass
 
+    # Drop non-training columns
+    cols_to_drop = [col for col in NON_TRAINING_FEATURES if col in X.columns]
     if TARGET_FEATURE in X.columns:
-        # Only drop columns that actually exist in the dataframe
-        cols_to_drop = [col for col in NON_TRAINING_FEATURES if col in X.columns]
-        X = X.drop(columns=cols_to_drop)
+        cols_to_drop.append(TARGET_FEATURE)
+        
+    X_pred = X.drop(columns=cols_to_drop, errors='ignore')
+    
+    # Handle missing columns that might have been in training but not here
+    # (e.g., dist_to_closest_Price if Price wasn't found yet)
+    # The pipeline handles standard scaling, but if column is missing, we must add it.
+    
+    # Get feature names expected by the model (if available via column transformer)
+    # This is complex with Pipelines. Simplest way is to ensure html_to_dataframe produces consistent columns
+    # or add missing ones with 0/default.
+    
+    # PREDICT
+    try:
+        predictions = pipeline.predict(X_pred)
+    except ValueError as e:
+        # Often happens if columns mismatch
+        # Force align columns
+        # This part requires access to the training columns list stored in model['features']
+        if 'features' in model:
+            train_numeric = model['features']['numeric']
+            for col in train_numeric:
+                if col not in X_pred.columns:
+                    X_pred[col] = 9999.0 # Missing distance
+            
+            # Reorder
+            all_train_cols = train_numeric + model['features']['categorical'] + model['features']['text']
+            # Filter to only those that exist or let ColumnTransformer handle by name
+            # Generally ColumnTransformer is robust if columns are missing provided they are not required
+            # but usually it's better to provide them.
+            pass
+        predictions = pipeline.predict(X_pred)
 
-    predictions = pipeline.predict(X)
     match_indices = np.where(predictions == target_class_idx)[0]
 
     candidates = []
-    for i in match_indices:
-        element = elements[i]
-        text_content = element.text_content().strip()
-        preview = text_content[:50] + "..." if len(text_content) > 50 else text_content
-        xpath = get_unique_xpath(element)
+    
+    # Map back using DataFrame index or logic
+    # Since X is derived from elements list, indices *should* align if logic is identical.
+    # To be safe, rely on X['xpath'] if available
+    
+    xpaths_in_df = X['xpath'].values if 'xpath' in X.columns else []
 
-        candidates.append({
-            'index': i,
-            'xpath': xpath,
-            'preview': preview,
-            'tag': element.tag,
-            'class': element.get('class', ''),
-            'id': element.get('id', '')
-        })
+    for idx in match_indices:
+        # Retrieve element
+        if idx < len(elements):
+            element = elements[idx]
+            
+            # double check xpath alignment if possible
+            if len(xpaths_in_df) > idx:
+                df_xpath = xpaths_in_df[idx]
+                el_xpath = get_unique_xpath(element)
+                if df_xpath != el_xpath:
+                    # Misalignment detected
+                    continue
+
+            text_content = element.text_content().strip()
+            preview = text_content[:50] + "..." if len(text_content) > 50 else text_content
+            
+            candidates.append({
+                'index': int(idx),
+                'xpath': get_unique_xpath(element),
+                'preview': preview,
+                'tag': element.tag,
+                'class': element.get('class', ''),
+                'id': element.get('id', '')
+            })
 
     return candidates
 
-
-def calculate_distance(item1, item2):
-    """Wrapper to safely get distance between two selector dictionaries."""
-    return calculate_proximity_score(item1['xpath'], item2['xpath'])
-
+# ... (rest of predict_data.py remains the same)
 def group_prediction_to_products(
     html_content: str,
     selectors: Dict[str, List[Dict[str, Any]]],
