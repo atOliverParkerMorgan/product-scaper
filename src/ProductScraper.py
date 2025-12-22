@@ -1,13 +1,10 @@
 """
 ProductScraper: Main interface for web scraping and machine learning-based element detection.
-
-This module provides the ProductScraper class, which allows for collecting training data,
-training models, predicting selectors, and managing scraping state for product websites.
 """
 
 import pickle
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 import pandas as pd
 import requests
@@ -21,38 +18,22 @@ from train_model.process_data import html_to_dataframe
 from train_model.train_model import train_model
 from utils.console import log_error, log_info, log_warning
 
-# Configuration for save directory
-PRODUCT_SCRAPER_SAVE_DIR = Path('product_scraper_data')
+PRODUCT_SCRAPER_SAVE_DIR = Path("product_scraper_data")
+
 
 class ProductScraper:
-    """
-    Main interface for web scraping with machine learning-based element detection.
-    
-    This class provides methods to:
-    - Collect training data by manually selecting elements from web pages.
-    - Train a model to automatically detect product information.
-    - Predict element selectors on new pages.
-    
-    The class is iterable and will yield (url, predictions_dict) for each configured website.
-    Automatically saves state on destruction.
-    """
-
-    def __init__(self, categories: List[str], websites_urls: Optional[List[str]] = None, selectors: Optional[Dict[str, Dict[str, List[str]]]] = None, training_data: Optional[pd.DataFrame] = None, model: Optional[Dict[str, Any]] = None, pipeline: Optional[Any] = None):
-        """
-        Initialize the ProductScraper.
-        
-        Args:
-            categories: List of data categories to extract (e.g., ['title', 'price', 'image']).
-            websites_urls: List of URLs to train on.
-            selectors: Existing dictionary of selectors.
-            training_data: Existing training data.
-            model: Trained model dictionary.
-            pipeline: Sklearn pipeline for custom preprocessing.
-        """
+    def __init__(
+        self,
+        categories: List[str],
+        websites_urls: Optional[List[str]] = None,
+        selectors: Optional[Dict[str, Dict[str, List[str]]]] = None,
+        training_data: Optional[pd.DataFrame] = None,
+        model: Optional[Dict[str, Any]] = None,
+        pipeline: Optional[Any] = None,
+    ):
         self.website_html_cache = {}
-        self.website_cache_metadata = {}  # Store ETag and Last-Modified headers
+        self.website_cache_metadata = {}
 
-        # Internal sets for deduplication
         self._categories: Set[str] = set(categories)
         self._websites_urls: Set[str] = set(websites_urls) if websites_urls else set()
 
@@ -67,33 +48,24 @@ class ProductScraper:
 
         # Iterator state
         self._iterator_index = 0
-        self._iter_list = [] # Cache for stable iteration
+        self._iter_list = []
 
     @property
     def categories(self) -> List[str]:
-        """Return categories as a sorted list for consistent access."""
         return sorted(list(self._categories))
 
     @property
     def websites_urls(self) -> List[str]:
-        """Return websites as a sorted list for consistent access."""
         return sorted(list(self._websites_urls))
 
-    def __iter__(self) -> 'ProductScraper':
-        """
-        Make ProductScraper iterable over websites.
-        Snapshots the current set of websites to a list for stable iteration.
-        """
+    def __iter__(self) -> "ProductScraper":
         self._iterator_index = 0
-        self._iter_list = self.websites_urls # Use the property to get sorted list
+        self._iter_list = self.websites_urls
         return self
 
-    def __next__(self) -> tuple:
-        """
-        Iterate over websites, yielding (url, predictions) for each category.
-        """
+    def __next__(self) -> Tuple[str, Dict[str, Any]]:
         if self._iterator_index >= len(self._iter_list):
-            self._iter_list = [] # Cleanup
+            self._iter_list = []
             raise StopIteration
 
         url = self._iter_list[self._iterator_index]
@@ -102,29 +74,27 @@ class ProductScraper:
         return (url, predictions)
 
     def __len__(self) -> int:
-        """
-        Return number of websites.
-        """
         return len(self._websites_urls)
 
     def get_html(self, website_url: str, use_browser: bool = True) -> str:
         """
-        Fetch HTML content for a URL with caching and cache validation.
-        Uses Playwright by default to render JavaScript, with fallback to requests.
+        Fetch HTML content. Uses Playwright first, falls back to requests.
         """
-        # Return cached content if available
         if website_url in self.website_html_cache:
             return self.website_html_cache[website_url]
 
-        # Use Playwright to get JavaScript-rendered HTML
         if use_browser:
             try:
                 with sync_playwright() as p:
+                    # Launch headless for performance
                     browser = p.chromium.launch(headless=True)
-                    page = browser.new_page()
-                    page.goto(website_url, wait_until='networkidle', timeout=30000)
-                    html_content = page.content()
-                    browser.close()
+                    try:
+                        page = browser.new_page()
+                        # networkidle ensures scripts have likely finished loading
+                        page.goto(website_url, wait_until="networkidle", timeout=30000)
+                        html_content = page.content()
+                    finally:
+                        browser.close()
 
                     self.website_html_cache[website_url] = html_content
                     return html_content
@@ -133,31 +103,20 @@ class ProductScraper:
                 log_warning(f"Playwright error for {website_url}: {e}. Falling back to requests.")
                 use_browser = False
             except Exception as e:
-                log_warning(f"Unexpected error with Playwright for {website_url}: {e}. Falling back to requests.")
+                log_warning(f"Unexpected error for {website_url}: {e}. Falling back to requests.")
                 use_browser = False
 
         # Fallback to requests
-        if not use_browser:
-            try:
-                response = requests.get(website_url, timeout=10)
-                response.raise_for_status()
-                html_content = response.text
+        try:
+            response = requests.get(website_url, timeout=15, headers={"User-Agent": "Mozilla/5.0 (Bot)"})
+            response.raise_for_status()
+            html_content = response.text
+            self.website_html_cache[website_url] = html_content
+            return html_content
 
-                self.website_html_cache[website_url] = html_content
-                return html_content
-
-            except requests.exceptions.ConnectionError as e:
-                log_error(f"Connection error for {website_url}: {str(e).split(':')[0]}")
-                raise
-            except requests.exceptions.Timeout:
-                log_error(f"Timeout error for {website_url}")
-                raise
-            except requests.exceptions.HTTPError as e:
-                log_error(f"HTTP error for {website_url}: {e.response.status_code}")
-                raise
-            except requests.RequestException as e:
-                log_error(f"Request error for {website_url}: {e}")
-                raise
+        except requests.RequestException as e:
+            log_error(f"Request error for {website_url}: {e}")
+            raise
 
     def set_pipeline(self, pipeline: Any) -> None:
         """Set a custom sklearn pipeline."""
@@ -173,41 +132,21 @@ class ProductScraper:
     def remove_website(self, website_url: str) -> None:
         """Remove a website URL and clean up all associated data."""
         if website_url in self._websites_urls:
-            # 1. Remove from configuration set
             self._websites_urls.remove(website_url)
+            self.selectors.pop(website_url, None)
+            self.url_in_training_data.discard(website_url)
+            self.website_html_cache.pop(website_url, None)
 
-            # 2. Remove associated selectors
-            if website_url in self.selectors:
-                del self.selectors[website_url]
-
-            # 3. Remove from tracking set
-            if website_url in self.url_in_training_data:
-                self.url_in_training_data.remove(website_url)
-
-            # 4. Clean up HTML caches
-            if website_url in self.website_html_cache:
-                del self.website_html_cache[website_url]
-            if website_url in self.website_cache_metadata:
-                del self.website_cache_metadata[website_url]
-
-            # 5. Remove rows from training data
-            if self.training_data is not None and not self.training_data.empty:
-                if 'SourceURL' in self.training_data.columns:
-                    initial_count = len(self.training_data)
-                    self.training_data = self.training_data[self.training_data['SourceURL'] != website_url]
-                    self.training_data.reset_index(drop=True, inplace=True)
-
-                    removed_count = initial_count - len(self.training_data)
-                    log_info(f"Removed {website_url} and {removed_count} associated training samples.")
-                else:
-                    log_warning("SourceURL column missing from training data; could not filter rows.")
+            if self.training_data is not None and not self.training_data.empty and "SourceURL" in self.training_data.columns:
+                self.training_data = self.training_data[self.training_data["SourceURL"] != website_url]
+                self.training_data.reset_index(drop=True, inplace=True)
         else:
-            log_warning(f"Website URL {website_url} not found in configured list")
+            log_warning(f"Website URL {website_url} not found")
 
     def set_website_selectors_from_yaml(self, website_url: str, yaml_path: str) -> None:
         """Load and set element selectors for a specific website URL from a YAML file."""
         try:
-            with open(yaml_path, 'r') as f:
+            with open(yaml_path, "r") as f:
                 selectors = yaml.safe_load(f)
             self.selectors[website_url] = selectors
             # Ensure URL is in our set
@@ -352,29 +291,28 @@ class ProductScraper:
         self.model = train_model(self.training_data, self.pipeline, test_size=test_size)
 
     def predict_category(self, website_url: str, category: str) -> List[Dict[str, Any]]:
-        """Predict element selectors for a specific category."""
         if self.model is None:
             raise ValueError("Model is not trained.")
-
-        # Access via _categories set or property
         if category not in self._categories:
-            raise ValueError(f"Category '{category}' is not in configured categories.")
+            raise ValueError(f"Category '{category}' is not configured.")
 
-        return predict_category_selectors(self.model, self.get_html(website_url), category, existing_selectors=self.selectors.get(website_url, None))
+        html = self.get_html(website_url)
+        existing = self.selectors.get(website_url, None)
+        return predict_category_selectors(self.model, html, category, existing_selectors=existing)
 
-    def predict(self, website_urls: List[str]) -> List[Dict[str, Dict[str, Any]]]:
+    def predict(self, website_urls: List[str]) -> List[Dict[str, List[Dict[str, Any]]]]:
         """Predict element selectors for all configured categories."""
         if not website_urls:
             raise ValueError("Please provide a list of website URLs.")
 
-        all_products = {}
+        all_products: List[Dict[str, List[Dict[str, Any]]]] = []
         for website_url in website_urls:
             raw_predictions = self.get_selectors(website_url)
             html_content = self.get_html(website_url)
 
             # Access via property to get list
             products = group_prediction_to_products(html_content, raw_predictions, self.categories)
-            all_products[website_url] = products
+            all_products.append({website_url: products})
 
         return all_products
 
@@ -388,42 +326,42 @@ class ProductScraper:
         return self.selectors.get(website_url, {})
 
     # --- Storage Methods (Unchanged) ---
-    def save_model(self, path: str = 'model.pkl') -> None:
+    def save_model(self, path: str = "model.pkl") -> None:
         PRODUCT_SCRAPER_SAVE_DIR.mkdir(parents=True, exist_ok=True)
         if self.model is not None:
-            with open(PRODUCT_SCRAPER_SAVE_DIR / path, 'wb') as f:
+            with open(PRODUCT_SCRAPER_SAVE_DIR / path, "wb") as f:
                 pickle.dump(self.model, f)
         else:
             raise ValueError("Model is not trained.")
 
-    def load_model(self, path: str = 'model.pkl') -> None:
+    def load_model(self, path: str = "model.pkl") -> None:
         try:
-            with open(PRODUCT_SCRAPER_SAVE_DIR / path, 'rb') as f:
+            with open(PRODUCT_SCRAPER_SAVE_DIR / path, "rb") as f:
                 self.model = pickle.load(f)
         except Exception as e:
             log_error(f"Failed to load model from {path}: {e}")
 
-    def save_training_data(self, path: str = 'training_data.csv') -> None:
+    def save_training_data(self, path: str = "training_data.csv") -> None:
         PRODUCT_SCRAPER_SAVE_DIR.mkdir(parents=True, exist_ok=True)
         if self.training_data is not None:
             self.training_data.to_csv(PRODUCT_SCRAPER_SAVE_DIR / path, index=False)
         else:
             raise ValueError("Dataframe is empty.")
 
-    def load_dataframe(self, path: str = 'training_data.csv') -> None:
+    def load_dataframe(self, path: str = "training_data.csv") -> None:
         try:
             self.training_data = pd.read_csv(PRODUCT_SCRAPER_SAVE_DIR / path)
         except Exception as e:
             log_error(f"Failed to load training data from {path}: {e}")
 
-    def save_selectors(self, path: str = 'selectors.yaml') -> None:
+    def save_selectors(self, path: str = "selectors.yaml") -> None:
         PRODUCT_SCRAPER_SAVE_DIR.mkdir(parents=True, exist_ok=True)
-        with open(PRODUCT_SCRAPER_SAVE_DIR / path, 'w') as f:
+        with open(PRODUCT_SCRAPER_SAVE_DIR / path, "w") as f:
             yaml.dump(self.selectors, f, default_flow_style=False, allow_unicode=True)
 
-    def load_selectors(self, path: str = 'selectors.yaml') -> None:
+    def load_selectors(self, path: str = "selectors.yaml") -> None:
         try:
-            with open(PRODUCT_SCRAPER_SAVE_DIR / path, 'r') as f:
+            with open(PRODUCT_SCRAPER_SAVE_DIR / path, "r") as f:
                 self.selectors = yaml.safe_load(f)
         except Exception as e:
             log_error(f"Failed to load selectors from {path}: {e}")
@@ -432,15 +370,14 @@ class ProductScraper:
         for url in self.selectors.keys():
             self.add_website(url)
 
-    def save(self, path: str = 'product_scraper.pkl') -> None:
+    def save(self, path: str = "product_scraper.pkl") -> None:
         PRODUCT_SCRAPER_SAVE_DIR.mkdir(parents=True, exist_ok=True)
-        with open(PRODUCT_SCRAPER_SAVE_DIR / path, 'wb') as f:
+        with open(PRODUCT_SCRAPER_SAVE_DIR / path, "wb") as f:
             pickle.dump(self, f)
-
         self.save_selectors()
         self.save_training_data()
 
     @staticmethod
-    def load(path: str = 'product_scraper.pkl') -> 'ProductScraper':
-        with open(PRODUCT_SCRAPER_SAVE_DIR / path, 'rb') as f:
+    def load(path: str = "product_scraper.pkl") -> "ProductScraper":
+        with open(PRODUCT_SCRAPER_SAVE_DIR / path, "rb") as f:
             return pickle.load(f)

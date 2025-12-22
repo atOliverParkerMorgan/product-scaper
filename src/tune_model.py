@@ -64,11 +64,7 @@ WEBSITES = [
 ]
 
 
-CATEGORIES = [
-    "title",
-    "price",
-    "image"
-]
+CATEGORIES = ["title", "price", "image"]
 
 try:
     # Pscraper = ProductScraper.load()

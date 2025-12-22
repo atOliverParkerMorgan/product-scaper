@@ -1,12 +1,22 @@
+# Ignore all hidden files and directories
+.*
+
+# But keep essential Git files
+!.gitignore
+!.gitattributes
+!.vscode/
+
+
 # Python
 __pycache__/
 
 # Virtual Environment
 .venv/
 
-
 # IDE
 .idea/
 .vscode/
+
+# Project data
 src/data/*
 src/models/*
