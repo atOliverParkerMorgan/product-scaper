@@ -9,19 +9,17 @@ from utils.utils import get_unique_xpath, normalize_tag
 
 
 def predict_category_selectors(
-    model: Dict[str, Any], 
-    html_content: str, 
-    category: str, 
+    model: Dict[str, Any],
+    html_content: str,
+    category: str,
     existing_selectors: Optional[Dict[str, List[str]]] = None,
 ) -> List[Dict[str, Any]]:
-    
+
     pipeline = model['pipeline']
     label_encoder = model['label_encoder']
-    
-    # Check if category exists in model
+    training_features = model.get('features', {})
+
     if category not in label_encoder.classes_:
-        # If the category wasn't in training, we can't predict it.
-        # However, for 'Other', we might handle it differently, but usually we predict target classes.
         return []
 
     try:
@@ -29,7 +27,6 @@ def predict_category_selectors(
     except ValueError:
         return []
 
-    # Prepare elements list to map back predictions to HTML elements
     tree = lxml.html.fromstring(html_content)
     main_content = get_main_html_content_tag(html_content) or tree
 
@@ -37,7 +34,6 @@ def predict_category_selectors(
     for elem in main_content.iter():
         if not isinstance(elem.tag, str) or normalize_tag(elem.tag) in UNWANTED_TAGS:
             continue
-        # Optional: Skipping purely empty elements to match training logic
         try:
             if not elem.text_content().strip() and not elem.attrib:
                 continue
@@ -45,82 +41,58 @@ def predict_category_selectors(
             continue
         elements.append(elem)
 
-    # Pass existing selectors to calculate distance features relative to KNOWN items
-    X = html_to_dataframe(html_content, selectors=existing_selectors)
+    # NO augmentation during prediction
+    X = html_to_dataframe(html_content, selectors=existing_selectors, augment_data=False)
 
     if X.empty:
         return []
 
-    # Ensure alignment
-    if len(X) != len(elements):
-        # Fallback: if html_to_dataframe filters differently, we can't map reliably by index.
-        # Strict alignment logic required or rely on 'xpath' column if preserved.
-        # For now, assuming html_to_dataframe logic matches the loop above.
-        # If mismatched, we trust X's xpaths.
-        pass
-
-    # Drop non-training columns
     cols_to_drop = [col for col in NON_TRAINING_FEATURES if col in X.columns]
     if TARGET_FEATURE in X.columns:
         cols_to_drop.append(TARGET_FEATURE)
-        
+
     X_pred = X.drop(columns=cols_to_drop, errors='ignore')
-    
-    # Handle missing columns that might have been in training but not here
-    # (e.g., dist_to_closest_Price if Price wasn't found yet)
-    # The pipeline handles standard scaling, but if column is missing, we must add it.
-    
-    # Get feature names expected by the model (if available via column transformer)
-    # This is complex with Pipelines. Simplest way is to ensure html_to_dataframe produces consistent columns
-    # or add missing ones with 0/default.
-    
-    # PREDICT
+
+    # Force align columns with training data
+    if training_features:
+        # Add missing numeric columns with defaults
+        for col in training_features.get('numeric', []):
+            if col not in X_pred.columns:
+                if 'density' in col:
+                    X_pred[col] = 0.0
+                else:
+                    X_pred[col] = 100.0
+
+        # Add missing text columns
+        for col in training_features.get('text', []):
+            if col not in X_pred.columns:
+                X_pred[col] = 'empty'
+
     try:
+        # Get probabilities to filter low confidence if needed
+        # predictions = pipeline.predict(X_pred)
+        # Using predict_proba allows for threshold tuning, but strictly we use predict here
         predictions = pipeline.predict(X_pred)
-    except ValueError as e:
-        # Often happens if columns mismatch
-        # Force align columns
-        # This part requires access to the training columns list stored in model['features']
-        if 'features' in model:
-            train_numeric = model['features']['numeric']
-            for col in train_numeric:
-                if col not in X_pred.columns:
-                    X_pred[col] = 9999.0 # Missing distance
-            
-            # Reorder
-            all_train_cols = train_numeric + model['features']['categorical'] + model['features']['text']
-            # Filter to only those that exist or let ColumnTransformer handle by name
-            # Generally ColumnTransformer is robust if columns are missing provided they are not required
-            # but usually it's better to provide them.
-            pass
-        predictions = pipeline.predict(X_pred)
+    except Exception:
+        return []
 
     match_indices = np.where(predictions == target_class_idx)[0]
-
     candidates = []
-    
-    # Map back using DataFrame index or logic
-    # Since X is derived from elements list, indices *should* align if logic is identical.
-    # To be safe, rely on X['xpath'] if available
-    
+
     xpaths_in_df = X['xpath'].values if 'xpath' in X.columns else []
 
     for idx in match_indices:
-        # Retrieve element
         if idx < len(elements):
             element = elements[idx]
-            
-            # double check xpath alignment if possible
+
+            # Sanity check alignment
             if len(xpaths_in_df) > idx:
-                df_xpath = xpaths_in_df[idx]
-                el_xpath = get_unique_xpath(element)
-                if df_xpath != el_xpath:
-                    # Misalignment detected
+                if xpaths_in_df[idx] != get_unique_xpath(element):
                     continue
 
             text_content = element.text_content().strip()
             preview = text_content[:50] + "..." if len(text_content) > 50 else text_content
-            
+
             candidates.append({
                 'index': int(idx),
                 'xpath': get_unique_xpath(element),

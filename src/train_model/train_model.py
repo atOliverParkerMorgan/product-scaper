@@ -9,7 +9,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import classification_report
-from sklearn.model_selection import GridSearchCV, ParameterGrid, train_test_split
+from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder, StandardScaler
 
@@ -38,11 +38,7 @@ except ImportError:
 
 warnings.filterwarnings('ignore')
 
-
 def build_pipeline(num_cols: List[str], cat_cols: List[str], text_cols: List[str]) -> Pipeline:
-    """
-    Constructs a robust preprocessing and training pipeline.
-    """
     transformers = []
 
     if num_cols:
@@ -56,8 +52,8 @@ def build_pipeline(num_cols: List[str], cat_cols: List[str], text_cols: List[str
             ('txt_class', TfidfVectorizer(
                 analyzer='char_wb',
                 ngram_range=(2, 4),
-                max_features=1000, 
-                min_df=1 
+                max_features=1000,
+                min_df=1
             ), 'class_str')
         )
     if 'id_str' in text_cols:
@@ -73,8 +69,8 @@ def build_pipeline(num_cols: List[str], cat_cols: List[str], text_cols: List[str
     preprocessor = ColumnTransformer(transformers=transformers, remainder='drop')
 
     clf = RandomForestClassifier(
-        n_estimators=500,
-        max_depth=20,
+        n_estimators=400,
+        max_depth=15,
         min_samples_leaf=2,
         min_samples_split=5,
         max_features='sqrt',
@@ -85,7 +81,6 @@ def build_pipeline(num_cols: List[str], cat_cols: List[str], text_cols: List[str
 
     return Pipeline([('preprocessor', preprocessor), ('classifier', clf)])
 
-
 def train_model(
     df: pd.DataFrame,
     pipeline: Optional[Pipeline] = None,
@@ -93,27 +88,21 @@ def train_model(
     param_grid: Optional[Dict[str, Any]] = None,
     grid_search_cv: int = 3
 ) -> Optional[Dict[str, Any]]:
-    
+
     log_info("Starting Training Pipeline (Random Forest)")
 
     if df is None or df.empty:
         log_error("Input DataFrame is empty.")
         return None
 
-    if TARGET_FEATURE not in df.columns:
-        log_error(f"Target column '{TARGET_FEATURE}' not found in data")
-        return None
-
     data = df.copy()
 
-    # --- Dynamic Feature Detection ---
-    # Automatically include known numeric features, distance features, and the new density feature
+    # Dynamic feature selection
     numeric_features = [c for c in data.columns if c in NUMERIC_FEATURES or 'dist_to_' in c or 'density' in c]
-    # Ensure standard numeric features from constants are included if they exist
     for c in NUMERIC_FEATURES:
         if c in data.columns and c not in numeric_features:
             numeric_features.append(c)
-            
+
     categorical_features = [c for c in CATEGORICAL_FEATURES if c in data.columns]
     text_features = [c for c in TEXT_FEATURES if c in data.columns]
 
@@ -124,20 +113,17 @@ def train_model(
     X = data.drop(columns=cols_to_drop, errors='ignore')
     y = data[TARGET_FEATURE]
 
-    # Handle text NaNs
     for col in text_features:
         if col in X.columns:
             X[col] = X[col].fillna('empty')
             X[col] = X[col].astype(str).replace(r'^\s*$', 'empty', regex=True)
 
-    # Handle numeric NaNs (e.g. missing distance = far away)
     for col in numeric_features:
         if col in X.columns:
-            # For density, 0 is a better default than 9999 (implies no siblings)
             if 'density' in col:
                 X[col] = X[col].fillna(0.0)
             else:
-                X[col] = X[col].fillna(9999.0)
+                X[col] = X[col].fillna(100.0)
 
     label_encoder = LabelEncoder()
     y_encoded = label_encoder.fit_transform(y)
@@ -145,7 +131,6 @@ def train_model(
     if pipeline is None:
         pipeline = build_pipeline(numeric_features, categorical_features, text_features)
 
-    # Splitting
     if test_size > 0.0:
         try:
             X_train, X_test, y_train, y_test = train_test_split(
@@ -162,21 +147,17 @@ def train_model(
     log_info(f"Training on {len(X_train)} samples | Features: {X_train.shape[1]}")
 
     if param_grid is not None:
-        combinations = list(ParameterGrid(param_grid))
-        CONSOLE.print(Panel(f"Grid Search: {len(combinations)} candidates, {grid_search_cv} folds.", title="Workload"))
         search = GridSearchCV(
             pipeline, param_grid, cv=grid_search_cv, verbose=1, scoring='f1_weighted', n_jobs=-1
         )
         search.fit(X_train, y_train)
         pipeline = search.best_estimator_
-        CONSOLE.print(Panel(str(search.best_params_), title="Best Hyperparameters"))
     else:
         pipeline.fit(X_train, y_train)
 
     if X_test is not None:
         log_info("Evaluating on Test Set")
         y_pred = pipeline.predict(X_test)
-        
         test_report = classification_report(
             label_encoder.inverse_transform(y_test),
             label_encoder.inverse_transform(y_pred),
