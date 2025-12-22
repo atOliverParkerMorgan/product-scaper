@@ -21,7 +21,7 @@ ps.predict()
 
 Tests
 ```bash
-python -m pytest -q  
+pytest --cov=src/utils/features.py --cov-report=term-missing
 ```
 
 ## Training Data Format

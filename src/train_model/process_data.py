@@ -18,7 +18,7 @@ from utils.features import (
 )
 
 RANDOM_SEED = 42
-OTHER_TO_CATEGORY_RATIO = 3.0
+OTHER_TO_CATEGORY_RATIO = 10.0
 
 # Create a local random instance to avoid side effects on global state
 rng = random.Random(RANDOM_SEED)
@@ -36,7 +36,7 @@ def get_main_html_content_tag(html_content: str) -> Optional[lxml.html.HtmlEleme
         return None
 
 
-def calculate_list_density(element: lxml.html.HtmlElement, max_depth: int = 3) -> float:
+def calculate_list_density(element: lxml.html.HtmlElement, max_depth: int = 5) -> float:
     """Checks if the element is part of a repeated list structure."""
     max_density = 0.0
     current = element
@@ -52,7 +52,7 @@ def calculate_list_density(element: lxml.html.HtmlElement, max_depth: int = 3) -
 
         if count > 1:
             # Logarithmic scaling for large lists
-            density_score = float(count) if count < 10 else 10.0 + np.log(count)
+            density_score = float(count) if count < 50 else 50.0 + np.log(count)
             if density_score > max_density:
                 max_density = density_score
 

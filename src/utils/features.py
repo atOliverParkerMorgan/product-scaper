@@ -534,15 +534,17 @@ def calculate_proximity_score(xpath1: str, xpath2: str) -> Tuple[int, int]:
     return (tree_distance, index_delta)
 
 
-def get_avg_distance_to_closest_categories(element: lxml.html.HtmlElement, selectors: Dict[str, List[str]]) -> float:
+def get_avg_distance_to_closest_categories(
+    element: lxml.html.HtmlElement, selectors: Dict[str, List[str]], current_category: str
+) -> float:
     if not selectors:
         return DEFAULT_DIST
 
     elem_xpath = get_unique_xpath(element)
     min_distances = []
 
-    for _, xpaths in selectors.items():
-        if not xpaths:
+    for category, xpaths in selectors.items():
+        if not xpaths or current_category == category:
             continue
 
         # Calculate distance to all items in this category
@@ -815,7 +817,7 @@ def extract_element_features(
 
         # Context features (calculated relative to other known categories)
         context_feats = {
-            "avg_distance_to_closest_categories": get_avg_distance_to_closest_categories(element, selectors),
+            "avg_distance_to_closest_categories": get_avg_distance_to_closest_categories(element, selectors, category),
             # Initialize page-level features to 0, processed later in process_page_features
             "img_size_rank": 0,
             "visibility_score_local": 0.0,
