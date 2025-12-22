@@ -1,0 +1,221 @@
+"""
+Model Training Pipeline.
+
+Handles the creation and training of the Random Forest Classifier used
+to identify HTML elements based on their features.
+"""
+
+import warnings
+from typing import Any, Dict, List, Optional, cast
+
+import pandas as pd
+from rich.panel import Panel
+from sklearn.compose import ColumnTransformer
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics import classification_report
+from sklearn.model_selection import GridSearchCV, train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder, StandardScaler
+
+# Relative imports
+from product_scraper.utils.console import CONSOLE, log_error, log_info
+from product_scraper.utils.features import (
+    CATEGORICAL_FEATURES,
+    NON_TRAINING_FEATURES,
+    NUMERIC_FEATURES,
+    TARGET_FEATURE,
+    TEXT_FEATURES,
+)
+
+RANDOM_STATE = 42
+warnings.filterwarnings("ignore")
+
+
+def build_pipeline(
+    num_cols: List[str], cat_cols: List[str], text_cols: List[str]
+) -> Pipeline:
+    """
+    Constructs the Scikit-Learn processing and classification pipeline.
+
+    Args:
+        num_cols: List of numeric feature names (scaled via StandardScaler).
+        cat_cols: List of categorical feature names (encoded via OneHotEncoder).
+        text_cols: List of text feature names (vectorized via TF-IDF).
+
+    Returns:
+        Pipeline: A configured sklearn Pipeline object.
+    """
+    transformers = []
+
+    if num_cols:
+        transformers.append(("num", StandardScaler(), num_cols))
+
+    if cat_cols:
+        transformers.append(
+            ("cat", OneHotEncoder(handle_unknown="ignore", min_frequency=5), cat_cols)
+        )
+
+    # TF-IDF for specific class/id strings
+    for col in ["class_str", "id_str"]:
+        if col in text_cols:
+            transformers.append(
+                (
+                    f"txt_{col}",
+                    TfidfVectorizer(
+                        analyzer="char_wb",
+                        ngram_range=(2, 4),
+                        max_features=1000,
+                        min_df=1,
+                    ),
+                    col,
+                )
+            )
+
+    preprocessor = ColumnTransformer(transformers=transformers, remainder="drop")
+
+    # Balanced Subsample is crucial for imbalanced web data (lots of 'other' tags)
+    clf = RandomForestClassifier(
+        n_estimators=400,
+        max_depth=15,
+        min_samples_leaf=2,
+        min_samples_split=5,
+        max_features="sqrt",
+        random_state=RANDOM_STATE,
+        class_weight="balanced_subsample",
+        n_jobs=-1,
+    )
+
+    return Pipeline([("preprocessor", preprocessor), ("classifier", clf)])
+
+
+def train_model(
+    df: pd.DataFrame,
+    pipeline: Optional[Pipeline] = None,
+    test_size: float = 0.2,
+    param_grid: Optional[Dict[str, Any]] = None,
+    grid_search_cv: int = 3,
+) -> Optional[Dict[str, Any]]:
+    """
+    Main training function.
+
+    Prepares data, splits it, trains the model (optionally using GridSearch),
+    and evaluates performance.
+
+    Args:
+        df: Pandas DataFrame containing feature data.
+        pipeline: Existing pipeline to use (optional).
+        test_size: Ratio of data to hold out for testing.
+        param_grid: Hyperparameters for GridSearchCV (optional).
+        grid_search_cv: Number of CV folds.
+
+    Returns:
+        Dict: Contains the trained 'pipeline', 'label_encoder', and 'features' list.
+    """
+    log_info("Starting Training Pipeline (Random Forest)")
+
+    if df is None or df.empty:
+        log_error("Input DataFrame is empty.")
+        return None
+
+    data = df.copy()
+
+    # 1. Feature Selection (Dynamic based on DF columns)
+    numeric_features = [
+        c
+        for c in data.columns
+        if c in NUMERIC_FEATURES or "dist_to_" in c or "density" in c
+    ]
+    for c in NUMERIC_FEATURES:
+        if c in data.columns and c not in numeric_features:
+            numeric_features.append(c)
+
+    categorical_features = [c for c in CATEGORICAL_FEATURES if c in data.columns]
+    text_features = [c for c in TEXT_FEATURES if c in data.columns]
+
+    # 2. Drop Non-Training Columns
+    cols_to_drop = [col for col in NON_TRAINING_FEATURES if col in data.columns]
+    if TARGET_FEATURE not in cols_to_drop:
+        cols_to_drop.append(TARGET_FEATURE)
+
+    X = data.drop(columns=cols_to_drop, errors="ignore")
+    y = data[TARGET_FEATURE]
+
+    # 3. Handle Missing Values
+    for col in text_features:
+        if col in X.columns:
+            X[col] = (
+                X[col]
+                .fillna("empty")
+                .astype(str)
+                .replace(r"^\s*$", "empty", regex=True)
+            )
+
+    for col in numeric_features:
+        if col in X.columns:
+            fill_val = 0.0 if "density" in col else 100.0
+            X[col] = X[col].fillna(fill_val)
+
+    # 4. Encode Labels
+    label_encoder = LabelEncoder()
+    y_encoded = label_encoder.fit_transform(y)
+
+    if pipeline is None:
+        pipeline = build_pipeline(numeric_features, categorical_features, text_features)
+
+    # 5. Split Data
+    if test_size > 0.0:
+        try:
+            X_train, X_test, y_train, y_test = train_test_split(
+                X,
+                y_encoded,
+                test_size=test_size,
+                random_state=RANDOM_STATE,
+                stratify=y_encoded,
+            )
+        except ValueError:
+            # Fallback if stratify fails (e.g., class with < 2 samples)
+            X_train, X_test, y_train, y_test = train_test_split(
+                X, y_encoded, test_size=test_size, random_state=RANDOM_STATE
+            )
+    else:
+        X_train, y_train = X, y_encoded
+        X_test, y_test = None, None
+
+    log_info(f"Training on {len(X_train)} samples | Features: {X_train.shape[1]}")
+
+    # 6. Train
+    if param_grid is not None:
+        search = GridSearchCV(
+            pipeline,
+            param_grid,
+            cv=grid_search_cv,
+            verbose=1,
+            scoring="f1_weighted",
+            n_jobs=-1,
+        )
+        search.fit(X_train, cast(Any, y_train))
+        pipeline = search.best_estimator_
+    else:
+        pipeline.fit(X_train, cast(Any, y_train))
+
+    # 7. Evaluate
+    if X_test is not None:
+        log_info("Evaluating on Test Set")
+        y_pred = pipeline.predict(X_test)
+        report = classification_report(
+            label_encoder.inverse_transform(cast(Any, y_test)),
+            label_encoder.inverse_transform(y_pred),
+            zero_division=0,
+        )
+        CONSOLE.print(Panel(cast(str, report), title="Test Set Report"))
+
+    return {
+        "pipeline": pipeline,
+        "label_encoder": label_encoder,
+        "features": {
+            "numeric": numeric_features,
+            "categorical": categorical_features,
+            "text": text_features,
+        },
+    }

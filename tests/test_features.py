@@ -7,7 +7,11 @@ except ImportError:
 import lxml
 import pandas as pd
 
-from utils.features import extract_element_features, get_feature_columns, validate_features
+from product_scraper.utils.features import (
+    extract_element_features,
+    get_feature_columns,
+    validate_features,
+)
 
 # Direct parameterization for feature extraction cases (no fixture needed)
 feature_cases = [
@@ -28,14 +32,19 @@ feature_cases = [
     # Review
     ("<div>5 stars review</div>", {"has_review_keyword": 1}),
     # Image
-    ('<img src="foo.jpg" alt="bar" width="10" height="20">', {"is_image": 1, "image_area": 200}),
+    (
+        '<img src="foo.jpg" alt="bar" width="10" height="20">',
+        {"is_image": 1, "image_area": 200},
+    ),
     # List item
     ("<li>Item</li>", {"is_list_item": 1}),
 ]
 
 
 def test_extract_element_features_basic():
-    html = '<div style="font-size:18px;font-weight:bold">Test <span>content</span></div>'
+    html = (
+        '<div style="font-size:18px;font-weight:bold">Test <span>content</span></div>'
+    )
     elem = lxml.html.fromstring(html)
     features = extract_element_features(elem)
     assert isinstance(features, dict)
@@ -47,7 +56,9 @@ def test_extract_element_features_basic():
 
 def test_get_feature_columns():
     cols = get_feature_columns()
-    assert "numeric" in cols and "categorical" in cols and "text" in cols and "all" in cols
+    assert (
+        "numeric" in cols and "categorical" in cols and "text" in cols and "all" in cols
+    )
     assert isinstance(cols["all"], list)
 
 
@@ -96,7 +107,9 @@ def test_feature_extraction_various(html, expected):
     elem = lxml.html.fromstring(html)
     features = extract_element_features(elem)
     for key, val in expected.items():
-        assert features[key] == val, f"Feature {key} expected {val}, got {features[key]}"
+        assert features[key] == val, (
+            f"Feature {key} expected {val}, got {features[key]}"
+        )
 
 
 def test_feature_extraction_csv_columns():
@@ -150,8 +163,39 @@ def test_calculate_proximity_score_basic():
 
 
 def test_get_avg_distance_to_closest_categories_basic():
-    import lxml.html
+    def test_get_avg_distance_to_closest_categories_cases():
+        import lxml.html
+        from utils.features import (
+            get_avg_distance_to_closest_categories,
+            get_unique_xpath,
+        )
 
+        # HTML with three divs, each a different category
+        html = """
+        <html><body>
+            <div id='a'></div>
+            <div id='b'></div>
+            <div id='c'></div>
+        </body></html>"""
+        doc = lxml.html.fromstring(html)
+        elem_a = doc.xpath("//div[@id='a']")[0]
+        elem_b = doc.xpath("//div[@id='b']")[0]
+        elem_c = doc.xpath("//div[@id='c']")[0]
+        selectors = {
+            "cat1": [get_unique_xpath(elem_a)],
+            "cat2": [get_unique_xpath(elem_b)],
+            "cat3": [get_unique_xpath(elem_c)],
+        }
+        # For elem_a, closest to cat2 and cat3
+        dist = get_avg_distance_to_closest_categories(elem_a, selectors, "cat1")
+        assert isinstance(dist, (int, float))
+        # If selectors is empty, should return DEFAULT_DIST
+        assert get_avg_distance_to_closest_categories(elem_a, {}, "cat1") == -1
+        # If all selectors are for the same category, should return DEFAULT_DIST
+        only_self = {"cat1": [get_unique_xpath(elem_a)]}
+        assert get_avg_distance_to_closest_categories(elem_a, only_self, "cat1") == -1
+
+    import lxml.html
     from utils.features import get_avg_distance_to_closest_categories, get_unique_xpath
 
     # Create a dummy element

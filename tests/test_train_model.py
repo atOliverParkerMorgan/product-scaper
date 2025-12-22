@@ -1,6 +1,6 @@
 import pandas as pd
 
-from train_model.train_model import build_pipeline, train_model
+from product_scraper.train_model.train_model import build_pipeline, train_model
 
 
 def test_build_pipeline():

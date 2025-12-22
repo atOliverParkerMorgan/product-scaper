@@ -1,10 +1,12 @@
-from ProductScraper import ProductScraper
+from product_scraper import ProductScraper
 
 
 def test_product_scraper_basic_usage():
     categories = ["title", "price"]
     websites = ["http://example.com"]
-    selectors = {"http://example.com": {"title": ["//h1"], "price": ['//span[@class="price"]']}}
+    selectors = {
+        "http://example.com": {"title": ["//h1"], "price": ['//span[@class="price"]']}
+    }
     scraper = ProductScraper(categories, websites, selectors=selectors)
     # Compare sorted categories to avoid order issues
     assert sorted(scraper.categories) == sorted(categories)

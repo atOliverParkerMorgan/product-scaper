@@ -3,8 +3,8 @@
 import lxml.html
 import pytest
 
-from train_model.process_data import html_to_dataframe
-from utils.features import (
+from product_scraper.train_model.process_data import html_to_dataframe
+from product_scraper.utils.features import (
     ALL_FEATURES,
     CATEGORICAL_FEATURES,
     NUMERIC_FEATURES,
@@ -39,8 +39,12 @@ def test_feature_extraction_completeness():
     # Exclude TARGET_FEATURE and 'xpath' (metadata, not in ALL_FEATURES)
     extracted_keys = {k for k in features.keys() if k not in (TARGET_FEATURE, "xpath")}
     # Exclude 'max_sibling_density' from expected_keys (should be a set, not a string)
-    expected_keys = set(ALL_FEATURES) - {"max_sibling_density"}  # max_sibling_density is processed after extraction
-    assert extracted_keys == expected_keys, f"Missing: {expected_keys - extracted_keys}, Extra: {extracted_keys - expected_keys}"
+    expected_keys = set(ALL_FEATURES) - {
+        "max_sibling_density"
+    }  # max_sibling_density is processed after extraction
+    assert extracted_keys == expected_keys, (
+        f"Missing: {expected_keys - extracted_keys}, Extra: {extracted_keys - expected_keys}"
+    )
 
 
 def test_dataframe_structure(sample_html):

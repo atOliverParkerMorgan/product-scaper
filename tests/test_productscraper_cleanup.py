@@ -1,4 +1,4 @@
-from ProductScraper import ProductScraper
+from product_scraper import ProductScraper
 
 
 def test_remove_website_cleans_all():
