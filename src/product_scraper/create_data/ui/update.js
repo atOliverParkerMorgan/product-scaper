@@ -1,19 +1,20 @@
+/* ui/update.js */
 (data) => {
     const el = document.getElementById('pw-ui');
-    if(!el) return;
+    if (!el) return;
 
     document.getElementById('pw-category-name').innerText = data.category;
     document.getElementById('pw-step-counter').innerText = `Step ${data.idx + 1}/${data.total}`;
     document.getElementById('pw-count-badge').innerText = `${data.count} selected`;
-    
+
     const btnPrev = document.getElementById('pw-btn-prev');
     const btnNext = document.getElementById('pw-btn-next');
     const btnDone = document.getElementById('pw-btn-done');
     const predictedBadge = document.getElementById('pw-predicted-badge');
-    
+
     if (data.idx === 0) btnPrev.classList.add('pw-hidden');
     else btnPrev.classList.remove('pw-hidden');
-    
+
     if (data.idx === data.total - 1) {
         btnNext.classList.add('pw-hidden');
         btnDone.classList.remove('pw-hidden');
@@ -21,8 +22,8 @@
         btnNext.classList.remove('pw-hidden');
         btnDone.classList.add('pw-hidden');
     }
-    
-    // Update predicted count
+
+    // Update predicted count based on live DOM
     const predictedCount = document.querySelectorAll('.pw-predicted').length;
     predictedBadge.innerText = `${predictedCount} found`;
 }

@@ -2,9 +2,8 @@
 Example script for running ProductScraper on a set of websites and categories.
 """
 
-from utils.console import log_info
-
 from product_scraper.core import ProductScraper
+from product_scraper.utils.console import log_info
 
 WEBSITES = [
     "https://www.valentinska.cz/home",
@@ -81,5 +80,6 @@ if __name__ == "__main__":
     except FileNotFoundError:
         product_scraper = ProductScraper(categories=CATEGORIES, websites_urls=WEBSITES)
 
-    product_scraper.train_model(create_data=True)
+    product_scraper.train_model()
+    product_scraper.create_all_selectors()
     product_scraper.save()
