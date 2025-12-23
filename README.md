@@ -97,41 +97,8 @@ Running the code above will launch a Chromium browser window with the Product Sc
 
 The scraper will save your labeled data to `product_scraper_data/selectors.yaml` and `product_scraper_data/training_data.csv` in your current directory.
 
-### 3. Training and Prediction
-Once you have collected enough training data (ideally from 50+ diverse product pages for robust generalization), you can train the model and start scraping new pages automatically.
-```python
-from product_scraper import ProductScraper
 
-CATEGORIES = ["image", "title", "price"] # add more categories if needed
-WEBSITES = [
-    "https://example-ecommerce-site.com/products",
-    "https://another-shop.com/collection",
-    #...
-]
-
-# Load existing data or initialize a new session
-scraper = ProductScraper(categories=CATEGORIES, websites_urls=WEBSITES)
-
-# 1. Train the model using the collected data
-scraper.train_model()
-
-# 2. Predict and extract data from the websites
-results = scraper.predict(WEBSITES)
-
-# 3. Save the results and the trained model state
-scraper.save() 
-
-# Print extracted data
-for url, products in results.items():
-    print(f"--- Data from {url} ---")
-    for product in products:
-        print(product)
-```
-
-## 📂 Data Structure
-
-
-### Selectors File (selectors.yaml)
+### 3. Selectors File (selectors.yaml)
 This file stores the XPaths of the elements you manually selected during training. It serves as the ground truth for the model.
 
 ```yaml
@@ -148,8 +115,76 @@ https://www.morganbooks.eu/:
   ...
 ```
 
+### 4. Load / Save ProductScraper
+Use the following syntax
+```python
+    try:
+        product_scraper = ProductScraper(categories=CATEGORIES, websites_urls=WEBSITES, save_dir="./product_scraper_data") #  save_dir="./product_scraper_data" is default
+        product_scraper.load_selectors() # load selector from ./product_scraper_data/selectors.yaml
+        # or use ProductScraper.load() to load the full object after product_scraper.save()
+    except FileNotFoundError:
+        product_scraper = ProductScraper(categories=CATEGORIES, websites_urls=WEBSITES)
+    ... 
+    
+    
+    product_scraper.save()
+```
+
+
+### 5. Training and Prediction
+Once you have collected enough training data (ideally from 50+ diverse product pages for robust generalization), you can train the model and start scraping new pages automatically.
+```python
+from product_scraper import ProductScraper
+
+CATEGORIES = ["title", "image", "price"] # add more categories if needed
+WEBSITES = [
+    "https://example-ecommerce-site.com/products",
+    "https://another-shop.com/collection",
+    # ...
+]
+
+# Load existing data or initialize a new session
+scraper = ProductScraper(categories=CATEGORIES, websites_urls=WEBSITES)
+
+# 1. Create the training data
+scraper.create_training_data()
+
+# 2. Train the model using the collected data
+scraper.train_model()
+
+# 3. Predict and extract data from the websites
+results = scraper.predict(["website-to-predcit-product-selectors-from.com", ...])
+
+# 4. Save the results and the trained model state
+scraper.save() 
+
+# Print extracted data
+for url, products in results.items():
+    print(f"\n--- Found {len(products)} products on {url} ---")
+
+    for i, product in enumerate(products):
+            print(f"Product #{i + 1}")
+            for category, data in product.items():
+                print(f"{category}: ({data['xpath']})"
+
+# example output
+/*
+
+*/
+
+```
+
 ### Training Data (training_data.csv)
 This CSV file contains the extracted features (visual, text, DOM) for every labeled element. This is the dataset used to train the Random Forest model.
+
+## Developement
+Use the src/example.py file for testing and check the example_scraper_data for debugging / inspiration
+```python
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python3 ./src/example.py 
+```
 
 ## 🧪 Testing
 To run the test suite and check code coverage:

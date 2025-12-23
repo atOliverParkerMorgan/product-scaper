@@ -454,39 +454,78 @@ class ProductScraper:
         return result
 
     def predict(
-        self, website_urls: List[str], only_xpaths=True
-    ) -> List[Dict[str, List[Dict[str, Any]]]]:
+        self, website_urls: List[str], only_xpaths: bool = True
+    ) -> Dict[str, List[Dict[str, Any]]]:
         """
         Predict element selectors for all configured categories on multiple URLs.
+
+        This method orchestrates the prediction pipeline:
+        1. Fetches HTML for each URL.
+        2. Uses the trained model to identify candidate elements for each category.
+        3. Groups these candidates into coherent 'Product' entities based on proximity.
+
+        Args:
+            website_urls (List[str]): A list of URLs to scrape.
+            only_xpaths (bool): If True, returns a simplified dictionary containing only
+                                the XPaths (strings) for each element.
+                                If False, returns the full candidate dictionaries including
+                                metadata like text preview, tag, IDs, etc.
+
+        Returns:
+            Dict[str, List[Dict[str, Any]]]: A dictionary mapping URLs to lists of found products.
+
+            Example (only_xpaths=True):
+            {
+                "https://example.com": [
+                    {
+                        "price": ["/html/body/div[1]/span"],
+                        "title": ["/html/body/div[1]/h1"],
+                        "image": ["/html/body/div[1]/img"]
+                    },
+                    ...
+                ],
+                "https://another-site.com": [...]
+            }
         """
         if not website_urls:
             raise ValueError("Please provide a list of website URLs.")
 
-        all_products: List[Dict[str, List[Dict[str, Any]]]] = []
+        all_products: Dict[str, List[Dict[str, Any]]] = {}
+
         for website_url in website_urls:
+            # 1. Get raw candidates
             raw_predictions = self.get_selectors(website_url)
 
+            # 2. Group candidates into products
             products = group_prediction_to_products(raw_predictions, self.categories)
-            all_products.append({website_url: products})
+
+            # 3. Store directly in dictionary
+            all_products[website_url] = products
 
         if only_xpaths:
-            # Simplify output to only include xpaths
-            simplified_products = []
-            for product_dict in all_products:
-                simplified_dict = {}
-                for url, products in product_dict.items():
-                    simplified_products_list = []
-                    for product in products:
-                        simplified_product = {
-                            category: [
-                                item["xpath"] for item in elements
-                            ]  # Extract only xpaths
-                            for category, elements in product.items()
-                        }
-                        simplified_products_list.append(simplified_product)
-                    simplified_dict[url] = simplified_products_list
-                simplified_products.append(simplified_dict)
-            return simplified_products
+            # Simplify output structure to remove heavy metadata (text, IDs, etc)
+            simplified_results = {}
+
+            for url, product_list in all_products.items():
+                simplified_products_list = []
+
+                for product in product_list:
+                    # product is {category: [candidate_dict, ...]}
+                    simplified_product = {}
+                    for category, elements in product.items():
+                        # Extract just the XPath string from each candidate dict
+                        if isinstance(elements, list):
+                            simplified_product[category] = [
+                                item["xpath"]
+                                for item in elements
+                                if isinstance(item, dict) and "xpath" in item
+                            ]
+
+                    simplified_products_list.append(simplified_product)
+
+                simplified_results[url] = simplified_products_list
+
+            return simplified_results
 
         return all_products
 

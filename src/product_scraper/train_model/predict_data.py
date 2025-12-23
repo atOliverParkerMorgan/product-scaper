@@ -158,30 +158,31 @@ def _compute_proximity_edges(
 
 # https://stackoverflow.com/questions/47974874/algorithm-for-grouping-points-in-given-distance
 def group_prediction_to_products(
-    selectors: Dict[str, List[Dict[str, Any]]],
+    selectors: Dict[str, List[Any]],
     categories: List[str],
     max_distance_threshold: int = 50,
-) -> List[Dict[str, Any | List[Any]]]:
+) -> List[Dict[str, Any]]:
     """
     Group predicted selectors into product dictionaries using greedy nearest-neighbor clustering.
 
-    This function identifies an "anchor" category (the first one specified in the categories list) and
-    attempts to attach items from other categories to each anchor based on structural proximity (DOM distance).
-
-    Args:
-        _html_content (str): The raw HTML content (unused in current logic but kept for interface consistency).
-        selectors (Dict[str, List[Dict[str, Any]]]): Dictionary mapping category names to lists of predicted items.
-        categories (List[str]): List of all categories to consider for grouping.
-        max_distance_threshold (int): The maximum distance score allowed to link two items together.
-
-    Returns:
-        List[Dict[str, Any]]: A list of product dictionaries, where each dictionary contains keys for categories
-                              and values for the matched item data.
+    Robust to input being simple strings (XPaths) or dictionary objects.
     """
     if not categories or not selectors:
         return []
 
-    # 1. Determine Anchor Category (The one with the most items, usually Price or Image)
+    # Ensure all items are dictionaries with an 'xpath' key.
+    normalized_selectors = {}
+    for cat, items in selectors.items():
+        cleaned_items = []
+        for item in items:
+            if isinstance(item, str):
+                cleaned_items.append({"xpath": item})
+            else:
+                cleaned_items.append(item)
+        normalized_selectors[cat] = cleaned_items
+
+    selectors = normalized_selectors
+
     valid_categories = [c for c in categories if c in selectors and selectors[c]]
     if not valid_categories:
         return []
@@ -191,9 +192,7 @@ def group_prediction_to_products(
     anchor_items = selectors[anchor_category]
 
     # Initialize products with the anchor items
-    products: List[Dict[str, Any | List[Any]]] = [
-        {anchor_category: item} for item in anchor_items
-    ]
+    products = [{anchor_category: item} for item in anchor_items]
 
     # 2. Match other categories to the Anchors
     for cat in valid_categories:
@@ -215,15 +214,14 @@ def group_prediction_to_products(
         assigned_candidates: Set[int] = set()
 
         for _, p_idx, c_idx in edges:
-            # Rule: A candidate (e.g., specific image) can never belong to two products.
             if c_idx in assigned_candidates:
                 continue
 
-            # Allow multiple items per product by default (1-to-Many).
-            # We initialize a list if it doesn't exist yet, then append.
+            # Allow multiple items per product by default
             if cat not in products[p_idx]:
                 products[p_idx][cat] = []
 
+            # Append item to the list
             products[p_idx][cat].append(candidates[c_idx])
 
             assigned_candidates.add(c_idx)
