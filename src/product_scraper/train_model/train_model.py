@@ -5,7 +5,6 @@ Handles the creation and training of the Random Forest Classifier used
 to identify HTML elements based on their features.
 """
 
-import warnings
 from typing import Any, Dict, List, Optional, Tuple, cast
 
 import pandas as pd
@@ -29,7 +28,6 @@ from product_scraper.utils.features import (
 )
 
 RANDOM_STATE = 42
-warnings.filterwarnings("ignore")
 
 
 def build_pipeline(
@@ -73,7 +71,6 @@ def build_pipeline(
             )
 
     preprocessor = ColumnTransformer(transformers=transformers, remainder="drop")
-
     # Balanced Subsample is crucial for imbalanced web data (lots of 'other' tags)
     clf = RandomForestClassifier(
         n_estimators=400,

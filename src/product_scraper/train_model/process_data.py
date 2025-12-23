@@ -1,5 +1,7 @@
 """Data processing utilities for HTML element feature extraction."""
 
+# @generated "particially" Gemini 3: generated docs strings and refactored for linting.
+
 import random
 from typing import Any, Dict, List, Optional, Set, Tuple
 
@@ -130,6 +132,7 @@ def _extract_positive_samples(
     return positive_data, labeled_elements
 
 
+# https://stackoverflow.com/questions/34655628/how-to-handle-class-imbalance-in-sklearn-random-forests-should-i-use-sample-wei
 def _extract_negative_samples(
     main_content: lxml.html.HtmlElement,
     selectors: Dict[str, List[str]],

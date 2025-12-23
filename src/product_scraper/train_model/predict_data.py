@@ -2,6 +2,8 @@
 Prediction utilities for extracting and grouping HTML elements by category using a trained model.
 """
 
+# @generated "partially" Gemini 3: refactored for linting errors and add docstrings.
+
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 import lxml.html
@@ -154,16 +156,16 @@ def _compute_proximity_edges(
     return edges
 
 
+# https://stackoverflow.com/questions/47974874/algorithm-for-grouping-points-in-given-distance
 def group_prediction_to_products(
-    _html_content: str,
     selectors: Dict[str, List[Dict[str, Any]]],
     categories: List[str],
     max_distance_threshold: int = 50,
-) -> List[Dict[str, Any]]:
+) -> List[Dict[str, Any | List[Any]]]:
     """
     Group predicted selectors into product dictionaries using greedy nearest-neighbor clustering.
 
-    This function identifies an "anchor" category (usually the one with the most items) and
+    This function identifies an "anchor" category (the first one specified in the categories list) and
     attempts to attach items from other categories to each anchor based on structural proximity (DOM distance).
 
     Args:
@@ -184,11 +186,14 @@ def group_prediction_to_products(
     if not valid_categories:
         return []
 
-    anchor_category = max(valid_categories, key=lambda c: len(selectors[c]))
+    # Anchor is the category that is first in the list of valid categories
+    anchor_category = valid_categories[0]
     anchor_items = selectors[anchor_category]
 
     # Initialize products with the anchor items
-    products = [{anchor_category: item} for item in anchor_items]
+    products: List[Dict[str, Any | List[Any]]] = [
+        {anchor_category: item} for item in anchor_items
+    ]
 
     # 2. Match other categories to the Anchors
     for cat in valid_categories:
@@ -207,15 +212,20 @@ def group_prediction_to_products(
         # --- Sort & Assign Greedily ---
         edges.sort(key=lambda x: x[0])
 
-        assigned_products: Set[int] = set()
         assigned_candidates: Set[int] = set()
 
         for _, p_idx, c_idx in edges:
-            if p_idx in assigned_products or c_idx in assigned_candidates:
+            # Rule: A candidate (e.g., specific image) can never belong to two products.
+            if c_idx in assigned_candidates:
                 continue
 
-            products[p_idx][cat] = candidates[c_idx]
-            assigned_products.add(p_idx)
+            # Allow multiple items per product by default (1-to-Many).
+            # We initialize a list if it doesn't exist yet, then append.
+            if cat not in products[p_idx]:
+                products[p_idx][cat] = []
+
+            products[p_idx][cat].append(candidates[c_idx])
+
             assigned_candidates.add(c_idx)
 
     return products

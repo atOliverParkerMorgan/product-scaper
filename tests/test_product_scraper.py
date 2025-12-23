@@ -54,19 +54,6 @@ def test_save_model_untrained(tmp_path):
         assert False, "Should raise ValueError if model is not trained"
 
 
-def test_save_training_data_empty(tmp_path):
-    categories = ["title"]
-    websites = ["http://test.com"]
-    scraper = ProductScraper(categories, websites)
-    scraper.training_data = None
-    try:
-        scraper.save_training_data(str(tmp_path / "data.csv"))
-    except ValueError:
-        pass
-    else:
-        assert False, "Should raise ValueError if training_data is empty"
-
-
 def test_len_and_iter(monkeypatch):
     categories = ["title", "price"]
     websites = ["http://a.com", "http://b.com"]

@@ -1,10 +1,11 @@
-
 """
 Utility functions used across the product scraper project.
 
 This module provides helpers for tag normalization, xpath generation, unique tag counting,
 and CSS selector generation for lxml elements.
 """
+
+# @generated "partially" Gemini 3: docstrings.
 
 from typing import Any, List
 
@@ -18,8 +19,8 @@ def normalize_tag(tag_name: Any) -> str:
     Returns:
         str: Normalized tag name, or 'unknown' if not valid.
     """
-    if not tag_name or not hasattr(tag_name, 'lower'):
-        return 'unknown'
+    if not tag_name or not hasattr(tag_name, "lower"):
+        return "unknown"
     return str(tag_name).lower()
 
 
@@ -59,17 +60,17 @@ def generate_selector_for_element(element: Any) -> str:
     """
     parts = []
     current = element
-    while current is not None and hasattr(current, 'tag'):
-        tag = current.tag.lower() if hasattr(current.tag, 'lower') else str(current.tag)
-        if tag == 'html':
+    while current is not None and hasattr(current, "tag"):
+        tag = current.tag.lower() if hasattr(current.tag, "lower") else str(current.tag)
+        if tag == "html":
             break
         # Try to use ID for uniqueness
-        elem_id = current.get('id')
+        elem_id = current.get("id")
         if elem_id:
             parts.insert(0, f"{tag}#{elem_id}")
             break
         # Use class if available
-        classes = current.get('class', '')
+        classes = current.get("class", "")
         if classes:
             class_list = classes.split()
             if class_list:
@@ -80,4 +81,4 @@ def generate_selector_for_element(element: Any) -> str:
         # Limit depth to avoid overly long selectors
         if len(parts) > 5:
             break
-    return ' > '.join(parts) if parts else ''
+    return " > ".join(parts) if parts else ""

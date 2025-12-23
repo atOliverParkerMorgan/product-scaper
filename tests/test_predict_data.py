@@ -25,7 +25,6 @@ def test_calculate_proximity_score():
 
 
 def test_group_prediction_to_products():
-    html = "<html><body><div><h1>Title</h1><span>Price</span></div></body></html>"
     selectors = {
         "title": [
             {
@@ -49,7 +48,7 @@ def test_group_prediction_to_products():
         ],
     }
     categories = ["title", "price"]
-    products = group_prediction_to_products(html, selectors, categories)
+    products = group_prediction_to_products(selectors, categories)
     assert isinstance(products, list)
     assert len(products) == 1
     assert "title" in products[0] and "price" in products[0]

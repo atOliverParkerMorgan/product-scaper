@@ -1,7 +1,7 @@
 """
 ProductScraper: Main interface for web scraping and machine learning-based element detection.
 """
-# @generated "partially" Gemini 3: Fix linting errors
+# @generated "partially" Gemini 3: Fix linting errors and add docstrings + refactored for linting .
 
 import pickle
 from pathlib import Path
@@ -27,7 +27,7 @@ DEFAULT_SAVE_DIR = Path("product_scraper_data")
 
 
 class ProductScraper:
-    # pylint: disable=too-many-instance-attributes, too-many-public-methods
+    # pylint: disable=too-many-instance-attributes, too-many-public-methods, too-many-arguments, too-many-positional-arguments
     """
     Main interface for web scraping and machine learning-based element detection.
     """
@@ -35,14 +35,11 @@ class ProductScraper:
     def __init__(
         self,
         categories: List[str],
-        websites_urls: Optional[List[str]] = None,
+        websites_urls: List[str],
         selectors: Optional[Dict[str, Dict[str, List[str]]]] = None,
         training_data: Optional[pd.DataFrame] = None,
-        model: Optional[Dict[str, Any]] = None,
-        pipeline: Optional[Any] = None,
         save_dir: Union[str, Path] = DEFAULT_SAVE_DIR,
     ):
-        # pylint: disable=too-many-arguments, too-many-positional-arguments
         """
         Initialize the ProductScraper instance.
 
@@ -68,7 +65,7 @@ class ProductScraper:
         self.save_dir.mkdir(parents=True, exist_ok=True)
 
         self._categories: List[str] = categories
-        self._websites_urls: List[str] = websites_urls if websites_urls else []
+        self._websites_urls: List[str] = websites_urls
 
         # url -> {category: [selectors]}
         self.selectors: Dict[str, Dict[str, List[str]]] = (
@@ -79,8 +76,8 @@ class ProductScraper:
         self.url_in_training_data = set()
         self.training_data = training_data
 
-        self.model = model
-        self.pipeline = pipeline
+        self.model = None
+        self.pipeline = None
 
         # Iterator state
         self._iterator_index = 0
@@ -187,8 +184,6 @@ class ProductScraper:
         """
         if website_url not in self._websites_urls:
             self._websites_urls.append(website_url)
-        else:
-            log_warning(f"Website URL {website_url} already in configured list")
 
     def remove_website(self, website_url: str) -> None:
         """
@@ -243,7 +238,11 @@ class ProductScraper:
         # Ensure URL is tracked
         self.add_website(website_url)
 
-        if website_url in self.selectors:
+        has_all_selectors = website_url in self.selectors and set(
+            self._categories
+        ).issubset(self.selectors[website_url].keys())
+
+        if has_all_selectors and website_url in self.selectors:
             return self.selectors[website_url]
 
         try:
@@ -261,8 +260,6 @@ class ProductScraper:
 
         if save:
             self.save()
-            self.save_selectors()
-            self.save_training_data()
 
         return data
 
@@ -288,8 +285,6 @@ class ProductScraper:
         """
         if category not in self._categories:
             self._categories.append(category)
-            # Optional: keep sorted
-            self._categories.sort()
         else:
             log_warning(f"Category '{category}' already exists")
 
@@ -300,19 +295,18 @@ class ProductScraper:
         for category in categories:
             self.add_category(category)
 
-    def _validate_training_url(self, url: str) -> bool:
+    def __validate_training_url(self, url: str) -> bool:
         """Internal helper to validate if a URL should be processed for training."""
         if url in self.url_in_training_data:
             return False
 
-        # Note: The original logic excludes the URL if it is not in selectors here.
-        if url not in self._websites_urls or url not in self.selectors:
+        if url not in self._websites_urls:
             log_warning(f"URL {url} not in configured websites. Skipping.")
             return False
 
         return True
 
-    def _fetch_training_html(self, url: str) -> Optional[str]:
+    def __fetch_training_html(self, url: str) -> Optional[str]:
         """Internal helper to safely fetch HTML for training."""
         try:
             return self.get_html(url)
@@ -320,12 +314,16 @@ class ProductScraper:
             log_warning(f"Skipping {url} due to network error.")
             return None
 
-    def _extract_data_from_html(
+    def __extract_data_from_html(
         self, url: str, html_content: str, all_data: List[pd.DataFrame]
     ) -> Optional[pd.DataFrame]:
         """Internal helper to handle selector logic and extract DataFrame."""
-        # Handle missing selectors (dynamic creation logic)
-        if url not in self.selectors:
+
+        has_all_selectors = url in self.selectors and set(self._categories).issubset(
+            self.selectors[url].keys()
+        )
+
+        if url not in self.selectors or not has_all_selectors:
             try:
                 if all_data:
                     new_batch = pd.concat(all_data, ignore_index=True)
@@ -364,21 +362,21 @@ class ProductScraper:
         log_warning(f"No data extracted from {url}")
         return None
 
-    def _process_training_url(
+    def __process_training_url(
         self, url: str, all_data: List[pd.DataFrame]
     ) -> Optional[pd.DataFrame]:
         """
         Internal helper to process a single URL for training data creation.
         Returns a DataFrame if data was extracted, None otherwise.
         """
-        if not self._validate_training_url(url):
+        if not self.__validate_training_url(url):
             return None
 
-        html_content = self._fetch_training_html(url)
+        html_content = self.__fetch_training_html(url)
         if html_content is None:
             return None
 
-        return self._extract_data_from_html(url, html_content, all_data)
+        return self.__extract_data_from_html(url, html_content, all_data)
 
     def create_training_data(
         self, websites_to_use: Optional[List[str]] = None
@@ -394,7 +392,7 @@ class ProductScraper:
         )
 
         for url in target_urls:
-            df = self._process_training_url(url, all_data)
+            df = self.__process_training_url(url, all_data)
             if df is not None:
                 all_data.append(df)
 
@@ -455,7 +453,9 @@ class ProductScraper:
 
         return result
 
-    def predict(self, website_urls: List[str]) -> List[Dict[str, List[Dict[str, Any]]]]:
+    def predict(
+        self, website_urls: List[str], only_xpaths=True
+    ) -> List[Dict[str, List[Dict[str, Any]]]]:
         """
         Predict element selectors for all configured categories on multiple URLs.
         """
@@ -465,12 +465,28 @@ class ProductScraper:
         all_products: List[Dict[str, List[Dict[str, Any]]]] = []
         for website_url in website_urls:
             raw_predictions = self.get_selectors(website_url)
-            html_content = self.get_html(website_url)
 
-            products = group_prediction_to_products(
-                html_content, raw_predictions, self.categories
-            )
+            products = group_prediction_to_products(raw_predictions, self.categories)
             all_products.append({website_url: products})
+
+        if only_xpaths:
+            # Simplify output to only include xpaths
+            simplified_products = []
+            for product_dict in all_products:
+                simplified_dict = {}
+                for url, products in product_dict.items():
+                    simplified_products_list = []
+                    for product in products:
+                        simplified_product = {
+                            category: [
+                                item["xpath"] for item in elements
+                            ]  # Extract only xpaths
+                            for category, elements in product.items()
+                        }
+                        simplified_products_list.append(simplified_product)
+                    simplified_dict[url] = simplified_products_list
+                simplified_products.append(simplified_dict)
+            return simplified_products
 
         return all_products
 
@@ -515,8 +531,6 @@ class ProductScraper:
         self.save_dir.mkdir(parents=True, exist_ok=True)
         if self.training_data is not None:
             self.training_data.to_csv(self.save_dir / filename, index=False)
-        else:
-            raise ValueError("Dataframe is empty.")
 
     def load_dataframe(self, filename: str = "training_data.csv") -> None:
         """

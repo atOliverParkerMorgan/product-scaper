@@ -1,8 +1,9 @@
-# @generated "particially" Gemini 3: generated docs strings and implemented interactive ui injections for playwright
-
 """
 Module for interactively selecting training data from web pages using a Playwright-based UI.
 """
+
+# @generated "partially" Gemini 3: refactored for linting errors and add docstrings.
+# @generated "partially" Gemini 3: Implmenenting interactive data selection using Playwright.
 
 import copy
 import time
@@ -36,9 +37,13 @@ class SelectionState:
     Manages the state of the interactive selection session.
     """
 
-    def __init__(self, categories: List[str]):
+    def __init__(
+        self,
+        categories: List[str],
+        existing_selections: Dict[str, List[str]],
+    ):
         self.categories = categories
-        self.selections: Dict[str, List[str]] = {}
+        self.selections: Dict[str, List[str]] = existing_selections
         self.undo_stack: List = []
         self.redo_stack: List = []
         self.current_idx: int = 0
@@ -77,6 +82,8 @@ def update_highlights(
     Calls the optimized JS function to update highlights without flickering.
     """
     try:
+        if page.is_closed():
+            return
         page.evaluate(
             "([sel, pred]) => window._updateHighlights(sel, pred)",
             [selectors, predicted if predicted else []],
@@ -91,6 +98,8 @@ def inject_ui_scripts(page: Page) -> bool:
     Injects the custom CSS and JS into the webpage.
     """
     try:
+        if page.is_closed():
+            return False
         if CSS_CONTENT.strip():
             page.add_style_tag(content=CSS_CONTENT)
         if JS_CORE_LOGIC.strip():
@@ -104,43 +113,51 @@ def _setup_page(p: Playwright, url: str) -> Tuple[Optional[Page], Optional[Any]]
     """
     Configures the browser, context, and page with navigation locks.
     """
-    browser = p.chromium.launch(
-        headless=False,
-        args=["--start-maximized", "--disable-blink-features=AutomationControlled"],
-    )
-    context = browser.new_context(no_viewport=True)
-    context.set_extra_http_headers({"Accept-Language": "en-US,en;q=0.9"})
-
-    page = context.new_page()
-
-    # Block navigation away from the target URL
-    def route_handler(route: Route):
-        request = route.request
-        if (
-            request.is_navigation_request()
-            and request.frame == page.main_frame
-            and request.url != url
-            and request.url != "about:blank"
-        ):
-            log_warning(f"Blocked navigation to: {request.url}")
-            route.abort()
-        else:
-            route.continue_()
-
-    context.route("**/*", route_handler)
-
-    log_info(f"Navigating to {url}")
     try:
-        page.goto(url, wait_until="domcontentloaded", timeout=60000)
+        browser = p.chromium.launch(
+            headless=False,
+            args=["--start-maximized", "--disable-blink-features=AutomationControlled"],
+        )
+        context = browser.new_context(no_viewport=True)
+        context.set_extra_http_headers({"Accept-Language": "en-US,en;q=0.9"})
+
+        page = context.new_page()
+
+        # Block navigation away from the target URL
+        def route_handler(route: Route):
+            try:
+                request = route.request
+                if (
+                    request.is_navigation_request()
+                    and request.frame == page.main_frame
+                    and request.url != url
+                    and request.url != "about:blank"
+                ):
+                    log_warning(f"Blocked navigation to: {request.url}")
+                    route.abort()
+                else:
+                    route.continue_()
+            except PlaywrightError:
+                # Handle cases where route handling fails due to closing
+                pass
+
+        context.route("**/*", route_handler)
+
+        log_info(f"Navigating to {url}")
+        try:
+            page.goto(url, wait_until="domcontentloaded", timeout=60000)
+        except PlaywrightError as e:
+            log_warning(f"Initial navigation warning: {e}")
+
+        if not inject_ui_scripts(page):
+            log_error("Failed to initialize UI.")
+            browser.close()
+            return None, None
+
+        return page, browser
     except PlaywrightError as e:
-        log_warning(f"Initial navigation warning: {e}")
-
-    if not inject_ui_scripts(page):
-        log_error("Failed to initialize UI.")
-        browser.close()
+        log_error(f"Failed to setup browser: {e}")
         return None, None
-
-    return page, browser
 
 
 def _update_predictions_if_needed(
@@ -150,6 +167,9 @@ def _update_predictions_if_needed(
     Runs the ML model to predict selectors if the category has changed.
     """
     if state.current_category == state.last_category:
+        return
+
+    if page.is_closed():
         return
 
     state.current_predictions = []
@@ -165,11 +185,9 @@ def _update_predictions_if_needed(
                 p.get("xpath") for p in preds if p.get("xpath")
             ]  # pyright: ignore[reportAssignmentType]
         except Exception:  # pylint: disable=broad-exception-caught
-            # Model prediction failure should not crash the UI
             pass
 
     state.last_category = state.current_category
-    # Reset class cache on category change
     state.last_calc_class_candidates = []
     state.last_calc_class_xpath = ""
 
@@ -178,6 +196,9 @@ def _calculate_class_candidates(state: SelectionState, page: Page) -> Set[str]:
     """
     Determines which elements match the CSS class of the last selected item.
     """
+    if page.is_closed():
+        return set()
+
     current_list = state.current_selection_list
 
     if not current_list:
@@ -222,6 +243,9 @@ def _sync_ui_visuals(state: SelectionState, page: Page) -> None:
     """
     Updates the UI overlay text and element highlights on the page.
     """
+    if page.is_closed():
+        return
+
     pred_set = set(state.current_predictions)
     sel_set = set(state.current_selection_list)
 
@@ -279,7 +303,7 @@ def _handle_toggle_action(state: SelectionState, xpath: str) -> None:
 
 def _handle_ui_buttons(state: SelectionState, payload: str) -> None:
     """
-    Handles clicks on the UI overlay buttons (Next, Prev, AI Toggle, Class Toggle).
+    Handles clicks on the UI overlay buttons.
     """
     if payload == "next":
         state.current_idx += 1
@@ -288,18 +312,14 @@ def _handle_ui_buttons(state: SelectionState, payload: str) -> None:
             state.current_idx -= 1
     elif payload == "done":
         state.should_exit = True
-
     elif payload == "toggle_ai":
         _handle_toggle_ai(state)
-
     elif payload == "toggle_class":
         _handle_toggle_class(state)
 
 
 def _handle_toggle_ai(state: SelectionState) -> None:
-    """
-    Toggles the selection of all AI-predicted elements.
-    """
+    """Toggles the selection of all AI-predicted elements."""
     if state.current_category not in state.selections:
         state.selections[state.current_category] = []
 
@@ -310,13 +330,11 @@ def _handle_toggle_ai(state: SelectionState) -> None:
     all_ai_selected = len(pred_set) > 0 and pred_set.issubset(sel_set)
 
     if all_ai_selected:
-        # Unselect AI
         state.selections[state.current_category] = [
             s for s in current_list if s not in pred_set
         ]
         log_info("Unselected AI predictions.")
     else:
-        # Select AI
         for p in state.current_predictions:
             if p not in current_list:
                 current_list.append(p)
@@ -324,9 +342,7 @@ def _handle_toggle_ai(state: SelectionState) -> None:
 
 
 def _handle_toggle_class(state: SelectionState) -> None:
-    """
-    Toggles the selection of all elements matching the class of the last selected item.
-    """
+    """Toggles selection of elements matching the class of the last selected item."""
     if state.current_category not in state.selections:
         state.selections[state.current_category] = []
 
@@ -340,13 +356,11 @@ def _handle_toggle_class(state: SelectionState) -> None:
     all_class_selected = candidates_set.issubset(sel_set)
 
     if all_class_selected:
-        # Unselect Class
         state.selections[state.current_category] = [
             s for s in current_list if s not in candidates_set
         ]
         log_info("Unselected class matches.")
     else:
-        # Select Class
         added_count = 0
         for c in state.last_calc_class_candidates:
             if c not in current_list:
@@ -356,9 +370,7 @@ def _handle_toggle_class(state: SelectionState) -> None:
 
 
 def _handle_history_action(state: SelectionState, action: str) -> None:
-    """
-    Handles Undo/Redo keyboard shortcuts.
-    """
+    """Handles Undo/Redo keyboard shortcuts."""
     if action == "undo" and state.undo_stack:
         state.redo_stack.append((state.current_idx, copy.deepcopy(state.selections)))
         idx, prev_selections = state.undo_stack.pop()
@@ -366,7 +378,6 @@ def _handle_history_action(state: SelectionState, action: str) -> None:
         if idx == state.current_idx:
             state.selections = prev_selections
         else:
-            # Prevent undoing across category navigation to avoid confusion
             state.undo_stack.append((idx, prev_selections))
 
     elif action == "redo" and state.redo_stack:
@@ -382,8 +393,10 @@ def _handle_history_action(state: SelectionState, action: str) -> None:
 def _poll_ui_events(page: Page) -> Tuple[Optional[str], Optional[str]]:
     """
     Polls the Playwright window object for events triggered by the JS UI.
-    Returns (action_type, action_payload) or (None, None).
     """
+    if page.is_closed():
+        return None, None
+
     for _ in range(10):  # Poll window ~200ms
         try:
             if page.evaluate("window._clickedSelector"):
@@ -402,6 +415,7 @@ def _poll_ui_events(page: Page) -> Tuple[Optional[str], Optional[str]]:
                 return "history", action_payload
 
         except PlaywrightError:
+            # If error occurs during polling (e.g., close), stop polling
             break
         time.sleep(0.02)
     return None, None
@@ -410,51 +424,61 @@ def _poll_ui_events(page: Page) -> Tuple[Optional[str], Optional[str]]:
 def select_data(product_scraper: "ProductScraper", url: str) -> Dict[str, List[str]]:
     """
     Main entry point for interactive data selection.
-
-    Initializes the browser, manages the event loop, and handles user interactions
-    for selecting scraping targets on a webpage.
-
-    Args:
-        product_scraper (ProductScraper): The main scraper instance containing
-                                          configuration and models.
-        url (str): The URL of the page to label.
-
-    Returns:
-        Dict[str, List[str]]: A dictionary mapping categories to lists of selected XPaths.
     """
-    state = SelectionState(product_scraper.categories)
+    state = SelectionState(
+        product_scraper.categories, product_scraper.selectors.get(url, {})
+    )
 
-    with sync_playwright() as p:
-        page, browser = _setup_page(p, url)
-        if not page:
-            return {}
+    try:
+        with sync_playwright() as p:
+            page, browser = _setup_page(p, url)
+            if not page:
+                return {}
 
-        while not state.is_finished:
-            # 1. Update Context
-            _update_predictions_if_needed(state, product_scraper, page)
-
-            # 2. Update UI
-            try:
-                _sync_ui_visuals(state, page)
-            except PlaywrightError:
-                # If page is closed/refreshed, try to recover
-                if not inject_ui_scripts(page):
+            while not state.is_finished:
+                # 1. CHECK IF WINDOW CLOSED
+                if page.is_closed():
+                    log_warning(
+                        f"Window closed for {url}. Saving progress and continuing..."
+                    )
                     break
 
-            # 3. Poll for Actions
-            action_type, action_payload = _poll_ui_events(page)
-            if not action_type or not action_payload:
-                continue
+                try:
+                    # 2. Update Context
+                    _update_predictions_if_needed(state, product_scraper, page)
 
-            # 4. Handle Actions
-            if action_type == "toggle":
-                _handle_toggle_action(state, action_payload)
-            elif action_type == "ui":
-                _handle_ui_buttons(state, action_payload)
-            elif action_type == "history":
-                _handle_history_action(state, action_payload)
+                    # 3. Update UI
+                    _sync_ui_visuals(state, page)
 
-        if browser:
-            browser.close()
+                    # 4. Poll for Actions
+                    action_type, action_payload = _poll_ui_events(page)
+
+                    if action_type and action_payload:
+                        if action_type == "toggle":
+                            _handle_toggle_action(state, action_payload)
+                        elif action_type == "ui":
+                            _handle_ui_buttons(state, action_payload)
+                        elif action_type == "history":
+                            _handle_history_action(state, action_payload)
+
+                except PlaywrightError as e:
+                    # Specific check for user closing the window manually
+                    if "Target closed" in str(e):
+                        log_warning(
+                            f"Window target closed for {url}. Saving progress..."
+                        )
+                        break
+                    # For other playwright errors, we log and potentially continue or break
+                    log_error(f"Playwright error during loop: {e}")
+                    break
+
+            # Ensure browser is closed at the end of function
+            if browser:
+                browser.close()
+
+    except KeyboardInterrupt:
+        log_warning("User interrupted (Ctrl+C). Closing browser and exiting...")
+        # Context manager will handle closing, but we explicitly raise to stop program
+        raise
 
     return state.selections

@@ -5,6 +5,10 @@ Refactored for modularity, readability, and robustness.
 
 # @generated "partially" Gemini 3: generete regex patterns for price and currency detection
 # @generated "partially" Gemini 3: generated docs strings and imporve comments
+
+# inspired by:
+# https://stackoverflow.com/questions/13336576/extracting-an-information-from-web-page-by-machine-learning
+
 from functools import lru_cache
 from typing import Any, Dict, List, Optional, Tuple
 
