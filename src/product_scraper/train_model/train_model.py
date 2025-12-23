@@ -6,7 +6,7 @@ to identify HTML elements based on their features.
 """
 
 import warnings
-from typing import Any, Dict, List, Optional, cast
+from typing import Any, Dict, List, Optional, Tuple, cast
 
 import pandas as pd
 from rich.panel import Panel
@@ -89,6 +89,146 @@ def build_pipeline(
     return Pipeline([("preprocessor", preprocessor), ("classifier", clf)])
 
 
+def select_and_prepare_features(df):
+    """Select and prepare feature columns from the DataFrame."""
+    numeric = [
+        c
+        for c in df.columns
+        if c in NUMERIC_FEATURES or "dist_to_" in c or "density" in c
+    ]
+    for c in NUMERIC_FEATURES:
+        if c in df.columns and c not in numeric:
+            numeric.append(c)
+    categorical = [c for c in CATEGORICAL_FEATURES if c in df.columns]
+    text = [c for c in TEXT_FEATURES if c in df.columns]
+    return numeric, categorical, text
+
+
+def fill_missing(X, text_features, numeric_features):
+    """Fill missing values in the feature DataFrame."""
+    for col in text_features:
+        if col in X.columns:
+            X[col] = (
+                X[col]
+                .fillna("empty")
+                .astype(str)
+                .replace(r"^\s*$", "empty", regex=True)
+            )
+    for col in numeric_features:
+        if col in X.columns:
+            fill_val = 0.0 if "density" in col else 100.0
+            X[col] = X[col].fillna(fill_val)
+    return X
+
+
+def _prepare_data(
+    df: pd.DataFrame,
+) -> Tuple[pd.DataFrame, Any, LabelEncoder, Dict[str, List[str]]]:
+    """Internal helper to select features, fill missing data, and encode target."""
+    data = df.copy()
+    numeric, categorical, text = select_and_prepare_features(data)
+
+    cols_to_drop = [col for col in NON_TRAINING_FEATURES if col in data.columns]
+    if TARGET_FEATURE not in cols_to_drop:
+        cols_to_drop.append(TARGET_FEATURE)
+
+    X = data.drop(columns=cols_to_drop, errors="ignore")
+    y = data[TARGET_FEATURE]
+
+    X = fill_missing(X, text, numeric)
+
+    label_encoder = LabelEncoder()
+    y_encoded = label_encoder.fit_transform(y)
+
+    features = {
+        "numeric": numeric,
+        "categorical": categorical,
+        "text": text,
+    }
+
+    return X, y_encoded, label_encoder, features
+
+
+def _split_data(
+    X: pd.DataFrame, y_encoded: Any, test_size: float
+) -> Tuple[Any, Any, Any, Any]:
+    """Internal helper to split data, handling stratification errors."""
+    if test_size <= 0.0:
+        return X, None, y_encoded, None
+
+    try:
+        return tuple(
+            train_test_split(
+                X,
+                y_encoded,
+                test_size=test_size,
+                random_state=RANDOM_STATE,
+                stratify=y_encoded,
+            )
+        )
+    except ValueError:
+        return tuple(
+            train_test_split(
+                X, y_encoded, test_size=test_size, random_state=RANDOM_STATE
+            )
+        )
+
+
+def _ensure_pipeline(
+    pipeline: Optional[Pipeline], features: Dict[str, List[str]]
+) -> Pipeline:
+    """Internal helper to return the existing pipeline or build a new one."""
+    if pipeline is None:
+        return build_pipeline(
+            features["numeric"], features["categorical"], features["text"]
+        )
+    return pipeline
+
+
+def _fit_model(
+    pipeline: Pipeline,
+    split_data: Tuple[Any, Any, Any, Any],
+    param_grid: Optional[Dict[str, Any]],
+    cv: int,
+) -> Pipeline:
+    """Internal helper to handle GridSearchCV or standard fit."""
+    X_train, _, y_train, _ = split_data
+
+    if param_grid is not None:
+        search = GridSearchCV(
+            pipeline,
+            param_grid,
+            cv=cv,
+            verbose=1,
+            scoring="f1_weighted",
+            n_jobs=-1,
+        )
+        search.fit(X_train, cast(Any, y_train))
+        return search.best_estimator_
+
+    pipeline.fit(X_train, cast(Any, y_train))
+    return pipeline
+
+
+def _evaluate_performance(
+    pipeline: Pipeline,
+    split_data: Tuple[Any, Any, Any, Any],
+    label_encoder: LabelEncoder,
+) -> None:
+    """Internal helper to evaluate the model on the test set."""
+    _, X_test, _, y_test = split_data
+
+    if X_test is not None:
+        log_info("Evaluating on Test Set")
+        y_pred = pipeline.predict(X_test)
+        report = classification_report(
+            label_encoder.inverse_transform(cast(Any, y_test)),
+            label_encoder.inverse_transform(y_pred),
+            zero_division=0,
+        )
+        CONSOLE.print(Panel(cast(str, report), title="Test Set Report"))
+
+
 def train_model(
     df: pd.DataFrame,
     pipeline: Optional[Pipeline] = None,
@@ -118,82 +258,28 @@ def train_model(
         log_error("Input DataFrame is empty.")
         return None
 
-    def select_features(df):
-        numeric = [c for c in df.columns if c in NUMERIC_FEATURES or "dist_to_" in c or "density" in c]
-        for c in NUMERIC_FEATURES:
-            if c in df.columns and c not in numeric:
-                numeric.append(c)
-        categorical = [c for c in CATEGORICAL_FEATURES if c in df.columns]
-        text = [c for c in TEXT_FEATURES if c in df.columns]
-        return numeric, categorical, text
+    # 1. Prepare Data
+    X, y_encoded, label_encoder, features = _prepare_data(df)
 
-    def handle_missing(X, text_features, numeric_features):
-        for col in text_features:
-            if col in X.columns:
-                X[col] = X[col].fillna("empty").astype(str).replace(r"^\s*$", "empty", regex=True)
-        for col in numeric_features:
-            if col in X.columns:
-                fill_val = 0.0 if "density" in col else 100.0
-                X[col] = X[col].fillna(fill_val)
-        return X
+    # 2. Pipeline setup
+    pipeline = _ensure_pipeline(pipeline, features)
 
-    data = df.copy()
-    numeric_features, categorical_features, text_features = select_features(data)
-    cols_to_drop = [col for col in NON_TRAINING_FEATURES if col in data.columns]
-    if TARGET_FEATURE not in cols_to_drop:
-        cols_to_drop.append(TARGET_FEATURE)
-    X = data.drop(columns=cols_to_drop, errors="ignore")
-    y = data[TARGET_FEATURE]
-    X = handle_missing(X, text_features, numeric_features)
-    label_encoder = LabelEncoder()
-    y_encoded = label_encoder.fit_transform(y)
-    if pipeline is None:
-        pipeline = build_pipeline(numeric_features, categorical_features, text_features)
-    if test_size > 0.0:
-        try:
-            X_train, X_test, y_train, y_test = train_test_split(
-                X,
-                y_encoded,
-                test_size=test_size,
-                random_state=RANDOM_STATE,
-                stratify=y_encoded,
-            )
-        except ValueError:
-            X_train, X_test, y_train, y_test = train_test_split(
-                X, y_encoded, test_size=test_size, random_state=RANDOM_STATE
-            )
-    else:
-        X_train, y_train = X, y_encoded
-        X_test, y_test = None, None
-    log_info(f"Training on {len(X_train)} samples | Features: {X_train.shape[1]}")
-    if param_grid is not None:
-        search = GridSearchCV(
-            pipeline,
-            param_grid,
-            cv=grid_search_cv,
-            verbose=1,
-            scoring="f1_weighted",
-            n_jobs=-1,
-        )
-        search.fit(X_train, cast(Any, y_train))
-        pipeline = search.best_estimator_
-    else:
-        pipeline.fit(X_train, cast(Any, y_train))
-    if X_test is not None:
-        log_info("Evaluating on Test Set")
-        y_pred = pipeline.predict(X_test)
-        report = classification_report(
-            label_encoder.inverse_transform(cast(Any, y_test)),
-            label_encoder.inverse_transform(y_pred),
-            zero_division=0,
-        )
-        CONSOLE.print(Panel(cast(str, report), title="Test Set Report"))
+    # 3. Split Data (kept as tuple to save local variables)
+    split_data = _split_data(X, y_encoded, test_size)
+
+    # Log training size
+    log_info(
+        f"Training on {len(split_data[0])} samples | Features: {split_data[0].shape[1]}"
+    )
+
+    # 4. Train
+    pipeline = _fit_model(pipeline, split_data, param_grid, grid_search_cv)
+
+    # 5. Evaluate
+    _evaluate_performance(pipeline, split_data, label_encoder)
+
     return {
         "pipeline": pipeline,
         "label_encoder": label_encoder,
-        "features": {
-            "numeric": numeric_features,
-            "categorical": categorical_features,
-            "text": text_features,
-        },
+        "features": features,
     }

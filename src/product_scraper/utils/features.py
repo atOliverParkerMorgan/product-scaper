@@ -4,7 +4,7 @@ Refactored for modularity, readability, and robustness.
 """
 
 # @generated "partially" Gemini 3: generete regex patterns for price and currency detection
-
+# @generated "partially" Gemini 3: generated docs strings and imporve comments
 from functools import lru_cache
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -169,7 +169,6 @@ CUSTOM_SYMBOLS = [
     "¥",
 ]
 
-# --- REFACTORED REGEX LOGIC ---
 
 text_based_currencies = sorted(
     ISO_CURRENCIES + [s for s in CUSTOM_SYMBOLS if s.isalpha()], key=len, reverse=True
@@ -417,8 +416,6 @@ def get_avg_distance_to_closest_categories(
 
 
 # --- Feature Extraction Helpers ---
-
-
 def _check_ancestor_flags(
     element: lxml.html.HtmlElement, max_depth: int = 6
 ) -> Tuple[int, int, int]:
@@ -467,6 +464,7 @@ def _get_structure_features(
     """
     Extract structural features like DOM depth, sibling counts, and ancestry.
     """
+
     def get_parent_tags(element):
         parent = element.getparent()
         gparent = parent.getparent() if parent is not None else None
@@ -475,7 +473,12 @@ def _get_structure_features(
         return parent_tag, gparent_tag, parent
 
     def get_sibling_stats(parent, element, tag):
-        stats = {"sibling_count": 0, "same_tag_count": 0, "sibling_image_count": 0, "sibling_link_count": 0}
+        stats = {
+            "sibling_count": 0,
+            "same_tag_count": 0,
+            "sibling_image_count": 0,
+            "sibling_link_count": 0,
+        }
         if parent is not None:
             for child in parent:
                 if child is element:
@@ -494,9 +497,6 @@ def _get_structure_features(
     stats = get_sibling_stats(parent, element, tag)
     has_nav, has_footer, has_header = _check_ancestor_flags(element)
     sibling_count = stats["sibling_count"]
-    same_tag_count = stats["same_tag_count"]
-    sibling_image_count = stats["sibling_image_count"]
-    sibling_link_count = stats["sibling_link_count"]
 
     return {
         "Category": category,
@@ -506,9 +506,13 @@ def _get_structure_features(
         "num_children": len(element),
         "num_siblings": sibling_count,
         "dom_depth": len(list(element.iterancestors())),
-        "sibling_tag_ratio": (same_tag_count / sibling_count) if sibling_count > 0 else 0.0,
-        "sibling_link_ratio": (sibling_link_count / sibling_count) if sibling_count > 0 else 0.0,
-        "sibling_image_count": sibling_image_count,
+        "sibling_tag_ratio": (stats["same_tag_count"] / sibling_count)
+        if sibling_count > 0
+        else 0.0,
+        "sibling_link_ratio": (stats["sibling_link_count"] / sibling_count)
+        if sibling_count > 0
+        else 0.0,
+        "sibling_image_count": stats["sibling_image_count"],
         "has_nav_ancestor": has_nav,
         "has_footer_ancestor": has_footer,
         "has_header_ancestor": has_header,

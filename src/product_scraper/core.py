@@ -300,6 +300,70 @@ class ProductScraper:
         for category in categories:
             self.add_category(category)
 
+    def _validate_training_url(self, url: str) -> bool:
+        """Internal helper to validate if a URL should be processed for training."""
+        if url in self.url_in_training_data:
+            return False
+
+        # Note: The original logic excludes the URL if it is not in selectors here.
+        if url not in self._websites_urls or url not in self.selectors:
+            log_warning(f"URL {url} not in configured websites. Skipping.")
+            return False
+
+        return True
+
+    def _fetch_training_html(self, url: str) -> Optional[str]:
+        """Internal helper to safely fetch HTML for training."""
+        try:
+            return self.get_html(url)
+        except requests.RequestException:
+            log_warning(f"Skipping {url} due to network error.")
+            return None
+
+    def _extract_data_from_html(
+        self, url: str, html_content: str, all_data: List[pd.DataFrame]
+    ) -> Optional[pd.DataFrame]:
+        """Internal helper to handle selector logic and extract DataFrame."""
+        # Handle missing selectors (dynamic creation logic)
+        if url not in self.selectors:
+            try:
+                if all_data:
+                    new_batch = pd.concat(all_data, ignore_index=True)
+                    if self.training_data is not None and not self.training_data.empty:
+                        self.training_data = pd.concat(
+                            [self.training_data, new_batch], ignore_index=True
+                        )
+                    else:
+                        self.training_data = new_batch
+                    all_data.clear()
+
+                if self.training_data is not None and not self.training_data.empty:
+                    self.train_model()
+
+                self.create_selectors(url)
+            except (ValueError, KeyError, TypeError) as e:
+                log_warning(f"Failed to create selectors for {url}: {e}")
+                return None
+
+        selectors = self.selectors.get(url, {})
+        if not selectors:
+            log_warning(f"No selectors found for {url}, skipping.")
+            return None
+
+        try:
+            df = html_to_dataframe(html_content, selectors, url=url)
+        except (ValueError, KeyError, TypeError) as e:
+            log_warning(f"Error processing {url}: {e}")
+            return None
+
+        if not df.empty:
+            self.url_in_training_data.add(url)
+            log_info(f"Extracted samples from {url}")
+            return df
+
+        log_warning(f"No data extracted from {url}")
+        return None
+
     def _process_training_url(
         self, url: str, all_data: List[pd.DataFrame]
     ) -> Optional[pd.DataFrame]:
@@ -307,62 +371,14 @@ class ProductScraper:
         Internal helper to process a single URL for training data creation.
         Returns a DataFrame if data was extracted, None otherwise.
         """
-        result_df = None
-        error = False
-
-        if url in self.url_in_training_data:
-            error = True
-        elif url not in self._websites_urls:
-            log_warning(f"URL {url} not in configured websites. Skipping.")
-            error = True
-        else:
-            try:
-                html_content = self.get_html(url)
-            except requests.RequestException:
-                log_warning(f"Skipping {url} due to network error.")
-                error = True
-            else:
-                # Handle missing selectors
-                if url not in self.selectors:
-                    try:
-                        # This saves our progress so far and prepares the full dataset for training
-                        if all_data:
-                            new_batch = pd.concat(all_data, ignore_index=True)
-                            if self.training_data is not None and not self.training_data.empty:
-                                self.training_data = pd.concat(
-                                    [self.training_data, new_batch], ignore_index=True
-                                )
-                            else:
-                                self.training_data = new_batch
-                            all_data.clear()
-
-                        if self.training_data is not None and not self.training_data.empty:
-                            self.train_model()
-
-                        self.create_selectors(url)
-                    except Exception as e:  # pylint: disable=broad-exception-caught
-                        log_warning(f"Failed to create selectors for {url}: {e}")
-                        error = True
-                selectors = self.selectors.get(url, {})
-                if not selectors:
-                    log_warning(f"No selectors found for {url}, skipping.")
-                    error = True
-                else:
-                    try:
-                        df = html_to_dataframe(html_content, selectors, url=url)
-                        if not df.empty:
-                            self.url_in_training_data.add(url)
-                            log_info(f"Extracted samples from {url}")
-                            result_df = df
-                        else:
-                            log_warning(f"No data extracted from {url}")
-                    except Exception as e:  # pylint: disable=broad-exception-caught
-                        log_warning(f"Error processing {url}: {e}")
-                        error = True
-
-        if error:
+        if not self._validate_training_url(url):
             return None
-        return result_df
+
+        html_content = self._fetch_training_html(url)
+        if html_content is None:
+            return None
+
+        return self._extract_data_from_html(url, html_content, all_data)
 
     def create_training_data(
         self, websites_to_use: Optional[List[str]] = None

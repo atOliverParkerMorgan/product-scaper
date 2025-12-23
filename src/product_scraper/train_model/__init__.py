@@ -1,19 +1,10 @@
-"""Training and evaluation module for product category classification."""
+"""Training and prediction module for product category classification."""
 
-from .evaluate_model import (
-    calculate_meaningful_metrics,
-    display_per_class_metrics,
-    display_performance_table,
-    evaluate_model,
-)
+from .predict_data import group_prediction_to_products, predict_category_selectors
 from .train_model import train_model
 
 __all__ = [
-    # Model training
-    'train_model',
-    # Model evaluation
-    'evaluate_model',
-    'calculate_meaningful_metrics',
-    'display_performance_table',
-    'display_per_class_metrics',
+    "train_model",
+    "group_prediction_to_products",
+    "predict_category_selectors",
 ]

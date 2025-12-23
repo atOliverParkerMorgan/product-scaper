@@ -1,4 +1,8 @@
-from typing import Any, Dict, List, Optional, Tuple
+"""
+Prediction utilities for extracting and grouping HTML elements by category using a trained model.
+"""
+
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 import lxml.html
 import numpy as np
@@ -10,6 +14,66 @@ from product_scraper.utils.features import (
     TARGET_FEATURE,
     calculate_proximity_score,
 )
+
+
+def _get_target_class_idx(label_encoder: Any, category: str) -> Optional[int]:
+    """Helper to get the index of the target category from the label encoder."""
+    if category not in label_encoder.classes_:
+        return None
+    try:
+        return label_encoder.transform([category])[0]
+    except ValueError:
+        return None
+
+
+def _prepare_X_pred(X: Any, training_features: Dict[str, List[str]]) -> Any:
+    """Helper to prepare the features DataFrame for prediction."""
+    cols_to_drop = [col for col in NON_TRAINING_FEATURES if col in X.columns]
+    if TARGET_FEATURE in X.columns:
+        cols_to_drop.append(TARGET_FEATURE)
+
+    X_pred = X.drop(columns=cols_to_drop, errors="ignore")
+
+    if training_features:
+        for col in training_features.get("numeric", []):
+            if col not in X_pred.columns:
+                X_pred[col] = 0.0 if "density" in col else 100.0
+        for col in training_features.get("text", []):
+            if col not in X_pred.columns:
+                X_pred[col] = "empty"
+    return X_pred
+
+
+def _extract_candidates(
+    tree: lxml.html.HtmlElement, X: Any, match_indices: np.ndarray
+) -> List[Dict[str, Any]]:
+    """Helper to extract candidate elements from the HTML tree based on prediction indices."""
+    candidates = []
+    if "xpath" not in X.columns:
+        log_error("Missing 'xpath' column in feature DataFrame.")
+        return []
+
+    for idx in match_indices:
+        xpath = X.iloc[idx]["xpath"]
+        found_elements = tree.xpath(xpath)
+        if not found_elements:
+            continue
+        element = found_elements[0]
+        if not isinstance(element, lxml.html.HtmlElement):
+            continue
+        text_content = element.text_content().strip()
+        preview = text_content[:50] + "..." if len(text_content) > 50 else text_content
+        candidates.append(
+            {
+                "index": int(idx),
+                "xpath": xpath,
+                "preview": preview,
+                "tag": str(element.tag),
+                "class": element.get("class", ""),
+                "id": element.get("id", ""),
+            }
+        )
+    return candidates
 
 
 def predict_category_selectors(
@@ -35,75 +99,63 @@ def predict_category_selectors(
         List[Dict[str, Any]]: A list of dictionaries, where each dictionary represents a predicted element
                               and contains keys like 'index', 'xpath', 'preview', 'tag', 'class', and 'id'.
     """
-    def _get_target_class_idx(label_encoder, category):
-        if category not in label_encoder.classes_:
-            return None
-        try:
-            return label_encoder.transform([category])[0]
-        except ValueError:
-            return None
-
-    def _prepare_X_pred(X, training_features):
-        cols_to_drop = [col for col in NON_TRAINING_FEATURES if col in X.columns]
-        if TARGET_FEATURE in X.columns:
-            cols_to_drop.append(TARGET_FEATURE)
-        X_pred = X.drop(columns=cols_to_drop, errors="ignore")
-        if training_features:
-            for col in training_features.get("numeric", []):
-                if col not in X_pred.columns:
-                    X_pred[col] = 0.0 if "density" in col else 100.0
-            for col in training_features.get("text", []):
-                if col not in X_pred.columns:
-                    X_pred[col] = "empty"
-        return X_pred
-
     pipeline = model["pipeline"]
     label_encoder = model["label_encoder"]
     training_features = model.get("features", {})
+
     target_class_idx = _get_target_class_idx(label_encoder, category)
     if target_class_idx is None:
         return []
+
     tree = lxml.html.fromstring(html_content)
     X = html_to_dataframe(
         html_content, selectors=existing_selectors or {}, augment_data=False
     )
     if X.empty:
         return []
+
     X_pred = _prepare_X_pred(X, training_features)
+
     try:
         predictions = pipeline.predict(X_pred)
-    except Exception:
+    except (ValueError, KeyError, TypeError) as e:
+        log_error(f"Prediction error: {e}")
         return []
+    except Exception as e:  # pylint: disable=broad-exception-caught
+        log_error(f"Unexpected prediction error: {e}")
+        return []
+
     match_indices = np.where(predictions == target_class_idx)[0]
-    candidates = []
-    if "xpath" not in X.columns:
-        log_error("Missing 'xpath' column in feature DataFrame.")
-        return []
-    for idx in match_indices:
-        xpath = X.iloc[idx]["xpath"]
-        found_elements = tree.xpath(xpath)
-        if not found_elements:
-            continue
-        element = found_elements[0]
-        if not isinstance(element, lxml.html.HtmlElement):
-            continue
-        text_content = element.text_content().strip()
-        preview = text_content[:50] + "..." if len(text_content) > 50 else text_content
-        candidates.append(
-            {
-                "index": int(idx),
-                "xpath": xpath,
-                "preview": preview,
-                "tag": str(element.tag),
-                "class": element.get("class", ""),
-                "id": element.get("id", ""),
-            }
-        )
-    return candidates
+    return _extract_candidates(tree, X, match_indices)
+
+
+def _compute_proximity_edges(
+    products: List[Dict[str, Any]],
+    candidates: List[Dict[str, Any]],
+    anchor_category: str,
+    max_distance_threshold: int,
+) -> List[Tuple[int, int, int]]:
+    """Helper to compute edges between anchor products and candidates based on distance."""
+    edges: List[Tuple[int, int, int]] = []
+    for p_idx, product in enumerate(products):
+        anchor_item = product[anchor_category]
+
+        for c_idx, candidate in enumerate(candidates):
+            # Calculate distance (tree distance + index delta)
+            dist_tree, dist_index = calculate_proximity_score(
+                anchor_item["xpath"], candidate["xpath"]
+            )
+
+            # Weighted score: Tree distance is usually more significant than index delta
+            score = dist_tree + dist_index
+
+            if score <= max_distance_threshold:
+                edges.append((score, p_idx, c_idx))
+    return edges
 
 
 def group_prediction_to_products(
-    html_content: str,
+    _html_content: str,
     selectors: Dict[str, List[Dict[str, Any]]],
     categories: List[str],
     max_distance_threshold: int = 50,
@@ -115,7 +167,7 @@ def group_prediction_to_products(
     attempts to attach items from other categories to each anchor based on structural proximity (DOM distance).
 
     Args:
-        html_content (str): The raw HTML content (unused in current logic but kept for interface consistency).
+        _html_content (str): The raw HTML content (unused in current logic but kept for interface consistency).
         selectors (Dict[str, List[Dict[str, Any]]]): Dictionary mapping category names to lists of predicted items.
         categories (List[str]): List of all categories to consider for grouping.
         max_distance_threshold (int): The maximum distance score allowed to link two items together.
@@ -148,29 +200,15 @@ def group_prediction_to_products(
             continue
 
         # --- Calculate Distances ---
-        # Edges: (score, product_index, candidate_index)
-        edges: List[Tuple[int, int, int]] = []
-
-        for p_idx, product in enumerate(products):
-            anchor_item = product[anchor_category]
-
-            for c_idx, candidate in enumerate(candidates):
-                # Calculate distance (tree distance + index delta)
-                dist_tree, dist_index = calculate_proximity_score(
-                    anchor_item["xpath"], candidate["xpath"]
-                )
-
-                # Weighted score: Tree distance is usually more significant than index delta
-                score = dist_tree + dist_index
-
-                if score <= max_distance_threshold:
-                    edges.append((score, p_idx, c_idx))
+        edges = _compute_proximity_edges(
+            products, candidates, anchor_category, max_distance_threshold
+        )
 
         # --- Sort & Assign Greedily ---
         edges.sort(key=lambda x: x[0])
 
-        assigned_products = set()
-        assigned_candidates = set()
+        assigned_products: Set[int] = set()
+        assigned_candidates: Set[int] = set()
 
         for _, p_idx, c_idx in edges:
             if p_idx in assigned_products or c_idx in assigned_candidates:
