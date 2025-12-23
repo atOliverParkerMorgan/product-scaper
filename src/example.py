@@ -6,7 +6,6 @@ from product_scraper.core import ProductScraper
 
 WEBSITES = [
     "https://www.valentinska.cz/home",
-    "https://trigon-knihy.cz/antikvariat/",
     "https://www.artonpaper.ch/new",
     "http://antik-stafl.cz/",
     "http://antikvariat-bohemia.cz/",
@@ -73,7 +72,6 @@ if __name__ == "__main__":
 
     # Load the example selectors provided with the package
     product_scraper = ProductScraper.load(save_dir="./src/example_scraper_data")
-    product_scraper.remove_website("http://www.ztichlaklika.cz/antikvariat?page=1")
     # Run just in case there is missing data
     product_scraper.create_training_data()
 
