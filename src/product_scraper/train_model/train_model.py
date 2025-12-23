@@ -118,52 +118,37 @@ def train_model(
         log_error("Input DataFrame is empty.")
         return None
 
+    def select_features(df):
+        numeric = [c for c in df.columns if c in NUMERIC_FEATURES or "dist_to_" in c or "density" in c]
+        for c in NUMERIC_FEATURES:
+            if c in df.columns and c not in numeric:
+                numeric.append(c)
+        categorical = [c for c in CATEGORICAL_FEATURES if c in df.columns]
+        text = [c for c in TEXT_FEATURES if c in df.columns]
+        return numeric, categorical, text
+
+    def handle_missing(X, text_features, numeric_features):
+        for col in text_features:
+            if col in X.columns:
+                X[col] = X[col].fillna("empty").astype(str).replace(r"^\s*$", "empty", regex=True)
+        for col in numeric_features:
+            if col in X.columns:
+                fill_val = 0.0 if "density" in col else 100.0
+                X[col] = X[col].fillna(fill_val)
+        return X
+
     data = df.copy()
-
-    # 1. Feature Selection (Dynamic based on DF columns)
-    numeric_features = [
-        c
-        for c in data.columns
-        if c in NUMERIC_FEATURES or "dist_to_" in c or "density" in c
-    ]
-    for c in NUMERIC_FEATURES:
-        if c in data.columns and c not in numeric_features:
-            numeric_features.append(c)
-
-    categorical_features = [c for c in CATEGORICAL_FEATURES if c in data.columns]
-    text_features = [c for c in TEXT_FEATURES if c in data.columns]
-
-    # 2. Drop Non-Training Columns
+    numeric_features, categorical_features, text_features = select_features(data)
     cols_to_drop = [col for col in NON_TRAINING_FEATURES if col in data.columns]
     if TARGET_FEATURE not in cols_to_drop:
         cols_to_drop.append(TARGET_FEATURE)
-
     X = data.drop(columns=cols_to_drop, errors="ignore")
     y = data[TARGET_FEATURE]
-
-    # 3. Handle Missing Values
-    for col in text_features:
-        if col in X.columns:
-            X[col] = (
-                X[col]
-                .fillna("empty")
-                .astype(str)
-                .replace(r"^\s*$", "empty", regex=True)
-            )
-
-    for col in numeric_features:
-        if col in X.columns:
-            fill_val = 0.0 if "density" in col else 100.0
-            X[col] = X[col].fillna(fill_val)
-
-    # 4. Encode Labels
+    X = handle_missing(X, text_features, numeric_features)
     label_encoder = LabelEncoder()
     y_encoded = label_encoder.fit_transform(y)
-
     if pipeline is None:
         pipeline = build_pipeline(numeric_features, categorical_features, text_features)
-
-    # 5. Split Data
     if test_size > 0.0:
         try:
             X_train, X_test, y_train, y_test = train_test_split(
@@ -174,17 +159,13 @@ def train_model(
                 stratify=y_encoded,
             )
         except ValueError:
-            # Fallback if stratify fails (e.g., class with < 2 samples)
             X_train, X_test, y_train, y_test = train_test_split(
                 X, y_encoded, test_size=test_size, random_state=RANDOM_STATE
             )
     else:
         X_train, y_train = X, y_encoded
         X_test, y_test = None, None
-
     log_info(f"Training on {len(X_train)} samples | Features: {X_train.shape[1]}")
-
-    # 6. Train
     if param_grid is not None:
         search = GridSearchCV(
             pipeline,
@@ -198,8 +179,6 @@ def train_model(
         pipeline = search.best_estimator_
     else:
         pipeline.fit(X_train, cast(Any, y_train))
-
-    # 7. Evaluate
     if X_test is not None:
         log_info("Evaluating on Test Set")
         y_pred = pipeline.predict(X_test)
@@ -209,7 +188,6 @@ def train_model(
             zero_division=0,
         )
         CONSOLE.print(Panel(cast(str, report), title="Test Set Report"))
-
     return {
         "pipeline": pipeline,
         "label_encoder": label_encoder,

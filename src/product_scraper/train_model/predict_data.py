@@ -35,79 +35,60 @@ def predict_category_selectors(
         List[Dict[str, Any]]: A list of dictionaries, where each dictionary represents a predicted element
                               and contains keys like 'index', 'xpath', 'preview', 'tag', 'class', and 'id'.
     """
+    def _get_target_class_idx(label_encoder, category):
+        if category not in label_encoder.classes_:
+            return None
+        try:
+            return label_encoder.transform([category])[0]
+        except ValueError:
+            return None
+
+    def _prepare_X_pred(X, training_features):
+        cols_to_drop = [col for col in NON_TRAINING_FEATURES if col in X.columns]
+        if TARGET_FEATURE in X.columns:
+            cols_to_drop.append(TARGET_FEATURE)
+        X_pred = X.drop(columns=cols_to_drop, errors="ignore")
+        if training_features:
+            for col in training_features.get("numeric", []):
+                if col not in X_pred.columns:
+                    X_pred[col] = 0.0 if "density" in col else 100.0
+            for col in training_features.get("text", []):
+                if col not in X_pred.columns:
+                    X_pred[col] = "empty"
+        return X_pred
+
     pipeline = model["pipeline"]
     label_encoder = model["label_encoder"]
     training_features = model.get("features", {})
-
-    if category not in label_encoder.classes_:
+    target_class_idx = _get_target_class_idx(label_encoder, category)
+    if target_class_idx is None:
         return []
-
-    try:
-        target_class_idx = label_encoder.transform([category])[0]
-    except ValueError:
-        return []
-
-    # Parse HTML once to look up elements later
     tree = lxml.html.fromstring(html_content)
-
-    # 1. Generate Features (No Augmentation for prediction)
     X = html_to_dataframe(
         html_content, selectors=existing_selectors or {}, augment_data=False
     )
-
     if X.empty:
         return []
-
-    # 2. Align Columns with Training Data
-    # Drop non-training columns present in extraction
-    cols_to_drop = [col for col in NON_TRAINING_FEATURES if col in X.columns]
-    if TARGET_FEATURE in X.columns:
-        cols_to_drop.append(TARGET_FEATURE)
-
-    X_pred = X.drop(columns=cols_to_drop, errors="ignore")
-
-    # Fill missing columns expected by the model
-    if training_features:
-        for col in training_features.get("numeric", []):
-            if col not in X_pred.columns:
-                X_pred[col] = 0.0 if "density" in col else 100.0
-
-        for col in training_features.get("text", []):
-            if col not in X_pred.columns:
-                X_pred[col] = "empty"
-
-    # 3. Predict
+    X_pred = _prepare_X_pred(X, training_features)
     try:
         predictions = pipeline.predict(X_pred)
     except Exception:
         return []
-
-    # 4. Extract Matches securely using XPath
-    # We iterate over the DataFrame indices where prediction matches target
     match_indices = np.where(predictions == target_class_idx)[0]
     candidates = []
-
-    # Ensure 'xpath' column exists to map back to elements
     if "xpath" not in X.columns:
         log_error("Missing 'xpath' column in feature DataFrame.")
         return []
-
     for idx in match_indices:
-        # Get the xpath from the dataframe row
         xpath = X.iloc[idx]["xpath"]
-
-        # Find the element in the tree
         found_elements = tree.xpath(xpath)
         if not found_elements:
             continue
-
         element = found_elements[0]
         if not isinstance(element, lxml.html.HtmlElement):
             continue
-
         text_content = element.text_content().strip()
         preview = text_content[:50] + "..." if len(text_content) > 50 else text_content
-
         candidates.append(
             {
                 "index": int(idx),
@@ -118,7 +99,6 @@ def predict_category_selectors(
                 "id": element.get("id", ""),
             }
         )
-
     return candidates
 
 

@@ -3,8 +3,10 @@ Unified feature definitions and extraction for HTML element analysis.
 Refactored for modularity, readability, and robustness.
 """
 
+# @generated "partially" Gemini 3: generete regex patterns for price and currency detection
+
 from functools import lru_cache
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import lxml.html
 import pandas as pd
@@ -76,297 +78,74 @@ TAG_IMPORTANCE = {
     "header": -2,
 }
 
+# @generated "all" Gemini 3: generete regex patterns for price and currency detection
+
+# fmt: off
 # --- Currency & Keyword Configuration ---
 ISO_CURRENCIES = [
-    "AED",
-    "AFN",
-    "ALL",
-    "AMD",
-    "ANG",
-    "AOA",
-    "ARS",
-    "AUD",
-    "AWG",
-    "AZN",
-    "BAM",
-    "BBD",
-    "BDT",
-    "BGN",
-    "BHD",
-    "BIF",
-    "BMD",
-    "BND",
-    "BOB",
-    "BRL",
-    "BSD",
-    "BTN",
-    "BWP",
-    "BYN",
-    "BZD",
-    "CAD",
-    "CDF",
-    "CHF",
-    "CLP",
-    "CNY",
-    "COP",
-    "CRC",
-    "CUP",
-    "CVE",
-    "CZK",
-    "DJF",
-    "DKK",
-    "DOP",
-    "DZD",
-    "EGP",
-    "ERN",
-    "ETB",
-    "EUR",
-    "FJD",
-    "FKP",
-    "GBP",
-    "GEL",
-    "GHS",
-    "GIP",
-    "GMD",
-    "GNF",
-    "GTQ",
-    "GYD",
-    "HKD",
-    "HNL",
-    "HRK",
-    "HTG",
-    "HUF",
-    "IDR",
-    "ILS",
-    "INR",
-    "IQD",
-    "IRR",
-    "ISK",
-    "JMD",
-    "JOD",
-    "JPY",
-    "KES",
-    "KGS",
-    "KHR",
-    "KMF",
-    "KPW",
-    "KRW",
-    "KWD",
-    "KYD",
-    "KZT",
-    "LAK",
-    "LBP",
-    "LKR",
-    "LRD",
-    "LSL",
-    "LYD",
-    "MAD",
-    "MDL",
-    "MGA",
-    "MKD",
-    "MMK",
-    "MNT",
-    "MOP",
-    "MRU",
-    "MUR",
-    "MVR",
-    "MWK",
-    "MXN",
-    "MYR",
-    "MZN",
-    "NAD",
-    "NGN",
-    "NIO",
-    "NOK",
-    "NPR",
-    "NZD",
-    "OMR",
-    "PAB",
-    "PEN",
-    "PGK",
-    "PHP",
-    "PKR",
-    "PLN",
-    "PYG",
-    "QAR",
-    "RON",
-    "RSD",
-    "RUB",
-    "RWF",
-    "SAR",
-    "SBD",
-    "SCR",
-    "SDG",
-    "SEK",
-    "SGD",
-    "SHP",
-    "SLE",
-    "SLL",
-    "SOS",
-    "SRD",
-    "SSP",
-    "STN",
-    "SVC",
-    "SYP",
-    "SZL",
-    "THB",
-    "TJS",
-    "TMT",
-    "TND",
-    "TOP",
-    "TRY",
-    "TTD",
-    "TWD",
-    "TZS",
-    "UAH",
-    "UGX",
-    "USD",
-    "UYU",
-    "UZS",
-    "VES",
-    "VND",
-    "VUV",
-    "WST",
-    "XAF",
-    "XCD",
-    "XOF",
-    "XPF",
-    "YER",
-    "ZAR",
-    "ZMW",
-    "ZWL",
+    "AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN",
+    "BAM", "BBD", "BDT", "BGN", "BHD", "BIF", "BMD", "BND", "BOB", "BRL",
+    "BSD", "BTN", "BWP", "BYN", "BZD", "CAD", "CDF", "CHF", "CLP", "CNY",
+    "COP", "CRC", "CUP", "CVE", "CZK", "DJF", "DKK", "DOP", "DZD", "EGP",
+    "ERN", "ETB", "EUR", "FJD", "FKP", "GBP", "GEL", "GHS", "GIP", "GMD",
+    "GNF", "GTQ", "GYD", "HKD", "HNL", "HRK", "HTG", "HUF", "IDR", "ILS",
+    "INR", "IQD", "IRR", "ISK", "JMD", "JOD", "JPY", "KES", "KGS", "KHR",
+    "KMF", "KPW", "KRW", "KWD", "KYD", "KZT", "LAK", "LBP", "LKR", "LRD",
+    "LSL", "LYD", "MAD", "MDL", "MGA", "MKD", "MMK", "MNT", "MOP", "MRU",
+    "MUR", "MVR", "MWK", "MXN", "MYR", "MZN", "NAD", "NGN", "NIO", "NOK",
+    "NPR", "NZD", "OMR", "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG",
+    "QAR", "RON", "RSD", "RUB", "RWF", "SAR", "SBD", "SCR", "SDG", "SEK",
+    "SGD", "SHP", "SLE", "SLL", "SOS", "SRD", "SSP", "STN", "SVC", "SYP",
+    "SZL", "THB", "TJS", "TMT", "TND", "TOP", "TRY", "TTD", "TWD", "TZS",
+    "UAH", "UGX", "USD", "UYU", "UZS", "VES", "VND", "VUV", "WST", "XAF",
+    "XCD", "XOF", "XPF", "YER", "ZAR", "ZMW", "ZWL",
 ]
 
 SOLD_WORD_VARIATIONS = [
-    "sold",
-    "sold out",
-    "out of stock",
-    "unavailable",
-    "discontinued",
-    "vendu",
-    "épuisé",
-    "indisponible",
-    " rupture de stock",
-    "verkauft",
-    "ausverkauft",
-    "nicht vorrätig",
-    "nicht lieferbar",
-    "vendido",
-    "agotado",
-    "no disponible",
-    "fuera de stock",
-    "venduto",
-    "esaurito",
-    "non disponibile",
-    "vendido",
-    "esgotado",
-    "indisponível",
-    "verkocht",
-    "niet op voorraad",
-    "uitverkocht",
-    "såld",
-    "slutsåld",
-    "slut i lager",
-    "ej i lager",
-    "solgt",
-    "udsolgt",
-    "ikke på lager",
-    "myyty",
-    "loppu",
-    "ei varastossa",
-    "продано",
-    "нет в наличии",
-    "раскуплено",
-    "закончился",
-    "sprzedane",
-    "brak w magazynie",
-    "wyprzedane",
-    "niedostępny",
-    "prodáno",
-    "vyprodáno",
-    "není skladem",
-    "eladva",
-    "elfogyott",
-    "nincs raktáron",
-    "vândut",
-    "stoc epuizat",
-    "indisponibil",
-    "prodano",
-    "rasprodano",
-    "nema na zalihi",
-    "售出",
-    "已售出",
-    "缺货",
-    "暂时缺货",
-    "售罄",
-    "売り切れ",
-    "在庫切れ",
-    "完売",
-    "品切れ",
-    "품절",
-    "매진",
-    "재고 없음",
-    "판매 완료",
-    "đã bán",
-    "hết hàng",
-    "bán hết",
-    "ขายแล้ว",
-    "สินค้าหมด",
-    "หมด",
-    "terjual",
-    "habis",
-    "stok habis",
-    "kosong",
-    "مباع",
-    "نفذ",
-    "نفذت الكمية",
-    "غير متوفر",
-    "נמכר",
-    "אזל במלאי",
-    "לא זמין",
-    "satıldı",
-    "tükendi",
-    "stokta yok",
-    "temin edilemiyor",
-    "बिका हुआ",
-    "स्टॉक में नहीं",
-    "उपलब्ध नहीं",
-    "ناموجود",
-    "فروخته شد",
-    "εξαντλήθηκε",
-    "μη διαθέσιμο",
-    "κατόπιν παραγγελίας",
-    "uppselt",
-    "ekki til",
-    "išparduota",
-    "nėra prekyboje",
-    "izpārdots",
-    "nav pieejams",
+    "sold", "sold out", "out of stock", "unavailable", "discontinued",
+    "vendu", "épuisé", "indisponible", " rupture de stock",
+    "verkauft", "ausverkauft", "nicht vorrätig", "nicht lieferbar",
+    "vendido", "agotado", "no disponible", "fuera de stock",
+    "venduto", "esaurito", "non disponibile",
+    "vendido", "esgotado", "indisponível",
+    "verkocht", "niet op voorraad", "uitverkocht",
+    "såld", "slutsåld", "slut i lager", "ej i lager",
+    "solgt", "udsolgt", "ikke på lager",
+    "myyty", "loppu", "ei varastossa",
+    "продано", "нет в наличии", "раскуплено", "закончился",
+    "sprzedane", "brak w magazynie", "wyprzedane", "niedostępny",
+    "prodáno", "vyprodáno", "není skladem",
+    "eladva", "elfogyott", "nincs raktáron",
+    "vândut", "stoc epuizat", "indisponibil",
+    "prodano", "rasprodano", "nema na zalihi",
+    "售出", "已售出", "缺货", "暂时缺货", "售罄",
+    "売り切れ", "在庫切れ", "完売", "品切れ",
+    "품절", "매진", "재고 없음", "판매 완료",
+    "đã bán", "hết hàng", "bán hết",
+    "ขายแล้ว", "สินค้าหมด", "หมด",
+    "terjual", "habis", "stok habis", "kosong",
+    "مباع", "نفذ", "نفذت الكمية", "غير متوفر",
+    "נמכר", "אזל במלאי", "לא זמין",
+    "satıldı", "tükendi", "stokta yok", "temin edilemiyor",
+    "बिका हुआ", "स्टॉक में नहीं", "उपलब्ध नहीं",
+    "ناموجود", "فروخته شد",
+    "εξαντλήθηκε", "μη διαθέσιμο", "κατόπιν παραγγελίας",
+    "uppselt", "ekki til",
+    "išparduota", "nėra prekyboje",
+    "izpārdots", "nav pieejams",
 ]
 
 REVIEW_KEYWORDS = [
-    "review",
-    "reviews",
-    "rating",
-    "ratings",
-    "stars",
-    "feedback",
-    "testimonial",
-    "testimonials",
-    "comment",
-    "comments",
-    "opinion",
+    "review", "reviews", "rating", "ratings", "stars", "feedback",
+    "testimonial", "testimonials", "comment", "comments", "opinion",
 ]
 
 CTA_KEYWORDS = [
-    "add to cart",
-    "add to bag",
-    "buy",
-    "buy now",
-    "checkout",
-    "purchase",
-    "order",
+    "add to cart", "add to bag", "buy", "buy now",
+    "checkout", "purchase", "order",
 ]
+# fmt: on
+
 
 CUSTOM_SYMBOLS = [
     "Chf",
@@ -422,6 +201,8 @@ SOLD_REGEX = re.compile(
 )
 REVIEW_REGEX = re.compile(r"\b(?:" + "|".join(REVIEW_KEYWORDS) + r")\b", re.IGNORECASE)
 CTA_REGEX = re.compile(r"\b(?:" + "|".join(CTA_KEYWORDS) + r")\b", re.IGNORECASE)
+
+# end of generated code
 
 # --- Feature Definitions ---
 
@@ -489,6 +270,7 @@ TARGET_FEATURE = "Category"
 # --- Helper Functions ---
 
 
+# https://stackoverflow.com/questions/15800704/get-image-size-without-loading-image-into-memory
 @lru_cache(maxsize=256)
 def get_remote_image_dims(url: str) -> Tuple[int, int]:
     """
@@ -521,7 +303,7 @@ def get_remote_image_dims(url: str) -> Tuple[int, int]:
             if count > 5:  # Limit max chunks read
                 break
         return 0, 0
-    except Exception:
+    except Exception:  # pylint: disable=broad-exception-caught
         return 0, 0
 
 
@@ -637,46 +419,21 @@ def get_avg_distance_to_closest_categories(
 # --- Feature Extraction Helpers ---
 
 
-def _get_structure_features(
-    element: lxml.html.HtmlElement, tag: str, category: str
-) -> Dict[str, Any]:
+def _check_ancestor_flags(
+    element: lxml.html.HtmlElement, max_depth: int = 6
+) -> Tuple[int, int, int]:
     """
-    Extract structural features like DOM depth, sibling counts, and ancestry.
-
-    Args:
-        element (lxml.html.HtmlElement): The target element.
-        tag (str): Normalized tag name.
-        category (str): The target category label.
-
-    Returns:
-        Dict[str, Any]: Dictionary of structural features.
+    Traverse up the ancestors to check for nav, footer, or header presence.
+    Returns (has_nav, has_footer, has_header).
     """
-    parent = element.getparent()
-    gparent = parent.getparent() if parent is not None else None
-    parent_tag = normalize_tag(parent.tag) if parent is not None else "root"
-    gparent_tag = normalize_tag(gparent.tag) if gparent is not None else "root"
-
-    sibling_count, same_tag_count, sibling_image_count, sibling_link_count = 0, 0, 0, 0
-    if parent is not None:
-        for child in parent:
-            if child is element:
-                continue
-            child_tag = normalize_tag(getattr(child, "tag", ""))
-            if child_tag == tag:
-                same_tag_count += 1
-            if child_tag == "img":
-                sibling_image_count += 1
-            if child_tag == "a":
-                sibling_link_count += 1
-            sibling_count += 1
-
-    # Check Ancestry for Noise Containers (nav/footer/header)
     has_nav, has_footer, has_header = 0, 0, 0
     cursor = element
     depth_check = 0
-    while cursor is not None and depth_check < 6:
+
+    while cursor is not None and depth_check < max_depth:
         ctag = normalize_tag(cursor.tag)
         c_class = str(cursor.get("class", "")).lower()
+
         if (
             ctag == "nav"
             or cursor.get("role") == "navigation"
@@ -684,18 +441,62 @@ def _get_structure_features(
             or "menu" in c_class
         ):
             has_nav = 1
+
         if (
             ctag == "footer"
             or cursor.get("role") == "contentinfo"
             or "footer" in c_class
         ):
             has_footer = 1
+
         if ctag == "header" or cursor.get("role") == "banner":
             has_header = 1
+
         if has_nav and has_footer and has_header:
             break
+
         cursor = cursor.getparent()
         depth_check += 1
+
+    return has_nav, has_footer, has_header
+
+
+def _get_structure_features(
+    element: lxml.html.HtmlElement, tag: str, category: str
+) -> Dict[str, Any]:
+    """
+    Extract structural features like DOM depth, sibling counts, and ancestry.
+    """
+    def get_parent_tags(element):
+        parent = element.getparent()
+        gparent = parent.getparent() if parent is not None else None
+        parent_tag = normalize_tag(parent.tag) if parent is not None else "root"
+        gparent_tag = normalize_tag(gparent.tag) if gparent is not None else "root"
+        return parent_tag, gparent_tag, parent
+
+    def get_sibling_stats(parent, element, tag):
+        stats = {"sibling_count": 0, "same_tag_count": 0, "sibling_image_count": 0, "sibling_link_count": 0}
+        if parent is not None:
+            for child in parent:
+                if child is element:
+                    continue
+                child_tag = normalize_tag(getattr(child, "tag", ""))
+                if child_tag == tag:
+                    stats["same_tag_count"] += 1
+                if child_tag == "img":
+                    stats["sibling_image_count"] += 1
+                if child_tag == "a":
+                    stats["sibling_link_count"] += 1
+                stats["sibling_count"] += 1
+        return stats
+
+    parent_tag, gparent_tag, parent = get_parent_tags(element)
+    stats = get_sibling_stats(parent, element, tag)
+    has_nav, has_footer, has_header = _check_ancestor_flags(element)
+    sibling_count = stats["sibling_count"]
+    same_tag_count = stats["same_tag_count"]
+    sibling_image_count = stats["sibling_image_count"]
+    sibling_link_count = stats["sibling_link_count"]
 
     return {
         "Category": category,
@@ -705,12 +506,8 @@ def _get_structure_features(
         "num_children": len(element),
         "num_siblings": sibling_count,
         "dom_depth": len(list(element.iterancestors())),
-        "sibling_tag_ratio": (same_tag_count / sibling_count)
-        if sibling_count > 0
-        else 0.0,
-        "sibling_link_ratio": (sibling_link_count / sibling_count)
-        if sibling_count > 0
-        else 0.0,
+        "sibling_tag_ratio": (same_tag_count / sibling_count) if sibling_count > 0 else 0.0,
+        "sibling_link_ratio": (sibling_link_count / sibling_count) if sibling_count > 0 else 0.0,
         "sibling_image_count": sibling_image_count,
         "has_nav_ancestor": has_nav,
         "has_footer_ancestor": has_footer,
@@ -721,12 +518,6 @@ def _get_structure_features(
 def _get_text_features(element: lxml.html.HtmlElement) -> Dict[str, Any]:
     """
     Extract text-related features like length, density, and capitalization.
-
-    Args:
-        element (lxml.html.HtmlElement): The target element.
-
-    Returns:
-        Dict[str, Any]: Dictionary of text features and raw content.
     """
     raw_text = element.text_content() or ""
     text = " ".join(raw_text.split())
@@ -734,7 +525,7 @@ def _get_text_features(element: lxml.html.HtmlElement) -> Dict[str, Any]:
     try:
         html_size = len(lxml.html.tostring(element, encoding="unicode"))
         text_density = (text_len / html_size) if html_size > 0 else 0.0
-    except Exception:
+    except Exception:  # pylint: disable=broad-exception-caught
         text_density = 0.0
     words = text.split()
     digit_count = sum(c.isdigit() for c in text)
@@ -755,12 +546,6 @@ def _get_text_features(element: lxml.html.HtmlElement) -> Dict[str, Any]:
 def _get_regex_features(text: str) -> Dict[str, int]:
     """
     Check text against pre-compiled regex patterns (Currency, Price, CTA, etc.).
-
-    Args:
-        text (str): The cleaned text content of the element.
-
-    Returns:
-        Dict[str, int]: Binary flags (1 or 0) for regex matches.
     """
     return {
         "has_currency_symbol": 1 if CURRENCY_HINTS_REGEX.search(text) else 0,
@@ -771,19 +556,59 @@ def _get_regex_features(text: str) -> Dict[str, int]:
     }
 
 
+def _parse_font_size(style: str, tag: str, parent_tag: str) -> float:
+    """
+    Helper to extract and normalize font size from style string or tag defaults.
+    """
+    font_size = 0.0
+    fs_match = re.search(r"font-size\s*:\s*([\d.]+)(px|em|rem|pt|%)?", style)
+    if fs_match:
+        try:
+            val = float(fs_match.group(1))
+            unit = fs_match.group(2)
+            if unit in ("em", "rem"):
+                font_size = val * 16.0
+            elif unit == "%":
+                font_size = (val / 100.0) * 16.0
+            elif unit == "pt":
+                font_size = val * 1.33
+            else:
+                font_size = val
+        except ValueError:
+            pass
+
+    if font_size == 0.0:
+        if parent_tag.startswith("h"):
+            font_size = TAG_DEFAULT_SIZES.get(parent_tag, 16.0)
+        else:
+            font_size = TAG_DEFAULT_SIZES.get(tag, 16.0)
+    return font_size
+
+
+def _parse_font_weight(style: str, tag: str, parent_tag: str) -> int:
+    """
+    Helper to extract and normalize font weight.
+    """
+    font_weight = 400
+    fw_match = re.search(r"font-weight\s*:\s*(\w+)", style)
+    if fw_match:
+        w_str = fw_match.group(1)
+        if w_str in {"bold", "bolder"}:
+            font_weight = 700
+        elif w_str == "lighter":
+            font_weight = 300
+        elif w_str.isdigit():
+            font_weight = int(w_str)
+    elif tag in {"h1", "h2", "h3", "b", "strong"} or parent_tag in {"h1", "h2", "h3"}:
+        font_weight = 700
+    return font_weight
+
+
 def _get_visual_features(
     element: lxml.html.HtmlElement, tag: str, parent_tag: str
 ) -> Dict[str, Any]:
     """
     Extract visual cues based on CSS styles, tags, and hierarchy.
-
-    Args:
-        element (lxml.html.HtmlElement): The target element.
-        tag (str): Normalized tag name.
-        parent_tag (str): Normalized parent tag name.
-
-    Returns:
-        Dict[str, Any]: Visual feature dictionary (font size, weight, etc.).
     """
     style = element.get("style", "").lower()
     is_header = 1 if tag in {"h1", "h2", "h3", "h4", "h5", "h6"} else 0
@@ -811,41 +636,8 @@ def _get_visual_features(
     )
     is_list_item = 1 if tag in {"li", "dt", "dd"} else 0
 
-    font_size = 0.0
-    fs_match = re.search(r"font-size\s*:\s*([\d.]+)(px|em|rem|pt|%)?", style)
-    if fs_match:
-        try:
-            val = float(fs_match.group(1))
-            unit = fs_match.group(2)
-            if unit == "em" or unit == "rem":
-                font_size = val * 16.0
-            elif unit == "%":
-                font_size = (val / 100.0) * 16.0
-            elif unit == "pt":
-                font_size = val * 1.33
-            else:
-                font_size = val
-        except ValueError:
-            pass
-
-    if font_size == 0.0:
-        if parent_tag.startswith("h"):
-            font_size = TAG_DEFAULT_SIZES.get(parent_tag, 16.0)
-        else:
-            font_size = TAG_DEFAULT_SIZES.get(tag, 16.0)
-
-    font_weight = 400
-    fw_match = re.search(r"font-weight\s*:\s*(\w+)", style)
-    if fw_match:
-        w_str = fw_match.group(1)
-        if w_str in {"bold", "bolder"}:
-            font_weight = 700
-        elif w_str == "lighter":
-            font_weight = 300
-        elif w_str.isdigit():
-            font_weight = int(w_str)
-    elif tag in {"h1", "h2", "h3", "b", "strong"} or parent_tag in {"h1", "h2", "h3"}:
-        font_weight = 700
+    font_size = _parse_font_size(style, tag, parent_tag)
+    font_weight = _parse_font_weight(style, tag, parent_tag)
 
     self_imp = TAG_IMPORTANCE.get(tag, 0)
     parent_imp = TAG_IMPORTANCE.get(parent_tag, 0)
@@ -1002,7 +794,7 @@ def _get_attribute_features(element: lxml.html.HtmlElement) -> Dict[str, str]:
 
 def extract_element_features(
     element: lxml.html.HtmlElement,
-    selectors: Dict[str, List[str]] = {},
+    selectors: Optional[Dict[str, List[str]]] = None,
     category: str = OTHER_CATEGORY,
 ) -> Dict[str, Any]:
     """
@@ -1010,12 +802,15 @@ def extract_element_features(
 
     Args:
         element (lxml.html.HtmlElement): The target element.
-        selectors (Dict[str, List[str]]): Known selectors for context features.
+        selectors (Optional[Dict[str, List[str]]]): Known selectors for context features.
         category (str): The label/category of this element.
 
     Returns:
         Dict[str, Any]: Complete dictionary of all extracted features.
     """
+    if selectors is None:
+        selectors = {}
+
     try:
         tag = normalize_tag(element.tag)
 
@@ -1060,10 +855,8 @@ def extract_element_features(
             **context_feats,
             **metadata_feats,
         }
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-exception-caught
         log_error(f"Error extracting features for element: {e}")
-        # Fallback for error robustness
-        # FIX: Explicitly set type to Dict[str, Any] to avoid type narrowing to int
         fallback: Dict[str, Any] = {k: 0 for k in NUMERIC_FEATURES}
         fallback.update({k: "" for k in CATEGORICAL_FEATURES + TEXT_FEATURES})
         fallback["Category"] = category

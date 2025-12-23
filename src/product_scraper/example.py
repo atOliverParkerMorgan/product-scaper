@@ -3,7 +3,6 @@ Example script for running ProductScraper on a set of websites and categories.
 """
 
 from product_scraper.core import ProductScraper
-from product_scraper.utils.console import log_info
 
 # WEBSITES = [
 #     "https://www.valentinska.cz/home",

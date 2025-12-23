@@ -1,4 +1,3 @@
-/* ui/core.js */
 (() => {
     window._isSimulatingClick = false;
 

@@ -7,14 +7,7 @@ from .utils import (
 )
 
 __all__ = [
-    # Constants
-    'DATA_NAME',
-    'OTHER_CATEGORY',
-    'PRICE_REGEX',
-    'RANDOM_STATE',
-    'UNWANTED_TAGS',
-    # Utils
-    'count_unique_tags',
-    'generate_selector_for_element',
-    'normalize_tag',
+    "count_unique_tags",
+    "generate_selector_for_element",
+    "normalize_tag",
 ]
