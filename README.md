@@ -1,45 +1,176 @@
-# Product Scraper
+# Product Scraper 🛒🤖
 
-Product Scraper is a friendly but powerful Python library for pulling structured product data out of e-commerce websites.  
-Instead of relying on fragile CSS selectors or hard-coded XPaths, it **learns how products look** on a page — the way a human would spot a title, a price, or an image at a glance.
+**Product Scraper** is a Python library designed to extract structured product data from e-commerce websites. Instead of relying on fragile CSS selectors or hard-coded XPaths, it **learns how products look** on a page—mimicking how a human identifies a title, price, or image.
 
-By combining machine learning, visual cues, and DOM structure, Product Scraper adapts to different site layouts and keeps working even when the HTML changes a bit.
+By combining machine learning, visual cues, and DOM structure, Product Scraper adapts to different site layouts and remains resilient even when the HTML structure changes.
 
 ---
 
-## ✨ What makes it different?
+## ✨ What Makes It Different?
 
-Most scrapers break the moment a website tweaks its layout. Product Scraper doesn’t.
+Traditional scrapers break the moment a website tweaks its layout. **Product Scraper adapts.**
 
-It watches how elements are rendered (font size, weight, position), reads the text (currency symbols, keywords), and understands where elements sit in the DOM — then learns patterns that generalize across pages.
+It analyzes:
+* **Visual Rendering:** Font size, font weight, and element position.
+* **Text Patterns:** Currencies, keywords (e.g., "add to cart"), and price formats.
+* **DOM Structure:** The spatial relationships between elements.
+
+This multi-faceted approach allows the library to generalize across different pages and withstand minor layout updates.
 
 ---
 
 ## 🚀 Features
 
-### 🧠 Machine-learning driven
-Uses a **Random Forest classifier** to recognize product elements based on:
-- Visual hints (font size, boldness)
-- Text patterns (prices, currencies, keywords)
-- Structural context in the DOM
-
-### 🖱️ Interactive training
-Comes with a **browser-based UI** (powered by Playwright).  
-You simply open a page, click on prices, titles, or images, and label them — no XPath gymnastics required.
-
-### 🧩 Automatic product grouping
-Detected elements are automatically grouped into products using **spatial clustering**, so titles, prices, and images end up together where they belong.
-
-### 🛡️ More resilient scraping
-Because it learns patterns instead of exact paths, the scraper survives small layout changes that would break traditional rule-based scrapers.
+* **🧠 Machine Learning Driven:** Uses a **Random Forest classifier** to identify product elements based on visual, textual, and structural features.
+* **🖱️ Interactive Training:** Includes a **browser-based UI** (powered by Playwright). Simply open a page, click on the elements you want (titles, prices, images), and the system learns from your input—no complex XPath coding required.
+* **🧩 Automatic Product Grouping:** Detected elements are automatically grouped into coherent product objects using **spatial clustering**, ensuring the correct title is associated with the correct price and image.
+* **🛡️ Resilient Scraping:** By learning patterns rather than strict paths, the scraper is far less brittle than traditional rule-based solutions.
 
 ---
 
 ## 📦 Installation
 
-Clone the repository and install the dependencies.  
-Playwright is used for rendering pages and interacting with them.
+### Requirements
+* Python **3.9+**
+* pip
+* Playwright (Chromium browser)
+
+### Windows (PowerShell)
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+
+pip install product-scraper
+playwright install chromium
+```
+
+### Linux / macOS
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+
+pip install product-scraper
+playwright install chromium
+```
+
+## 🛠️ Usage Guide
+
+### 1. Interactive Training
+To start, you need to teach the model what your target data looks like. You define the categories you want to extract (e.g., image, title, price) and provide a list of example URLs.
+
+```python
+from product_scraper import ProductScraper
+
+# Define the data points you want to extract
+CATEGORIES = ["image", "title", "price"]
+
+# List of URLs to train on (more variety = better predictions)
+WEBSITES = [
+    "[https://www.morganbooks.eu/](https://www.morganbooks.eu/)",
+    # Add more URLs here...
+]
+
+# Initialize the scraper
+scraper = ProductScraper(categories=CATEGORIES, websites_urls=WEBSITES)
+
+# Launch the interactive training UI
+scraper.create_training_data()
+```
+
+### 2. Labeling Data
+Running the code above will launch a Chromium browser window with the Product Scraper UI overlay.
+
+![example of selecting xpaths of elements](src/product_scraper/assets/example1.png)
+
+1. Select a Category: Choose a category (e.g., "title") from the UI.
+
+2. Click Elements: Click on the corresponding elements on the webpage to label them.
+
+
+* Tip: Use the "Class Select" (orange button) to speed up the process. Once you select one element, clicking this will automatically select all other visible elements with the same CSS class.
+
+3) Next Category: Proceed to the next category (e.g., "price") and repeat.
+
+4) Finish: Click the green Finish button when done.
+
+![example of finishing up the selection](src/product_scraper/assets/example2.png)
+
+The scraper will save your labeled data to `product_scraper_data/selectors.yaml` and `product_scraper_data/training_data.csv` in your current directory.
+
+### 3. Training and Prediction
+Once you have collected enough training data (ideally from 50+ diverse product pages for robust generalization), you can train the model and start scraping new pages automatically.
+```python
+from product_scraper import ProductScraper
+
+CATEGORIES = ["image", "title", "price"] # add more categories if needed
+WEBSITES = [
+    "https://example-ecommerce-site.com/products",
+    "https://another-shop.com/collection",
+    #...
+]
+
+# Load existing data or initialize a new session
+scraper = ProductScraper(categories=CATEGORIES, websites_urls=WEBSITES)
+
+# 1. Train the model using the collected data
+scraper.train_model()
+
+# 2. Predict and extract data from the websites
+results = scraper.predict(WEBSITES)
+
+# 3. Save the results and the trained model state
+scraper.save() 
+
+# Print extracted data
+for url, products in results.items():
+    print(f"--- Data from {url} ---")
+    for product in products:
+        print(product)
+```
+
+## 📂 Data Structure
+
+
+### Selectors File (selectors.yaml)
+This file stores the XPaths of the elements you manually selected during training. It serves as the ground truth for the model.
+
+```yaml
+https://www.morganbooks.eu/:
+  image:
+  - /html[1]/body[1]/.../div[1]/img[1]
+  - /html[1]/body[1]/.../div[1]/img[1]
+  ...
+  price:
+  - /html[1]/body[1]/.../footer[1]/div[2]/h3[1]
+  ...
+  title:
+  - /html[1]/body[1]/.../article[2]/a[1]/h2[1]
+  ...
+```
+
+### Training Data (training_data.csv)
+This CSV file contains the extracted features (visual, text, DOM) for every labeled element. This is the dataset used to train the Random Forest model.
+
+## 🧪 Testing
+To run the test suite and check code coverage:
 
 ```bash
-pip install -r requirements.txt
-playwright install chromium
+pip install pytest pytest-cov
+pytest --cov=src --cov-report=term-missing
+```
+
+## 🤝 Contributing
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository.
+
+2. Create a feature branch (git checkout -b feature/AmazingFeature).
+
+3. Commit your changes (git commit -m 'Add some AmazingFeature').
+
+4. Push to the branch (git push origin feature/AmazingFeature).
+
+5. Open a Pull Request.
+
+## 📄 License
+Distributed under the MIT License. See LICENSE for more information.

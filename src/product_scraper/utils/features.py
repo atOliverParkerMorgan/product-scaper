@@ -12,8 +12,8 @@ import regex as re
 import requests
 from PIL import ImageFile
 
-from utils.console import log_error, log_warning
-from utils.utils import get_unique_xpath, normalize_tag
+from product_scraper.utils.console import log_error, log_warning
+from product_scraper.utils.utils import get_unique_xpath, normalize_tag
 
 # --- Configuration ---
 TIMEOUT_SECONDS = 3
@@ -21,7 +21,16 @@ HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; ProductScraper/1.0)"}
 
 # Constants
 DEFAULT_DIST = -1
-UNWANTED_TAGS = {"script", "style", "noscript", "form", "iframe", "meta", "link", "head"}
+UNWANTED_TAGS = {
+    "script",
+    "style",
+    "noscript",
+    "form",
+    "iframe",
+    "meta",
+    "link",
+    "head",
+}
 OTHER_CATEGORY = "other"
 
 # --- Visual Heuristics Constants ---
@@ -349,7 +358,15 @@ REVIEW_KEYWORDS = [
     "opinion",
 ]
 
-CTA_KEYWORDS = ["add to cart", "add to bag", "buy", "buy now", "checkout", "purchase", "order"]
+CTA_KEYWORDS = [
+    "add to cart",
+    "add to bag",
+    "buy",
+    "buy now",
+    "checkout",
+    "purchase",
+    "order",
+]
 
 CUSTOM_SYMBOLS = [
     "Chf",
@@ -375,7 +392,9 @@ CUSTOM_SYMBOLS = [
 
 # --- REFACTORED REGEX LOGIC ---
 
-text_based_currencies = sorted(ISO_CURRENCIES + [s for s in CUSTOM_SYMBOLS if s.isalpha()], key=len, reverse=True)
+text_based_currencies = sorted(
+    ISO_CURRENCIES + [s for s in CUSTOM_SYMBOLS if s.isalpha()], key=len, reverse=True
+)
 symbol_based_currencies = [s for s in CUSTOM_SYMBOLS if not s.isalpha()]
 
 escaped_text = [re.escape(s) for s in text_based_currencies]
@@ -398,7 +417,9 @@ PRICE_REGEX = re.compile(
     re.UNICODE | re.IGNORECASE,
 )
 
-SOLD_REGEX = re.compile(r"\b(?:" + "|".join(SOLD_WORD_VARIATIONS) + r")\b", re.IGNORECASE)
+SOLD_REGEX = re.compile(
+    r"\b(?:" + "|".join(SOLD_WORD_VARIATIONS) + r")\b", re.IGNORECASE
+)
 REVIEW_REGEX = re.compile(r"\b(?:" + "|".join(REVIEW_KEYWORDS) + r")\b", re.IGNORECASE)
 CTA_REGEX = re.compile(r"\b(?:" + "|".join(CTA_KEYWORDS) + r")\b", re.IGNORECASE)
 
@@ -470,6 +491,15 @@ TARGET_FEATURE = "Category"
 
 @lru_cache(maxsize=256)
 def get_remote_image_dims(url: str) -> Tuple[int, int]:
+    """
+    Fetch dimensions of a remote image without downloading the full content.
+
+    Args:
+        url (str): The URL of the image.
+
+    Returns:
+        Tuple[int, int]: Width and height of the image, or (0, 0) if failed.
+    """
     if not url or url.startswith("data:"):
         return 0, 0
     try:
@@ -496,10 +526,28 @@ def get_remote_image_dims(url: str) -> Tuple[int, int]:
 
 
 def get_xpath_segments(xpath: str) -> List[str]:
+    """
+    Split an XPath string into its segments.
+
+    Args:
+        xpath (str): The XPath string (e.g. '/html/body/div').
+
+    Returns:
+        List[str]: List of XPath segments (e.g. ['html', 'body', 'div']).
+    """
     return [s for s in xpath.split("/") if s]
 
 
 def extract_index(segment: str) -> int:
+    """
+    Extract the numeric index from an XPath segment.
+
+    Args:
+        segment (str): The XPath segment (e.g., 'div[2]').
+
+    Returns:
+        int: The extracted index, or 1 if no index is present.
+    """
     match = re.search(r"\[(\d+)\]", segment)
     return int(match.group(1)) if match else 1
 
@@ -507,11 +555,6 @@ def extract_index(segment: str) -> int:
 def calculate_proximity_score(xpath1: str, xpath2: str) -> Tuple[int, int]:
     """
     Calculates the structural proximity between two XPath strings.
-
-    This function determines the tree distance (number of hops up and down the DOM tree)
-    and the index delta (difference in sibling indices at the divergence point) between
-    two elements. It normalizes segments like 'div' to 'div[1]' to ensure consistent
-    comparisons between raw and indexed XPaths.
 
     Args:
         xpath1 (str): The first XPath string (e.g., "/html/body/div[1]").
@@ -521,7 +564,6 @@ def calculate_proximity_score(xpath1: str, xpath2: str) -> Tuple[int, int]:
         Tuple[int, int]: A tuple containing:
             - tree_distance (int): Total steps to reach one element from the other via the common ancestor.
             - index_delta (int): The absolute difference in indices at the point where the paths diverge.
-              Returns 0 if one path is a direct ancestor of the other.
     """
     path1 = get_xpath_segments(xpath1)
     path2 = get_xpath_segments(xpath2)
@@ -554,8 +596,21 @@ def calculate_proximity_score(xpath1: str, xpath2: str) -> Tuple[int, int]:
 
 
 def get_avg_distance_to_closest_categories(
-    element: lxml.html.HtmlElement, selectors: Dict[str, List[str]], current_category: str
+    element: lxml.html.HtmlElement,
+    selectors: Dict[str, List[str]],
+    current_category: str,
 ) -> float:
+    """
+    Calculate average distance from the element to the closest elements of other known categories.
+
+    Args:
+        element (lxml.html.HtmlElement): The target element.
+        selectors (Dict[str, List[str]]): Dictionary of known selectors by category.
+        current_category (str): The category of the target element (to exclude from distance calc).
+
+    Returns:
+        float: Average distance score, or DEFAULT_DIST if no other categories exist.
+    """
     if not selectors:
         return DEFAULT_DIST
 
@@ -582,7 +637,20 @@ def get_avg_distance_to_closest_categories(
 # --- Feature Extraction Helpers ---
 
 
-def _get_structure_features(element: lxml.html.HtmlElement, tag: str, category: str) -> Dict[str, Any]:
+def _get_structure_features(
+    element: lxml.html.HtmlElement, tag: str, category: str
+) -> Dict[str, Any]:
+    """
+    Extract structural features like DOM depth, sibling counts, and ancestry.
+
+    Args:
+        element (lxml.html.HtmlElement): The target element.
+        tag (str): Normalized tag name.
+        category (str): The target category label.
+
+    Returns:
+        Dict[str, Any]: Dictionary of structural features.
+    """
     parent = element.getparent()
     gparent = parent.getparent() if parent is not None else None
     parent_tag = normalize_tag(parent.tag) if parent is not None else "root"
@@ -609,9 +677,18 @@ def _get_structure_features(element: lxml.html.HtmlElement, tag: str, category: 
     while cursor is not None and depth_check < 6:
         ctag = normalize_tag(cursor.tag)
         c_class = str(cursor.get("class", "")).lower()
-        if ctag == "nav" or cursor.get("role") == "navigation" or "nav" in c_class or "menu" in c_class:
+        if (
+            ctag == "nav"
+            or cursor.get("role") == "navigation"
+            or "nav" in c_class
+            or "menu" in c_class
+        ):
             has_nav = 1
-        if ctag == "footer" or cursor.get("role") == "contentinfo" or "footer" in c_class:
+        if (
+            ctag == "footer"
+            or cursor.get("role") == "contentinfo"
+            or "footer" in c_class
+        ):
             has_footer = 1
         if ctag == "header" or cursor.get("role") == "banner":
             has_header = 1
@@ -628,8 +705,12 @@ def _get_structure_features(element: lxml.html.HtmlElement, tag: str, category: 
         "num_children": len(element),
         "num_siblings": sibling_count,
         "dom_depth": len(list(element.iterancestors())),
-        "sibling_tag_ratio": (same_tag_count / sibling_count) if sibling_count > 0 else 0.0,
-        "sibling_link_ratio": (sibling_link_count / sibling_count) if sibling_count > 0 else 0.0,
+        "sibling_tag_ratio": (same_tag_count / sibling_count)
+        if sibling_count > 0
+        else 0.0,
+        "sibling_link_ratio": (sibling_link_count / sibling_count)
+        if sibling_count > 0
+        else 0.0,
         "sibling_image_count": sibling_image_count,
         "has_nav_ancestor": has_nav,
         "has_footer_ancestor": has_footer,
@@ -638,6 +719,15 @@ def _get_structure_features(element: lxml.html.HtmlElement, tag: str, category: 
 
 
 def _get_text_features(element: lxml.html.HtmlElement) -> Dict[str, Any]:
+    """
+    Extract text-related features like length, density, and capitalization.
+
+    Args:
+        element (lxml.html.HtmlElement): The target element.
+
+    Returns:
+        Dict[str, Any]: Dictionary of text features and raw content.
+    """
     raw_text = element.text_content() or ""
     text = " ".join(raw_text.split())
     text_len = len(text)
@@ -654,13 +744,24 @@ def _get_text_features(element: lxml.html.HtmlElement) -> Dict[str, Any]:
         "text_digit_count": digit_count,
         "text_density": text_density,
         "digit_density": (digit_count / text_len) if text_len > 0 else 0.0,
-        "capitalization_ratio": (sum(1 for c in text if c.isupper()) / text_len) if text_len > 0 else 0.0,
+        "capitalization_ratio": (sum(1 for c in text if c.isupper()) / text_len)
+        if text_len > 0
+        else 0.0,
         "avg_word_length": (sum(len(w) for w in words) / len(words)) if words else 0.0,
         "_text_content": text,
     }
 
 
 def _get_regex_features(text: str) -> Dict[str, int]:
+    """
+    Check text against pre-compiled regex patterns (Currency, Price, CTA, etc.).
+
+    Args:
+        text (str): The cleaned text content of the element.
+
+    Returns:
+        Dict[str, int]: Binary flags (1 or 0) for regex matches.
+    """
     return {
         "has_currency_symbol": 1 if CURRENCY_HINTS_REGEX.search(text) else 0,
         "is_price_format": 1 if PRICE_REGEX.search(text) else 0,
@@ -670,12 +771,43 @@ def _get_regex_features(text: str) -> Dict[str, int]:
     }
 
 
-def _get_visual_features(element: lxml.html.HtmlElement, tag: str, parent_tag: str) -> Dict[str, Any]:
+def _get_visual_features(
+    element: lxml.html.HtmlElement, tag: str, parent_tag: str
+) -> Dict[str, Any]:
+    """
+    Extract visual cues based on CSS styles, tags, and hierarchy.
+
+    Args:
+        element (lxml.html.HtmlElement): The target element.
+        tag (str): Normalized tag name.
+        parent_tag (str): Normalized parent tag name.
+
+    Returns:
+        Dict[str, Any]: Visual feature dictionary (font size, weight, etc.).
+    """
     style = element.get("style", "").lower()
     is_header = 1 if tag in {"h1", "h2", "h3", "h4", "h5", "h6"} else 0
-    is_formatting = 1 if tag in {"b", "strong", "i", "em", "u", "span", "small", "mark"} else 0
+    is_formatting = (
+        1 if tag in {"b", "strong", "i", "em", "u", "span", "small", "mark"} else 0
+    )
     is_block = (
-        1 if tag in {"div", "p", "section", "article", "main", "aside", "header", "footer", "ul", "ol", "table", "form"} else 0
+        1
+        if tag
+        in {
+            "div",
+            "p",
+            "section",
+            "article",
+            "main",
+            "aside",
+            "header",
+            "footer",
+            "ul",
+            "ol",
+            "table",
+            "form",
+        }
+        else 0
     )
     is_list_item = 1 if tag in {"li", "dt", "dd"} else 0
 
@@ -730,12 +862,26 @@ def _get_visual_features(element: lxml.html.HtmlElement, tag: str, parent_tag: s
         "tag_importance": tag_importance,
         "is_bold": 1 if font_weight >= 600 else 0,
         "is_italic": 1 if (tag in {"i", "em"} or "font-style:italic" in style) else 0,
-        "is_hidden": 1 if ("display:none" in style or "visibility:hidden" in style) else 0,
-        "is_strikethrough": 1 if tag in {"s", "strike", "del"} or "line-through" in style else 0,
+        "is_hidden": 1
+        if ("display:none" in style or "visibility:hidden" in style)
+        else 0,
+        "is_strikethrough": 1
+        if tag in {"s", "strike", "del"} or "line-through" in style
+        else 0,
     }
 
 
 def _get_image_features(element: lxml.html.HtmlElement, tag: str) -> Dict[str, Any]:
+    """
+    Extract image specific features like dimensions, area, and alt text.
+
+    Args:
+        element (lxml.html.HtmlElement): The target element.
+        tag (str): Normalized tag name.
+
+    Returns:
+        Dict[str, Any]: Dictionary of image features.
+    """
     features = {
         "is_image": 1 if tag == "img" else 0,
         "has_src": 0,
@@ -780,18 +926,46 @@ def _get_image_features(element: lxml.html.HtmlElement, tag: str) -> Dict[str, A
     if (img_w == 0 or img_h == 0) and src.startswith("http"):
         img_w, img_h = get_remote_image_dims(src)
 
-    features.update({"img_width": img_w, "img_height": img_h, "img_area_raw": img_w * img_h, "image_area": img_w * img_h})
+    features.update(
+        {
+            "img_width": img_w,
+            "img_height": img_h,
+            "img_area_raw": img_w * img_h,
+            "image_area": img_w * img_h,
+        }
+    )
     return features
 
 
 def _get_interaction_features(
-    element: lxml.html.HtmlElement, tag: str, text_len: int, parent_tag: str, gparent_tag: str
+    element: lxml.html.HtmlElement,
+    tag: str,
+    text_len: int,
+    parent_tag: str,
+    gparent_tag: str,
 ) -> Dict[str, Any]:
+    """
+    Extract features related to user interaction (links, buttons).
+
+    Args:
+        element (lxml.html.HtmlElement): The target element.
+        tag (str): Normalized tag name.
+        text_len (int): Length of the text content.
+        parent_tag (str): Normalized parent tag.
+        gparent_tag (str): Normalized grandparent tag.
+
+    Returns:
+        Dict[str, Any]: Interaction feature dictionary.
+    """
     is_clickable = 0
     role = element.get("role", "").lower()
     if tag in {"a", "button"} or role == "button":
         is_clickable = 1
-    elif tag == "input" and element.get("type", "").lower() in {"submit", "button", "reset"}:
+    elif tag == "input" and element.get("type", "").lower() in {
+        "submit",
+        "button",
+        "reset",
+    }:
         is_clickable = 1
 
     link_density, parent_is_link = 0.0, 0
@@ -810,15 +984,37 @@ def _get_interaction_features(
 
 
 def _get_attribute_features(element: lxml.html.HtmlElement) -> Dict[str, str]:
+    """
+    Extract raw attribute strings for CSS classes and IDs.
+
+    Args:
+        element (lxml.html.HtmlElement): The target element.
+
+    Returns:
+        Dict[str, str]: Dictionary containing class and ID strings.
+    """
     class_val = element.get("class")
-    return {"class_str": " ".join(class_val.split()) if class_val else "", "id_str": element.get("id", "")}
+    return {
+        "class_str": " ".join(class_val.split()) if class_val else "",
+        "id_str": element.get("id", ""),
+    }
 
 
 def extract_element_features(
-    element: lxml.html.HtmlElement, selectors: Dict[str, List[str]] = {}, category: str = OTHER_CATEGORY
+    element: lxml.html.HtmlElement,
+    selectors: Dict[str, List[str]] = {},
+    category: str = OTHER_CATEGORY,
 ) -> Dict[str, Any]:
     """
     Master function to extract all features from a single element.
+
+    Args:
+        element (lxml.html.HtmlElement): The target element.
+        selectors (Dict[str, List[str]]): Known selectors for context features.
+        category (str): The label/category of this element.
+
+    Returns:
+        Dict[str, Any]: Complete dictionary of all extracted features.
     """
     try:
         tag = normalize_tag(element.tag)
@@ -830,13 +1026,19 @@ def extract_element_features(
         visual_feats = _get_visual_features(element, tag, struct_feats["parent_tag"])
         image_feats = _get_image_features(element, tag)
         interact_feats = _get_interaction_features(
-            element, tag, text_feats["text_len"], struct_feats["parent_tag"], struct_feats["gparent_tag"]
+            element,
+            tag,
+            text_feats["text_len"],
+            struct_feats["parent_tag"],
+            struct_feats["gparent_tag"],
         )
         attr_feats = _get_attribute_features(element)
 
         # Context features (calculated relative to other known categories)
         context_feats = {
-            "avg_distance_to_closest_categories": get_avg_distance_to_closest_categories(element, selectors, category),
+            "avg_distance_to_closest_categories": get_avg_distance_to_closest_categories(
+                element, selectors, category
+            ),
             # Initialize page-level features to 0, processed later in process_page_features
             "img_size_rank": 0,
             "visibility_score_local": 0.0,
@@ -869,9 +1071,17 @@ def extract_element_features(
         return fallback
 
 
-def process_page_features(element_feature_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def process_page_features(
+    element_feature_list: List[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
     """
     Post-process a list of element features to add page-level relative scores.
+
+    Args:
+        element_feature_list (List[Dict[str, Any]]): List of raw feature dictionaries for a page.
+
+    Returns:
+        List[Dict[str, Any]]: The processed list with relative ranking features added.
     """
     if not element_feature_list:
         return []
@@ -884,7 +1094,13 @@ def process_page_features(element_feature_list: List[Dict[str, Any]]) -> List[Di
             try:
                 # Rank images into deciles (1-10)
                 df.loc[mask_imgs, "img_size_rank"] = (
-                    pd.qcut(df.loc[mask_imgs, "img_area_raw"], q=10, labels=False, duplicates="drop").astype(int) + 1
+                    pd.qcut(
+                        df.loc[mask_imgs, "img_area_raw"],
+                        q=10,
+                        labels=False,
+                        duplicates="drop",
+                    ).astype(int)
+                    + 1
                 )
                 df["img_size_rank"] = df["img_size_rank"].fillna(1)
             except ValueError:
@@ -897,10 +1113,17 @@ def process_page_features(element_feature_list: List[Dict[str, Any]]) -> List[Di
     # Visibility Scores (Global & Local)
     if "visual_weight" in df.columns:
         avg_vis = df["visual_weight"].mean()
-        df["visibility_score_global"] = df["visual_weight"] / avg_vis if avg_vis > 0 else 0.0
+        df["visibility_score_global"] = (
+            df["visual_weight"] / avg_vis if avg_vis > 0 else 0.0
+        )
 
         # Local visibility (relative to neighbors)
-        rolling_vis = df["visual_weight"].rolling(window=5, center=True, min_periods=1).mean().replace(0, 1)
+        rolling_vis = (
+            df["visual_weight"]
+            .rolling(window=5, center=True, min_periods=1)
+            .mean()
+            .replace(0, 1)
+        )
         df["visibility_score_local"] = df["visual_weight"] / rolling_vis
     else:
         df["visibility_score_global"] = 0.0
@@ -908,7 +1131,12 @@ def process_page_features(element_feature_list: List[Dict[str, Any]]) -> List[Di
 
     # Text Length Local Score
     if "text_len" in df.columns:
-        rolling_len = df["text_len"].rolling(window=7, center=True, min_periods=1).mean().replace(0, 1)
+        rolling_len = (
+            df["text_len"]
+            .rolling(window=7, center=True, min_periods=1)
+            .mean()
+            .replace(0, 1)
+        )
         df["text_len_score_local"] = df["text_len"] / rolling_len
     else:
         df["text_len_score_local"] = 0.0
@@ -925,10 +1153,33 @@ def process_page_features(element_feature_list: List[Dict[str, Any]]) -> List[Di
 
 
 def get_feature_columns() -> Dict[str, list]:
-    return {"numeric": NUMERIC_FEATURES, "categorical": CATEGORICAL_FEATURES, "text": TEXT_FEATURES, "all": ALL_FEATURES}
+    """
+    Get the configuration of feature columns grouped by type.
+
+    Args:
+        None
+
+    Returns:
+        Dict[str, list]: Dictionary mapping feature types (numeric, categorical, text) to column names.
+    """
+    return {
+        "numeric": NUMERIC_FEATURES,
+        "categorical": CATEGORICAL_FEATURES,
+        "text": TEXT_FEATURES,
+        "all": ALL_FEATURES,
+    }
 
 
 def validate_features(df: Any) -> bool:
+    """
+    Validate that a DataFrame contains all required feature columns.
+
+    Args:
+        df (Any): The Pandas DataFrame to check.
+
+    Returns:
+        bool: True if valid, False if missing features or empty.
+    """
     if df.empty:
         return False
     missing = [f for f in ALL_FEATURES if f not in df.columns]

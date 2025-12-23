@@ -7,8 +7,8 @@ import lxml.html
 import numpy as np
 import pandas as pd
 
-from utils.console import log_error
-from utils.features import (
+from product_scraper.utils.console import log_error
+from product_scraper.utils.features import (
     DEFAULT_DIST,
     OTHER_CATEGORY,
     UNWANTED_TAGS,
@@ -25,6 +25,16 @@ rng = random.Random(RANDOM_SEED)
 
 
 def get_main_html_content_tag(html_content: str) -> Optional[lxml.html.HtmlElement]:
+    """
+    Parses HTML content and returns the main body element or root tree.
+
+    Args:
+        html_content (str): The raw HTML string.
+
+    Returns:
+        Optional[lxml.html.HtmlElement]: The <body> element if found, otherwise the root element.
+                                         Returns None if parsing fails or content is empty.
+    """
     if not html_content:
         return None
     try:
@@ -37,7 +47,19 @@ def get_main_html_content_tag(html_content: str) -> Optional[lxml.html.HtmlEleme
 
 
 def calculate_list_density(element: lxml.html.HtmlElement, max_depth: int = 5) -> float:
-    """Checks if the element is part of a repeated list structure."""
+    """
+    Calculates a density score based on the repetition of the element's tag among its siblings.
+
+    This helps identify elements that are part of lists or grids (common in product listings).
+    The score scales logarithmically with the count of siblings sharing the same tag.
+
+    Args:
+        element (lxml.html.HtmlElement): The target element.
+        max_depth (int): How many levels up the DOM tree to check.
+
+    Returns:
+        float: The maximum calculated density score found within the depth range.
+    """
     max_density = 0.0
     current = element
 
@@ -62,10 +84,28 @@ def calculate_list_density(element: lxml.html.HtmlElement, max_depth: int = 5) -
 
 
 def html_to_dataframe(
-    html_content: str, selectors: Dict[str, List[str]], url: Optional[str] = None, augment_data: bool = False
+    html_content: str,
+    selectors: Dict[str, List[str]],
+    url: Optional[str] = None,
+    augment_data: bool = False,
 ) -> pd.DataFrame:
     """
     Extracts features from HTML, creates positive/negative samples, and returns a DataFrame.
+
+    This function processes the HTML content to:
+    1. Identify positive samples based on provided selectors (labeled data).
+    2. Extract negative samples (unlabeled elements) from the rest of the page.
+    3. Balance the dataset by subsampling negative examples.
+    4. Compute page-level features and return the result as a pandas DataFrame.
+
+    Args:
+        html_content (str): The raw HTML string of the page.
+        selectors (Dict[str, List[str]]): Dictionary mapping categories to lists of XPaths for positive labeling.
+        url (Optional[str]): Source URL of the page (added as a metadata column).
+        augment_data (bool): If True, applies random feature dropout to simulate noise and improve generalization.
+
+    Returns:
+        pd.DataFrame: A DataFrame containing extracted features for all processed elements.
     """
     main_content = get_main_html_content_tag(html_content)
     if main_content is None:
@@ -97,18 +137,26 @@ def html_to_dataframe(
                             continue
 
                         # Extract base features
-                        base_data = extract_element_features(elem, selectors=selectors, category=category)
+                        base_data = extract_element_features(
+                            elem, selectors=selectors, category=category
+                        )
 
                         if base_data:
                             # Add specific context features
-                            should_dropout = augment_data and (rng.random() > dropout_threshold)
+                            should_dropout = augment_data and (
+                                rng.random() > dropout_threshold
+                            )
 
                             # Note: avg_distance is already calculated in extract_element_features
                             # but we can modify it here for dropout simulation
                             if should_dropout:
-                                base_data["avg_distance_to_closest_categories"] = DEFAULT_DIST
+                                base_data["avg_distance_to_closest_categories"] = (
+                                    DEFAULT_DIST
+                                )
 
-                            base_data["max_sibling_density"] = calculate_list_density(elem)
+                            base_data["max_sibling_density"] = calculate_list_density(
+                                elem
+                            )
 
                             positive_data.append(base_data)
                             labeled_elements.add(elem)
@@ -134,7 +182,9 @@ def html_to_dataframe(
         except Exception:
             continue
 
-        data = extract_element_features(elem, selectors=selectors, category=OTHER_CATEGORY)
+        data = extract_element_features(
+            elem, selectors=selectors, category=OTHER_CATEGORY
+        )
         if data:
             should_dropout = augment_data and (rng.random() > dropout_threshold)
             if should_dropout:
@@ -169,7 +219,9 @@ def html_to_dataframe(
             df[col] = df[col].fillna("")
 
     if "avg_distance_to_closest_categories" in df.columns:
-        df["avg_distance_to_closest_categories"] = df["avg_distance_to_closest_categories"].fillna(50.0)
+        df["avg_distance_to_closest_categories"] = df[
+            "avg_distance_to_closest_categories"
+        ].fillna(50.0)
 
     if "max_sibling_density" in df.columns:
         df["max_sibling_density"] = df["max_sibling_density"].fillna(0.0)

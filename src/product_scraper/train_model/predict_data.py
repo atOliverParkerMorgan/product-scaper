@@ -2,8 +2,9 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import lxml.html
 import numpy as np
-from train_model.process_data import html_to_dataframe
 
+from product_scraper.train_model.process_data import html_to_dataframe
+from product_scraper.utils.console import log_error
 from product_scraper.utils.features import (
     NON_TRAINING_FEATURES,
     TARGET_FEATURE,
@@ -18,7 +19,21 @@ def predict_category_selectors(
     existing_selectors: Optional[Dict[str, List[str]]] = None,
 ) -> List[Dict[str, Any]]:
     """
-    Predicts elements in the HTML that match the given category.
+    Predicts elements in the HTML that match the given category using the trained model.
+
+    This function extracts features from the HTML content, preprocesses them to match
+    the training data format, and uses the model pipeline to predict the category of each element.
+    It returns a list of candidate elements that match the target category.
+
+    Args:
+        model (Dict[str, Any]): The trained model dictionary containing 'pipeline', 'label_encoder', etc.
+        html_content (str): The raw HTML string of the page to predict on.
+        category (str): The target category label to predict (e.g., "price", "title").
+        existing_selectors (Optional[Dict[str, List[str]]]): Dictionary of known selectors to aid feature extraction (context).
+
+    Returns:
+        List[Dict[str, Any]]: A list of dictionaries, where each dictionary represents a predicted element
+                              and contains keys like 'index', 'xpath', 'preview', 'tag', 'class', and 'id'.
     """
     pipeline = model["pipeline"]
     label_encoder = model["label_encoder"]
@@ -74,6 +89,7 @@ def predict_category_selectors(
 
     # Ensure 'xpath' column exists to map back to elements
     if "xpath" not in X.columns:
+        log_error("Missing 'xpath' column in feature DataFrame.")
         return []
 
     for idx in match_indices:
@@ -114,6 +130,19 @@ def group_prediction_to_products(
 ) -> List[Dict[str, Any]]:
     """
     Group predicted selectors into product dictionaries using greedy nearest-neighbor clustering.
+
+    This function identifies an "anchor" category (usually the one with the most items) and
+    attempts to attach items from other categories to each anchor based on structural proximity (DOM distance).
+
+    Args:
+        html_content (str): The raw HTML content (unused in current logic but kept for interface consistency).
+        selectors (Dict[str, List[Dict[str, Any]]]): Dictionary mapping category names to lists of predicted items.
+        categories (List[str]): List of all categories to consider for grouping.
+        max_distance_threshold (int): The maximum distance score allowed to link two items together.
+
+    Returns:
+        List[Dict[str, Any]]: A list of product dictionaries, where each dictionary contains keys for categories
+                              and values for the matched item data.
     """
     if not categories or not selectors:
         return []
