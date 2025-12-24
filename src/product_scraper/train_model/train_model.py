@@ -291,10 +291,10 @@ def _plot_model_diagnostics(
         # Ensure lengths match before plotting
         if len(importances) == len(feature_names):
             indices = np.argsort(importances)[::-1]
-            top_n = 20
+            top_n = 5
 
             plt.figure(figsize=(12, 6))
-            plt.title("Top 20 Feature Importances")
+            plt.title(f"Top {top_n} Feature Importances")
             plt.bar(range(top_n), importances[indices[:top_n]], align="center")
             plt.xticks(
                 range(top_n),
@@ -304,26 +304,6 @@ def _plot_model_diagnostics(
             )
             plt.tight_layout()
             plt.show()
-
-    # 3. Plot Confusion Matrix
-    y_pred = pipeline.predict(X_test)
-    cm = confusion_matrix(y_test, y_pred)
-    class_names = label_encoder.classes_
-
-    plt.figure(figsize=(8, 6))
-    sns.heatmap(
-        cm,
-        annot=True,
-        fmt="d",
-        cmap="Blues",
-        xticklabels=class_names,
-        yticklabels=class_names,
-    )
-    plt.title("Confusion Matrix")
-    plt.xlabel("Predicted Label")
-    plt.ylabel("True Label")
-    plt.tight_layout()
-    plt.show()
 
 
 def _evaluate_performance(
