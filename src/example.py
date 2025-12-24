@@ -70,13 +70,15 @@ if __name__ == "__main__":
     #     save_dir="./src/example_scraper_data",
     # )
 
+    # product_scraper.load_selectors()
+
     # Load the example selectors provided with the package
     product_scraper = ProductScraper.load(save_dir="./src/example_scraper_data")
     # Run just in case there is missing data
     product_scraper.create_training_data()
 
     # Train the model
-    product_scraper.train_model()
+    product_scraper.train_model(show_model_figure=True)
 
     # Predict on all websites
     results = product_scraper.predict(["https://www.antikvariatchrudim.cz"])

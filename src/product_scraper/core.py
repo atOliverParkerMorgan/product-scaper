@@ -406,7 +406,11 @@ class ProductScraper:
         return self.training_data
 
     def train_model(
-        self, create_data: bool = False, test_size: float = 0.2, min_samples: int = 5
+        self,
+        create_data: bool = False,
+        test_size: float = 0.2,
+        min_samples: int = 5,
+        show_model_figure: bool = False,
     ) -> None:
         """
         Train the machine learning model with proper Test/Train splitting.
@@ -427,7 +431,12 @@ class ProductScraper:
             )
             return
 
-        self.model = train_model(self.training_data, self.pipeline, test_size=test_size)
+        self.model = train_model(
+            self.training_data,
+            self.pipeline,
+            test_size=test_size,
+            show_model_figure=show_model_figure,
+        )
 
     def predict_category(self, website_url: str, category: str) -> List[Dict[str, Any]]:
         """

@@ -7,12 +7,15 @@ to identify HTML elements based on their features.
 
 from typing import Any, Dict, List, Optional, Tuple, cast
 
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
+import seaborn as sns
 from rich.panel import Panel
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder, StandardScaler
@@ -71,6 +74,7 @@ def build_pipeline(
             )
 
     preprocessor = ColumnTransformer(transformers=transformers, remainder="drop")
+
     # Balanced Subsample is crucial for imbalanced web data (lots of 'other' tags)
     clf = RandomForestClassifier(
         n_estimators=400,
@@ -120,9 +124,17 @@ def fill_missing(X, text_features, numeric_features):
 
 def _prepare_data(
     df: pd.DataFrame,
-) -> Tuple[pd.DataFrame, Any, LabelEncoder, Dict[str, List[str]]]:
+) -> Tuple[pd.DataFrame, Any, LabelEncoder, Dict[str, List[str]], pd.Series]:
     """Internal helper to select features, fill missing data, and encode target."""
     data = df.copy()
+
+    # Capture the SourceURL for group-based splitting (Site-level split)
+    if "SourceURL" in data.columns:
+        groups = data["SourceURL"]
+    else:
+        # Fallback if SourceURL is missing (unlikely in this pipeline)
+        groups = pd.Series(range(len(data)))
+
     numeric, categorical, text = select_and_prepare_features(data)
 
     cols_to_drop = [col for col in NON_TRAINING_FEATURES if col in data.columns]
@@ -143,32 +155,63 @@ def _prepare_data(
         "text": text,
     }
 
-    return X, y_encoded, label_encoder, features
+    return X, y_encoded, label_encoder, features, groups
 
 
 def _split_data(
-    X: pd.DataFrame, y_encoded: Any, test_size: float
+    X: pd.DataFrame, y_encoded: Any, groups: pd.Series, test_size: float
 ) -> Tuple[Any, Any, Any, Any]:
-    """Internal helper to split data, handling stratification errors."""
+    """
+    Internal helper to split data by Website URL (Groups).
+    This ensures the test set contains completely unseen websites.
+    """
     if test_size <= 0.0:
         return X, None, y_encoded, None
 
-    try:
-        return tuple(
-            train_test_split(
-                X,
-                y_encoded,
-                test_size=test_size,
-                random_state=RANDOM_STATE,
-                stratify=y_encoded,
-            )
+    unique_urls = groups.unique()
+
+    # If we don't have enough unique sites, fall back to random row splitting
+    if len(unique_urls) < 2:
+        log_info(
+            "Insufficient unique URLs for site-split. Falling back to random row split."
         )
-    except ValueError:
-        return tuple(
-            train_test_split(
-                X, y_encoded, test_size=test_size, random_state=RANDOM_STATE
+        try:
+            return tuple(
+                train_test_split(
+                    X,
+                    y_encoded,
+                    test_size=test_size,
+                    random_state=RANDOM_STATE,
+                    stratify=y_encoded,
+                )
             )
-        )
+        except ValueError:
+            return tuple(
+                train_test_split(
+                    X, y_encoded, test_size=test_size, random_state=RANDOM_STATE
+                )
+            )
+
+    # 1. Split the Sites (Groups)
+    train_urls, test_urls = train_test_split(
+        unique_urls, test_size=test_size, random_state=RANDOM_STATE
+    )
+
+    log_info(
+        f"Splitting by URL: {len(train_urls)} Train Sites / {len(test_urls)} Test Sites"
+    )
+
+    # 2. Create Masks for rows belonging to those sites
+    train_mask = groups.isin(train_urls)
+    test_mask = groups.isin(test_urls)
+
+    # 3. Apply masks
+    X_train = X[train_mask]
+    X_test = X[test_mask]
+    y_train = y_encoded[train_mask]
+    y_test = y_encoded[test_mask]
+
+    return X_train, X_test, y_train, y_test
 
 
 def _ensure_pipeline(
@@ -207,6 +250,82 @@ def _fit_model(
     return pipeline
 
 
+def _plot_model_diagnostics(
+    pipeline: Pipeline,
+    X_test: Any,
+    y_test: Any,
+    label_encoder: LabelEncoder,
+    features_dict: Dict[str, List[str]],
+) -> None:
+    """
+    Internal helper to generate and display Feature Importance and Confusion Matrix.
+    """
+    log_info("Generating Model Diagnostics Figures...")
+
+    # 1. Extract Feature Names from Pipeline
+    # This is complex because the pipeline transforms features (OneHot, TF-IDF)
+    preprocessor = pipeline.named_steps["preprocessor"]
+    clf = pipeline.named_steps["classifier"]
+
+    feature_names = []
+
+    # Iterate through transformers in the ColumnTransformer
+    for name, trans, cols in preprocessor.transformers_:
+        if name == "drop" or trans == "drop":
+            continue
+        if name == "num":
+            # Numeric columns are kept as is (just scaled)
+            feature_names.extend(cols)
+        elif hasattr(trans, "get_feature_names_out"):
+            # Categorical and Text transformers provide new names
+            try:
+                names = trans.get_feature_names_out(cols)
+                feature_names.extend(names)
+            except (AttributeError, ValueError):
+                # Fallback if specific transformer doesn't support it
+                feature_names.extend(cols)
+
+    # 2. Plot Feature Importance
+    if hasattr(clf, "feature_importances_"):
+        importances = clf.feature_importances_
+        # Ensure lengths match before plotting
+        if len(importances) == len(feature_names):
+            indices = np.argsort(importances)[::-1]
+            top_n = 20
+
+            plt.figure(figsize=(12, 6))
+            plt.title("Top 20 Feature Importances")
+            plt.bar(range(top_n), importances[indices[:top_n]], align="center")
+            plt.xticks(
+                range(top_n),
+                [feature_names[i] for i in indices[:top_n]],
+                rotation=45,
+                ha="right",
+            )
+            plt.tight_layout()
+            plt.show()
+
+    # 3. Plot Confusion Matrix
+    y_pred = pipeline.predict(X_test)
+    cm = confusion_matrix(y_test, y_pred)
+    class_names = label_encoder.classes_
+
+    plt.figure(figsize=(8, 6))
+    sns.heatmap(
+        cm,
+        annot=True,
+        fmt="d",
+        cmap="Blues",
+        xticklabels=class_names,
+        yticklabels=class_names,
+    )
+    plt.title("Confusion Matrix")
+    plt.xlabel("Predicted Label")
+    plt.ylabel("True Label")
+    plt.tight_layout()
+    plt.show()
+
+
 def _evaluate_performance(
     pipeline: Pipeline,
     split_data: Tuple[Any, Any, Any, Any],
@@ -216,7 +335,7 @@ def _evaluate_performance(
     _, X_test, _, y_test = split_data
 
     if X_test is not None:
-        log_info("Evaluating on Test Set")
+        log_info("Evaluating on Test Set (Unseen Websites)")
         y_pred = pipeline.predict(X_test)
         report = classification_report(
             label_encoder.inverse_transform(cast(Any, y_test)),
@@ -232,22 +351,16 @@ def train_model(
     test_size: float = 0.2,
     param_grid: Optional[Dict[str, Any]] = None,
     grid_search_cv: int = 3,
+    show_model_figure: bool = False,
 ) -> Optional[Dict[str, Any]]:
     """
     Main training function.
 
-    Prepares data, splits it, trains the model (optionally using GridSearch),
-    and evaluates performance.
+    Prepares data, splits it by Website URL, trains the model, and evaluates performance.
 
     Args:
-        df: Pandas DataFrame containing feature data.
-        pipeline: Existing pipeline to use (optional).
-        test_size: Ratio of data to hold out for testing.
-        param_grid: Hyperparameters for GridSearchCV (optional).
-        grid_search_cv: Number of CV folds.
-
-    Returns:
-        Dict: Contains the trained 'pipeline', 'label_encoder', and 'features' list.
+        show_model_figure (bool): If True, displays matplotlib figures for feature importance
+                                  and confusion matrix after training.
     """
     log_info("Starting Training Pipeline (Random Forest)")
 
@@ -256,13 +369,13 @@ def train_model(
         return None
 
     # 1. Prepare Data
-    X, y_encoded, label_encoder, features = _prepare_data(df)
+    X, y_encoded, label_encoder, features, groups = _prepare_data(df)
 
     # 2. Pipeline setup
     pipeline = _ensure_pipeline(pipeline, features)
 
     # 3. Split Data (kept as tuple to save local variables)
-    split_data = _split_data(X, y_encoded, test_size)
+    split_data = _split_data(X, y_encoded, groups, test_size)
 
     # Log training size
     log_info(
@@ -274,6 +387,13 @@ def train_model(
 
     # 5. Evaluate
     _evaluate_performance(pipeline, split_data, label_encoder)
+
+    # 6. Visualize
+    if show_model_figure and split_data[1] is not None:
+        # split_data[1] is X_test, split_data[3] is y_test
+        _plot_model_diagnostics(
+            pipeline, split_data[1], split_data[3], label_encoder, features
+        )
 
     return {
         "pipeline": pipeline,
