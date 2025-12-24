@@ -32,6 +32,7 @@ dill==0.4.0
 distlib==0.3.8
 distro==1.9.0
 distro-info==1.7+build1
+docutils==0.22.4
 dulwich==0.21.6
 duplicity==2.1.4
 fasteners==0.18
@@ -42,6 +43,7 @@ fonttools==4.61.0
 git-filter-repo==2.38.0
 greenlet==3.3.0
 httplib2==0.20.4
+id==1.5.0
 idna==3.6
 imbalanced-learn==0.14.0
 importlib-metadata==4.12.0
@@ -76,6 +78,7 @@ more-itertools==10.2.0
 msgpack==1.0.3
 natsort==8.0.2
 netaddr==0.8.0
+nh3==0.3.2
 nltk==3.9.2
 numpy==2.3.5
 nvidia-nccl-cu12==2.28.9
@@ -94,7 +97,7 @@ pluggy==1.6.0
 poetry==1.8.2
 poetry-core==1.9.0
 poetry-plugin-export==1.6.0
--e git+https://github.com/atOliverParkerMorgan/product-scaper.git@32c8aae20ad027b0fb1bb561ef88f2a0eea70c8e#egg=product_scraper
+-e git+https://github.com/atOliverParkerMorgan/product-scaper.git@70787997ab7c3df51547ef09b025635a551070be#egg=product_scraper
 proxy_tools==0.1.0
 psutil==5.9.8
 ptyprocess==0.7.0
@@ -127,9 +130,11 @@ pytz==2024.1
 pyxdg==0.28
 PyYAML==6.0.3
 QtPy==2.4.3
+readme_renderer==44.0
 regex==2025.11.3
 requests==2.31.0
 requests-toolbelt==1.0.0
+rfc3986==2.0.0
 rich==13.7.1
 ruff==0.14.10
 scikit-learn==1.7.2
@@ -148,6 +153,7 @@ toml==0.10.2
 tomlkit==0.12.4
 tqdm==4.67.1
 trove-classifiers==2024.1.31
+twine==6.2.0
 typing_extensions==4.15.0
 tzdata==2025.2
 ubuntu-drivers-common==0.0.0
