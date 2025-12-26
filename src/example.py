@@ -64,16 +64,16 @@ CATEGORIES = ["title", "price", "image"]
 
 if __name__ == "__main__":
     # If the example data directory does not exist, create a new scraper
-    # product_scraper = ProductScraper(
-    #     categories=CATEGORIES,
-    #     websites_urls=WEBSITES,
-    #     save_dir="./src/example_scraper_data",
-    # )
+    product_scraper = ProductScraper(
+        categories=CATEGORIES,
+        websites_urls=WEBSITES,
+        save_dir="./src/example_scraper_data",
+    )
 
-    # product_scraper.load_selectors()
+    product_scraper.load_selectors()
 
     # Load the example selectors provided with the package
-    product_scraper = ProductScraper.load(save_dir="./src/example_scraper_data")
+    # product_scraper = ProductScraper.load(save_dir="./src/example_scraper_data")
     # Run just in case there is missing data
     product_scraper.create_training_data()
 
