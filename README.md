@@ -191,7 +191,7 @@ To run the test suite and check code coverage:
 
 ```bash
 pip install -r requirements.txt
-PYTHONPATH=src pytest src --cov=src --cov-report=term-missing
+PYTHONPATH=src pytest tests --cov=src --cov-report=term-missing
 ```
 
 ## 🤝 Contributing
