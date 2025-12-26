@@ -27,7 +27,6 @@ DEFAULT_SAVE_DIR = Path("product_scraper_data")
 
 
 class ProductScraper:
-    # pylint: disable=too-many-instance-attributes, too-many-public-methods, too-many-arguments, too-many-positional-arguments
     """
     Main interface for web scraping and machine learning-based element detection.
     """
