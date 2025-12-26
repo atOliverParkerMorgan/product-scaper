@@ -66,7 +66,7 @@ CATEGORIES = ["image", "title", "price"]
 
 # List of URLs to train on (more variety = better predictions)
 WEBSITES = [
-    "[https://www.morganbooks.eu/](https://www.morganbooks.eu/)",
+    "https://www.morganbooks.eu/",
     # Add more URLs here...
 ]
 
@@ -190,8 +190,8 @@ python3 ./src/example.py
 To run the test suite and check code coverage:
 
 ```bash
-pip install pytest pytest-cov
-pytest --cov=src --cov-report=term-missing
+pip install -r requirements.txt
+PYTHONPATH=src pytest src --cov=src --cov-report=term-missing
 ```
 
 ## 🤝 Contributing
