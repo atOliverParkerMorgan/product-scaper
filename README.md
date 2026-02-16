@@ -1,4 +1,4 @@
-# Product Scraper 🛒🤖
+# Product Scraper 🛒
 
 **Product Scraper** is a Python library designed to extract structured product data from e-commerce websites. Instead of relying on fragile CSS selectors or hard-coded XPaths, it **learns how products look** on a page—mimicking how a human identifies a title, price, or image.
 
@@ -6,7 +6,7 @@ By combining machine learning, visual cues, and DOM structure, Product Scraper a
 
 ---
 
-## ✨ What Makes It Different?
+## What Makes It Different?
 
 Traditional scrapers break the moment a website tweaks its layout. **Product Scraper adapts.**
 
@@ -21,10 +21,10 @@ This multi-faceted approach allows the library to generalize across different pa
 
 ## 🚀 Features
 
-* **🧠 Machine Learning Driven:** Uses a **Random Forest classifier** to identify product elements based on visual, textual, and structural features.
-* **🖱️ Interactive Training:** Includes a **browser-based UI** (powered by Playwright). Simply open a page, click on the elements you want (titles, prices, images), and the system learns from your input—no complex XPath coding required.
-* **🧩 Automatic Product Grouping:** Detected elements are automatically grouped into coherent product objects using **spatial clustering**, ensuring the correct title is associated with the correct price and image.
-* **🛡️ Resilient Scraping:** By learning patterns rather than strict paths, the scraper is far less brittle than traditional rule-based solutions.
+* ** Machine Learning Driven:** Uses a **Random Forest classifier** to identify product elements based on visual, textual, and structural features.
+* ** Interactive Training:** Includes a **browser-based UI** (powered by Playwright). Simply open a page, click on the elements you want (titles, prices, images), and the system learns from your input—no complex XPath coding required.
+* ** Automatic Product Grouping:** Detected elements are automatically grouped into coherent product objects using **spatial clustering**, ensuring the correct title is associated with the correct price and image.
+* ** Resilient Scraping:** By learning patterns rather than strict paths, the scraper is far less brittle than traditional rule-based solutions.
 
 ---
 
@@ -186,7 +186,7 @@ pip install -r requirements.txt
 python3 ./src/example.py 
 ```
 
-## 🧪 Testing
+##  Testing
 To run the test suite and check code coverage:
 
 ```bash
