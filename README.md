@@ -21,10 +21,10 @@ This multi-faceted approach allows the library to generalize across different pa
 
 ## 🚀 Features
 
-* ** Machine Learning Driven:** Uses a **Random Forest classifier** to identify product elements based on visual, textual, and structural features.
-* ** Interactive Training:** Includes a **browser-based UI** (powered by Playwright). Simply open a page, click on the elements you want (titles, prices, images), and the system learns from your input—no complex XPath coding required.
-* ** Automatic Product Grouping:** Detected elements are automatically grouped into coherent product objects using **spatial clustering**, ensuring the correct title is associated with the correct price and image.
-* ** Resilient Scraping:** By learning patterns rather than strict paths, the scraper is far less brittle than traditional rule-based solutions.
+* **Machine Learning Driven:** Uses a **Random Forest classifier** to identify product elements based on visual, textual, and structural features.
+* **Interactive Training:** Includes a **browser-based UI** (powered by Playwright). Simply open a page, click on the elements you want (titles, prices, images), and the system learns from your input—no complex XPath coding required.
+* **Automatic Product Grouping:** Detected elements are automatically grouped into coherent product objects using **spatial clustering**, ensuring the correct title is associated with the correct price and image.
+* **Resilient Scraping:** By learning patterns rather than strict paths, the scraper is far less brittle than traditional rule-based solutions.
 
 ---
 
