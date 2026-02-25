@@ -1,6 +1,6 @@
 # Product Scraper 🛒
 
-**Product Scraper** is a Python library designed to extract structured product data from e-commerce websites. Instead of relying on fragile CSS selectors or hard-coded XPaths, it **learns how products look** on a page—mimicking how a human identifies a title, price, or image.
+**Product Scraper** is a Python library for extracting structured product data from e-commerce websites. Instead of relying on fragile CSS selectors or hard-coded XPaths, it **learns how products appear on a page ** and mimics how a human identifies a title, price, or image.
 
 By combining machine learning, visual cues, and DOM structure, Product Scraper adapts to different site layouts and remains resilient even when the HTML structure changes.
 
